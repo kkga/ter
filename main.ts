@@ -51,7 +51,15 @@ for (const path of paths) {
   const fileContent = decoder.decode(Deno.readFileSync(path));
   const { meta: frontMatter, content } = Marked.parse(fileContent);
   const { title } = frontMatter;
-  const slug = slugify(title, { lower: true });
+  let slug: string
+
+  if (title) {
+    slug = slugify(title, { lower: true });
+  } else {
+    const regex = /\.md$/i;
+    slug = path.replace(regex, "");
+  }
+
   pages.push({ path: slug, title, html: content });
 }
 
@@ -89,16 +97,31 @@ const getHtmlByPage = ({ path, title, html }: Page) => `
 <html>
 <head>
   <title>${title}</title>
-  <link rel="stylesheet" href="${""}">
+  <link href="https://unpkg.com/@primer/css@^16.0.0/dist/primer.css" rel="stylesheet" />
   <link rel="icon" href="/favicon.svg">
+  <style>
+  	.markdown-body {
+  		box-sizing: border-box;
+  		min-width: 200px;
+  		max-width: 980px;
+  		margin: 0 auto;
+  		padding: 45px;
+  	}
+
+  	@media (max-width: 767px) {
+  		.markdown-body {
+  			padding: 15px;
+  		}
+  	}
+  </style>
 </head>
   <body>
-    <div id="title">
-      ${title}
-    </div>
-    <div id="main">
+    <article class="markdown-body">
+      <div id="title">
+        ${title}
+      </div>
       ${html}
-    </div>
+    </article>
   </body>
 </html>
 `;
