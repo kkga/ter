@@ -1,21 +1,29 @@
 /* Dependencies */
 
-import { Marked } from "https://deno.land/x/markdown@v2.0.0/mod.ts";
 import { ensureFileSync } from "https://deno.land/std@0.121.0/fs/mod.ts";
 import { walkSync } from "https://deno.land/std@0.121.0/fs/mod.ts";
 import { slugify } from "https://deno.land/x/slugify/mod.ts";
+import { parse } from "https://deno.land/std@0.121.0/encoding/yaml.ts";
+import { basename } from "https://deno.land/std/path/mod.ts";
+import { render } from "./render.ts";
 
 /* Constants */
 
-const INDEX_PATH = "index";
-const STYLESHEET_PATH = "styles.css";
+const INDEX_FILE = "index";
+const FRONTMATTER_DELIMITER = "---";
+const reFrontmatter = /(?<!\s+)^---$([\s\S]*?)^---$([\s\S]*?)/m;
 
 /* Interfaces and Globals */
 
 interface Page {
-  path: string;
-  title: string;
+  slug: string;
+  meta: { [key: string]: any } | undefined;
+  content: string;
   html: string;
+}
+
+interface Frontmatter {
+  [key: string]: any;
 }
 
 let pages: Array<Page> = [];
@@ -27,41 +35,61 @@ let pages: Array<Page> = [];
 const contentPath = Deno.args[0] || ".";
 const buildPath = Deno.args[1] || "./build";
 
-// if (!filename) {
-//   console.log("Please specify .md file");
-//   Deno.exit(1);
-// } else {
-//   console.log(`Building site with '${filename}' into '${buildPath}'`);
-// }
-
 /* Step 1: Read files */
 
 let paths: Array<string> = [];
-const decoder = new TextDecoder("utf-8");
 
-for (const entry of walkSync(contentPath)) {
-  if (entry.isFile && entry.name.endsWith(".md")) {
-    paths.push(entry.path);
-  }
+for (
+  const entry of walkSync(contentPath, {
+    exts: ["md"],
+    includeDirs: false,
+  })
+) {
+  paths.push(entry.path);
 }
 
 /* Step 2: Construct page data */
 
-for (const path of paths) {
-  const fileContent = decoder.decode(Deno.readFileSync(path));
-  const { meta: frontMatter, content } = Marked.parse(fileContent);
-  const { title } = frontMatter;
-  let slug: string
+function parseFrontmatter(text: string): Frontmatter | undefined {
+  if (reFrontmatter.test(text)) {
+    const [_, yaml, content] = text.match(reFrontmatter)!;
+    const data = parse(yaml.trim());
 
-  if (title) {
-    slug = slugify(title, { lower: true });
-  } else {
-    const regex = /\.md$/i;
-    slug = path.replace(regex, "");
+    if (data && typeof data === "object") {
+      return data;
+    }
+  }
+}
+
+function hasOwnProperty<X extends {}, Y extends PropertyKey>(
+  obj: X,
+  prop: Y,
+): obj is X & Record<Y, unknown> {
+  return obj.hasOwnProperty(prop);
+}
+
+const decoder = new TextDecoder("utf-8");
+
+for (const path of paths) {
+  const content = decoder.decode(Deno.readFileSync(path));
+  const meta = parseFrontmatter(content);
+  const html = render(content.replace(reFrontmatter, "").trim());
+
+  let title: string | undefined;
+  const slug = basename(path).replace(/\.md$/i, "");
+
+  if (
+    meta &&
+    typeof meta === "object" && hasOwnProperty(meta, "title") &&
+    typeof meta.title === "string"
+  ) {
+    title = meta.title;
   }
 
-  pages.push({ path: slug, title, html: content });
+  pages.push({ slug, meta, content, html });
 }
+
+console.log(pages);
 
 /* Step 3: Generate templates for html content */
 
@@ -77,26 +105,20 @@ for (const path of paths) {
 //   </svg>
 // `;
 
-// const getNavigation = (currentPath: string) => `
-//   <div id="nav">
-//     ${
-//   pages.map(({ path, name }) => {
-//     const href = path === HOME_PATH ? "/" : path;
-//     const isSelectedPage = path === currentPath;
-//     const classes = `nav-item ${isSelectedPage ? "selected" : ""}`;
-//     return `<a class="${classes}" href=${href}>${name}</a>`;
-//   }).join("\n")
-// }
-//   </div>
-// `;
+const getIndex = () => `
+  <div id="nav">
+  ${
+  pages.map(({ slug, meta }) => {
+    const href = slug === INDEX_FILE ? "/" : `/${slug}`;
+    return `<a href=${href}>${meta?.title}</a>`;
+  }).join("\n")
+}</div>`;
 
-// const footer = layout.footer ? `<div id="footer">${layout.footer}</div>` : "";
-
-const getHtmlByPage = ({ path, title, html }: Page) => `
+const getHtmlByPage = ({ slug, meta, html }: Page) => `
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>${title}</title>
+  <title>${meta?.title}</title>
   <link href="https://unpkg.com/@primer/css@^16.0.0/dist/primer.css" rel="stylesheet" />
   <link rel="icon" href="/favicon.svg">
   <style>
@@ -116,10 +138,11 @@ const getHtmlByPage = ({ path, title, html }: Page) => `
   </style>
 </head>
   <body>
+    ${getIndex()}
     <article class="markdown-body">
-      <div id="title">
-        ${title}
-      </div>
+      <h1 id="title">
+        ${meta?.title}
+      </h1>
       ${html}
     </article>
   </body>
@@ -129,15 +152,14 @@ const getHtmlByPage = ({ path, title, html }: Page) => `
 /* Step 4: Build pages into .html files with appropriate paths */
 
 for (const page of pages) {
-  const { path } = page;
-  console.log(path)
+  const { slug } = page;
 
   let outputPath: string;
 
-  if (path === INDEX_PATH) {
+  if (slug === INDEX_FILE) {
     outputPath = `${buildPath}/index.html`;
   } else {
-    outputPath = `${buildPath}/${path}/index.html`;
+    outputPath = `${buildPath}/${slug}/index.html`;
   }
 
   ensureFileSync(outputPath);

@@ -1,4 +1,5 @@
 build
 _build
+notes
 *.md
 *.txt
