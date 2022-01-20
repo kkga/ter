@@ -2,7 +2,7 @@
 
 import { ensureFileSync } from "https://deno.land/std@0.121.0/fs/mod.ts";
 import { walkSync } from "https://deno.land/std@0.121.0/fs/mod.ts";
-import { slugify } from "https://deno.land/x/slugify/mod.ts";
+// import { slugify } from "https://deno.land/x/slugify/mod.ts";
 import { parse } from "https://deno.land/std@0.121.0/encoding/yaml.ts";
 import { basename } from "https://deno.land/std/path/mod.ts";
 import { render } from "./render.ts";
@@ -10,23 +10,23 @@ import { render } from "./render.ts";
 /* Constants */
 
 const INDEX_FILE = "index";
-const FRONTMATTER_DELIMITER = "---";
+// const FRONTMATTER_DELIMITER = "---";
 const reFrontmatter = /(?<!\s+)^---$([\s\S]*?)^---$([\s\S]*?)/m;
 
 /* Interfaces and Globals */
 
 interface Page {
   slug: string;
-  meta: { [key: string]: any } | undefined;
+  meta: unknown;
   content: string;
   html: string;
 }
 
 interface Frontmatter {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
-let pages: Array<Page> = [];
+const pages: Array<Page> = [];
 
 /* -------------------------- */
 
@@ -37,7 +37,7 @@ const buildPath = Deno.args[1] || "./build";
 
 /* Step 1: Read files */
 
-let paths: Array<string> = [];
+const paths: Array<string> = [];
 
 for (
   const entry of walkSync(contentPath, {
@@ -50,9 +50,9 @@ for (
 
 /* Step 2: Construct page data */
 
-function parseFrontmatter(text: string): Frontmatter | undefined {
+function parseFrontmatter(text: string): unknown {
   if (reFrontmatter.test(text)) {
-    const [_, yaml, content] = text.match(reFrontmatter)!;
+    const [_, yaml] = text.match(reFrontmatter)!;
     const data = parse(yaml.trim());
 
     if (data && typeof data === "object") {
@@ -61,11 +61,11 @@ function parseFrontmatter(text: string): Frontmatter | undefined {
   }
 }
 
-function hasOwnProperty<X extends {}, Y extends PropertyKey>(
-  obj: X,
-  prop: Y,
-): obj is X & Record<Y, unknown> {
-  return obj.hasOwnProperty(prop);
+function hasOwnProperty<T, K extends PropertyKey>(
+  obj: T,
+  prop: K,
+): obj is T & Record<K, unknown> {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
 const decoder = new TextDecoder("utf-8");
@@ -74,18 +74,7 @@ for (const path of paths) {
   const content = decoder.decode(Deno.readFileSync(path));
   const meta = parseFrontmatter(content);
   const html = render(content.replace(reFrontmatter, "").trim());
-
-  let title: string | undefined;
   const slug = basename(path).replace(/\.md$/i, "");
-
-  if (
-    meta &&
-    typeof meta === "object" && hasOwnProperty(meta, "title") &&
-    typeof meta.title === "string"
-  ) {
-    title = meta.title;
-  }
-
   pages.push({ slug, meta, content, html });
 }
 
@@ -105,20 +94,23 @@ console.log(pages);
 //   </svg>
 // `;
 
-const getIndex = () => `
+const index = `
   <div id="nav">
   ${
   pages.map(({ slug, meta }) => {
+    const title = meta && hasOwnProperty(meta, "title") ? meta.title : "";
     const href = slug === INDEX_FILE ? "/" : `/${slug}`;
-    return `<a href=${href}>${meta?.title}</a>`;
+    return `<a href=${href}>${title}</a>`;
   }).join("\n")
 }</div>`;
 
-const getHtmlByPage = ({ slug, meta, html }: Page) => `
+const getHtmlByPage = ({ meta, html }: Page) => {
+  const title = meta && hasOwnProperty(meta, "title") ? meta.title : "";
+  return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>${meta?.title}</title>
+  <title>${title}</title>
   <link href="https://unpkg.com/@primer/css@^16.0.0/dist/primer.css" rel="stylesheet" />
   <link rel="icon" href="/favicon.svg">
   <style>
@@ -138,16 +130,15 @@ const getHtmlByPage = ({ slug, meta, html }: Page) => `
   </style>
 </head>
   <body>
-    ${getIndex()}
+    ${index}
     <article class="markdown-body">
-      <h1 id="title">
-        ${meta?.title}
-      </h1>
-      ${html}
+    {title && <h1 id="title">${title}</h1>}
+    ${html}
     </article>
   </body>
 </html>
 `;
+};
 
 /* Step 4: Build pages into .html files with appropriate paths */
 

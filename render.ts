@@ -36,6 +36,6 @@ marked.use({
   xhtml: false,
 });
 
-export function render(text: string): any {
+export function render(text: string): string {
   return marked.parse(text);
 }
