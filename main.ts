@@ -10,10 +10,13 @@ const INDEX_FILE = "index";
 /* Interfaces and Globals */
 
 interface Page {
+  path: string;
   slug: string;
   attributes: unknown;
   body: string;
   html: string;
+  links: Array<string>;
+  backlinks: Array<string>;
 }
 
 const pages: Array<Page> = [];
@@ -52,9 +55,32 @@ const decoder = new TextDecoder("utf-8");
 for (const path of paths) {
   const content = decoder.decode(Deno.readFileSync(path));
   const { attributes, body } = frontMatter(content);
-  const html = render(body);
+  const [html, links] = render(body);
   const slug = basename(path).replace(/\.md$/i, "");
-  pages.push({ slug, attributes, body, html });
+  const backlinks: Array<string> = [];
+  const cleanPath = path.replace(contentPath, "");
+
+  pages.push({
+    path: cleanPath,
+    slug,
+    attributes,
+    body,
+    html,
+    links,
+    backlinks,
+  });
+}
+
+for (const outPage of pages) {
+  const { links } = outPage;
+
+  if (links.length > 0) {
+    pages.forEach((inPage) => {
+      if (links.includes(inPage.path)) {
+        inPage.backlinks.push(outPage.path);
+      }
+    });
+  }
 }
 
 console.log(pages);
@@ -85,7 +111,18 @@ const index = `
   }).join("\n")
 }</div>`;
 
-const getHtmlByPage = ({ attributes, html }: Page) => {
+const getBacklinksHtml = (backlinks: Array<string>): string => {
+  return `
+  <ul>${
+    backlinks.map((link) =>
+      `<li><a href="/${link.replace(".md", "")}">${link}</a></li>`
+    ).join(
+      "\n",
+    )
+  }</ul> `;
+};
+
+const getHtmlByPage = ({ attributes, html, backlinks }: Page) => {
   const title = attributes && hasOwnProperty(attributes, "title")
     ? attributes.title
     : "";
@@ -114,8 +151,13 @@ const getHtmlByPage = ({ attributes, html }: Page) => {
   <body>
     ${index}
     <article class="markdown-body">
-      {title && <h1 id="title">${title}</h1>}
+      ${title && "<h1 id='title'>" + title + "</h1>"}
       ${html}
+      <hr />
+      <div>
+        <h4>Backlinks</h4>
+        ${getBacklinksHtml(backlinks)}
+      </div>
     </article>
   </body>
 </html>`;
