@@ -1,29 +1,19 @@
 /* Dependencies */
 
-import { ensureFileSync } from "https://deno.land/std@0.121.0/fs/mod.ts";
-import { walkSync } from "https://deno.land/std@0.121.0/fs/mod.ts";
-// import { slugify } from "https://deno.land/x/slugify/mod.ts";
-import { parse } from "https://deno.land/std@0.121.0/encoding/yaml.ts";
-import { basename } from "https://deno.land/std/path/mod.ts";
+import { basename, ensureFileSync, frontMatter, walkSync } from "./deps.ts";
 import { render } from "./render.ts";
 
 /* Constants */
 
 const INDEX_FILE = "index";
-// const FRONTMATTER_DELIMITER = "---";
-const reFrontmatter = /(?<!\s+)^---$([\s\S]*?)^---$([\s\S]*?)/m;
 
 /* Interfaces and Globals */
 
 interface Page {
   slug: string;
-  meta: unknown;
-  content: string;
+  attributes: unknown;
+  body: string;
   html: string;
-}
-
-interface Frontmatter {
-  [key: string]: unknown;
 }
 
 const pages: Array<Page> = [];
@@ -50,17 +40,6 @@ for (
 
 /* Step 2: Construct page data */
 
-function parseFrontmatter(text: string): unknown {
-  if (reFrontmatter.test(text)) {
-    const [_, yaml] = text.match(reFrontmatter)!;
-    const data = parse(yaml.trim());
-
-    if (data && typeof data === "object") {
-      return data;
-    }
-  }
-}
-
 function hasOwnProperty<T, K extends PropertyKey>(
   obj: T,
   prop: K,
@@ -72,10 +51,10 @@ const decoder = new TextDecoder("utf-8");
 
 for (const path of paths) {
   const content = decoder.decode(Deno.readFileSync(path));
-  const meta = parseFrontmatter(content);
-  const html = render(content.replace(reFrontmatter, "").trim());
+  const { attributes, body } = frontMatter(content);
+  const html = render(body);
   const slug = basename(path).replace(/\.md$/i, "");
-  pages.push({ slug, meta, content, html });
+  pages.push({ slug, attributes, body, html });
 }
 
 console.log(pages);
@@ -97,15 +76,19 @@ console.log(pages);
 const index = `
   <div id="nav">
   ${
-  pages.map(({ slug, meta }) => {
-    const title = meta && hasOwnProperty(meta, "title") ? meta.title : "";
+  pages.map(({ slug, attributes }) => {
+    const title = attributes && hasOwnProperty(attributes, "title")
+      ? attributes.title
+      : "";
     const href = slug === INDEX_FILE ? "/" : `/${slug}`;
     return `<a href=${href}>${title}</a>`;
   }).join("\n")
 }</div>`;
 
-const getHtmlByPage = ({ meta, html }: Page) => {
-  const title = meta && hasOwnProperty(meta, "title") ? meta.title : "";
+const getHtmlByPage = ({ attributes, html }: Page) => {
+  const title = attributes && hasOwnProperty(attributes, "title")
+    ? attributes.title
+    : "";
   return `
 <!DOCTYPE html>
 <html lang="en">

@@ -1,4 +1,4 @@
-import marked from "https://esm.sh/marked@3.0.7";
+import { marked } from "./deps.ts";
 
 const renderer = {
   heading(
