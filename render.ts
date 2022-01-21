@@ -1,7 +1,9 @@
 import { marked } from "./deps.ts";
+import { Heading } from "./main.ts";
 
-export function render(text: string): [string, Array<string>] {
+export function render(text: string): [string, Array<string>, Array<Heading>] {
   const links: Array<string> = [];
+  const headings: Array<Heading> = [];
 
   const renderer = {
     heading(
@@ -11,6 +13,7 @@ export function render(text: string): [string, Array<string>] {
       slugger: marked.Slugger,
     ): string {
       const slug = slugger.slug(raw);
+      headings.push({ text, level, slug });
       return `<h${level} id="${slug}">${text}<a href="#${slug}"></a></h${level}>`;
     },
 
@@ -40,5 +43,5 @@ export function render(text: string): [string, Array<string>] {
     xhtml: false,
   });
 
-  return [marked.parse(text), links];
+  return [marked.parse(text), links, headings];
 }

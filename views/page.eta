@@ -1,12 +1,12 @@
 <% layout('./layout') %>
 
-<% if (it.title) { %>
+<!--<% if (it.title) { %>
 <header>
   <h1 id='title'><%= it.title %></h1>
 </header>
 <% } %>
 
-<%~ it.body %>
+--><%~ it.body %>
 
 <hr />
 

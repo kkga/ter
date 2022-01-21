@@ -16,11 +16,18 @@ const INDEX_FILE = "index";
 
 /* Interfaces and Globals */
 
+export interface Heading {
+  text: string;
+  level: 1 | 2 | 3 | 4 | 5 | 6;
+  slug: string;
+}
+
 export interface Page {
   path: string;
   slug: string;
   attributes: unknown;
-  title: string | undefined;
+  title: string;
+  headings: Array<Heading>;
   body: string;
   html: string;
   links: Array<string>;
@@ -60,7 +67,7 @@ function hasOwnProperty<T, K extends PropertyKey>(
 
 const decoder = new TextDecoder("utf-8");
 
-const getTitle = (attrs: unknown): string | undefined => {
+const getTitleFromAttrs = (attrs: unknown): string | undefined => {
   if (
     typeof attrs === "object" && hasOwnProperty(attrs, "title") &&
     typeof attrs.title === "string"
@@ -69,20 +76,30 @@ const getTitle = (attrs: unknown): string | undefined => {
   }
 };
 
+const getTitleFromHeadings = (headings: Array<Heading>): string | undefined => {
+  for (const h of headings) {
+    if (h.level === 1) {
+      return h.text;
+    }
+  }
+};
+
 for (const path of paths) {
   const content = decoder.decode(Deno.readFileSync(path));
   const { attributes, body } = frontMatter(content);
-  const [html, links] = render(body);
+  const [html, links, headings] = render(body);
   const cleanPath = path.replace(contentPath, "");
   const slug = slugify(basename(path).replace(/\.md$/i, ""));
-  const title = getTitle(attributes) || slug;
   const backlinks: Array<{ title: string; slug: string }> = [];
+  const title: string = getTitleFromAttrs(attributes) ||
+    getTitleFromHeadings(headings) || slug;
 
   pages.push({
     path: cleanPath,
     slug,
     attributes,
     title,
+    headings,
     body,
     html,
     links,
