@@ -6,7 +6,11 @@
 </header>
 <% } %>
 
---><%~ it.body %>
+-->
+
+<article>
+  <%~ it.body %>
+</article>
 
 <hr />
 

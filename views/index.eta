@@ -11,13 +11,17 @@
 
 <hr />
 
+<% if (it.pages.length > 0) {%>
 <h4>Index</h4>
 <ul id="index">
-  <% it.pages.forEach(({title, slug})=> { %>
-  <% const href = slug === "index" ? "/" : `/${slug}` %>
-  <li><a href="<%= slug %>"><%= slug %></li>
+  <% it.pages.forEach(link => { %>
+  <% const href = link.slug === "index" ? "/" : `/${link.slug}` %>
+  <li>
+    <a href="/<%= link.slug %>"><%= link.title %></a>
+  </li>
   <% }) %>
 </ul>
+<% } %>
 
 <hr />
 

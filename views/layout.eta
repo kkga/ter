@@ -10,8 +10,6 @@
     <main>
       <%~ it.body %>
     </main>
+    <%~ includeFile('./footer') %>
   </body>
-
 </html>
-
-<!-- vim:ft=html -->

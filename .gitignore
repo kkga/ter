@@ -1,5 +1,1 @@
-build
-_build
-notes
-*.md
-*.txt
+_site

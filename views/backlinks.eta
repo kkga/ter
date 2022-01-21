@@ -2,7 +2,9 @@
 <h4>Backlinks</h4>
 <ul id="backlinks-list">
   <% it.backlinks.forEach(link => { %>
-  <li><a href="/<%= link.slug %>"><%= link.title %></li>
+  <li>
+    <a href="/<%= link.slug %>"><%= link.title %></a>
+  </li>
   <% }) %>
 </ul>
 <% } %>

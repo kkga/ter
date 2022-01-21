@@ -12,4 +12,4 @@ export {
   walkSync,
 } from "https://deno.land/std@0.121.0/fs/mod.ts";
 
-export { basename } from "https://deno.land/std/path/mod.ts";
+export * from "https://deno.land/std/path/mod.ts";

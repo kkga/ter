@@ -2,8 +2,11 @@
 
 import {
   basename,
+  dirname,
   ensureFileSync,
   frontMatter,
+  normalize,
+  relative,
   slugify,
   walkSync,
 } from "./deps.ts";
@@ -41,7 +44,7 @@ const pages: Array<Page> = [];
 /* Step 0: Grab CLI arguments */
 
 const contentPath = Deno.args[0] || ".";
-const buildPath = Deno.args[1] || "./build";
+const buildPath = Deno.args[1] || "_site";
 
 /* Step 1: Read files */
 
@@ -88,14 +91,18 @@ for (const path of paths) {
   const content = decoder.decode(Deno.readFileSync(path));
   const { attributes, body } = frontMatter(content);
   const [html, links, headings] = render(body);
-  const cleanPath = path.replace(contentPath, "");
-  const slug = slugify(basename(path).replace(/\.md$/i, ""));
+  const relativePath = relative(contentPath, path);
+  console.log(dirname(relativePath));
+  const slug = normalize(
+    dirname(relativePath) + "/" +
+      slugify(basename(relativePath).replace(/\.md$/i, "")),
+  );
   const backlinks: Array<{ title: string; slug: string }> = [];
   const title: string = getTitleFromAttrs(attributes) ||
     getTitleFromHeadings(headings) || slug;
 
   pages.push({
-    path: cleanPath,
+    path: relativePath,
     slug,
     attributes,
     title,
@@ -122,51 +129,6 @@ for (const outPage of pages) {
   }
 }
 console.log(pages);
-
-// const index = `
-//   <div id="nav">
-//   ${
-//   pages.map(({ title, slug, attributes }) => {
-//     const href = slug === INDEX_FILE ? "/" : `/${slug}`;
-//     return `<a href=${href}>${title}</a>`;
-//   }).join("\n")
-// }</div>`;
-
-// const getHtmlByPage = ({ attributes, title, html, backlinks }: Page) => `
-// <!DOCTYPE html>
-// <html lang="en">
-//   <head>
-//     <title>${title}</title>
-//     <link href="https://unpkg.com/@primer/css@^16.0.0/dist/primer.css" rel="stylesheet" />
-//     <link rel="icon" href="/favicon.svg">
-//     <style>
-//     	.markdown-body {
-//     		box-sizing: border-box;
-//     		min-width: 200px;
-//     		max-width: 980px;
-//     		margin: 0 auto;
-//     		padding: 45px;
-//     	}
-//     	@media (max-width: 767px) {
-//     		.markdown-body {
-//     			padding: 15px;
-//     		}
-//     	}
-//     </style>
-//   </head>
-//   <body>
-//     ${index}
-//     <article class="markdown-body">
-//       ${title && "<h1 id='title'>" + title + "</h1>"}
-//       ${html}
-//       <hr />
-//       <div>
-//         <h4>Backlinks</h4>
-//         ${getBacklinksHtml(backlinks)}
-//       </div>
-//     </article>
-//   </body>
-// </html>`;
 
 /* Step 4: Build pages into .html files with appropriate paths */
 
