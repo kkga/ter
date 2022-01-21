@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><% if (it.title) { %><%= it.title %><% } %></title>
+    <link href="https://unpkg.com/@primer/css@^16.0.0/dist/primer.css" rel="stylesheet" />
+    <link rel="icon" href="/favicon.svg">
+    <style>
+    	.markdown-body {
+    		box-sizing: border-box;
+    		min-width: 200px;
+    		max-width: 980px;
+    		margin: 0 auto;
+    		padding: 45px;
+    	}
+    	@media (max-width: 767px) {
+    		.markdown-body {
+    			padding: 15px;
+    		}
+    	}
+    </style>
+  </head>
+
+  <body>
+    <article class="markdown-body">
+      <% if (it.title) { %>
+      <h1 id='title'><%= it.title %></h1>
+      <% } %>
+
+      <%~ it.body %>
+
+      <hr />
+<!--      <div>
+        <h4>Backlinks</h4>
+        ${getBacklinksHtml(backlinks)}
+      </div>
+-->    </article>
+    <%~ includeFile('./footer') %>
+  </body>
+</html>
+
+<!-- vim:ft=html -->

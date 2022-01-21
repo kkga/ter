@@ -2,6 +2,7 @@
 
 import { basename, ensureFileSync, frontMatter, walkSync } from "./deps.ts";
 import { render } from "./render.ts";
+import { buildIndex, buildPage } from "./build.ts";
 
 /* Constants */
 
@@ -9,10 +10,11 @@ const INDEX_FILE = "index";
 
 /* Interfaces and Globals */
 
-interface Page {
+export interface Page {
   path: string;
   slug: string;
   attributes: unknown;
+  title: string | undefined;
   body: string;
   html: string;
   links: Array<string>;
@@ -52,6 +54,15 @@ function hasOwnProperty<T, K extends PropertyKey>(
 
 const decoder = new TextDecoder("utf-8");
 
+const getTitle = (attrs: unknown): string | undefined => {
+  if (
+    typeof attrs === "object" && hasOwnProperty(attrs, "title") &&
+    typeof attrs.title === "string"
+  ) {
+    return attrs.title;
+  }
+};
+
 for (const path of paths) {
   const content = decoder.decode(Deno.readFileSync(path));
   const { attributes, body } = frontMatter(content);
@@ -59,11 +70,13 @@ for (const path of paths) {
   const slug = basename(path).replace(/\.md$/i, "");
   const backlinks: Array<string> = [];
   const cleanPath = path.replace(contentPath, "");
+  const title = getTitle(attributes);
 
   pages.push({
     path: cleanPath,
     slug,
     attributes,
+    title,
     body,
     html,
     links,
@@ -71,6 +84,7 @@ for (const path of paths) {
   });
 }
 
+// Populate backlinks
 for (const outPage of pages) {
   const { links } = outPage;
 
@@ -85,31 +99,14 @@ for (const outPage of pages) {
 
 console.log(pages);
 
-/* Step 3: Generate templates for html content */
-
-// const isHomePath = (path: string) => path === HOME_PATH;
-
-// const getStylesheetHref = (path: string) => {
-//   return isHomePath(path) ? STYLESHEET_PATH : `../${STYLESHEET_PATH}`;
-// };
-
-// const getFaviconSvg = (favicon: string) => `
-//   <svg xmlns="http://www.w3.org/2000/svg">
-//     <text y="32" font-size="32">${favicon ? favicon : "🦕"}</text>
-//   </svg>
-// `;
-
-const index = `
-  <div id="nav">
-  ${
-  pages.map(({ slug, attributes }) => {
-    const title = attributes && hasOwnProperty(attributes, "title")
-      ? attributes.title
-      : "";
-    const href = slug === INDEX_FILE ? "/" : `/${slug}`;
-    return `<a href=${href}>${title}</a>`;
-  }).join("\n")
-}</div>`;
+// const index = `
+//   <div id="nav">
+//   ${
+//   pages.map(({ title, slug, attributes }) => {
+//     const href = slug === INDEX_FILE ? "/" : `/${slug}`;
+//     return `<a href=${href}>${title}</a>`;
+//   }).join("\n")
+// }</div>`;
 
 const getBacklinksHtml = (backlinks: Array<string>): string => {
   return `
@@ -122,46 +119,41 @@ const getBacklinksHtml = (backlinks: Array<string>): string => {
   }</ul> `;
 };
 
-const getHtmlByPage = ({ attributes, html, backlinks }: Page) => {
-  const title = attributes && hasOwnProperty(attributes, "title")
-    ? attributes.title
-    : "";
-  return `
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>${title}</title>
-    <link href="https://unpkg.com/@primer/css@^16.0.0/dist/primer.css" rel="stylesheet" />
-    <link rel="icon" href="/favicon.svg">
-    <style>
-    	.markdown-body {
-    		box-sizing: border-box;
-    		min-width: 200px;
-    		max-width: 980px;
-    		margin: 0 auto;
-    		padding: 45px;
-    	}
-    	@media (max-width: 767px) {
-    		.markdown-body {
-    			padding: 15px;
-    		}
-    	}
-    </style>
-  </head>
-  <body>
-    ${index}
-    <article class="markdown-body">
-      ${title && "<h1 id='title'>" + title + "</h1>"}
-      ${html}
-      <hr />
-      <div>
-        <h4>Backlinks</h4>
-        ${getBacklinksHtml(backlinks)}
-      </div>
-    </article>
-  </body>
-</html>`;
-};
+// const getHtmlByPage = ({ attributes, title, html, backlinks }: Page) => `
+// <!DOCTYPE html>
+// <html lang="en">
+//   <head>
+//     <title>${title}</title>
+//     <link href="https://unpkg.com/@primer/css@^16.0.0/dist/primer.css" rel="stylesheet" />
+//     <link rel="icon" href="/favicon.svg">
+//     <style>
+//     	.markdown-body {
+//     		box-sizing: border-box;
+//     		min-width: 200px;
+//     		max-width: 980px;
+//     		margin: 0 auto;
+//     		padding: 45px;
+//     	}
+//     	@media (max-width: 767px) {
+//     		.markdown-body {
+//     			padding: 15px;
+//     		}
+//     	}
+//     </style>
+//   </head>
+//   <body>
+//     ${index}
+//     <article class="markdown-body">
+//       ${title && "<h1 id='title'>" + title + "</h1>"}
+//       ${html}
+//       <hr />
+//       <div>
+//         <h4>Backlinks</h4>
+//         ${getBacklinksHtml(backlinks)}
+//       </div>
+//     </article>
+//   </body>
+// </html>`;
 
 /* Step 4: Build pages into .html files with appropriate paths */
 
@@ -177,7 +169,14 @@ for (const page of pages) {
   }
 
   ensureFileSync(outputPath);
-  Deno.writeTextFileSync(outputPath, getHtmlByPage(page));
+
+  const pageHtml = slug === INDEX_FILE
+    ? await buildIndex(pages)
+    : await buildPage(page);
+
+  if (typeof pageHtml === "string") {
+    Deno.writeTextFileSync(outputPath, pageHtml);
+  }
 }
 
 // /* Step 5: Build additional asset files */

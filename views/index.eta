@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TODO: site title</title>
+    <link href="https://unpkg.com/@primer/css@^16.0.0/dist/primer.css" rel="stylesheet" />
+    <link rel="icon" href="/favicon.svg">
+    <style>
+    	.markdown-body {
+    		box-sizing: border-box;
+    		min-width: 200px;
+    		max-width: 980px;
+    		margin: 0 auto;
+    		padding: 45px;
+    	}
+    	@media (max-width: 767px) {
+    		.markdown-body {
+    			padding: 15px;
+    		}
+    	}
+    </style>
+  </head>
+
+  <body>
+    <ul id="index">
+      <% it.pages.forEach(({title, slug})=> { %>
+      <% const href = slug === "index" ? "/" : `/${slug}` %>
+      <li><a href="<%= slug %>"><%= slug %></li>
+      <% }) %>
+    </ul>
+
+    <%~ includeFile('./footer') %>
+  </body>
+</html>
+
+<!-- vim:ft=html -->
