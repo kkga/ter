@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><% if (it.title) { %><%= it.title %><% } %></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spcss@0.8.0">
+    <link rel="icon" href="/favicon.svg">
+  </head>
+
+  <body>
+    <main>
+      <%~ it.body %>
+    </main>
+  </body>
+
+</html>
+
+<!-- vim:ft=html -->

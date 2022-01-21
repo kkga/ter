@@ -15,16 +15,23 @@ etaConfigure({
 // renderFile("/template"), etc.
 
 export async function buildPage(page: Page): Promise<string | void> {
-  const { title } = page;
-  const body = page.html;
-
-  const result = await etaRenderFile("./template", { title, body });
+  const { title, html: body, backlinks } = page;
+  const result = await etaRenderFile("./page", { title, body, backlinks });
 
   return result;
 }
 
-export async function buildIndex(pages: Array<Page>): Promise<string | void> {
-  const result = await etaRenderFile("./index", { pages });
+export async function buildIndex(
+  page: Page,
+  pages: Array<Page>,
+): Promise<string | void> {
+  const { title, html: body, backlinks } = page;
+  const result = await etaRenderFile("./index", {
+    title,
+    body,
+    backlinks,
+    pages,
+  });
 
   return result;
 }

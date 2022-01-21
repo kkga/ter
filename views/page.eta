@@ -1,6 +1,5 @@
 <% layout('./layout') %>
 
-
 <% if (it.title) { %>
 <header>
   <h1 id='title'><%= it.title %></h1>
@@ -8,16 +7,6 @@
 <% } %>
 
 <%~ it.body %>
-
-<hr />
-
-<h4>Index</h4>
-<ul id="index">
-  <% it.pages.forEach(({title, slug})=> { %>
-  <% const href = slug === "index" ? "/" : `/${slug}` %>
-  <li><a href="<%= slug %>"><%= slug %></li>
-  <% }) %>
-</ul>
 
 <hr />
 

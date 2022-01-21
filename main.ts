@@ -1,6 +1,12 @@
 /* Dependencies */
 
-import { basename, ensureFileSync, frontMatter, walkSync } from "./deps.ts";
+import {
+  basename,
+  ensureFileSync,
+  frontMatter,
+  slugify,
+  walkSync,
+} from "./deps.ts";
 import { render } from "./render.ts";
 import { buildIndex, buildPage } from "./build.ts";
 
@@ -18,7 +24,7 @@ export interface Page {
   body: string;
   html: string;
   links: Array<string>;
-  backlinks: Array<string>;
+  backlinks: Array<{ title: string | undefined; slug: string }>;
 }
 
 const pages: Array<Page> = [];
@@ -67,10 +73,10 @@ for (const path of paths) {
   const content = decoder.decode(Deno.readFileSync(path));
   const { attributes, body } = frontMatter(content);
   const [html, links] = render(body);
-  const slug = basename(path).replace(/\.md$/i, "");
-  const backlinks: Array<string> = [];
   const cleanPath = path.replace(contentPath, "");
-  const title = getTitle(attributes);
+  const slug = slugify(basename(path).replace(/\.md$/i, ""));
+  const title = getTitle(attributes) || slug;
+  const backlinks: Array<{ title: string; slug: string }> = [];
 
   pages.push({
     path: cleanPath,
@@ -91,12 +97,13 @@ for (const outPage of pages) {
   if (links.length > 0) {
     pages.forEach((inPage) => {
       if (links.includes(inPage.path)) {
-        inPage.backlinks.push(outPage.path);
+        const slug = outPage.slug === INDEX_FILE ? "" : outPage.slug;
+        const title = outPage.slug === INDEX_FILE ? "index" : outPage.title;
+        inPage.backlinks.push({ title, slug });
       }
     });
   }
 }
-
 console.log(pages);
 
 // const index = `
@@ -107,17 +114,6 @@ console.log(pages);
 //     return `<a href=${href}>${title}</a>`;
 //   }).join("\n")
 // }</div>`;
-
-const getBacklinksHtml = (backlinks: Array<string>): string => {
-  return `
-  <ul>${
-    backlinks.map((link) =>
-      `<li><a href="/${link.replace(".md", "")}">${link}</a></li>`
-    ).join(
-      "\n",
-    )
-  }</ul> `;
-};
 
 // const getHtmlByPage = ({ attributes, title, html, backlinks }: Page) => `
 // <!DOCTYPE html>
@@ -171,7 +167,7 @@ for (const page of pages) {
   ensureFileSync(outputPath);
 
   const pageHtml = slug === INDEX_FILE
-    ? await buildIndex(pages)
+    ? await buildIndex(page, pages)
     : await buildPage(page);
 
   if (typeof pageHtml === "string") {
