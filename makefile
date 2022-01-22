@@ -18,4 +18,4 @@ dev: watch serve
 
 deploy-vercel:
 	curl -fsSL https://deno.land/x/install/install.sh | sh
-	/vercel/.deno/bin/deno run --allow-net --allow-read=./ --allow-write --unstable main.ts docs
+	/vercel/.deno/bin/deno run --allow-net --allow-env --allow-read=./ --allow-write --unstable main.ts docs
