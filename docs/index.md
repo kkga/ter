@@ -2,6 +2,8 @@
 
 Welcome to Minmi demo site!
 
+![](_img/dino.png)
+
 Minmi is a tiny static site generator with [Zettelkasten](zettelkasten.md)
 flavor.
 
