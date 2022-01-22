@@ -1,22 +1,46 @@
-import { dateFormat, etaConfigure, etaRenderFile, join } from "./deps.ts";
+import { dateFormat, etaConfigure, etaRenderFile, path } from "./deps.ts";
 import { Page } from "./main.ts";
 
 const viewPath = `${Deno.cwd()}/_views/`;
 
-// Set Eta's configuration
-etaConfigure({
-  // This tells Eta to look for templates
-  // In the /views directory
-  views: viewPath,
-});
-
-// Eta assumes the .eta extension if you don't specify an extension
-// You could also write renderFile("template.eta"),
-// renderFile("/template"), etc.
-
 interface Breadcrumb {
   title: string;
   path: string;
+}
+
+interface IndexItem {
+  title: string;
+  readableDate: string | null;
+  slug: string;
+}
+
+etaConfigure({
+  views: viewPath,
+});
+
+function generateIndexItems(
+  paths: Array<string>,
+  pages: Array<Page>,
+): Array<IndexItem> {
+  const items: Array<IndexItem> = [];
+
+  for (const path of paths) {
+    const page = pages.find((p) => p.path === path);
+
+    if (typeof page === "object") {
+      const readableDate = page.date
+        ? dateFormat(page.date, "dd-MM-yyyy")
+        : null;
+
+      items.push({
+        title: page.title,
+        slug: page.slug === "index" ? "" : page.slug,
+        readableDate,
+      });
+    }
+  }
+
+  return items;
 }
 
 function generateBreadcrumbs(slug: string): Array<Breadcrumb> {
@@ -24,10 +48,10 @@ function generateBreadcrumbs(slug: string): Array<Breadcrumb> {
 
   const breadcrumbs = chunks.map((chunk, index) => {
     const title = chunk;
-    const path = join(...chunks.slice(0, index + 1));
+    const filePath = path.join(...chunks.slice(0, index + 1));
     return {
       title,
-      path,
+      path: filePath,
     };
   });
 
@@ -38,15 +62,16 @@ export async function buildPage(
   page: Page,
   pages: Array<Page>,
 ): Promise<string | void> {
-  const { title, description, readableDate, slug, html: body, backlinks } =
-    page;
+  const { title, date, slug, html: body, backlinks } = page;
   const breadcrumbs = generateBreadcrumbs(slug);
+  const backlinkIndexItems = generateIndexItems(backlinks, pages);
+  const readableDate = date ? dateFormat(date, "dd-MM-yyyy") : null;
   const result = await etaRenderFile("./page", {
     title,
     readableDate,
     breadcrumbs,
     body,
-    backlinks,
+    backlinks: backlinkIndexItems,
   });
 
   return result;

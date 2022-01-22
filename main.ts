@@ -1,16 +1,10 @@
 /* Dependencies */
 
 import {
-  basename,
-  dateFormat,
-  dirname,
   ensureDirSync,
   ensureFileSync,
-  extname,
   frontMatter,
-  join,
-  normalize,
-  relative,
+  path,
   slugify,
   walkSync,
 } from "./deps.ts";
@@ -30,28 +24,19 @@ export interface Heading {
   slug: string;
 }
 
-interface Link {
-  slug: string;
-  title: string;
-  description: string;
-  readableDate: string | null;
-  tags: Array<string>;
-}
-
 export interface Page {
-  path: string;
   slug: string;
+  path: string;
   attributes: unknown;
   title: string;
   description: string;
   date: Date | null;
-  readableDate: string | null;
   tags: Array<string>;
   headings: Array<Heading>;
   body: string;
   html: string;
   links: Array<string>;
-  backlinks: Array<Link>;
+  backlinks: Array<string>;
 }
 
 const pages: Array<Page> = [];
@@ -73,7 +58,7 @@ for (
     includeDirs: false,
   })
 ) {
-  extname(entry.path) === ".md"
+  path.extname(entry.path) === ".md"
     ? paths.push(entry.path)
     : staticPaths.push(entry.path);
 }
@@ -86,8 +71,6 @@ function hasOwnProperty<T, K extends PropertyKey>(
 ): obj is T & Record<K, unknown> {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
-
-const decoder = new TextDecoder("utf-8");
 
 const getTitleFromAttrs = (attrs: unknown): string | undefined => {
   if (
@@ -125,23 +108,24 @@ const getTitleFromHeadings = (headings: Array<Heading>): string | undefined => {
   }
 };
 
-for (const path of paths) {
-  const file = await Deno.open(path);
-  const content = decoder.decode(Deno.readFileSync(path));
+const decoder = new TextDecoder("utf-8");
+
+for (const p of paths) {
+  const file = await Deno.open(p);
+  const content = decoder.decode(Deno.readFileSync(p));
   const { attributes, body } = frontMatter(content);
   const [html, links, headings] = render(body);
-  const relativePath = relative(contentPath, path);
-  const slug = normalize(
-    dirname(relativePath) + "/" +
-      slugify(basename(relativePath).replace(/\.md$/i, "")),
+  const relativePath = path.relative(contentPath, p);
+  const slug = path.join(
+    path.dirname(relativePath),
+    slugify(path.basename(relativePath).replace(/\.md$/i, "")),
   );
-  const backlinks: Array<Link> = [];
+  const backlinks: Array<string> = [];
   const title: string = getTitleFromAttrs(attributes) ||
     getTitleFromHeadings(headings) || slug;
   const description = getDescriptionFromAttrs(attributes) || "";
   const tags = getTagsFromAttrs(attributes);
   const date = Deno.fstatSync(file.rid).mtime;
-  const readableDate = date ? dateFormat(date, "dd-MM-yyyy") : null;
 
   file.close();
 
@@ -152,7 +136,6 @@ for (const path of paths) {
     title,
     description,
     date,
-    readableDate,
     tags,
     headings,
     body,
@@ -169,26 +152,14 @@ for (const outPage of pages) {
   if (links.length > 0) {
     pages.forEach((inPage) => {
       if (links.includes(inPage.path)) {
-        const slug = outPage.slug === INDEX_FILE ? "" : outPage.slug;
-        const readableDate = outPage.date
-          ? dateFormat(outPage.date, "dd-MM-yyyy")
-          : null;
-
-        const backlink: Link = {
-          slug,
-          title: outPage.title,
-          tags: outPage.tags,
-          readableDate,
-          description: outPage.description,
-        };
-
-        inPage.backlinks.push(backlink);
+        // const slug = outPage.slug === INDEX_FILE ? "" : outPage.slug;
+        inPage.backlinks.push(outPage.path);
       }
     });
   }
 }
 
-/* Step 4: Build pages into .html files with appropriate paths */
+/* Step 3: Build pages into .html files with appropriate paths */
 
 for (const page of pages) {
   const { slug } = page;
@@ -196,33 +167,31 @@ for (const page of pages) {
   let outputPath: string;
 
   if (slug === INDEX_FILE) {
-    outputPath = join(buildPath, "index.html");
+    outputPath = path.join(buildPath, "index.html");
   } else {
-    outputPath = join(buildPath, slug, "index.html");
+    outputPath = path.join(buildPath, slug, "index.html");
   }
-
-  ensureFileSync(outputPath);
 
   const pageHtml = slug === INDEX_FILE
     ? await buildIndex(page, pages.filter((p) => p !== page))
     : await buildPage(page, pages.filter((p) => p !== page));
 
   if (typeof pageHtml === "string") {
+    ensureFileSync(outputPath);
     Deno.writeTextFileSync(outputPath, pageHtml);
   }
 }
 
-// /* Step 5: Build additional asset files */
+/* Step 4: Copy additional static files */
 
-for (const path of staticPaths) {
-  const relPath = relative(contentPath, path);
-  const outputPath = join(buildPath, dirname(relPath), basename(relPath));
+for (const p of staticPaths) {
+  const relPath = path.relative(contentPath, p);
+  const outputPath = path.join(
+    buildPath,
+    path.dirname(relPath),
+    path.basename(relPath),
+  );
 
-  ensureDirSync(dirname(outputPath));
-  console.log(relPath, outputPath);
-
-  Deno.copyFileSync(path, outputPath);
+  ensureDirSync(path.dirname(outputPath));
+  Deno.copyFileSync(p, outputPath);
 }
-
-// Deno.writeTextFileSync(`${buildPath}/styles.css`, styles ? styles : "");
-// Deno.writeTextFileSync(`${buildPath}/favicon.svg`, getFaviconSvg(favicon));
