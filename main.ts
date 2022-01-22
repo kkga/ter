@@ -2,6 +2,7 @@
 
 import {
   basename,
+  dateFormat,
   dirname,
   ensureDirSync,
   ensureFileSync,
@@ -13,6 +14,7 @@ import {
   slugify,
   walkSync,
 } from "./deps.ts";
+
 import { render } from "./render.ts";
 import { buildIndex, buildPage } from "./build.ts";
 
@@ -28,16 +30,28 @@ export interface Heading {
   slug: string;
 }
 
+interface Link {
+  slug: string;
+  title: string;
+  description: string;
+  readableDate: string | null;
+  tags: Array<string>;
+}
+
 export interface Page {
   path: string;
   slug: string;
   attributes: unknown;
   title: string;
+  description: string;
+  date: Date | null;
+  readableDate: string | null;
+  tags: Array<string>;
   headings: Array<Heading>;
   body: string;
   html: string;
   links: Array<string>;
-  backlinks: Array<{ title: string | undefined; slug: string }>;
+  backlinks: Array<Link>;
 }
 
 const pages: Array<Page> = [];
@@ -84,6 +98,25 @@ const getTitleFromAttrs = (attrs: unknown): string | undefined => {
   }
 };
 
+const getDescriptionFromAttrs = (attrs: unknown): string | undefined => {
+  if (
+    typeof attrs === "object" && hasOwnProperty(attrs, "description") &&
+    typeof attrs.description === "string"
+  ) {
+    return attrs.description;
+  }
+};
+
+const getTagsFromAttrs = (attrs: unknown): Array<string> => {
+  if (
+    typeof attrs === "object" && hasOwnProperty(attrs, "tags") &&
+    Array.isArray(attrs.tags)
+  ) {
+    return attrs.tags;
+  }
+  return [];
+};
+
 const getTitleFromHeadings = (headings: Array<Heading>): string | undefined => {
   for (const h of headings) {
     if (h.level === 1) {
@@ -93,24 +126,34 @@ const getTitleFromHeadings = (headings: Array<Heading>): string | undefined => {
 };
 
 for (const path of paths) {
+  const file = await Deno.open(path);
   const content = decoder.decode(Deno.readFileSync(path));
   const { attributes, body } = frontMatter(content);
   const [html, links, headings] = render(body);
   const relativePath = relative(contentPath, path);
-  console.log(relativePath);
   const slug = normalize(
     dirname(relativePath) + "/" +
       slugify(basename(relativePath).replace(/\.md$/i, "")),
   );
-  const backlinks: Array<{ title: string; slug: string }> = [];
+  const backlinks: Array<Link> = [];
   const title: string = getTitleFromAttrs(attributes) ||
     getTitleFromHeadings(headings) || slug;
+  const description = getDescriptionFromAttrs(attributes) || "";
+  const tags = getTagsFromAttrs(attributes);
+  const date = Deno.fstatSync(file.rid).mtime;
+  const readableDate = date ? dateFormat(date, "dd-MM-yyyy") : null;
+
+  file.close();
 
   pages.push({
     path: relativePath,
     slug,
     attributes,
     title,
+    description,
+    date,
+    readableDate,
+    tags,
     headings,
     body,
     html,
@@ -127,8 +170,19 @@ for (const outPage of pages) {
     pages.forEach((inPage) => {
       if (links.includes(inPage.path)) {
         const slug = outPage.slug === INDEX_FILE ? "" : outPage.slug;
-        const title = outPage.slug === INDEX_FILE ? "index" : outPage.title;
-        inPage.backlinks.push({ title, slug });
+        const readableDate = outPage.date
+          ? dateFormat(outPage.date, "dd-MM-yyyy")
+          : null;
+
+        const backlink: Link = {
+          slug,
+          title: outPage.title,
+          tags: outPage.tags,
+          readableDate,
+          description: outPage.description,
+        };
+
+        inPage.backlinks.push(backlink);
       }
     });
   }
@@ -151,7 +205,7 @@ for (const page of pages) {
 
   const pageHtml = slug === INDEX_FILE
     ? await buildIndex(page, pages.filter((p) => p !== page))
-    : await buildPage(page);
+    : await buildPage(page, pages.filter((p) => p !== page));
 
   if (typeof pageHtml === "string") {
     Deno.writeTextFileSync(outputPath, pageHtml);

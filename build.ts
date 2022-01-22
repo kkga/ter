@@ -1,4 +1,4 @@
-import { etaConfigure, etaRenderFile } from "./deps.ts";
+import { dateFormat, etaConfigure, etaRenderFile, join } from "./deps.ts";
 import { Page } from "./main.ts";
 
 const viewPath = `${Deno.cwd()}/_views/`;
@@ -14,9 +14,40 @@ etaConfigure({
 // You could also write renderFile("template.eta"),
 // renderFile("/template"), etc.
 
-export async function buildPage(page: Page): Promise<string | void> {
-  const { title, html: body, backlinks } = page;
-  const result = await etaRenderFile("./page", { title, body, backlinks });
+interface Breadcrumb {
+  title: string;
+  path: string;
+}
+
+function generateBreadcrumbs(slug: string): Array<Breadcrumb> {
+  const chunks = slug.split("/");
+
+  const breadcrumbs = chunks.map((chunk, index) => {
+    const title = chunk;
+    const path = join(...chunks.slice(0, index + 1));
+    return {
+      title,
+      path,
+    };
+  });
+
+  return [{ title: "home", path: "" }, ...breadcrumbs];
+}
+
+export async function buildPage(
+  page: Page,
+  pages: Array<Page>,
+): Promise<string | void> {
+  const { title, description, readableDate, slug, html: body, backlinks } =
+    page;
+  const breadcrumbs = generateBreadcrumbs(slug);
+  const result = await etaRenderFile("./page", {
+    title,
+    readableDate,
+    breadcrumbs,
+    body,
+    backlinks,
+  });
 
   return result;
 }

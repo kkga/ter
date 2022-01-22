@@ -1,16 +1,35 @@
 # Frontmatter
 
 Minmi extracts [YAML front matter](https://jekyllrb.com/docs/front-matter/)
-metadata from markdown files.
+delimited by `---` from markdown files.
 
-## Predefined variables
+Here's an example:
 
-Some variables are utilized when building a site.
+```
+---
+title: My page
+description: Here's my description
+date: 2022-01-29
+property: value
+tags:
+ - one
+ - two
+ - three
+---
 
-- `title` -- used for page title, if exists
-- `date` used for date, if exists
-- `tags` used to display a list of tags on the index page
+## My content
+```
 
-## Custom variables
+## Special properties
 
-Custom variables can be used to customize a template.
+Some properties are utilized when building a site.
+
+- `title` -- used for page title, see [titles](titles.md)
+- `description` -- used for page description
+- `date` -- used for date, if exists
+- `tags` -- used to display a list of tags on the index page
+
+## Other properties
+
+All other properties are ignored but can be used in
+[custom templates](customize/templates.md).

@@ -2,11 +2,18 @@
 <html lang="en">
   <head>
     <title><% if (it.title) { %><%= it.title %><% } %></title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spcss@0.8.0">
+    <link href="https://unpkg.com/@primer/css@^16.0.0/dist/primer.css" rel="stylesheet" />
     <link rel="icon" href="/favicon.svg">
+    <style>
+    	body {
+    		box-sizing: border-box;
+    		min-width: 80ch;
+    		max-width: 20ch;
+    		margin: 0 auto;
+    	}
+    </style>
   </head>
-
-  <body>
+  <body class="py-4">
     <main>
       <%~ it.body %>
     </main>

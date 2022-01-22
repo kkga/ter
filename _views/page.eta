@@ -1,19 +1,10 @@
 <% layout('./layout') %>
 
-<!--<% if (it.title) { %>
-<header>
-  <h1 id='title'><%= it.title %></h1>
-</header>
-<% } %>
+<%~ includeFile('./meta-header', {breadcrumbs: it.breadcrumbs, readableDate: it.readableDate }) %>
 
--->
-
-<article>
+<article class="markdown-body">
   <%~ it.body %>
 </article>
 
 <hr />
-
-<%~ includeFile('./backlinks', {backlinks: it.backlinks}) %>
-
-<!-- vim:ft=html -->
+<%~ includeFile('./link-list', {links: it.backlinks, title: "Backlinks"}) %>

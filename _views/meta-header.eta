@@ -1,0 +1,11 @@
+<header class="mb-4">
+
+  <div class="d-flex flex-justify-between flex-items-baseline">
+    <%~ includeFile('./breadcrumbs.eta', { breadcrumbs: it.breadcrumbs }) %>
+
+    <% if (it.readableDate) { %>
+    <div><%= it.readableDate %></div>
+    <% } %>
+  </div>
+
+</header>

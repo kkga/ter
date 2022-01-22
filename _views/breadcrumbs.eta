@@ -1,0 +1,11 @@
+<nav aria-label="Breadcrumb">
+  <ol>
+    <% if (it.breadcrumbs.length > 0) {%>
+      <% it.breadcrumbs.forEach((crumb, index) => { %>
+      <li class="breadcrumb-item <%= index == it.breadcrumbs.length-1 ? "breadcrumb-item-selected" : "" %>">
+        <a href="/<%= crumb.path %>" <%= index == it.breadcrumbs.length-1 ? "aria-current=page" : "" %>><%= crumb.title %></a>
+      </li>
+      <% }) %>
+    <% } %>
+  </ol>
+</nav>

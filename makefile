@@ -9,10 +9,10 @@ build: clean
 	deno run --allow-net --allow-read=./ --allow-write --unstable main.ts docs
 
 watch: clean
-	deno run --allow-net --allow-read=./ --allow-write --unstable --watch main.ts docs
+	deno run --allow-net --allow-read=./ --allow-write --unstable --watch=docs,_views main.ts docs
 
 serve:
-	deno run --allow-net --allow-read=./ --allow-env --watch=_site/**/* https://deno.land/std/http/file_server.ts _site
+	deno run --quiet --allow-net --allow-read=./ --allow-env --unstable --watch=docs,_views https://deno.land/std/http/file_server.ts _site
 
 dev: watch serve
 
