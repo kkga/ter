@@ -3,8 +3,11 @@
 import {
   basename,
   dirname,
+  ensureDirSync,
   ensureFileSync,
+  extname,
   frontMatter,
+  join,
   normalize,
   relative,
   slugify,
@@ -38,6 +41,7 @@ export interface Page {
 }
 
 const pages: Array<Page> = [];
+const staticPaths: Array<string> = [];
 
 /* -------------------------- */
 
@@ -52,11 +56,12 @@ const paths: Array<string> = [];
 
 for (
   const entry of walkSync(contentPath, {
-    exts: ["md"],
     includeDirs: false,
   })
 ) {
-  paths.push(entry.path);
+  extname(entry.path) === ".md"
+    ? paths.push(entry.path)
+    : staticPaths.push(entry.path);
 }
 
 /* Step 2: Construct page data */
@@ -92,7 +97,7 @@ for (const path of paths) {
   const { attributes, body } = frontMatter(content);
   const [html, links, headings] = render(body);
   const relativePath = relative(contentPath, path);
-  console.log(dirname(relativePath));
+  console.log(relativePath);
   const slug = normalize(
     dirname(relativePath) + "/" +
       slugify(basename(relativePath).replace(/\.md$/i, "")),
@@ -128,7 +133,6 @@ for (const outPage of pages) {
     });
   }
 }
-console.log(pages);
 
 /* Step 4: Build pages into .html files with appropriate paths */
 
@@ -138,15 +142,15 @@ for (const page of pages) {
   let outputPath: string;
 
   if (slug === INDEX_FILE) {
-    outputPath = `${buildPath}/index.html`;
+    outputPath = join(buildPath, "index.html");
   } else {
-    outputPath = `${buildPath}/${slug}/index.html`;
+    outputPath = join(buildPath, slug, "index.html");
   }
 
   ensureFileSync(outputPath);
 
   const pageHtml = slug === INDEX_FILE
-    ? await buildIndex(page, pages)
+    ? await buildIndex(page, pages.filter((p) => p !== page))
     : await buildPage(page);
 
   if (typeof pageHtml === "string") {
@@ -155,5 +159,16 @@ for (const page of pages) {
 }
 
 // /* Step 5: Build additional asset files */
+
+for (const path of staticPaths) {
+  const relPath = relative(contentPath, path);
+  const outputPath = join(buildPath, dirname(relPath), basename(relPath));
+
+  ensureDirSync(dirname(outputPath));
+  console.log(relPath, outputPath);
+
+  Deno.copyFileSync(path, outputPath);
+}
+
 // Deno.writeTextFileSync(`${buildPath}/styles.css`, styles ? styles : "");
 // Deno.writeTextFileSync(`${buildPath}/favicon.svg`, getFaviconSvg(favicon));

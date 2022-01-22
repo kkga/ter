@@ -8,8 +8,11 @@ export {
 } from "https://deno.land/x/eta@v1.12.3/mod.ts";
 
 export {
+  ensureDirSync,
   ensureFileSync,
   walkSync,
 } from "https://deno.land/std@0.121.0/fs/mod.ts";
+
+export * as a from "https://deno.land/x/afr@v0.6.1/afr.ts";
 
 export * from "https://deno.land/std/path/mod.ts";

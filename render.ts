@@ -25,9 +25,9 @@ export function render(text: string): [string, Array<string>, Array<Heading>] {
       if (href.endsWith(".md")) {
         links.push(href);
         const link = "/" + href.replace(/\.md$/i, "");
-        return `<a href="${link}" title="${title}">${text}</a>`;
+        return `<a href="${link}" title="${title || ""}">${text}</a>`;
       }
-      return `<a href="${href}" title="${title}" rel="noopener noreferrer">${text}</a>`;
+      return `<a href="${href}" title="${title || ""}">${text}</a>`;
     },
   };
 

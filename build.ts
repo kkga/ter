@@ -1,7 +1,7 @@
 import { etaConfigure, etaRenderFile } from "./deps.ts";
 import { Page } from "./main.ts";
 
-const viewPath = `${Deno.cwd()}/views/`;
+const viewPath = `${Deno.cwd()}/_views/`;
 
 // Set Eta's configuration
 etaConfigure({
@@ -23,7 +23,7 @@ export async function buildPage(page: Page): Promise<string | void> {
 
 export async function buildIndex(
   page: Page,
-  pages: Array<Page>,
+  pages: Page[],
 ): Promise<string | void> {
   const { title, html: body, backlinks } = page;
   const result = await etaRenderFile("./index", {
