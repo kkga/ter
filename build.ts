@@ -15,7 +15,6 @@ interface Breadcrumb {
 }
 
 interface IndexItem {
-  dirname: string;
   url: string;
   title: string;
   isIndexPage: boolean;
@@ -27,15 +26,15 @@ function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
 
   for (const p of pages) {
     const readableDate = p.date ? dateFormat(p.date, "dd-MM-yyyy") : null;
-    const dirname = path.dirname(p.path) === "." ? "" : path.dirname(p.path);
     items.push({
-      dirname,
       url: path.join("/", path.dirname(p.path), p.slug),
       title: p.title,
       readableDate,
       isIndexPage: p.isIndex,
     });
   }
+
+  items.sort((a, b) => a.isIndexPage ? -1 : 1);
 
   return items;
 }

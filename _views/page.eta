@@ -11,5 +11,5 @@
 <% } %>
 
 <% if (it.backLinks?.length > 0) { %>
-<%~ includeFile('./link-list', {links: it.backLinks, title: "Backlinks"}) %>
+<%~ includeFile('./link-list', {links: it.backLinks, title: "-> Backlinks"}) %>
 <% } %>

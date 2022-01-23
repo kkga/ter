@@ -56,7 +56,6 @@ const hasDotOrUnderscorePrefix = (path: string): boolean => {
   const pathChunks = path.split("/");
   for (const chunk of pathChunks) {
     if (reDotOrUnderscorePrefix.test(chunk)) {
-      console.log("skip", path);
       return true;
     }
   }
@@ -229,8 +228,13 @@ function getBackLinkedPages(allPages: Array<Page>, inPage: Page): Array<Page> {
 
 function getChildPages(allPages: Array<Page>, current: Page): Array<Page> {
   const pages = allPages.filter((p) => {
-    const relative = path.relative(current.path, p.path);
-    return relative && !relative.startsWith("..") && !path.isAbsolute(relative);
+    const curDir = current.isIndex
+      ? path.basename(
+        path.dirname(path.join(contentPath, current.path, "index")),
+      )
+      : path.basename(path.dirname(path.join(contentPath, current.path)));
+    const pDir = path.basename(path.dirname(path.join(contentPath, p.path)));
+    return curDir === pDir;
   });
 
   return pages;
@@ -310,7 +314,7 @@ for (const entry of fs.walkSync(STATIC_PATH, { includeDirs: false })) {
 }
 
 const endDate = new Date();
-var buildSeconds = (endDate.getTime() - startDate.getTime()) / 1000;
+const buildSeconds = (endDate.getTime() - startDate.getTime()) / 1000;
 
 console.log(
   `\nResult:

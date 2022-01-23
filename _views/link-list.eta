@@ -2,15 +2,18 @@
   <h3><%= it.title %></h3>
 
   <ul>
-    <% it.links.forEach(({ dirname, url, title, readableDate, isIndexPage }, index) => { %>
+    <% it.links.forEach(({ url, title, readableDate, isIndexPage }, index) => { %>
     <li>
         <div>
+
         <% if (isIndexPage) { %>
         <span>❖ </span>
+        <strong><a href="<%= url %>"><%= title %><% if (isIndexPage) { %>/<% } %></a></strong>
         <% } else { %>
         <span>◇ </span>
+        <a href="<%= url %>"><%= title %><% if (isIndexPage) { %>/<% } %></a>
         <% } %>
-        <% if (dirname) { %><%= dirname %>/<% } %><a href="<%= url %>"><%= title %><% if (isIndexPage) { %>/<% } %></a>
+
         </div>
 
         <% if (readableDate) { %>
