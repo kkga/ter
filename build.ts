@@ -2,6 +2,10 @@ import { dateFormat, etaConfigure, etaRenderFile, path } from "./deps.ts";
 import { Page } from "./main.ts";
 
 const viewPath = `${Deno.cwd()}/_views/`;
+etaConfigure({
+  views: viewPath,
+  autotrim: true,
+});
 
 interface Breadcrumb {
   title: string;
@@ -9,35 +13,25 @@ interface Breadcrumb {
 }
 
 interface IndexItem {
+  dirname: string;
   title: string;
   readableDate: string | null;
   slug: string;
 }
 
-etaConfigure({
-  views: viewPath,
-});
-
-function generateIndexItems(
-  paths: Array<string>,
-  pages: Array<Page>,
-): Array<IndexItem> {
+function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
   const items: Array<IndexItem> = [];
 
-  for (const path of paths) {
-    const page = pages.find((p) => p.path === path);
+  for (const p of pages) {
+    const readableDate = p.date ? dateFormat(p.date, "dd-MM-yyyy") : null;
+    const dir = path.dirname(p.slug);
 
-    if (typeof page === "object") {
-      const readableDate = page.date
-        ? dateFormat(page.date, "dd-MM-yyyy")
-        : null;
-
-      items.push({
-        title: page.title,
-        slug: page.slug === "index" ? "" : page.slug,
-        readableDate,
-      });
-    }
+    items.push({
+      dirname: dir !== "." ? dir : "",
+      title: p.title,
+      slug: p.slug === "index" ? "" : p.slug,
+      readableDate,
+    });
   }
 
   return items;
@@ -60,33 +54,21 @@ function generateBreadcrumbs(slug: string): Array<Breadcrumb> {
 
 export async function buildPage(
   page: Page,
-  pages: Array<Page>,
+  childPages: Array<Page>,
+  backLinkedPages: Array<Page>,
 ): Promise<string | void> {
-  const { title, date, slug, html: body, backlinks } = page;
+  const { title, date, slug, html: body } = page;
   const breadcrumbs = generateBreadcrumbs(slug);
-  const backlinkIndexItems = generateIndexItems(backlinks, pages);
+  const backlinkIndexItems = generateIndexItems(backLinkedPages);
+  const childIndexItems = generateIndexItems(childPages);
   const readableDate = date ? dateFormat(date, "dd-MM-yyyy") : null;
   const result = await etaRenderFile("./page", {
-    title,
-    readableDate,
     breadcrumbs,
-    body,
-    backlinks: backlinkIndexItems,
-  });
-
-  return result;
-}
-
-export async function buildIndex(
-  page: Page,
-  pages: Page[],
-): Promise<string | void> {
-  const { title, html: body, backlinks } = page;
-  const result = await etaRenderFile("./index", {
+    readableDate,
     title,
     body,
-    backlinks,
-    pages,
+    indexLinks: childIndexItems,
+    backLinks: backlinkIndexItems,
   });
 
   return result;

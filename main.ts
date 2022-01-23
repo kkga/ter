@@ -10,11 +10,11 @@ import {
 } from "./deps.ts";
 
 import { render } from "./render.ts";
-import { buildIndex, buildPage } from "./build.ts";
+import { buildPage } from "./build.ts";
 
 /* Constants */
 
-const INDEX_FILE = "index";
+// const INDEX_FILE = "index";
 
 /* Interfaces and Globals */
 
@@ -25,26 +25,27 @@ export interface Heading {
 }
 
 export interface Page {
+  isIndex: boolean;
   slug: string;
   path: string;
-  attributes: unknown;
   title: string;
-  description: string;
+  description?: string;
+  attributes?: unknown;
   date: Date | null;
-  tags: Array<string>;
-  headings: Array<Heading>;
-  body: string;
-  html: string;
-  links: Array<string>;
-  backlinks: Array<string>;
+  tags?: Array<string>;
+  headings?: Array<Heading>;
+  body?: string;
+  html?: string;
+  links?: Array<string>;
 }
 
 const pages: Array<Page> = [];
 const staticPaths: Array<string> = [];
+const decoder = new TextDecoder("utf-8");
 
 /* -------------------------- */
 
-/* Step 0: Grab CLI arguments */
+/* Step 0.2: Grab CLI arguments */
 
 const contentPath = Deno.args[0] || ".";
 const buildPath = Deno.args[1] || "_site";
@@ -108,10 +109,9 @@ const getTitleFromHeadings = (headings: Array<Heading>): string | undefined => {
   }
 };
 
-const decoder = new TextDecoder("utf-8");
-
 for (const p of paths) {
   const file = await Deno.open(p);
+  // TODO: don't open/read the file twice
   const content = decoder.decode(Deno.readFileSync(p));
   const { attributes, body } = frontMatter(content);
   const [html, links, headings] = render(body);
@@ -120,12 +120,12 @@ for (const p of paths) {
     path.dirname(relativePath),
     slugify(path.basename(relativePath).replace(/\.md$/i, "")),
   );
-  const backlinks: Array<string> = [];
   const title: string = getTitleFromAttrs(attributes) ||
     getTitleFromHeadings(headings) || slug;
   const description = getDescriptionFromAttrs(attributes) || "";
   const tags = getTagsFromAttrs(attributes);
   const date = Deno.fstatSync(file.rid).mtime;
+  const isIndex = path.basename(p) === "index.md";
 
   file.close();
 
@@ -135,54 +135,104 @@ for (const p of paths) {
     attributes,
     title,
     description,
+    isIndex,
     date,
     tags,
     headings,
     body,
     html,
     links,
-    backlinks,
   });
-}
-
-// Populate backlinks
-for (const outPage of pages) {
-  const { links } = outPage;
-
-  if (links.length > 0) {
-    pages.forEach((inPage) => {
-      if (links.includes(inPage.path)) {
-        // const slug = outPage.slug === INDEX_FILE ? "" : outPage.slug;
-        inPage.backlinks.push(outPage.path);
-      }
-    });
-  }
 }
 
 /* Step 3: Build pages into .html files with appropriate paths */
 
-for (const page of pages) {
-  const { slug } = page;
+function getBackLinkedPages(allPages: Array<Page>, inPage: Page): Array<Page> {
+  const bl: Array<Page> = [];
 
-  let outputPath: string;
+  for (const outPage of allPages) {
+    const { links } = outPage;
 
-  if (slug === INDEX_FILE) {
-    outputPath = path.join(buildPath, "index.html");
-  } else {
-    outputPath = path.join(buildPath, slug, "index.html");
+    if (links && links.length > 0) {
+      if (links.includes(inPage.path)) {
+        // const slug = outPage.slug === INDEX_FILE ? "" : outPage.slug;
+        bl.push(outPage);
+      }
+    }
   }
 
-  const pageHtml = slug === INDEX_FILE
-    ? await buildIndex(page, pages.filter((p) => p !== page))
-    : await buildPage(page, pages.filter((p) => p !== page));
+  return bl;
+}
 
-  if (typeof pageHtml === "string") {
+for (const page of pages) {
+  if (page.isIndex) {
+    continue;
+  }
+  const { slug } = page;
+  const outputPath = path.join(buildPath, slug, "index.html");
+  const html = await buildPage(
+    page,
+    [],
+    getBackLinkedPages(pages, page),
+  );
+
+  if (typeof html === "string") {
     ensureFileSync(outputPath);
-    Deno.writeTextFileSync(outputPath, pageHtml);
+    Deno.writeTextFileSync(outputPath, html);
   }
 }
 
-/* Step 4: Copy additional static files */
+/* Step 4: Build index pages for directories */
+
+function existingIndexPage(pages: Array<Page>, dir: string): Page | null {
+  for (const page of pages) {
+    if (
+      path.basename(page.path) === "index.md" && path.dirname(page.path) === dir
+    ) {
+      return page;
+    }
+  }
+  return null;
+}
+
+const dirs: Set<string> = new Set();
+
+pages.map((page) => {
+  const dir = path.normalize(path.dirname(page.path));
+  dirs.add(dir);
+});
+
+for (const dir of dirs) {
+  const dirPages = pages.filter((page) =>
+    path.dirname(page.path).startsWith(dir)
+  );
+  // const dirPages = pages;
+  const indexPage: Page = existingIndexPage(pages, dir) || {
+    slug: dir,
+    path: dir,
+    title: dir,
+    date: new Date(),
+    isIndex: true,
+  };
+
+  const outputPath = path.join(buildPath, dir, "index.html");
+  const html = await buildPage(
+    indexPage,
+    dirPages,
+    [],
+  );
+
+  console.log("Building index for:", dir, " at:", outputPath);
+
+  if (typeof html === "string") {
+    ensureFileSync(outputPath);
+    Deno.writeTextFileSync(outputPath, html);
+  } else {
+    throw new Error("can not build dir index");
+  }
+}
+
+/* Step 5: Copy additional static files */
 
 for (const p of staticPaths) {
   const relPath = path.relative(contentPath, p);

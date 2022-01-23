@@ -4,7 +4,7 @@
     <%~ includeFile('./breadcrumbs.eta', { breadcrumbs: it.breadcrumbs }) %>
 
     <% if (it.readableDate) { %>
-    <div><%= it.readableDate %></div>
+    <div class="text-small text-mono">Edited: <%= it.readableDate %></div>
     <% } %>
   </div>
 

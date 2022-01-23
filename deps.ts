@@ -14,4 +14,5 @@ export {
 } from "https://deno.land/std@0.121.0/fs/mod.ts";
 export { format as dateFormat } from "https://deno.land/std@0.122.0/datetime/mod.ts";
 
+export * as yaml from "https://deno.land/std/encoding/yaml.ts";
 export * as path from "https://deno.land/std/path/mod.ts";

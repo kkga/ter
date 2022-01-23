@@ -1,11 +1,18 @@
-<% if (it.links.length > 0) {%>
+<% if (it.links.length > 0) { %>
 <div class="Box Box--condensed my-4">
+
   <div class="Box-header"><h3 class="Box-title"><%= it.title %></h3></div>
+
   <ul>
+
     <% it.links.forEach(link => { %>
     <li class="Box-row">
       <div class="d-flex flex-justify-between flex-items-baseline">
         <div>
+          <% if (link.dirname) { %>
+          <span class="mr-1"><%= link.dirname %>/</span>
+          <% } %>
+
           <strong><a class="Box-row-link" href="/<%= link.slug %>"><%= link.title %></a></strong>
           <div class="text-small color-fg-subtle"><%= link.description %></div>
         </div>
@@ -18,7 +25,8 @@
       </div>
     </li>
     <% }) %>
+
   </ul>
+
 </div>
 <% } %>
-<!-- vim:ft=html -->
