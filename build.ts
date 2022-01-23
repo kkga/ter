@@ -14,9 +14,9 @@ interface Breadcrumb {
 
 interface IndexItem {
   dirname: string;
+  url: string;
   title: string;
   readableDate: string | null;
-  slug: string;
 }
 
 function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
@@ -24,12 +24,12 @@ function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
 
   for (const p of pages) {
     const readableDate = p.date ? dateFormat(p.date, "dd-MM-yyyy") : null;
-    const dir = path.dirname(p.slug);
+    const dir = path.dirname(p.path);
 
     items.push({
-      dirname: dir !== "." ? dir : "",
+      dirname: path.dirname(p.path),
+      url: path.join("/", path.dirname(p.path), p.slug),
       title: p.title,
-      slug: p.slug === "index" ? "" : p.slug,
       readableDate,
     });
   }

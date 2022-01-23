@@ -13,7 +13,7 @@
           <span class="mr-1"><%= link.dirname %>/</span>
           <% } %>
 
-          <strong><a class="Box-row-link" href="/<%= link.slug %>"><%= link.title %></a></strong>
+          <strong><a class="Box-row-link" href="<%= link.url %>"><%= link.title %></a></strong>
           <div class="text-small color-fg-subtle"><%= link.description %></div>
         </div>
 

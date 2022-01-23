@@ -7,11 +7,7 @@ export {
   renderFile as etaRenderFile,
 } from "https://deno.land/x/eta@v1.12.3/mod.ts";
 
-export {
-  ensureDirSync,
-  ensureFileSync,
-  walkSync,
-} from "https://deno.land/std@0.121.0/fs/mod.ts";
+export * as fs from "https://deno.land/std@0.121.0/fs/mod.ts";
 export { format as dateFormat } from "https://deno.land/std@0.122.0/datetime/mod.ts";
 
 export * as yaml from "https://deno.land/std/encoding/yaml.ts";

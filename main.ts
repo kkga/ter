@@ -1,13 +1,6 @@
 /* Dependencies */
 
-import {
-  ensureDirSync,
-  ensureFileSync,
-  frontMatter,
-  path,
-  slugify,
-  walkSync,
-} from "./deps.ts";
+import { frontMatter, fs, path, slugify } from "./deps.ts";
 
 import { render } from "./render.ts";
 import { buildPage } from "./build.ts";
@@ -26,12 +19,13 @@ export interface Heading {
 
 export interface Page {
   isIndex: boolean;
-  slug: string;
   path: string;
+  name: string;
   title: string;
+  slug: string;
   description?: string;
   attributes?: unknown;
-  date: Date | null;
+  date?: Date | null;
   tags?: Array<string>;
   headings?: Array<Heading>;
   body?: string;
@@ -51,18 +45,6 @@ const contentPath = Deno.args[0] || ".";
 const buildPath = Deno.args[1] || "_site";
 
 /* Step 1: Read files */
-
-const paths: Array<string> = [];
-
-for (
-  const entry of walkSync(contentPath, {
-    includeDirs: false,
-  })
-) {
-  path.extname(entry.path) === ".md"
-    ? paths.push(entry.path)
-    : staticPaths.push(entry.path);
-}
 
 /* Step 2: Construct page data */
 
@@ -109,41 +91,105 @@ const getTitleFromHeadings = (headings: Array<Heading>): string | undefined => {
   }
 };
 
-for (const p of paths) {
-  const file = await Deno.open(p);
-  // TODO: don't open/read the file twice
-  const content = decoder.decode(Deno.readFileSync(p));
-  const { attributes, body } = frontMatter(content);
-  const [html, links, headings] = render(body);
-  const relativePath = path.relative(contentPath, p);
-  const slug = path.join(
-    path.dirname(relativePath),
-    slugify(path.basename(relativePath).replace(/\.md$/i, "")),
-  );
-  const title: string = getTitleFromAttrs(attributes) ||
-    getTitleFromHeadings(headings) || slug;
-  const description = getDescriptionFromAttrs(attributes) || "";
-  const tags = getTagsFromAttrs(attributes);
-  const date = Deno.fstatSync(file.rid).mtime;
-  const isIndex = path.basename(p) === "index.md";
-
-  file.close();
-
-  pages.push({
-    path: relativePath,
-    slug,
-    attributes,
-    title,
-    description,
-    isIndex,
-    date,
-    tags,
-    headings,
-    body,
-    html,
-    links,
-  });
+const walkEntries: Array<fs.WalkEntry> = [];
+for (const entry of fs.walkSync(contentPath)) {
+  walkEntries.push(entry);
 }
+
+for (const entry of walkEntries) {
+  if (entry.isFile && path.extname(entry.name) !== ".md") {
+    staticPaths.push(entry.path);
+    continue;
+  }
+
+  if (entry.isFile && entry.name !== "index.md") {
+    const file = await Deno.open(entry.path);
+    const relPath = path.relative(contentPath, entry.path);
+    const content = decoder.decode(Deno.readFileSync(entry.path));
+    const { attributes, body } = frontMatter(content);
+    const [html, links, headings] = render(body);
+    const slug = slugify(entry.name.replace(/\.md$/i, ""));
+    const title = getTitleFromAttrs(attributes) ||
+      getTitleFromHeadings(headings) || entry.name;
+    const description = getDescriptionFromAttrs(attributes) || "";
+    const tags = getTagsFromAttrs(attributes);
+    const date = Deno.fstatSync(file.rid).mtime;
+    const isIndex = false;
+    file.close();
+
+    const contentPage: Page = {
+      name: entry.name,
+      path: relPath,
+      attributes,
+      body,
+      html,
+      links,
+      headings,
+      title,
+      slug,
+      description,
+      tags,
+      date,
+      isIndex,
+    };
+
+    pages.push(contentPage);
+  } else if (entry.isDirectory) {
+    const findIndexEntryPath = (dirPath: string): string | undefined => {
+      for (const entry of walkEntries) {
+        if (
+          entry.isFile && entry.name === "index.md" &&
+          path.dirname(entry.path) === dirPath
+        ) {
+          return entry.path;
+        }
+      }
+    };
+
+    const relPath = path.relative(contentPath, entry.path);
+    const slug = relPath === "" ? "" : slugify(entry.name);
+    const isIndex = true;
+    const indexEntry = findIndexEntryPath(entry.path);
+    let indexPage: Page;
+
+    if (indexEntry) {
+      const content = decoder.decode(Deno.readFileSync(indexEntry));
+      const { attributes, body } = frontMatter(content);
+      const [html, links, headings] = render(body);
+      const title = getTitleFromAttrs(attributes) ||
+        getTitleFromHeadings(headings) || entry.name;
+      const description = getDescriptionFromAttrs(attributes) || "";
+      const tags = getTagsFromAttrs(attributes);
+
+      indexPage = {
+        name: entry.name,
+        path: relPath,
+        attributes,
+        body,
+        html,
+        links,
+        headings,
+        title,
+        slug,
+        description,
+        tags,
+        isIndex,
+      };
+    } else {
+      indexPage = {
+        name: entry.name,
+        path: relPath,
+        title: entry.name,
+        slug,
+        isIndex,
+      };
+    }
+
+    pages.push(indexPage);
+  }
+}
+
+// pages.forEach((p) => console.log(p.slug));
 
 /* Step 3: Build pages into .html files with appropriate paths */
 
@@ -155,7 +201,6 @@ function getBackLinkedPages(allPages: Array<Page>, inPage: Page): Array<Page> {
 
     if (links && links.length > 0) {
       if (links.includes(inPage.path)) {
-        // const slug = outPage.slug === INDEX_FILE ? "" : outPage.slug;
         bl.push(outPage);
       }
     }
@@ -164,71 +209,33 @@ function getBackLinkedPages(allPages: Array<Page>, inPage: Page): Array<Page> {
   return bl;
 }
 
+function getChildPages(allPages: Array<Page>, current: Page): Array<Page> {
+  const pages = allPages.filter((p) => {
+    const relative = path.relative(current.path, p.path);
+    return relative && !relative.startsWith("..") && !path.isAbsolute(relative);
+  });
+
+  return pages;
+}
+
 for (const page of pages) {
-  if (page.isIndex) {
-    continue;
-  }
-  const { slug } = page;
-  const outputPath = path.join(buildPath, slug, "index.html");
+  const outputPath = path.join(
+    buildPath,
+    path.dirname(page.path),
+    page.slug,
+    "index.html",
+  );
+  console.log(outputPath);
+
   const html = await buildPage(
     page,
-    [],
+    page.isIndex ? getChildPages(pages, page) : [],
     getBackLinkedPages(pages, page),
   );
 
   if (typeof html === "string") {
-    ensureFileSync(outputPath);
+    fs.ensureFileSync(outputPath);
     Deno.writeTextFileSync(outputPath, html);
-  }
-}
-
-/* Step 4: Build index pages for directories */
-
-function existingIndexPage(pages: Array<Page>, dir: string): Page | null {
-  for (const page of pages) {
-    if (
-      path.basename(page.path) === "index.md" && path.dirname(page.path) === dir
-    ) {
-      return page;
-    }
-  }
-  return null;
-}
-
-const dirs: Set<string> = new Set();
-
-pages.map((page) => {
-  const dir = path.normalize(path.dirname(page.path));
-  dirs.add(dir);
-});
-
-for (const dir of dirs) {
-  const dirPages = pages.filter((page) =>
-    path.dirname(page.path).startsWith(dir)
-  );
-  // const dirPages = pages;
-  const indexPage: Page = existingIndexPage(pages, dir) || {
-    slug: dir,
-    path: dir,
-    title: dir,
-    date: new Date(),
-    isIndex: true,
-  };
-
-  const outputPath = path.join(buildPath, dir, "index.html");
-  const html = await buildPage(
-    indexPage,
-    dirPages,
-    [],
-  );
-
-  console.log("Building index for:", dir, " at:", outputPath);
-
-  if (typeof html === "string") {
-    ensureFileSync(outputPath);
-    Deno.writeTextFileSync(outputPath, html);
-  } else {
-    throw new Error("can not build dir index");
   }
 }
 
@@ -242,6 +249,6 @@ for (const p of staticPaths) {
     path.basename(relPath),
   );
 
-  ensureDirSync(path.dirname(outputPath));
+  fs.ensureDirSync(path.dirname(outputPath));
   Deno.copyFileSync(p, outputPath);
 }
