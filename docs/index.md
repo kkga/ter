@@ -1,10 +1,8 @@
-# Minmi
+# Ter
 
-<img src="_img/dino.png" style="max-width: 320px; float: right" />
+Welcome to Ter demo site!
 
-Welcome to Minmi demo site!
-
-Minmi is a tiny wiki engine with [Zettelkasten](zettelkasten.md) flavor.
+Ter is a tiny wiki engine with [Zettelkasten](zettelkasten.md) flavor.
 
 ## Features
 
