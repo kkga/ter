@@ -225,7 +225,6 @@ for (const page of pages) {
     page.slug,
     "index.html",
   );
-  console.log(outputPath);
 
   const html = await buildPage(
     page,

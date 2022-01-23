@@ -8,8 +8,9 @@ etaConfigure({
 });
 
 interface Breadcrumb {
-  title: string;
-  path: string;
+  slug: string;
+  url: string;
+  current: boolean;
 }
 
 interface IndexItem {
@@ -37,19 +38,34 @@ function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
   return items;
 }
 
-function generateBreadcrumbs(slug: string): Array<Breadcrumb> {
-  const chunks = slug.split("/");
+function generateBreadcrumbs(currentPage: Page): Array<Breadcrumb> {
+  const dirname: string = path.dirname(currentPage.path);
+  const chunks = dirname.split("/").filter((path) => path !== ".");
+  const { slug } = currentPage;
 
-  const breadcrumbs = chunks.map((chunk, index) => {
-    const title = chunk;
-    const filePath = path.join(...chunks.slice(0, index + 1));
+  let breadcrumbs: Array<Breadcrumb> = chunks.map((chunk, index) => {
+    const slug = chunk;
+    const url = path.join("/", ...chunks.slice(0, index + 1));
     return {
-      title,
-      path: filePath,
+      slug,
+      url,
+      current: false,
     };
   });
 
-  return [{ title: "home", path: "" }, ...breadcrumbs];
+  breadcrumbs = [
+    { slug: "index", url: "/", current: false },
+    ...breadcrumbs,
+  ];
+
+  if (slug !== "") {
+    breadcrumbs = [
+      ...breadcrumbs,
+      { slug, url: "", current: true },
+    ];
+  }
+
+  return breadcrumbs;
 }
 
 export async function buildPage(
@@ -58,7 +74,7 @@ export async function buildPage(
   backLinkedPages: Array<Page>,
 ): Promise<string | void> {
   const { title, date, slug, html: body } = page;
-  const breadcrumbs = generateBreadcrumbs(slug);
+  const breadcrumbs = generateBreadcrumbs(page);
   const backlinkIndexItems = generateIndexItems(backLinkedPages);
   const childIndexItems = generateIndexItems(childPages);
   const readableDate = date ? dateFormat(date, "dd-MM-yyyy") : null;
