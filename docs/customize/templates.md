@@ -1,7 +1,3 @@
----
-title: Templates
----
-
 # Templates
 
-Minmi uses [Eta](https://eta.js.org/) templates to build pages.
+Ter uses [Eta](https://eta.js.org/) templates to build pages.

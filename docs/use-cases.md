@@ -1,4 +1,4 @@
-## Use cases
+# Use cases
 
 - A personal Zettelksten/wiki
 - A blog

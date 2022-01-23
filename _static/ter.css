@@ -1,0 +1,561 @@
+/*
+Default stylesheet for Ter: https://github.com/kkga/ter
+Based on: https://github.com/xz/new.css
+*/
+
+@import url("https://rsms.me/inter/inter.css");
+:root {
+  --ter-font-sans: "Inter", sans-serif;
+  --ter-font-mono: "JetBrains Mono", monospace;
+
+  /* Light theme */
+  --nc-tx-1: #000000;
+  --nc-tx-2: #1a1a1a;
+  --nc-tx-3: #444444;
+  --nc-bg-1: #ffffff;
+  --nc-bg-2: #f6f8fa;
+  --nc-bg-3: #e5e7eb;
+  --nc-lk-1: #0070f3;
+  --nc-lk-2: #0366d6;
+  --nc-lk-tx: #ffffff;
+  --nc-ac-1: #79ffe1;
+  --nc-ac-tx: #0c4047;
+
+  /* Dark theme */
+  --nc-d-tx-1: #ffffff;
+  --nc-d-tx-2: #eeeeee;
+  --nc-d-tx-3: #aaaaaa;
+  --nc-d-bg-1: #000000;
+  --nc-d-bg-2: #111111;
+  --nc-d-bg-3: #222222;
+  --nc-d-lk-1: #3291ff;
+  --nc-d-lk-2: #0070f3;
+  --nc-d-lk-tx: #ffffff;
+  --nc-d-ac-1: #7928ca;
+  --nc-d-ac-tx: #ffffff;
+
+  --width-body: 80ch;
+
+  --text-size-xs: 0.79rem;
+  --text-size-sm: 0.89rem;
+  --text-size-md: 1rem;
+  --text-size-lg: 1.13rem;
+  --text-size-xl: 1.27rem;
+  --text-size-2xl: 1.42rem;
+  --text-size-3xl: 1.6rem;
+  --text-size-4xl: 1.8rem;
+  --text-size-5xl: 2.03rem;
+
+  --radius-xs: 4px;
+  --radius-md: 6px;
+}
+
+@supports (font-variation-settings: normal) {
+  :root {
+    --ter-font-sans: "Inter var", sans-serif;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --nc-tx-1: var(--nc-d-tx-1);
+    --nc-tx-2: var(--nc-d-tx-2);
+    --nc-tx-3: var(--nc-d-tx-3);
+    --nc-bg-1: var(--nc-d-bg-1);
+    --nc-bg-2: var(--nc-d-bg-2);
+    --nc-bg-3: var(--nc-d-bg-3);
+    --nc-lk-1: var(--nc-d-lk-1);
+    --nc-lk-2: var(--nc-d-lk-2);
+    --nc-lk-tx: var(--nc--dlk-tx);
+    --nc-ac-1: var(--nc-d-ac-1);
+    --nc-ac-tx: var(--nc--dac-tx);
+  }
+}
+
+* {
+  /* Reset margins and padding */
+  margin: 0;
+  padding: 0;
+}
+
+address,
+area,
+article,
+aside,
+audio,
+blockquote,
+datalist,
+details,
+dl,
+fieldset,
+figure,
+form,
+input,
+iframe,
+img,
+meter,
+nav,
+ol,
+optgroup,
+option,
+output,
+p,
+pre,
+progress,
+ruby,
+section,
+table,
+textarea,
+ul,
+video {
+  /* Margins for most elements */
+  margin-bottom: 1rem;
+}
+
+html,
+input,
+select,
+button {
+  /* Set body font family and some finicky elements */
+  font-family: var(--ter-font-sans);
+}
+
+body {
+  /* Center body in page */
+  margin: 0 auto;
+  max-width: var(--width-body);
+  padding: 1rem;
+  overflow-x: hidden;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  background: var(--nc-bg-1);
+
+  /* Main body text */
+  color: var(--nc-tx-2);
+  font-size: var(--text-size-md);
+  line-height: 1.5;
+}
+
+::selection {
+  /* Set background color for selected text */
+  background: var(--nc-ac-1);
+  color: var(--nc-ac-tx);
+}
+
+/*
+Type scale
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1;
+  letter-spacing: -0.025em;
+  margin-top: 1.5em;
+  margin-bottom: 0.875em;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.15;
+}
+
+h4,
+h5,
+h6 {
+  line-height: 1.25;
+}
+
+h1 {
+  font-size: var(--text-size-5xl);
+}
+h2 {
+  font-size: var(--text-size-3xl);
+}
+h3 {
+  font-size: var(--text-size-2xl);
+}
+h4 {
+  font-size: var(--text-size-xl);
+}
+h5 {
+  font-size: var(--text-size-lg);
+}
+h6 {
+  font-size: var(--text-size-md);
+  text-transform: uppercase;
+}
+small {
+  font-size: var(--text-size-xs);
+}
+
+/*
+Basic elements
+*/
+
+a {
+  color: var(--nc-lk-1);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+abbr:hover {
+  /* Set the '?' cursor while hovering an abbreviation */
+  cursor: help;
+}
+
+blockquote {
+  padding: 1.5rem;
+  background: var(--nc-bg-2);
+  border-left: 5px solid var(--nc-bg-3);
+}
+
+abbr {
+  cursor: help;
+}
+
+blockquote *:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+a button,
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+  font-size: var(--text-size-sm);
+  display: inline-block;
+  padding: 6px 12px;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  background: var(--nc-lk-1);
+  color: var(--nc-lk-tx);
+  border: 0;
+  border-radius: 4px;
+  box-sizing: border-box;
+  cursor: pointer;
+  color: var(--nc-lk-tx);
+}
+
+a button[disabled],
+button[disabled],
+input[type="submit"][disabled],
+input[type="reset"][disabled],
+input[type="button"][disabled] {
+  cursor: default;
+  opacity: 0.5;
+
+  /* Set the [X] cursor while hovering a disabled link */
+  cursor: not-allowed;
+}
+
+.button:focus,
+.button:enabled:hover,
+button:focus,
+button:enabled:hover,
+input[type="submit"]:focus,
+input[type="submit"]:enabled:hover,
+input[type="reset"]:focus,
+input[type="reset"]:enabled:hover,
+input[type="button"]:focus,
+input[type="button"]:enabled:hover {
+  background: var(--nc-lk-2);
+}
+
+a img {
+  margin-bottom: 0px;
+}
+
+/*
+Preformatted elements
+*/
+
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--ter-font-mono);
+}
+
+code,
+samp,
+kbd,
+pre {
+  background: var(--nc-bg-2);
+}
+
+pre {
+  font-size: var(--text-size-sm);
+  line-height: 1.375;
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  max-width: 100%;
+  overflow: auto;
+}
+
+pre code {
+  /* When <code> is in a <pre>, reset it's formatting to blend in */
+  background: inherit;
+  font-size: inherit;
+  color: inherit;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+code pre {
+  /* When <pre> is in a <code>, reset it's formatting to blend in */
+  display: inline;
+  background: inherit;
+  font-size: inherit;
+  color: inherit;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/*
+Miscellaneous
+*/
+
+details {
+  /* Make the <details> look more "clickable" */
+  padding: 0.6rem 1rem;
+  background: var(--nc-bg-2);
+  border: 1px solid var(--nc-bg-3);
+  border-radius: 4px;
+}
+
+summary {
+  /* Makes the <summary> look more like a "clickable" link with the pointer cursor */
+  cursor: pointer;
+  font-weight: bold;
+}
+
+details[open] {
+  /* Adjust the <details> padding while open */
+  padding-bottom: 0.75rem;
+}
+
+details[open] summary {
+  /* Adjust the <details> padding while open */
+  margin-bottom: 6px;
+}
+
+details[open] > *:last-child {
+  /* Resets the bottom margin of the last element in the <details> while <details> is opened. This prevents double margins/paddings. */
+  margin-bottom: 0;
+}
+
+dt {
+  font-weight: bold;
+}
+
+dd::before {
+  /* Add an arrow to data table definitions */
+  content: "→ ";
+}
+
+hr {
+  /* Reset the border of the <hr> separator, then set a better line */
+  border: 0;
+  border-bottom: 1px solid var(--nc-bg-3);
+  margin: 1rem auto;
+}
+
+fieldset {
+  margin-top: 1rem;
+  padding: 2rem;
+  border: 1px solid var(--nc-bg-3);
+  border-radius: 4px;
+}
+
+legend {
+  padding: auto 0.5rem;
+}
+
+table {
+  /* border-collapse sets the table's elements to share borders, rather than floating as separate "boxes". */
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,
+th {
+  border: 1px solid var(--nc-bg-3);
+  text-align: left;
+  padding: 0.5rem;
+}
+
+th {
+  background: var(--nc-bg-2);
+}
+
+tr:nth-child(even) {
+  /* Set every other cell slightly darker. Improves readability. */
+  background: var(--nc-bg-2);
+}
+
+table caption {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+textarea {
+  /* Don't let the <textarea> extend off the screen naturally or when dragged by the user */
+  max-width: 100%;
+}
+
+ol,
+ul {
+  /* Replace the browser default padding */
+  padding-left: 2rem;
+}
+
+ul ul,
+ol ul,
+ul ol,
+ol ol {
+  margin-bottom: 0;
+}
+
+mark {
+  padding: 3px 6px;
+  background: var(--nc-ac-1);
+  color: var(--nc-ac-tx);
+}
+
+textarea,
+select,
+input {
+  padding: 6px 12px;
+  margin-bottom: 0.5rem;
+  background: var(--nc-bg-2);
+  color: var(--nc-tx-2);
+  border: 1px solid var(--nc-bg-3);
+  border-radius: 4px;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+}
+
+/*
+Top-level elements
+*/
+
+main > header,
+main > article,
+main > nav {
+  margin-bottom: 2rem;
+}
+
+/* Index nav list */
+
+main > nav {
+  padding-top: 1rem;
+  border-top: 1px solid var(--nc-bg-3);
+  color: var(--nc-tx-3);
+  line-height: 1;
+}
+
+main > nav time {
+  font-family: var(--ter-font-mono);
+  font-size: var(--text-size-sm);
+}
+
+main > nav a {
+  text-decoration: none;
+}
+
+main > nav h3 {
+  margin: 0;
+  margin-bottom: 0.5rem;
+  font-size: var(--text-size-md);
+}
+
+main > nav ul {
+  margin: 0;
+  padding: 0;
+}
+
+main > nav ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.375rem 0;
+  margin: 0;
+}
+
+main > nav ul li:not(:last-child) {
+  border-bottom: 1px solid var(--nc-bg-2);
+}
+
+/* Header */
+
+header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: var(--text-size-sm);
+  line-height: 1;
+  color: var(--nc-tx-3);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--nc-bg-3);
+}
+
+header time {
+  font-family: var(--ter-font-mono);
+}
+
+header nav {
+  margin: 0;
+  padding: 0;
+}
+
+header nav ol {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  list-style: none;
+}
+
+header nav a {
+  text-decoration: none;
+}
+
+header nav ol li {
+  margin: 0;
+}
+
+header nav ol li:not(:last-child)::after {
+  content: "/";
+  margin: 0 0.25rem;
+}
+
+header h1,
+header h2,
+header h3 {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+header > *:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+header > *:last-child {
+  margin-bottom: 0;
+}

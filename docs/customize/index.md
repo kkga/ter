@@ -1,1 +1,1 @@
-Learn about customizing Minmi output.
+Learn about customizing the output.

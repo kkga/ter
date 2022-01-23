@@ -1,9 +1,10 @@
 import { dateFormat, etaConfigure, etaRenderFile, path } from "./deps.ts";
 import { Page } from "./main.ts";
 
-const viewPath = `${Deno.cwd()}/_views/`;
+const VIEWS_PATH = `${Deno.cwd()}/_views/`;
+
 etaConfigure({
-  views: viewPath,
+  views: VIEWS_PATH,
   autotrim: true,
 });
 
@@ -17,6 +18,7 @@ interface IndexItem {
   dirname: string;
   url: string;
   title: string;
+  isIndexPage: boolean;
   readableDate: string | null;
 }
 
@@ -25,11 +27,13 @@ function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
 
   for (const p of pages) {
     const readableDate = p.date ? dateFormat(p.date, "dd-MM-yyyy") : null;
+    const dirname = path.dirname(p.path) === "." ? "" : path.dirname(p.path);
     items.push({
-      dirname: path.dirname(p.path),
+      dirname,
       url: path.join("/", path.dirname(p.path), p.slug),
       title: p.title,
       readableDate,
+      isIndexPage: p.isIndex,
     });
   }
 

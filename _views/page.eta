@@ -6,8 +6,6 @@
   <%~ it.body %>
 </article>
 
-<hr />
-
 <% if (it.indexLinks?.length > 0) { %>
 <%~ includeFile('./link-list', {links: it.indexLinks, title: "Index"}) %>
 <% } %>

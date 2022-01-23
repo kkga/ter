@@ -4,6 +4,13 @@ import { frontMatter, fs, path, slugify } from "./deps.ts";
 import { render } from "./render.ts";
 import { buildPage } from "./build.ts";
 
+/* Constants */
+
+export const STATIC_PATH = `${Deno.cwd()}/_static/`;
+export const DEFAULT_INPUT_PATH = `${Deno.cwd()}`;
+export const DEFAULT_OUTPUT_PATH = `${Deno.cwd()}/_site`;
+const reDotOrUnderscorePrefix = /^[\._].+/ig;
+
 /* Interfaces and Globals */
 
 export interface Heading {
@@ -28,20 +35,43 @@ export interface Page {
   links?: Array<string>;
 }
 
+/* LET'S BUILD A SITE */
+
+const startDate = new Date();
+
+/* Step 0: Grab CLI arguments */
+
+const contentPath = Deno.args[0] || DEFAULT_INPUT_PATH;
+const buildPath = Deno.args[1] || DEFAULT_OUTPUT_PATH;
+
+/* Step 1: Grab files */
+
+const walkEntries: Array<fs.WalkEntry> = [];
+
+for (const entry of fs.walkSync(contentPath)) {
+  walkEntries.push(entry);
+}
+
+const hasDotOrUnderscorePrefix = (path: string): boolean => {
+  const pathChunks = path.split("/");
+  for (const chunk of pathChunks) {
+    if (reDotOrUnderscorePrefix.test(chunk)) {
+      console.log("skip", path);
+      return true;
+    }
+  }
+  return false;
+};
+
+const filteredEntries = walkEntries.filter((entry) =>
+  !hasDotOrUnderscorePrefix(entry.path)
+);
+
+/* Step 2: Read files and construct page data */
+
 const pages: Array<Page> = [];
-const staticPaths: Array<string> = [];
+const staticContentPaths: Array<string> = [];
 const decoder = new TextDecoder("utf-8");
-
-/* -------------------------- */
-
-/* Step 0.2: Grab CLI arguments */
-
-const contentPath = Deno.args[0] || ".";
-const buildPath = Deno.args[1] || "_site";
-
-/* Step 1: Read files */
-
-/* Step 2: Construct page data */
 
 function hasOwnProperty<T, K extends PropertyKey>(
   obj: T,
@@ -86,14 +116,9 @@ const getTitleFromHeadings = (headings: Array<Heading>): string | undefined => {
   }
 };
 
-const walkEntries: Array<fs.WalkEntry> = [];
-for (const entry of fs.walkSync(contentPath)) {
-  walkEntries.push(entry);
-}
-
-for (const entry of walkEntries) {
+for (const entry of filteredEntries) {
   if (entry.isFile && path.extname(entry.name) !== ".md") {
-    staticPaths.push(entry.path);
+    staticContentPaths.push(entry.path);
     continue;
   }
 
@@ -131,7 +156,7 @@ for (const entry of walkEntries) {
     pages.push(contentPage);
   } else if (entry.isDirectory) {
     const findIndexEntryPath = (dirPath: string): string | undefined => {
-      for (const entry of walkEntries) {
+      for (const entry of filteredEntries) {
         if (
           entry.isFile && entry.name === "index.md" &&
           path.dirname(entry.path) === dirPath
@@ -211,6 +236,9 @@ function getChildPages(allPages: Array<Page>, current: Page): Array<Page> {
   return pages;
 }
 
+console.log("Building content files...");
+let pageCount = 0;
+
 for (const page of pages) {
   const outputPath = path.join(
     buildPath,
@@ -219,7 +247,10 @@ for (const page of pages) {
     "index.html",
   );
 
-  console.log(`build: ${page.isIndex ? "[index] " : ""}${page.path}`);
+  console.log(
+    `  ${page.path} -> ${path.dirname(path.relative(buildPath, outputPath))}\
+${page.isIndex ? "/" : ""}`,
+  );
 
   const html = await buildPage(
     page,
@@ -230,20 +261,61 @@ for (const page of pages) {
   if (typeof html === "string") {
     fs.ensureFileSync(outputPath);
     Deno.writeTextFileSync(outputPath, html);
+    pageCount++;
   }
 }
 
-/* Step 5: Copy additional static files */
+/* Step 4: Copy static content files */
 
-for (const p of staticPaths) {
+console.log("\nCopying static content...");
+let staticCount = 0;
+
+for (const p of staticContentPaths) {
   const relPath = path.relative(contentPath, p);
   const outputPath = path.join(
     buildPath,
     path.dirname(relPath),
     path.basename(relPath),
   );
-  console.log(`copy: ${path.relative(contentPath, p)}`);
+
+  console.log(
+    `  ${relPath} -> ${path.relative(buildPath, outputPath)}`,
+  );
 
   fs.ensureDirSync(path.dirname(outputPath));
   Deno.copyFileSync(p, outputPath);
+  staticCount++;
 }
+
+/* Step 5: Copy static site assets */
+
+console.log("\nCopying site assets...");
+let assetCount = 0;
+
+for (const entry of fs.walkSync(STATIC_PATH, { includeDirs: false })) {
+  const relPath = path.relative(STATIC_PATH, entry.path);
+  const outputPath = path.join(
+    buildPath,
+    path.dirname(relPath),
+    path.basename(relPath),
+  );
+
+  console.log(
+    `  ${relPath} -> ${path.relative(buildPath, outputPath)}`,
+  );
+
+  fs.ensureDirSync(path.dirname(outputPath));
+  Deno.copyFileSync(entry.path, outputPath);
+  assetCount++;
+}
+
+const endDate = new Date();
+var buildSeconds = (endDate.getTime() - startDate.getTime()) / 1000;
+
+console.log(
+  `\nResult:
+  Built ${pageCount} pages
+  Copied ${staticCount} static assets
+  Copied ${assetCount} site assets
+  In ${buildSeconds} seconds`,
+);

@@ -6,4 +6,4 @@ tags:
 
 # Styles
 
-here's how to customize styles
+Here's how to customize styles

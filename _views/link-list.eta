@@ -1,32 +1,22 @@
-<% if (it.links.length > 0) { %>
-<div class="Box Box--condensed my-4">
-
-  <div class="Box-header"><h3 class="Box-title"><%= it.title %></h3></div>
+<nav>
+  <h3><%= it.title %></h3>
 
   <ul>
-
-    <% it.links.forEach(link => { %>
-    <li class="Box-row">
-      <div class="d-flex flex-justify-between flex-items-baseline">
+    <% it.links.forEach(({ dirname, url, title, readableDate, isIndexPage }, index) => { %>
+    <li>
         <div>
-          <% if (link.dirname) { %>
-          <span class="mr-1"><%= link.dirname %>/</span>
-          <% } %>
-
-          <strong><a class="Box-row-link" href="<%= link.url %>"><%= link.title %></a></strong>
-          <div class="text-small color-fg-subtle"><%= link.description %></div>
-        </div>
-
-        <% if (link.readableDate) { %>
-        <div class="text-small text-mono">
-          <%= link.readableDate %>
-        </div>
+        <% if (isIndexPage) { %>
+        <span>❖ </span>
+        <% } else { %>
+        <span>◇ </span>
         <% } %>
-      </div>
+        <% if (dirname) { %><%= dirname %>/<% } %><a href="<%= url %>"><%= title %><% if (isIndexPage) { %>/<% } %></a>
+        </div>
+
+        <% if (readableDate) { %>
+        <time datetime="<%= readableDate %>"><%= readableDate %> </time>
+        <% } %>
     </li>
     <% }) %>
-
   </ul>
-
-</div>
-<% } %>
+</nav>
