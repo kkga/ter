@@ -15,7 +15,7 @@
     	}
     </style>
   </head>
-  <body class="py-4">
+  <body class="p-3">
     <main>
       <%~ it.body %>
     </main>

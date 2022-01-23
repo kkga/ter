@@ -25,8 +25,6 @@ function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
 
   for (const p of pages) {
     const readableDate = p.date ? dateFormat(p.date, "dd-MM-yyyy") : null;
-    const dir = path.dirname(p.path);
-
     items.push({
       dirname: path.dirname(p.path),
       url: path.join("/", path.dirname(p.path), p.slug),
@@ -73,7 +71,7 @@ export async function buildPage(
   childPages: Array<Page>,
   backLinkedPages: Array<Page>,
 ): Promise<string | void> {
-  const { title, date, slug, html: body } = page;
+  const { title, date, html: body } = page;
   const breadcrumbs = generateBreadcrumbs(page);
   const backlinkIndexItems = generateIndexItems(backLinkedPages);
   const childIndexItems = generateIndexItems(childPages);

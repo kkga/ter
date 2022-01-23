@@ -1,13 +1,8 @@
 /* Dependencies */
 
 import { frontMatter, fs, path, slugify } from "./deps.ts";
-
 import { render } from "./render.ts";
 import { buildPage } from "./build.ts";
-
-/* Constants */
-
-// const INDEX_FILE = "index";
 
 /* Interfaces and Globals */
 
@@ -189,8 +184,6 @@ for (const entry of walkEntries) {
   }
 }
 
-// pages.forEach((p) => console.log(p.slug));
-
 /* Step 3: Build pages into .html files with appropriate paths */
 
 function getBackLinkedPages(allPages: Array<Page>, inPage: Page): Array<Page> {
@@ -226,6 +219,8 @@ for (const page of pages) {
     "index.html",
   );
 
+  console.log(`build: ${page.isIndex ? "[index] " : ""}${page.path}`);
+
   const html = await buildPage(
     page,
     page.isIndex ? getChildPages(pages, page) : [],
@@ -247,6 +242,7 @@ for (const p of staticPaths) {
     path.dirname(relPath),
     path.basename(relPath),
   );
+  console.log(`copy: ${path.relative(contentPath, p)}`);
 
   fs.ensureDirSync(path.dirname(outputPath));
   Deno.copyFileSync(p, outputPath);
