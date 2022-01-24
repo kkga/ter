@@ -186,7 +186,8 @@ h5 {
   font-size: var(--text-size-lg);
 }
 h6 {
-  font-size: var(--text-size-md);
+  font-size: var(--text-size-sm);
+  letter-spacing: 0.025em;
   text-transform: uppercase;
 }
 small {
@@ -204,6 +205,11 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+a[rel~="external"]::after {
+  font-weight: bold;
+  content: "↗";
 }
 
 abbr:hover {

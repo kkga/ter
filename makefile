@@ -13,7 +13,7 @@ watch:
 serve:
 	$(DENO) https://deno.land/std/http/file_server.ts _site --port 8080
 
-dev: build serve
+dev: watch serve
 
 deploy-vercel:
 	curl -fsSL https://deno.land/x/install/install.sh | sh
