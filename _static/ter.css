@@ -417,8 +417,8 @@ textarea {
 
 ol,
 ul {
-  /* Replace the browser default padding */
-  padding-left: 2rem;
+  list-style: inside;
+  padding: 0;
 }
 
 ul ul,
@@ -426,6 +426,7 @@ ol ul,
 ul ol,
 ol ol {
   margin-bottom: 0;
+  padding-left: 2rem;
 }
 
 mark {
@@ -459,47 +460,6 @@ main > header,
 main > article,
 main > nav {
   margin-bottom: 2rem;
-}
-
-/* Index nav list */
-
-main > nav {
-  padding-top: 1rem;
-  border-top: 1px solid var(--nc-bg-3);
-  color: var(--nc-tx-3);
-  line-height: 1;
-}
-
-main > nav time {
-  font-family: var(--ter-font-mono);
-  font-size: var(--text-size-sm);
-}
-
-main > nav a {
-  text-decoration: none;
-}
-
-main > nav h3 {
-  margin: 0;
-  margin-bottom: 0.5rem;
-  font-size: var(--text-size-md);
-}
-
-main > nav ul {
-  margin: 0;
-  padding: 0;
-}
-
-main > nav ul li {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 0.375rem 0;
-  margin: 0;
-}
-
-main > nav ul li:not(:last-child) {
-  border-bottom: 1px solid var(--nc-bg-2);
 }
 
 /* Header */
@@ -558,4 +518,50 @@ header > *:first-child {
 
 header > *:last-child {
   margin-bottom: 0;
+}
+
+/* Index nav list */
+
+main > nav {
+  padding-top: 1rem;
+  border-top: 1px solid var(--nc-bg-3);
+  color: var(--nc-tx-3);
+  line-height: 1;
+}
+
+main > header + nav {
+  border-top: none;
+  padding-top: 0;
+}
+
+main > nav time {
+  font-family: var(--ter-font-mono);
+  font-size: var(--text-size-sm);
+}
+
+main > nav a {
+  text-decoration: none;
+}
+
+main > nav h3 {
+  margin: 0;
+  margin-bottom: 0.5rem;
+  font-size: var(--text-size-md);
+}
+
+main > nav ul {
+  margin: 0;
+  padding: 0;
+}
+
+main > nav ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.375rem 0;
+  margin: 0;
+}
+
+main > nav ul li:not(:last-child) {
+  border-bottom: 1px solid var(--nc-bg-2);
 }
