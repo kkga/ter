@@ -1,20 +1,19 @@
 MAKEFLAGS := -j 4 --silent --always-make
-PAR := $(MAKE) -j 128
-DENO := deno run --watch --allow-net --allow-read
+DENO := deno run --allow-net --allow-read=./ --allow-write=./ --unstable
 
 clean:
 	rm -rf _site
 
 build:
-	deno run --allow-net --allow-read=./ --allow-write=./ --unstable main.ts docs
+	$(DENO) main.ts docs
 
 watch:
-	deno run --allow-net --allow-read=./ --allow-write=./ --unstable --watch=docs,_static,_views main.ts docs
+	$(DENO) --watch=docs,_static,_views main.ts docs
 
 serve:
-	deno run --quiet --allow-net --allow-read=./ --allow-env --unstable --watch=docs,_static,_views https://deno.land/std/http/file_server.ts _site
+	$(DENO) https://deno.land/std/http/file_server.ts _site --port 8080
 
-dev: watch serve
+dev: build serve
 
 deploy-vercel:
 	curl -fsSL https://deno.land/x/install/install.sh | sh
