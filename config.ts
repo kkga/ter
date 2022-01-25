@@ -4,6 +4,7 @@ export interface TerConfig {
   staticPath: string;
   viewsPath: string;
   title: string;
+  description: string;
   ignoreKeys: Array<string>;
 }
 
@@ -13,5 +14,6 @@ export const defaultConfig: TerConfig = {
   staticPath: `${Deno.cwd()}/_static/`,
   viewsPath: `${Deno.cwd()}/_views/`,
   title: "Ter wiki",
+  description: "A tiny wiki-style site builder with Zettelkasten flavor",
   ignoreKeys: ["private", "draft"],
 };
