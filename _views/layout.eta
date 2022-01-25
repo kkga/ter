@@ -18,6 +18,8 @@
     <%~ it.body %>
     </main>
 
-    <%~ includeFile('./footer') %>
+  <footer>
+    Made with <a href="https://github.com/kkga/ter">Ter</a>.
+  </footer>
   </body>
 </html>

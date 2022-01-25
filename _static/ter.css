@@ -479,6 +479,11 @@ main > nav {
   margin-bottom: 2rem;
 }
 
+footer {
+  font-size: var(--text-size-xs);
+  color: var(--nc-tx-4);
+}
+
 /* Header */
 
 header {
