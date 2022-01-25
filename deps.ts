@@ -2,8 +2,7 @@ export { default as frontMatter } from "https://esm.sh/front-matter@4.0.2";
 export { slugify } from "https://deno.land/x/slugify/mod.ts";
 export { default as marked } from "https://esm.sh/marked@3.0.7";
 export { escape as htmlEscape } from "https://esm.sh/he@1.2.0";
-// export { default as prism } from "https://esm.sh/prismjs@1.26.0";
-export { default as prism } from "https://cdn.skypack.dev/prismjs";
+export { default as hljs } from "https://cdn.skypack.dev/highlight.js";
 export { default as sanitizeHtml } from "https://esm.sh/sanitize-html@2.6.1";
 
 export {
