@@ -4,7 +4,8 @@ private: true
 
 # Todos
 
-- [ ] differentiate internal and external links
+- [x] differentiate internal and external links
+- [ ] use streams to open and write markdown files
 - [ ] sanitize markdown output
 - [ ] stress-test with
       https://github.com/Zettelkasten-Method/10000-markdown-files
