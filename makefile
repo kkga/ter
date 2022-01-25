@@ -1,5 +1,5 @@
 MAKEFLAGS := -j 4 --silent --always-make
-DENO := deno run --allow-net --allow-read=./ --allow-write=./ --unstable
+DENO := deno run --allow-net --allow-env --allow-read=./ --allow-write=./ --unstable
 INPUTDIR = docs
 OUTPUTDIR = _site
 
