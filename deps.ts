@@ -1,9 +1,9 @@
 export { default as frontMatter } from "https://esm.sh/front-matter@4.0.2";
 export { slugify } from "https://deno.land/x/slugify/mod.ts";
 export { default as marked } from "https://esm.sh/marked@3.0.7";
-// export { default as Prism } from "https://esm.sh/prismjs@1.25.0";
-// export { default as sanitizeHtml } from "https://esm.sh/sanitize-html@2.6.1";
-// export { highlightText as hl } from "https://deno.land/x/speed_highlight_js@1.1.6/dist/index.js";
+export { escape as htmlEscape } from "https://esm.sh/he@1.2.0";
+export { default as prism } from "https://esm.sh/prismjs@1.26.0";
+export { default as sanitizeHtml } from "https://esm.sh/sanitize-html@2.6.1";
 
 export {
   configure as etaConfigure,

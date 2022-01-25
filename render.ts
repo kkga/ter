@@ -1,4 +1,4 @@
-import { marked } from "./deps.ts";
+import { htmlEscape, marked, prism } from "./deps.ts";
 import { Heading } from "./main.ts";
 import { isRelative, parseURL } from "https://unpkg.com/ufo/dist/index.mjs";
 
@@ -37,19 +37,18 @@ export function render(text: string): [string, Array<string>, Array<Heading>] {
       }
       return `<a href="${href}" ${title ? "title=${title}" : ""}">${text}</a>`;
     },
-    // code(code: string, language: string) {
-    //   language = language.split(",")[0];
-    //   // const html = hljs.highlight(code, { language });
-    //   return `<div class="language-${language}"><pre>${code}</pre></div>`;
-    // },
   };
 
   marked.use({
     renderer,
-    // highlight: function (code, lang) {
-    //   // const language = hljs.getLanguage(lang) ? lang : "plaintext";
-    //   return hl(code, { lang });
-    // },
+    highlight: function (code, lang) {
+      if (prism.languages[lang]) {
+        return prism.highlight(code, prism.languages[lang], lang);
+      } else {
+        return code;
+      }
+    },
+    langPrefix: "prism-code language-",
     baseUrl: "/",
     pedantic: false,
     gfm: true,
