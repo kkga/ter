@@ -34,7 +34,7 @@ function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
     });
   }
 
-  items.sort((a, b) => a.isIndexPage ? -1 : 1);
+  items.sort((a) => a.isIndexPage ? -1 : 1);
 
   return items;
 }

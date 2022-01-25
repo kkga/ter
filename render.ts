@@ -1,4 +1,4 @@
-import { hljs, htmlEscape, marked, sanitizeHtml } from "./deps.ts";
+import { hljs, marked, sanitizeHtml } from "./deps.ts";
 import { Heading } from "./main.ts";
 import { parseURL } from "https://unpkg.com/ufo/dist/index.mjs";
 
@@ -122,5 +122,6 @@ export function render(text: string): [string, Array<string>, Array<Heading>] {
 
   const html = marked.parse(text);
 
+  // return [sanitize(html), links, headings];
   return [html, links, headings];
 }
