@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark_dimmed">
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,9 +15,8 @@
 
   <body>
     <main>
-    <%~ it.body %>
+      <%~ it.body %>
     </main>
-
     <footer>
       Made with <a href="https://github.com/kkga/ter">Ter</a>.
     </footer>
