@@ -1,6 +1,6 @@
 import { htmlEscape, marked, prism } from "./deps.ts";
 import { Heading } from "./main.ts";
-import { isRelative, parseURL } from "https://unpkg.com/ufo/dist/index.mjs";
+import { parseURL } from "https://unpkg.com/ufo/dist/index.mjs";
 
 export function render(text: string): [string, Array<string>, Array<Heading>] {
   const links: Array<string> = [];
@@ -45,7 +45,7 @@ export function render(text: string): [string, Array<string>, Array<Heading>] {
       if (prism.languages[lang]) {
         return prism.highlight(code, prism.languages[lang], lang);
       } else {
-        return code;
+        return htmlEscape(code);
       }
     },
     langPrefix: "prism-code language-",
