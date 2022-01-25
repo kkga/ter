@@ -1,8 +1,21 @@
 <header>
-  <%~ includeFile('./breadcrumbs.eta', { breadcrumbs: it.breadcrumbs }) %>
 
-  <% if (it.readableDate) { %>
-  <time datetime="<%= it.readableDate %>"><%= it.readableDate %></time>
+  <nav aria-label="Breadcrumb">
+    <ol>
+      <% if (it.breadcrumbs.length > 0) { %>
+        <% it.breadcrumbs.forEach((crumb, index) => { %>
+          <% if (crumb.url !== "") { %>
+            <li><a href="<%= crumb.url %>"><%= crumb.slug %></a></li>
+          <% } else { %>
+            <li><%= crumb.slug %></li>
+          <% } %>
+        <% }) %>
+      <% } %>
+    </ol>
+  </nav>
+
+  <% if (it.date && it.readableDate) { %>
+  <time datetime="<%= it.date %>"><%= it.readableDate %></time>
   <% } %>
 
 </header>

@@ -1,4 +1,4 @@
-import { dateFormat, etaConfigure, etaRenderFile, path } from "./deps.ts";
+import { etaConfigure, etaRenderFile, path } from "./deps.ts";
 import { Page } from "./main.ts";
 
 const VIEWS_PATH = `${Deno.cwd()}/_views/`;
@@ -18,17 +18,26 @@ interface IndexItem {
   url: string;
   title: string;
   isIndexPage: boolean;
+  date: Date | null;
   readableDate: string | null;
 }
+
+const toReadableDate = (date: Date) =>
+  new Date(date).toLocaleDateString("en-us", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 
 function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
   const items: Array<IndexItem> = [];
 
   for (const p of pages) {
-    const readableDate = p.date ? dateFormat(p.date, "dd-MM-yyyy") : null;
+    const readableDate = p.date ? toReadableDate(p.date) : null;
     items.push({
       url: path.join("/", path.dirname(p.path), p.slug),
       title: p.title,
+      date: p.date ? p.date : null,
       readableDate,
       isIndexPage: p.isIndex,
     });
@@ -78,9 +87,10 @@ export async function buildPage(
   const breadcrumbs = generateBreadcrumbs(page);
   const backlinkIndexItems = generateIndexItems(backLinkedPages);
   const childIndexItems = generateIndexItems(childPages);
-  const readableDate = date ? dateFormat(date, "dd-MM-yyyy") : null;
+  const readableDate = date ? toReadableDate(date) : null;
   const result = await etaRenderFile("./page", {
     breadcrumbs,
+    date,
     readableDate,
     title,
     body,

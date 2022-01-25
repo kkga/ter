@@ -17,7 +17,7 @@ const allowedTags = sanitizeHtml.defaults.allowedTags.concat([
   "iframe",
 ]);
 
-const sanitize = (html: string) => {
+const _sanitize = (html: string) => {
   return sanitizeHtml(html, {
     allowedTags,
     allowedAttributes: {

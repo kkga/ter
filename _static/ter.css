@@ -12,6 +12,7 @@ Based on: https://github.com/xz/new.css
   --nc-tx-1: #000000;
   --nc-tx-2: #1a1a1a;
   --nc-tx-3: #444444;
+  --nc-tx-4: #777777;
   --nc-bg-1: #ffffff;
   --nc-bg-2: #f6f8fa;
   --nc-bg-3: #e5e7eb;
@@ -25,6 +26,7 @@ Based on: https://github.com/xz/new.css
   --nc-d-tx-1: #ffffff;
   --nc-d-tx-2: #eeeeee;
   --nc-d-tx-3: #aaaaaa;
+  --nc-d-tx-4: #999999;
   --nc-d-bg-1: #000000;
   --nc-d-bg-2: #111111;
   --nc-d-bg-3: #222222;
@@ -61,6 +63,7 @@ Based on: https://github.com/xz/new.css
     --nc-tx-1: var(--nc-d-tx-1);
     --nc-tx-2: var(--nc-d-tx-2);
     --nc-tx-3: var(--nc-d-tx-3);
+    --nc-tx-4: var(--nc-d-tx-4);
     --nc-bg-1: var(--nc-d-bg-1);
     --nc-bg-2: var(--nc-d-bg-2);
     --nc-bg-3: var(--nc-d-bg-3);
@@ -205,10 +208,18 @@ a {
 
 a:hover {
   text-decoration: underline;
+  text-decoration-color: currentColor !important;
+  text-decoration-style: solid !important;
+}
+
+a[rel~="external"] {
+  color: currentColor;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-decoration-color: var(--nc-tx-4);
 }
 
 a[rel~="external"]::after {
-  font-weight: bold;
   content: "↗";
 }
 
@@ -482,7 +493,8 @@ header {
 }
 
 header time {
-  font-family: var(--ter-font-mono);
+  font-size: var(--text-size-sm);
+  color: var(--nc-tx-4);
 }
 
 header nav {
@@ -541,8 +553,8 @@ main > header + nav {
 }
 
 main > nav time {
-  font-family: var(--ter-font-mono);
   font-size: var(--text-size-sm);
+  color: var(--nc-tx-4);
 }
 
 main > nav a {
