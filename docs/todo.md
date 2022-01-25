@@ -1,3 +1,7 @@
+---
+private: true
+---
+
 # Todos
 
 - [ ] differentiate internal and external links
