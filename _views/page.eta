@@ -1,4 +1,4 @@
-<% layout('./layout') %>
+<% layout('./base') %>
 
 <header>
   <nav aria-label="Breadcrumb">

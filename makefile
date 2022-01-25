@@ -1,20 +1,22 @@
 MAKEFLAGS := -j 4 --silent --always-make
 DENO := deno run --allow-net --allow-read=./ --allow-write=./ --unstable
+INPUTDIR = docs
+OUTPUTDIR = _site
 
 clean:
-	rm -rf _site
+	rm -rf $(OUTPUTDIR)
 
 build:
-	$(DENO) main.ts docs
+	$(DENO) main.ts $(INPUTDIR)
 
 watch:
-	$(DENO) --watch=docs,_static,_views main.ts docs
+	$(DENO) --watch=$(INPUTDIR),_static,_views main.ts $(INPUTDIR)
 
 serve:
-	$(DENO) https://deno.land/std/http/file_server.ts _site --port 8080
+	$(DENO) https://deno.land/std/http/file_server.ts $(OUTPUTDIR) --port 8080
 
 dev: watch serve
 
 deploy-vercel:
 	curl -fsSL https://deno.land/x/install/install.sh | sh
-	/vercel/.deno/bin/deno run --allow-net --allow-env --allow-read=./ --allow-write --unstable main.ts docs
+	/vercel/.deno/bin/$(DENO) main.ts $(INPUTDIR)

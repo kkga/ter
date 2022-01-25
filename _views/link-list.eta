@@ -2,10 +2,9 @@
   <h3><%= it.title %></h3>
 
   <ul>
-    <% it.links.forEach(({ url, title, readableDate, isIndexPage }, index) => { %>
+    <% it.links.forEach(({ url, title, date, readableDate, isIndexPage }) => { %>
     <li>
-        <div>
-
+      <div>
         <% if (isIndexPage) { %>
         <span>❖ </span>
         <strong><a href="<%= url %>"><%= title %><% if (isIndexPage) { %>/<% } %></a></strong>
@@ -13,12 +12,11 @@
         <span>◇ </span>
         <a href="<%= url %>"><%= title %><% if (isIndexPage) { %>/<% } %></a>
         <% } %>
+      </div>
 
-        </div>
-
-        <% if (readableDate) { %>
-        <time datetime="<%= readableDate %>"><%= readableDate %> </time>
-        <% } %>
+      <% if (date && readableDate) { %>
+      <time datetime="<%= date %>"><%= readableDate %> </time>
+      <% } %>
     </li>
     <% }) %>
   </ul>
