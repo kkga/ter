@@ -9,10 +9,10 @@ export interface TerConfig {
 }
 
 export const defaultConfig: TerConfig = {
-  inputPath: Deno.cwd(),
-  outputPath: `${Deno.cwd()}/_site/`,
-  staticPath: `${Deno.cwd()}/_static/`,
-  viewsPath: `${Deno.cwd()}/_views/`,
+  inputPath: ".",
+  outputPath: "_site",
+  staticPath: "_static",
+  viewsPath: "_views",
   title: "Ter wiki",
   description: "A tiny wiki-style site builder with Zettelkasten flavor",
   ignoreKeys: ["private", "draft"],

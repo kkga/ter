@@ -1,10 +1,7 @@
-import { etaConfigure, etaRenderFile, path } from "./deps.ts";
+import { dirname, etaConfigure, etaRenderFile, join } from "./deps.ts";
 import { Page } from "./main.ts";
 
-const VIEWS_PATH = `${Deno.cwd()}/_views/`;
-
 etaConfigure({
-  views: VIEWS_PATH,
   autotrim: true,
 });
 
@@ -35,7 +32,7 @@ function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
   for (const p of pages) {
     const readableDate = p.date ? toReadableDate(p.date) : null;
     items.push({
-      url: path.join("/", path.dirname(p.path), p.slug),
+      url: join("/", dirname(p.path), p.slug),
       title: p.title,
       date: p.date ? p.date : null,
       readableDate,
@@ -49,13 +46,13 @@ function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
 }
 
 function generateBreadcrumbs(currentPage: Page): Array<Breadcrumb> {
-  const dirname: string = path.dirname(currentPage.path);
-  const chunks = dirname.split("/").filter((path) => path !== ".");
+  const dir: string = dirname(currentPage.path);
+  const chunks = dir.split("/").filter((path) => path !== ".");
   const { slug } = currentPage;
 
   let breadcrumbs: Array<Breadcrumb> = chunks.map((chunk, index) => {
     const slug = chunk;
-    const url = path.join("/", ...chunks.slice(0, index + 1));
+    const url = join("/", ...chunks.slice(0, index + 1));
     return {
       slug,
       url,
@@ -82,13 +79,14 @@ export async function buildPage(
   page: Page,
   childPages: Array<Page>,
   backLinkedPages: Array<Page>,
+  viewPath: string,
 ): Promise<string | void> {
   const { title, date, html: body } = page;
   const breadcrumbs = generateBreadcrumbs(page);
   const backlinkIndexItems = generateIndexItems(backLinkedPages);
   const childIndexItems = generateIndexItems(childPages);
   const readableDate = date ? toReadableDate(date) : null;
-  const result = await etaRenderFile("./page", {
+  const result = await etaRenderFile(viewPath, {
     breadcrumbs,
     date,
     readableDate,

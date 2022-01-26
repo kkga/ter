@@ -1,6 +1,19 @@
 /* Dependencies */
 
-import { frontMatter, fs, path, slugify } from "./deps.ts";
+import {
+  basename,
+  dirname,
+  emptyDirSync,
+  ensureDirSync,
+  extname,
+  frontMatter,
+  isAbsolute,
+  join,
+  relative,
+  slugify,
+  WalkEntry,
+  walkSync,
+} from "./deps.ts";
 import { render } from "./render.ts";
 import { buildPage } from "./build.ts";
 import { defaultConfig, TerConfig } from "./config.ts";
@@ -43,16 +56,16 @@ export const config: TerConfig = defaultConfig;
 
 if (Deno.args[0]) {
   const inputPath = Deno.args[0];
-  config.inputPath = path.isAbsolute(inputPath)
+  config.inputPath = isAbsolute(inputPath)
     ? inputPath
-    : path.join(Deno.cwd(), inputPath);
+    : join(Deno.cwd(), inputPath);
 }
 
 if (Deno.args[1]) {
   const outputPath = Deno.args[1];
-  config.outputPath = path.isAbsolute(outputPath)
+  config.outputPath = isAbsolute(outputPath)
     ? outputPath
-    : path.join(Deno.cwd(), outputPath);
+    : join(Deno.cwd(), outputPath);
 }
 
 /* Step 1: Grab files */
@@ -67,9 +80,9 @@ const hasDotOrUnderscorePrefix = (path: string): boolean => {
   return false;
 };
 
-const walkEntries: Array<fs.WalkEntry> = [];
+const walkEntries: Array<WalkEntry> = [];
 
-for await (const entry of fs.walk(config.inputPath)) {
+for (const entry of walkSync(config.inputPath)) {
   if (hasDotOrUnderscorePrefix(entry.path)) {
     continue;
   }
@@ -138,14 +151,15 @@ const hasIgnoredKey = (attrs: unknown): boolean => {
 };
 
 for await (const entry of walkEntries) {
-  if (entry.isFile && path.extname(entry.name) !== ".md") {
+  if (entry.isFile && extname(entry.name) !== ".md") {
     staticContentPaths.push(entry.path);
     continue;
   }
 
   if (entry.isFile && entry.name !== "index.md") {
+    // TODO: use opened file for reading content
     const file = await Deno.open(entry.path);
-    const relPath = path.relative(config.inputPath, entry.path);
+    const relPath = relative(config.inputPath, entry.path);
     const content = decoder.decode(Deno.readFileSync(entry.path));
     const { attributes, body } = frontMatter(content);
     const [html, links, headings] = render(body);
@@ -184,14 +198,14 @@ for await (const entry of walkEntries) {
       for (const entry of walkEntries) {
         if (
           entry.isFile && entry.name === "index.md" &&
-          path.dirname(entry.path) === dirPath
+          dirname(entry.path) === dirPath
         ) {
           return entry.path;
         }
       }
     };
 
-    const relPath = path.relative(config.inputPath, entry.path);
+    const relPath = relative(config.inputPath, entry.path);
     const slug = relPath === "" ? "" : slugify(entry.name);
     const isIndex = true;
     const indexEntry = findIndexEntryPath(entry.path);
@@ -255,12 +269,12 @@ function getBackLinkedPages(allPages: Array<Page>, inPage: Page): Array<Page> {
 function getChildPages(allPages: Array<Page>, current: Page): Array<Page> {
   const pages = allPages.filter((p) => {
     const curDir = current.isIndex
-      ? path.basename(
-        path.dirname(path.join(config.inputPath, current.path, "index")),
+      ? basename(
+        dirname(join(config.inputPath, current.path, "index")),
       )
-      : path.basename(path.dirname(path.join(config.inputPath, current.path)));
-    const pDir = path.basename(
-      path.dirname(path.join(config.inputPath, p.path)),
+      : basename(dirname(join(config.inputPath, current.path)));
+    const pDir = basename(
+      dirname(join(config.inputPath, p.path)),
     );
     return curDir === pDir;
   });
@@ -280,9 +294,9 @@ async function buildContentFiles(pages: Array<Page>): Promise<OutputFile[]> {
   const files: Array<OutputFile> = [];
 
   for (const page of pages) {
-    const outputPath = path.join(
+    const outputPath = join(
       config.outputPath,
-      path.dirname(page.path),
+      dirname(page.path),
       page.slug,
       "index.html",
     );
@@ -291,6 +305,7 @@ async function buildContentFiles(pages: Array<Page>): Promise<OutputFile[]> {
       page,
       page.isIndex ? getChildPages(pages, page) : [],
       getBackLinkedPages(pages, page),
+      `${Deno.cwd()}/${config.viewsPath}/page.eta`,
     );
 
     if (typeof html === "string") {
@@ -309,11 +324,11 @@ function getStaticFiles(paths: Array<string>): OutputFile[] {
   const files: Array<OutputFile> = [];
 
   for (const p of paths) {
-    const relPath = path.relative(config.inputPath, p);
-    const outputPath = path.join(
+    const relPath = relative(config.inputPath, p);
+    const outputPath = join(
       config.outputPath,
-      path.dirname(relPath),
-      path.basename(relPath),
+      dirname(relPath),
+      basename(relPath),
     );
     files.push({
       inputPath: p,
@@ -326,12 +341,12 @@ function getStaticFiles(paths: Array<string>): OutputFile[] {
 
 function getSiteAssets(assetsPath: string): OutputFile[] {
   const files: Array<OutputFile> = [];
-  for (const entry of fs.walkSync(assetsPath, { includeDirs: false })) {
-    const relPath = path.relative(assetsPath, entry.path);
-    const outputPath = path.join(
+  for (const entry of walkSync(assetsPath, { includeDirs: false })) {
+    const relPath = relative(assetsPath, entry.path);
+    const outputPath = join(
       config.outputPath,
-      path.dirname(relPath),
-      path.basename(relPath),
+      dirname(relPath),
+      basename(relPath),
     );
 
     files.push({
@@ -353,7 +368,7 @@ const siteAssetFiles = getSiteAssets(config.staticPath);
 
 /* Step 6: Write output */
 
-fs.emptyDirSync(config.outputPath);
+emptyDirSync(config.outputPath);
 
 if (contentFiles.length > 0) {
   console.log("\nWriting content pages:");
@@ -361,11 +376,11 @@ if (contentFiles.length > 0) {
   for (const file of contentFiles) {
     console.log(
       `  ${file.inputPath || "."}\t-> ${
-        path.relative(config.outputPath, file.outputPath)
+        relative(config.outputPath, file.outputPath)
       }`,
     );
     if (file.fileContent) {
-      fs.ensureDirSync(path.dirname(file.outputPath));
+      ensureDirSync(dirname(file.outputPath));
       Deno.writeTextFileSync(file.outputPath, file.fileContent);
     }
   }
@@ -376,11 +391,11 @@ if (staticFiles.length > 0) {
 
   for (const file of staticFiles) {
     console.log(
-      `  ${path.relative(config.outputPath, file.inputPath)}\t-> ${
-        path.relative(config.outputPath, file.outputPath)
+      `  ${relative(config.outputPath, file.inputPath)}\t-> ${
+        relative(config.outputPath, file.outputPath)
       }`,
     );
-    fs.ensureDirSync(path.dirname(file.outputPath));
+    ensureDirSync(dirname(file.outputPath));
     Deno.copyFileSync(file.inputPath, file.outputPath);
   }
 }
@@ -390,11 +405,11 @@ if (siteAssetFiles.length > 0) {
 
   for (const file of siteAssetFiles) {
     console.log(
-      `  ${path.relative(config.staticPath, file.inputPath)}\t-> ${
-        path.relative(config.outputPath, file.outputPath)
+      `  ${relative(config.staticPath, file.inputPath)}\t-> ${
+        relative(config.outputPath, file.outputPath)
       }`,
     );
-    fs.ensureDirSync(path.dirname(file.outputPath));
+    ensureDirSync(dirname(file.outputPath));
     Deno.copyFileSync(file.inputPath, file.outputPath);
   }
 }

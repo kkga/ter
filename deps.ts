@@ -1,5 +1,17 @@
-export * as fs from "https://deno.land/std@0.121.0/fs/mod.ts";
-export * as path from "https://deno.land/std/path/mod.ts";
+export {
+  emptyDirSync,
+  ensureDirSync,
+  walkSync,
+} from "https://deno.land/std@0.121.0/fs/mod.ts";
+export type { WalkEntry } from "https://deno.land/std@0.121.0/fs/mod.ts";
+export {
+  basename,
+  dirname,
+  extname,
+  isAbsolute,
+  join,
+  relative,
+} from "https://deno.land/std/path/mod.ts";
 
 export { default as frontMatter } from "https://esm.sh/front-matter@4.0.2";
 export { slugify } from "https://deno.land/x/slugify/mod.ts";

@@ -1,22 +1,40 @@
 import { writableStreamFromWriter } from "https://deno.land/std@0.122.0/streams/mod.ts";
-import { fs } from "./deps.ts";
+import { fs, path } from "./deps.ts";
+import { defaultConfig as conf } from "./config.ts";
 
-try {
-  const pathInfo = Deno.statSync("./_views");
-  console.log(pathInfo);
-} catch {
-  const fileResponse = await fetch(
-    "file:///home/kkga/projects/ter/_views/base.eta",
-  );
+const modUrl = "file:///home/kkga/projects/ter";
+const requiredViews = ["base.eta", "page.eta", "link-list.eta"];
+const requiredAssets = ["ter.css", "hljs.css"];
 
-  if (fileResponse.body) {
-    fs.ensureDirSync("./_views/");
-    const file = await Deno.open("./_views/base.eta", {
-      write: true,
-      create: true,
-    });
-    const writableStream = writableStreamFromWriter(file);
-    await fileResponse.body.pipeTo(writableStream);
+async function initializeFile(filePath: string, url: URL) {
+  try {
+    Deno.statSync(filePath);
+    console.log("File exists, skipping:", filePath);
+  } catch {
+    const fileResponse = await fetch(url);
+    if (fileResponse.body) {
+      fs.ensureDirSync(path.dirname(filePath));
+      const file = await Deno.open(filePath, {
+        write: true,
+        create: true,
+      });
+      const writableStream = writableStreamFromWriter(file);
+      await fileResponse.body.pipeTo(writableStream);
+    }
+    console.log("Initialized:", filePath);
   }
-  console.log("initialized new");
+}
+
+for await (const view of requiredViews) {
+  initializeFile(
+    path.join(conf.viewsPath, view),
+    new URL(path.join(modUrl, conf.viewsPath, view)),
+  );
+}
+
+for await (const asset of requiredAssets) {
+  initializeFile(
+    path.join(conf.staticPath, asset),
+    new URL(path.join(modUrl, conf.staticPath, asset)),
+  );
 }
