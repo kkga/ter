@@ -4,7 +4,3 @@
   [Zettelkasten](./zettelkasten.md)
 - A blog
 - Software documentation (just like the one you're currently browsing)
-- <https://en.wikipedia.org/wiki/Personal_wiki>
-- www.wikipedia.org/wiki/Personal_wiki
-- wikipedia.org/wiki/Personal_wiki
-- <wikipedia.org/wiki/Personal_wiki>

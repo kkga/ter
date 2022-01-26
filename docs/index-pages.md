@@ -1,9 +1,7 @@
 # Index pages
 
-Minmi recursively creates pages for all nested directories in the base content
-directory.
-
-Each directory gets an index file listing its content.
+Ter recursively recreates the source file system on the rendered site and each
+directory gets an index file listing its content.
 
 For example, if the source looks like this:
 
@@ -20,4 +18,6 @@ content
 content.
 
 If the source directory contains an `index.md` file, its content will be
-injected into the rendered `index.html` above the index list.
+injected into the rendered `index.html` above the index list. This can be useful
+for describing what the folder content is about or additionally calling out
+individual pages from the index.
