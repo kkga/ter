@@ -40,7 +40,13 @@ function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
     });
   }
 
-  items.sort((a) => a.isIndexPage ? -1 : 1);
+  items.sort((a, b) => {
+    if (a.date && b.date) {
+      return b.date.valueOf() - a.date.valueOf();
+    } else {
+      return 0;
+    }
+  }).sort((a) => a.isIndexPage ? -1 : 0);
 
   return items;
 }
