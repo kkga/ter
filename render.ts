@@ -1,4 +1,11 @@
-import { hljs, marked, sanitizeHtml } from "./deps.ts";
+import {
+  dirname,
+  hljs,
+  join,
+  marked,
+  normalize,
+  sanitizeHtml,
+} from "./deps.ts";
 import { Heading } from "./main.ts";
 import { parseURL } from "https://unpkg.com/ufo/dist/index.mjs";
 
@@ -73,7 +80,10 @@ const _sanitize = (html: string) => {
   });
 };
 
-export function render(text: string): [string, Array<string>, Array<Heading>] {
+export function render(
+  text: string,
+  relPath: string,
+): [string, Array<string>, Array<Heading>] {
   const links: Array<string> = [];
   const headings: Array<Heading> = [];
 
@@ -95,10 +105,13 @@ export function render(text: string): [string, Array<string>, Array<Heading>] {
       }">${text}</a>`;
     } else if (href.endsWith(".md")) {
       links.push(href);
-      const localHref = "/" + href.replace(/\.md$/i, "");
-      return `<a href="${localHref}" ${
-        title ? "title=${title}" : ""
-      }">${text}</a>`;
+      const url = normalize(join("/", dirname(relPath), href)).replace(
+        /\.md$/i,
+        "",
+      );
+      console.log(href, url);
+      // const localHref = href.replace(/\.md$/i, "");
+      return `<a href="${url}" ${title ? "title=${title}" : ""}">${text}</a>`;
     }
     return `<a href="${href}" ${title ? "title=${title}" : ""}">${text}</a>`;
   };

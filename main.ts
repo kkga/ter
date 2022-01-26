@@ -28,9 +28,9 @@ export interface Page {
   name: string;
   title: string;
   slug: string;
+  date?: Date | null;
   description?: string;
   attributes?: unknown;
-  date?: Date | null;
   tags?: Array<string>;
   headings?: Array<Heading>;
   body?: string;
@@ -92,7 +92,7 @@ async function generatePages(
       const relPath = relative(inputPath, entry.path);
       const content = decoder.decode(await Deno.readFile(entry.path));
       const { attributes, body } = frontMatter(content);
-      const [html, links, headings] = render(body);
+      const [html, links, headings] = render(body, relPath);
       const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
       const title = attr.getTitleFromAttrs(attributes) ||
         attr.getTitleFromHeadings(headings) || entry.name;
@@ -145,7 +145,7 @@ async function generatePages(
       if (indexEntry) {
         const content = decoder.decode(await Deno.readFile(indexEntry));
         const { attributes, body } = frontMatter(content);
-        const [html, links, headings] = render(body);
+        const [html, links, headings] = render(body, relPath);
         const title = attr.getTitleFromAttrs(attributes) ||
           attr.getTitleFromHeadings(headings) || entry.name;
         const description = attr.getDescriptionFromAttrs(attributes) || "";
