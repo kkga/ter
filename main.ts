@@ -52,13 +52,11 @@ function hasOwnProperty<T, K extends PropertyKey>(
 
 async function getFileEntries(path: string): Promise<Array<WalkEntry>> {
   const entries: Array<WalkEntry> = [];
-  const reDotOrUnderscorePrefix = /^[\._].+/ig;
 
   const hasIgnoredPrefix = (path: string): boolean => {
     const pathChunks = path.split("/");
     for (const chunk of pathChunks) {
-      if (reDotOrUnderscorePrefix.test(chunk)) {
-        console.log(path);
+      if (/^\./.test(chunk) || /^\_/.test(chunk)) {
         return true;
       }
     }
