@@ -132,7 +132,7 @@ async function generatePages(
       // TODO: use opened file for reading content
       const file = await Deno.open(entry.path);
       const relPath = relative(inputPath, entry.path);
-      const content = decoder.decode(Deno.readFileSync(entry.path));
+      const content = decoder.decode(await Deno.readFile(entry.path));
       const { attributes, body } = frontMatter(content);
       const [html, links, headings] = render(body);
       const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
@@ -140,7 +140,7 @@ async function generatePages(
         getTitleFromHeadings(headings) || entry.name;
       const description = getDescriptionFromAttrs(attributes) || "";
       const tags = getTagsFromAttrs(attributes);
-      const date = Deno.fstatSync(file.rid).mtime;
+      const date = await Deno.fstat(file.rid).then((file) => file.mtime);
       const isIndex = false;
       file.close();
 
@@ -184,7 +184,7 @@ async function generatePages(
       let indexPage: Page;
 
       if (indexEntry) {
-        const content = decoder.decode(Deno.readFileSync(indexEntry));
+        const content = decoder.decode(await Deno.readFile(indexEntry));
         const { attributes, body } = frontMatter(content);
         const [html, links, headings] = render(body);
         const title = getTitleFromAttrs(attributes) ||
@@ -352,9 +352,6 @@ async function main() {
     entry.isFile && extname(entry.path) !== ".md"
   );
 
-  // console.log(markdownEntries);
-  // console.log(staticEntries);
-
   const htmlFiles = await generatePages(
     markdownEntries,
     inputPath,
@@ -376,12 +373,14 @@ async function main() {
     console.log("\nWriting content pages:");
 
     for (const file of htmlFiles) {
-      console.log(
-        `  ${file.inputPath || "."}\t-> ${relative(outputPath, file.filePath)}`,
-      );
       if (file.fileContent) {
+        console.log(
+          `  ${file.inputPath || "."}\t-> ${
+            relative(outputPath, file.filePath)
+          }`,
+        );
         await ensureDir(dirname(file.filePath));
-        Deno.writeTextFileSync(file.filePath, file.fileContent);
+        await Deno.writeTextFile(file.filePath, file.fileContent);
       }
     }
   }
@@ -402,7 +401,7 @@ async function main() {
         }`,
       );
       await ensureDir(dirname(file.filePath));
-      Deno.copyFileSync(file.inputPath, file.filePath);
+      await Deno.copyFile(file.inputPath, file.filePath);
     }
   }
 
@@ -417,8 +416,8 @@ async function main() {
           relative(outputPath, file.filePath)
         }`,
       );
-      ensureDir(dirname(file.filePath));
-      Deno.copyFileSync(file.inputPath, file.filePath);
+      await ensureDir(dirname(file.filePath));
+      await Deno.copyFile(file.inputPath, file.filePath);
     }
   }
 
@@ -434,4 +433,4 @@ async function main() {
   );
 }
 
-main();
+await main();

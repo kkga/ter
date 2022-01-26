@@ -10,7 +10,7 @@ const config = createConfig(Deno.args);
 
 async function initializeFile(filePath: string, url: URL) {
   try {
-    Deno.statSync(filePath);
+    await Deno.stat(filePath);
     console.log("File exists, skipping:", filePath);
   } catch {
     const fileResponse = await fetch(url);
