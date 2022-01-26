@@ -20,17 +20,17 @@ const defaultConfig: TerConfig = {
   ignoreKeys: ["private", "draft"],
 };
 
-export function createConfig(args: Array<string>): TerConfig {
+export function createConfig(args?: Array<string>): TerConfig {
   const config = defaultConfig;
 
-  if (args[0]) {
+  if (args && args[0]) {
     const inputPath = Deno.args[0];
     config.inputPath = isAbsolute(inputPath)
       ? inputPath
       : join(Deno.cwd(), inputPath);
   }
 
-  if (args[1]) {
+  if (args && args[1]) {
     const outputPath = Deno.args[1];
     config.outputPath = isAbsolute(outputPath)
       ? outputPath

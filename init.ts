@@ -1,10 +1,12 @@
 import { writableStreamFromWriter } from "https://deno.land/std@0.122.0/streams/mod.ts";
-import { dirname, ensureDirSync, join } from "./deps.ts";
-import { defaultConfig as conf } from "./config.ts";
+import { dirname, ensureDir, join } from "./deps.ts";
+import { createConfig } from "./config.ts";
 
-const modUrl = "file:///home/kkga/projects/ter";
+const modUrl = "https://deno.land/x/ter";
 const requiredViews = ["base.eta", "page.eta", "link-list.eta"];
 const requiredAssets = ["ter.css", "hljs.css"];
+
+const config = createConfig(Deno.args);
 
 async function initializeFile(filePath: string, url: URL) {
   try {
@@ -13,7 +15,7 @@ async function initializeFile(filePath: string, url: URL) {
   } catch {
     const fileResponse = await fetch(url);
     if (fileResponse.body) {
-      ensureDirSync(dirname(filePath));
+      await ensureDir(dirname(filePath));
       const file = await Deno.open(filePath, {
         write: true,
         create: true,
@@ -27,14 +29,14 @@ async function initializeFile(filePath: string, url: URL) {
 
 for await (const view of requiredViews) {
   initializeFile(
-    join(conf.viewsPath, view),
-    new URL(join(modUrl, conf.viewsPath, view)),
+    join(config.viewsPath, view),
+    new URL(join(modUrl, config.viewsPath, view)),
   );
 }
 
 for await (const asset of requiredAssets) {
   initializeFile(
-    join(conf.staticPath, asset),
-    new URL(join(modUrl, conf.staticPath, asset)),
+    join(config.assetsPath, asset),
+    new URL(join(modUrl, config.assetsPath, asset)),
   );
 }
