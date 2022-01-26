@@ -347,7 +347,7 @@ async function main() {
   const entries = await getFileEntries(inputPath);
 
   const markdownEntries = entries.filter((entry) =>
-    entry.isFile && extname(entry.path) === ".md"
+    entry.isDirectory || entry.isFile && extname(entry.path) === ".md"
   );
 
   const staticEntries = entries.filter((entry) =>
