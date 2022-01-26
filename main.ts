@@ -14,6 +14,7 @@ import {
 import { render } from "./render.ts";
 import { buildPage } from "./build.ts";
 import { createConfig } from "./config.ts";
+import * as attr from "./attr.ts";
 
 export interface Heading {
   text: string;
@@ -43,13 +44,6 @@ interface OutputFile {
   fileContent?: string;
 }
 
-function hasOwnProperty<T, K extends PropertyKey>(
-  obj: T,
-  prop: K,
-): obj is T & Record<K, unknown> {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-
 async function getFileEntries(path: string): Promise<Array<WalkEntry>> {
   const entries: Array<WalkEntry> = [];
 
@@ -70,42 +64,6 @@ async function getFileEntries(path: string): Promise<Array<WalkEntry>> {
   }
   return entries;
 }
-
-const getTitleFromAttrs = (attrs: unknown): string | undefined => {
-  if (
-    typeof attrs === "object" && hasOwnProperty(attrs, "title") &&
-    typeof attrs.title === "string"
-  ) {
-    return attrs.title;
-  }
-};
-
-const getDescriptionFromAttrs = (attrs: unknown): string | undefined => {
-  if (
-    typeof attrs === "object" && hasOwnProperty(attrs, "description") &&
-    typeof attrs.description === "string"
-  ) {
-    return attrs.description;
-  }
-};
-
-const getTagsFromAttrs = (attrs: unknown): Array<string> => {
-  if (
-    typeof attrs === "object" && hasOwnProperty(attrs, "tags") &&
-    Array.isArray(attrs.tags)
-  ) {
-    return attrs.tags;
-  }
-  return [];
-};
-
-const getTitleFromHeadings = (headings: Array<Heading>): string | undefined => {
-  for (const h of headings) {
-    if (h.level === 1) {
-      return h.text;
-    }
-  }
-};
 
 const hasIgnoredKey = (attrs: unknown, ignoreKeys: Array<string>): boolean => {
   if (attrs && typeof attrs === "object") {
@@ -136,11 +94,12 @@ async function generatePages(
       const { attributes, body } = frontMatter(content);
       const [html, links, headings] = render(body);
       const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
-      const title = getTitleFromAttrs(attributes) ||
-        getTitleFromHeadings(headings) || entry.name;
-      const description = getDescriptionFromAttrs(attributes) || "";
-      const tags = getTagsFromAttrs(attributes);
-      const date = await Deno.fstat(file.rid).then((file) => file.mtime);
+      const title = attr.getTitleFromAttrs(attributes) ||
+        attr.getTitleFromHeadings(headings) || entry.name;
+      const description = attr.getDescriptionFromAttrs(attributes) || "";
+      const tags = attr.getTagsFromAttrs(attributes);
+      const date = attr.getDateFromAttrs(attributes) ||
+        await Deno.fstat(file.rid).then((file) => file.mtime);
       const isIndex = false;
       file.close();
 
@@ -187,10 +146,10 @@ async function generatePages(
         const content = decoder.decode(await Deno.readFile(indexEntry));
         const { attributes, body } = frontMatter(content);
         const [html, links, headings] = render(body);
-        const title = getTitleFromAttrs(attributes) ||
-          getTitleFromHeadings(headings) || entry.name;
-        const description = getDescriptionFromAttrs(attributes) || "";
-        const tags = getTagsFromAttrs(attributes);
+        const title = attr.getTitleFromAttrs(attributes) ||
+          attr.getTitleFromHeadings(headings) || entry.name;
+        const description = attr.getDescriptionFromAttrs(attributes) || "";
+        const tags = attr.getTagsFromAttrs(attributes);
 
         indexPage = {
           name: entry.name,
