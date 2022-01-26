@@ -9,6 +9,9 @@ clean:
 build:
 	$(DENO) main.ts $(INPUTDIR)
 
+build-test:
+	$(DENO) main.ts 10000-files-test
+
 watch:
 	$(DENO) --watch=$(INPUTDIR),_static,_views main.ts $(INPUTDIR)
 
