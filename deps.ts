@@ -10,6 +10,7 @@ export {
   extname,
   isAbsolute,
   join,
+  normalize,
   relative,
 } from "https://deno.land/std/path/mod.ts";
 

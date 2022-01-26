@@ -1,7 +1,3 @@
----
-date: 2020-01-20
----
-
 # Backlinks
 
 Ter adheres to the [Zettelksten](zettelkasten.md) method and tracks connections
