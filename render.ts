@@ -6,7 +6,7 @@ import {
   normalize,
   sanitizeHtml,
 } from "./deps.ts";
-import { Heading } from "./main.ts";
+import { Heading } from "./page.ts";
 import { parseURL } from "https://unpkg.com/ufo/dist/index.mjs";
 
 const renderer = new marked.Renderer();

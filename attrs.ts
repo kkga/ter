@@ -10,18 +10,6 @@ const getTitleFromAttrs = (attrs: unknown): string | undefined => {
   }
 };
 
-const hasIgnoredKey = (attrs: unknown, ignoreKeys: Array<string>): boolean => {
-  if (attrs && typeof attrs === "object") {
-    for (const key of Object.keys(attrs)) {
-      const keyTyped = key as keyof typeof attrs;
-      if (ignoreKeys.includes(keyTyped) && attrs[keyTyped] === true) {
-        return true;
-      }
-    }
-  }
-  return false;
-};
-
 const getDescriptionFromAttrs = (attrs: unknown): string | undefined => {
   if (
     typeof attrs === "object" && hasOwnProperty(attrs, "description") &&
@@ -41,15 +29,6 @@ const getTagsFromAttrs = (attrs: unknown): Array<string> => {
   return [];
 };
 
-const getDateFromAttrs = (attrs: unknown): Date | undefined => {
-  if (
-    typeof attrs === "object" && hasOwnProperty(attrs, "date") &&
-    attrs.date instanceof Date
-  ) {
-    return attrs.date;
-  }
-};
-
 const getTitleFromHeadings = (headings: Array<Heading>): string | undefined => {
   for (const h of headings) {
     if (h.level === 1) {
@@ -59,10 +38,8 @@ const getTitleFromHeadings = (headings: Array<Heading>): string | undefined => {
 };
 
 export {
-  getDateFromAttrs,
   getDescriptionFromAttrs,
   getTagsFromAttrs,
   getTitleFromAttrs,
   getTitleFromHeadings,
-  hasIgnoredKey,
 };

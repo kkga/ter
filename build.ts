@@ -1,5 +1,5 @@
 import { dirname, etaConfigure, etaRenderFile, join } from "./deps.ts";
-import { Page } from "./main.ts";
+import { Page } from "./page.ts";
 
 etaConfigure({
   autotrim: true,

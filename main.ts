@@ -4,39 +4,15 @@ import {
   emptyDir,
   ensureDir,
   extname,
-  frontMatter,
   join,
   relative,
-  slugify,
   walk,
   WalkEntry,
 } from "./deps.ts";
-import { render } from "./render.ts";
 import { buildPage } from "./build.ts";
 import { createConfig } from "./config.ts";
-import * as attr from "./attr.ts";
-
-export interface Heading {
-  text: string;
-  level: 1 | 2 | 3 | 4 | 5 | 6;
-  slug: string;
-}
-
-export interface Page {
-  isIndex: boolean;
-  path: string;
-  name: string;
-  title: string;
-  slug: string;
-  date?: Date | null;
-  description?: string;
-  attributes?: unknown;
-  tags?: Array<string>;
-  headings?: Array<Heading>;
-  body?: string;
-  html?: string;
-  links?: Array<string>;
-}
+import { generatePage, Page } from "./page.ts";
+import { hasIgnoredKey } from "./attr.ts";
 
 interface OutputFile {
   inputPath: string;
@@ -62,123 +38,8 @@ async function getFileEntries(path: string): Promise<Array<WalkEntry>> {
       entries.push(entry);
     }
   }
+
   return entries;
-}
-
-const hasIgnoredKey = (attrs: unknown, ignoreKeys: Array<string>): boolean => {
-  if (attrs && typeof attrs === "object") {
-    for (const key of Object.keys(attrs)) {
-      const keyTyped = key as keyof typeof attrs;
-      if (ignoreKeys.includes(keyTyped) && attrs[keyTyped] === true) {
-        return true;
-      }
-    }
-  }
-  return false;
-};
-
-async function generatePages(
-  entries: Array<WalkEntry>,
-  inputPath: string,
-  ignoredKeys: Array<string>,
-): Promise<Page[]> {
-  const pages: Array<Page> = [];
-  const decoder = new TextDecoder("utf-8");
-
-  for await (const entry of entries) {
-    if (entry.isFile && entry.name !== "index.md") {
-      // TODO: use opened file for reading content
-      const file = await Deno.open(entry.path);
-      const relPath = relative(inputPath, entry.path);
-      const content = decoder.decode(await Deno.readFile(entry.path));
-      const { attributes, body } = frontMatter(content);
-      const [html, links, headings] = render(body, relPath);
-      const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
-      const title = attr.getTitleFromAttrs(attributes) ||
-        attr.getTitleFromHeadings(headings) || entry.name;
-      const description = attr.getDescriptionFromAttrs(attributes) || "";
-      const tags = attr.getTagsFromAttrs(attributes);
-      const date = attr.getDateFromAttrs(attributes) ||
-        await Deno.fstat(file.rid).then((file) => file.mtime);
-      const isIndex = false;
-      file.close();
-
-      if (hasIgnoredKey(attributes, ignoredKeys)) {
-        continue;
-      }
-
-      const contentPage: Page = {
-        name: entry.name,
-        path: relPath,
-        attributes,
-        body,
-        html,
-        links,
-        headings,
-        title,
-        slug,
-        description,
-        tags,
-        date,
-        isIndex,
-      };
-
-      pages.push(contentPage);
-    } else if (entry.isDirectory) {
-      const findIndexEntryPath = (dirPath: string): string | undefined => {
-        for (const entry of entries) {
-          if (
-            entry.isFile && entry.name === "index.md" &&
-            dirname(entry.path) === dirPath
-          ) {
-            return entry.path;
-          }
-        }
-      };
-
-      const relPath = relative(inputPath, entry.path);
-      const slug = relPath === "" ? "" : slugify(entry.name);
-      const isIndex = true;
-      const indexEntry = findIndexEntryPath(entry.path);
-      let indexPage: Page;
-
-      if (indexEntry) {
-        const content = decoder.decode(await Deno.readFile(indexEntry));
-        const { attributes, body } = frontMatter(content);
-        const [html, links, headings] = render(body, relPath);
-        const title = attr.getTitleFromAttrs(attributes) ||
-          attr.getTitleFromHeadings(headings) || entry.name;
-        const description = attr.getDescriptionFromAttrs(attributes) || "";
-        const tags = attr.getTagsFromAttrs(attributes);
-
-        indexPage = {
-          name: entry.name,
-          path: relPath,
-          attributes,
-          body,
-          html,
-          links,
-          headings,
-          title,
-          slug,
-          description,
-          tags,
-          isIndex,
-        };
-      } else {
-        indexPage = {
-          name: entry.name,
-          path: relPath,
-          title: entry.name,
-          slug,
-          isIndex,
-        };
-      }
-
-      pages.push(indexPage);
-    }
-  }
-  return pages;
 }
 
 function getBackLinkedPages(allPages: Array<Page>, inPage: Page): Array<Page> {
@@ -213,6 +74,28 @@ function getChildPages(
     );
     return curDir === pDir;
   });
+
+  return pages;
+}
+
+export async function generatePages(
+  entries: Array<WalkEntry>,
+  inputPath: string,
+  ignoredKeys: Array<string>,
+): Promise<Page[]> {
+  let pages: Array<Page> = [];
+
+  for (const entry of entries) {
+    const page = await generatePage(entry, inputPath, entries).catch(
+      (reason) => {
+        console.log(`Can't generate page ${entry}: ${reason}`);
+      },
+    );
+    page && pages.push(page);
+  }
+
+  // console.log(inputPath);
+  pages = pages.filter((page) => !hasIgnoredKey(page.attributes, ignoredKeys));
 
   return pages;
 }
@@ -302,6 +185,14 @@ async function main() {
   const config = createConfig(Deno.args);
   const { inputPath, outputPath, viewsPath, assetsPath, ignoreKeys } = config;
   const entries = await getFileEntries(inputPath);
+  const pageViewPath = join(Deno.cwd(), viewsPath, "page.eta");
+
+  await Deno.stat(pageViewPath).catch(() => {
+    console.log(
+      "Can't find the 'page.eta' view. Did you forget to run 'init.ts'?",
+    );
+    Deno.exit(1);
+  });
 
   const markdownEntries = entries.filter((entry) =>
     entry.isDirectory || entry.isFile && extname(entry.path) === ".md"
@@ -323,7 +214,7 @@ async function main() {
       join(Deno.cwd(), viewsPath, "page.eta"),
     )
   ).catch((err) => {
-    console.log(err);
+    throw new Error(err);
   });
 
   await emptyDir(outputPath);
