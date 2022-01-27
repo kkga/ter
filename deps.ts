@@ -1,7 +1,7 @@
 export {
   emptyDir,
   ensureDir,
-  walk,
+  expandGlob,
 } from "https://deno.land/std@0.121.0/fs/mod.ts";
 export type { WalkEntry } from "https://deno.land/std@0.121.0/fs/mod.ts";
 export {
