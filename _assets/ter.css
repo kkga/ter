@@ -204,6 +204,7 @@ a:hover {
   text-decoration: underline;
   text-decoration-color: currentColor !important;
   text-decoration-style: solid !important;
+  color: var(--col-lk-1);
 }
 
 a[rel~="external"] {
@@ -215,6 +216,8 @@ a[rel~="external"] {
 
 a[rel~="external"]::after {
   content: "↗";
+  color: var(--col-lk-1);
+  text-decoration: none;
 }
 
 abbr:hover {
