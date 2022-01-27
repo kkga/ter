@@ -11,7 +11,7 @@ interface TerConfig {
 }
 
 const defaultConfig: TerConfig = {
-  inputPath: ".",
+  inputPath: Deno.cwd(),
   outputPath: "_site",
   assetsPath: "_assets",
   viewsPath: "_views",
