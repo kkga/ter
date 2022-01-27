@@ -3,43 +3,24 @@ import {
   dirname,
   emptyDir,
   ensureDir,
-  extname,
   join,
   relative,
-  walk,
   WalkEntry,
 } from "./deps.ts";
 import { buildPage } from "./build.ts";
 import { createConfig } from "./config.ts";
 import { generatePage, Page } from "./page.ts";
+import {
+  getAssetEntries,
+  getContentEntries,
+  getStaticEntries,
+} from "./entries.ts";
 import { hasIgnoredKey } from "./attr.ts";
 
 interface OutputFile {
   inputPath: string;
   filePath: string;
   fileContent?: string;
-}
-
-async function getFileEntries(path: string): Promise<Array<WalkEntry>> {
-  const entries: Array<WalkEntry> = [];
-
-  const hasIgnoredPrefix = (path: string): boolean => {
-    const pathChunks = path.split("/");
-    for (const chunk of pathChunks) {
-      if (/^\./.test(chunk) || /^\_/.test(chunk)) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  for await (const entry of walk(path)) {
-    if (!hasIgnoredPrefix(entry.path)) {
-      entries.push(entry);
-    }
-  }
-
-  return entries;
 }
 
 function getBackLinkedPages(allPages: Array<Page>, inPage: Page): Array<Page> {
@@ -72,13 +53,14 @@ function getChildPages(
     const pDir = basename(
       dirname(join(inputPath, p.path)),
     );
+    console.log(curDir, pDir);
     return curDir === pDir;
   });
 
   return pages;
 }
 
-export async function generatePages(
+async function generatePages(
   entries: Array<WalkEntry>,
   inputPath: string,
   ignoredKeys: Array<string>,
@@ -94,7 +76,6 @@ export async function generatePages(
     page && pages.push(page);
   }
 
-  // console.log(inputPath);
   pages = pages.filter((page) => !hasIgnoredKey(page.attributes, ignoredKeys));
 
   return pages;
@@ -158,34 +139,18 @@ function getStaticFiles(
   return files;
 }
 
-async function getAssetFiles(
-  assetsPath: string,
-  outputPath: string,
-): Promise<OutputFile[]> {
-  const files: Array<OutputFile> = [];
-
-  for await (const entry of walk(assetsPath, { includeDirs: false })) {
-    const relPath = relative(assetsPath, entry.path);
-    const filePath = join(
-      outputPath,
-      dirname(relPath),
-      basename(relPath),
-    );
-
-    files.push({
-      inputPath: entry.path,
-      filePath,
-    });
-  }
-  return files;
-}
-
 async function main() {
   const startDate = new Date();
   const config = createConfig(Deno.args);
   const { inputPath, outputPath, viewsPath, assetsPath, ignoreKeys } = config;
-  const entries = await getFileEntries(inputPath);
   const pageViewPath = join(Deno.cwd(), viewsPath, "page.eta");
+
+  const assetEntries = await getAssetEntries(assetsPath);
+  const contentEntries = await getContentEntries(inputPath);
+  const staticEntries = await getStaticEntries(
+    inputPath,
+    config.staticExts,
+  );
 
   await Deno.stat(pageViewPath).catch(() => {
     console.log(
@@ -194,16 +159,8 @@ async function main() {
     Deno.exit(1);
   });
 
-  const markdownEntries = entries.filter((entry) =>
-    entry.isDirectory || entry.isFile && extname(entry.path) === ".md"
-  );
-
-  const staticEntries = entries.filter((entry) =>
-    entry.isFile && extname(entry.path) !== ".md"
-  );
-
   const htmlFiles = await generatePages(
-    markdownEntries,
+    contentEntries,
     inputPath,
     ignoreKeys,
   ).then((pages) =>
@@ -255,7 +212,7 @@ async function main() {
     }
   }
 
-  const assetFiles = await getAssetFiles(assetsPath, outputPath);
+  const assetFiles = getStaticFiles(assetEntries, assetsPath, outputPath);
 
   if (assetFiles.length > 0) {
     console.log("\nCopying site assets:");
