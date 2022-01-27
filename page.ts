@@ -1,4 +1,11 @@
-import { dirname, frontMatter, relative, slugify, WalkEntry } from "./deps.ts";
+import {
+  dirname,
+  extname,
+  frontMatter,
+  relative,
+  slugify,
+  WalkEntry,
+} from "./deps.ts";
 import { render } from "./render.ts";
 import * as attr from "./attr.ts";
 
@@ -34,7 +41,10 @@ export async function generatePage(
   if (entry.isFile && entry.name !== "index.md") {
     // TODO: use opened file for reading content
     const file = await Deno.open(entry.path);
-    const relPath = relative(inputPath, entry.path);
+    const relPath = relative(inputPath, entry.path).replace(
+      extname(entry.path),
+      "",
+    );
     const content = decoder.decode(await Deno.readFile(entry.path));
     const { attributes, body } = frontMatter(content);
     const [html, links, headings] = render(body, relPath);

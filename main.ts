@@ -23,20 +23,18 @@ interface OutputFile {
   fileContent?: string;
 }
 
-function getBackLinkedPages(allPages: Array<Page>, inPage: Page): Array<Page> {
-  const bl: Array<Page> = [];
-
+function getBackLinkPages(
+  allPages: Array<Page>,
+  inPage: Page,
+): Array<Page> {
+  const pages: Array<Page> = [];
   for (const outPage of allPages) {
-    const { links } = outPage;
-
-    if (links && links.length > 0) {
-      if (links.includes(inPage.path)) {
-        bl.push(outPage);
-      }
+    if (outPage.links?.includes(inPage.path)) {
+      pages.push(outPage);
     }
   }
 
-  return bl;
+  return pages;
 }
 
 function getChildPages(
@@ -53,7 +51,7 @@ function getChildPages(
     const pDir = basename(
       dirname(join(inputPath, p.path)),
     );
-    console.log(curDir, pDir);
+    // console.log(curDir, pDir);
     return curDir === pDir;
   });
 
@@ -100,7 +98,7 @@ async function buildContentFiles(
     const html = await buildPage(
       page,
       page.isIndex ? getChildPages(pages, page, inputPath) : [],
-      getBackLinkedPages(pages, page),
+      getBackLinkPages(pages, page),
       pageViewPath,
     );
 

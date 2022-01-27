@@ -104,14 +104,14 @@ export function render(
         title ? "title=${title}" : ""
       }">${text}</a>`;
     } else if (href.endsWith(".md")) {
-      links.push(href);
-      const url = normalize(join("/", dirname(relPath), href)).replace(
+      const pagePath = join(dirname(relPath), href).replace(
         /\.md$/i,
         "",
       );
-      console.log(href, url);
-      // const localHref = href.replace(/\.md$/i, "");
-      return `<a href="${url}" ${title ? "title=${title}" : ""}">${text}</a>`;
+      links.push(pagePath);
+      return `<a href="${join("/", pagePath)}" ${
+        title ? "title=${title}" : ""
+      }">${text}</a>`;
     }
     return `<a href="${href}" ${title ? "title=${title}" : ""}">${text}</a>`;
   };
