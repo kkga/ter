@@ -85,8 +85,8 @@ export async function generatePage(
       }
     };
 
-    const relPath = relative(inputPath, entry.path);
-    const slug = relPath === "" ? "" : slugify(entry.name);
+    const relPath = relative(inputPath, entry.path) || ".";
+    const slug = relPath === "." ? "." : slugify(entry.name);
     const isIndex = true;
     const indexEntry = findIndexEntryPath(entry.path);
 

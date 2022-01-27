@@ -23,13 +23,13 @@ interface OutputFile {
   fileContent?: string;
 }
 
-function getBackLinkPages(
+function getBacklinkPages(
   allPages: Array<Page>,
-  inPage: Page,
+  current: Page,
 ): Array<Page> {
   const pages: Array<Page> = [];
   for (const outPage of allPages) {
-    if (outPage.links?.includes(inPage.path)) {
+    if (outPage.links?.includes(current.path)) {
       pages.push(outPage);
     }
   }
@@ -40,19 +40,10 @@ function getBackLinkPages(
 function getChildPages(
   allPages: Array<Page>,
   current: Page,
-  inputPath: string,
 ): Array<Page> {
   const pages = allPages.filter((p) => {
-    const curDir = current.isIndex
-      ? basename(
-        dirname(join(inputPath, current.path, "index")),
-      )
-      : basename(dirname(join(inputPath, current.path)));
-    const pDir = basename(
-      dirname(join(inputPath, p.path)),
-    );
-    // console.log(curDir, pDir);
-    return curDir === pDir;
+    console.log(current.path, dirname(p.path));
+    return current.path === dirname(p.path);
   });
 
   return pages;
@@ -81,7 +72,6 @@ async function generatePages(
 
 async function buildContentFiles(
   pages: Array<Page>,
-  inputPath: string,
   outputPath: string,
   pageViewPath: string,
 ): Promise<OutputFile[]> {
@@ -97,8 +87,8 @@ async function buildContentFiles(
 
     const html = await buildPage(
       page,
-      page.isIndex ? getChildPages(pages, page, inputPath) : [],
-      getBackLinkPages(pages, page),
+      page.isIndex ? getChildPages(pages, page) : [],
+      getBacklinkPages(pages, page),
       pageViewPath,
     );
 
@@ -164,7 +154,6 @@ async function main() {
   ).then((pages) =>
     buildContentFiles(
       pages,
-      inputPath,
       outputPath,
       join(Deno.cwd(), viewsPath, "page.eta"),
     )
@@ -180,9 +169,7 @@ async function main() {
     for (const file of htmlFiles) {
       if (file.fileContent) {
         console.log(
-          `  ${file.inputPath || "."}\t-> ${
-            relative(outputPath, file.filePath)
-          }`,
+          `  ${file.inputPath}\t-> ${relative(outputPath, file.filePath)}`,
         );
         await ensureDir(dirname(file.filePath));
         await Deno.writeTextFile(file.filePath, file.fileContent);
