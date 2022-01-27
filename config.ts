@@ -8,6 +8,7 @@ interface TerConfig {
   title: string;
   description: string;
   ignoreKeys: Array<string>;
+  staticExts: Array<string>;
 }
 
 const defaultConfig: TerConfig = {
@@ -18,6 +19,7 @@ const defaultConfig: TerConfig = {
   title: "Ter wiki",
   description: "A tiny wiki-style site builder with Zettelkasten flavor",
   ignoreKeys: ["private", "draft"],
+  staticExts: ["png", "jpg", "jpeg", "gif", "webp", "webm", "mp4"],
 };
 
 export function createConfig(args?: Array<string>): TerConfig {
