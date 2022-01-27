@@ -9,32 +9,32 @@ Based on: https://github.com/xz/new.css
   --ter-font-mono: "JetBrains Mono", monospace;
 
   /* Light theme */
-  --nc-tx-1: #000000;
-  --nc-tx-2: #1a1a1a;
-  --nc-tx-3: #444444;
-  --nc-tx-4: #777777;
-  --nc-bg-1: #ffffff;
-  --nc-bg-2: #f6f8fa;
-  --nc-bg-3: #e5e7eb;
-  --nc-lk-1: #0070f3;
-  --nc-lk-2: #0366d6;
-  --nc-lk-tx: #ffffff;
-  --nc-ac-1: #79ffe1;
-  --nc-ac-tx: #0c4047;
+  --col-tx-1: #1c1917;
+  --col-tx-2: #1c1917;
+  --col-tx-3: #57534e;
+  --col-tx-4: #78716c;
+  --col-bg-1: #f5f5f4;
+  --col-bg-2: #e7e5e4;
+  --col-bg-3: #d6d3d1;
+  --col-lk-1: #0369a1;
+  --col-lk-2: #0366d6;
+  --col-lk-tx: #ffffff;
+  --col-ac-1: #79ffe1;
+  --col-ac-tx: #b45309;
 
   /* Dark theme */
-  --nc-d-tx-1: #ffffff;
-  --nc-d-tx-2: #eeeeee;
-  --nc-d-tx-3: #aaaaaa;
-  --nc-d-tx-4: #999999;
-  --nc-d-bg-1: #000000;
-  --nc-d-bg-2: #111111;
-  --nc-d-bg-3: #222222;
-  --nc-d-lk-1: #3291ff;
-  --nc-d-lk-2: #0070f3;
-  --nc-d-lk-tx: #ffffff;
-  --nc-d-ac-1: #7928ca;
-  --nc-d-ac-tx: #ffffff;
+  --col-d-tx-1: #f5f5f4;
+  --col-d-tx-2: #e7e5e4;
+  --col-d-tx-3: #a8a29e;
+  --col-d-tx-4: #78716c;
+  --col-d-bg-1: #1c1917;
+  --col-d-bg-2: #292524;
+  --col-d-bg-3: #44403c;
+  --col-d-lk-1: #0ea5e9;
+  --col-d-lk-2: #0284c7;
+  --col-d-lk-tx: #ffffff;
+  --col-d-ac-1: #7928ca;
+  --col-d-ac-tx: #ffffff;
 
   --width-body: 72ch;
 
@@ -60,18 +60,18 @@ Based on: https://github.com/xz/new.css
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --nc-tx-1: var(--nc-d-tx-1);
-    --nc-tx-2: var(--nc-d-tx-2);
-    --nc-tx-3: var(--nc-d-tx-3);
-    --nc-tx-4: var(--nc-d-tx-4);
-    --nc-bg-1: var(--nc-d-bg-1);
-    --nc-bg-2: var(--nc-d-bg-2);
-    --nc-bg-3: var(--nc-d-bg-3);
-    --nc-lk-1: var(--nc-d-lk-1);
-    --nc-lk-2: var(--nc-d-lk-2);
-    --nc-lk-tx: var(--nc--dlk-tx);
-    --nc-ac-1: var(--nc-d-ac-1);
-    --nc-ac-tx: var(--nc--dac-tx);
+    --col-tx-1: var(--col-d-tx-1);
+    --col-tx-2: var(--col-d-tx-2);
+    --col-tx-3: var(--col-d-tx-3);
+    --col-tx-4: var(--col-d-tx-4);
+    --col-bg-1: var(--col-d-bg-1);
+    --col-bg-2: var(--col-d-bg-2);
+    --col-bg-3: var(--col-d-bg-3);
+    --col-lk-1: var(--col-d-lk-1);
+    --col-lk-2: var(--col-d-lk-2);
+    --col-lk-tx: var(--col-d-lk-tx);
+    --col-ac-1: var(--col-d-ac-1);
+    --col-ac-tx: var(--col-d-ac-tx);
   }
 }
 
@@ -131,18 +131,12 @@ body {
   overflow-x: hidden;
   word-break: break-word;
   overflow-wrap: break-word;
-  background: var(--nc-bg-1);
+  background: var(--col-bg-1);
 
   /* Main body text */
-  color: var(--nc-tx-2);
+  color: var(--col-tx-2);
   font-size: var(--text-size-md);
   line-height: 1.5;
-}
-
-::selection {
-  /* Set background color for selected text */
-  background: var(--nc-ac-1);
-  color: var(--nc-ac-tx);
 }
 
 /*
@@ -202,7 +196,7 @@ Basic elements
 */
 
 a {
-  color: var(--nc-lk-1);
+  color: var(--col-lk-1);
   text-decoration: none;
 }
 
@@ -216,7 +210,7 @@ a[rel~="external"] {
   color: currentColor;
   text-decoration: underline;
   text-decoration-style: dashed;
-  text-decoration-color: var(--nc-tx-4);
+  text-decoration-color: var(--col-tx-4);
 }
 
 a[rel~="external"]::after {
@@ -230,8 +224,8 @@ abbr:hover {
 
 blockquote {
   padding: 1.5rem;
-  background: var(--nc-bg-2);
-  border-left: 5px solid var(--nc-bg-3);
+  background: var(--col-bg-2);
+  border-left: 5px solid var(--col-bg-3);
 }
 
 abbr {
@@ -254,13 +248,13 @@ input[type="button"] {
   text-align: center;
   text-decoration: none;
   white-space: nowrap;
-  background: var(--nc-lk-1);
-  color: var(--nc-lk-tx);
+  background: var(--col-lk-1);
+  color: var(--col-lk-tx);
   border: 0;
   border-radius: 4px;
   box-sizing: border-box;
   cursor: pointer;
-  color: var(--nc-lk-tx);
+  color: var(--col-lk-tx);
 }
 
 a button[disabled],
@@ -285,7 +279,7 @@ input[type="reset"]:focus,
 input[type="reset"]:enabled:hover,
 input[type="button"]:focus,
 input[type="button"]:enabled:hover {
-  background: var(--nc-lk-2);
+  background: var(--col-lk-2);
 }
 
 a img {
@@ -297,20 +291,14 @@ Preformatted elements
 */
 
 code,
-pre,
 kbd,
 samp {
   font-family: var(--ter-font-mono);
-}
-
-code,
-samp,
-kbd,
-pre {
-  background: var(--nc-bg-2);
+  color: var(--col-ac-tx);
 }
 
 pre {
+  background-color: var(--col-bg-2);
   font-size: var(--text-size-sm);
   line-height: 1.375;
   border-radius: var(--radius-md);
@@ -347,8 +335,8 @@ Miscellaneous
 details {
   /* Make the <details> look more "clickable" */
   padding: 0.6rem 1rem;
-  background: var(--nc-bg-2);
-  border: 1px solid var(--nc-bg-3);
+  background: var(--col-bg-2);
+  border: 1px solid var(--col-bg-3);
   border-radius: 4px;
 }
 
@@ -385,14 +373,14 @@ dd::before {
 hr {
   /* Reset the border of the <hr> separator, then set a better line */
   border: 0;
-  border-bottom: 1px solid var(--nc-bg-3);
+  border-bottom: 1px solid var(--col-bg-3);
   margin: 1rem auto;
 }
 
 fieldset {
   margin-top: 1rem;
   padding: 2rem;
-  border: 1px solid var(--nc-bg-3);
+  border: 1px solid var(--col-bg-3);
   border-radius: 4px;
 }
 
@@ -408,18 +396,18 @@ table {
 
 td,
 th {
-  border: 1px solid var(--nc-bg-3);
+  border: 1px solid var(--col-bg-3);
   text-align: left;
   padding: 0.5rem;
 }
 
 th {
-  background: var(--nc-bg-2);
+  background: var(--col-bg-2);
 }
 
 tr:nth-child(even) {
   /* Set every other cell slightly darker. Improves readability. */
-  background: var(--nc-bg-2);
+  background: var(--col-bg-2);
 }
 
 table caption {
@@ -448,8 +436,8 @@ ol ol {
 
 mark {
   padding: 3px 6px;
-  background: var(--nc-ac-1);
-  color: var(--nc-ac-tx);
+  background: var(--col-ac-1);
+  color: var(--col-ac-tx);
 }
 
 textarea,
@@ -457,9 +445,9 @@ select,
 input {
   padding: 6px 12px;
   margin-bottom: 0.5rem;
-  background: var(--nc-bg-2);
-  color: var(--nc-tx-2);
-  border: 1px solid var(--nc-bg-3);
+  background: var(--col-bg-2);
+  color: var(--col-tx-2);
+  border: 1px solid var(--col-bg-3);
   border-radius: 4px;
   box-shadow: none;
   box-sizing: border-box;
@@ -477,12 +465,12 @@ Top-level elements
 main > header,
 main > article,
 main > nav {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
 }
 
 footer {
   font-size: var(--text-size-xs);
-  color: var(--nc-tx-4);
+  color: var(--col-tx-4);
 }
 
 /* Header */
@@ -493,14 +481,14 @@ header {
   justify-content: space-between;
   font-size: var(--text-size-sm);
   line-height: 1;
-  color: var(--nc-tx-3);
+  color: var(--col-tx-3);
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--nc-bg-3);
+  border-bottom: 1px solid var(--col-bg-3);
 }
 
 header time {
   font-size: var(--text-size-sm);
-  color: var(--nc-tx-4);
+  color: var(--col-tx-4);
 }
 
 header nav {
@@ -547,9 +535,7 @@ header > *:last-child {
 /* Index nav list */
 
 main > nav {
-  padding-top: 1rem;
-  border-top: 1px solid var(--nc-bg-3);
-  color: var(--nc-tx-3);
+  color: var(--col-tx-3);
   line-height: 1;
 }
 
@@ -560,7 +546,7 @@ main > header + nav {
 
 main > nav time {
   font-size: var(--text-size-sm);
-  color: var(--nc-tx-4);
+  color: var(--col-tx-4);
 }
 
 main > nav a {
@@ -569,7 +555,7 @@ main > nav a {
 
 main > nav h3 {
   margin: 0;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.375rem;
   font-size: var(--text-size-md);
 }
 
@@ -586,6 +572,10 @@ main > nav ul li {
   margin: 0;
 }
 
-main > nav ul li:not(:last-child) {
-  border-bottom: 1px solid var(--nc-bg-2);
+main > nav ul li {
+  border-top: 1px solid var(--col-bg-2);
+}
+
+main > nav ul li:first-child {
+  border-top: 1px solid var(--col-bg-3);
 }
