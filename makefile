@@ -13,7 +13,7 @@ build-test:
 	$(DENO) main.ts 10000-files-test
 
 watch:
-	$(DENO) --watch=$(INPUTDIR),_static,_views main.ts $(INPUTDIR)
+	$(DENO) --watch=$(INPUTDIR),_assets,_views main.ts $(INPUTDIR)
 
 serve:
 	$(DENO) https://deno.land/std/http/file_server.ts $(OUTPUTDIR) --port 8080
