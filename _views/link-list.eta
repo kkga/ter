@@ -4,19 +4,17 @@
   <ul>
     <% it.links.forEach(({ url, title, date, readableDate, isIndexPage }) => { %>
     <li>
-      <div>
+      <a href="<%= url %>">
         <% if (isIndexPage) { %>
-        <span>❖ </span>
-        <strong><a href="<%= url %>"><%= title %><% if (isIndexPage) { %>/<% } %></a></strong>
+        <span>❖ <strong><%= title %>/</strong></span>
         <% } else { %>
-        <span>◇ </span>
-        <a href="<%= url %>"><%= title %><% if (isIndexPage) { %>/<% } %></a>
+        <span>◇ <%= title %></span>
         <% } %>
-      </div>
 
-      <% if (date && readableDate) { %>
-      <time datetime="<%= date %>"><%= readableDate %> </time>
-      <% } %>
+        <% if (date && readableDate) { %>
+        <time datetime="<%= date %>"><%= readableDate %></time>
+        <% } %>
+      </a>
     </li>
     <% }) %>
   </ul>
