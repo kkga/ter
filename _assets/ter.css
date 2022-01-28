@@ -135,6 +135,8 @@ body {
   overflow-wrap: break-word;
   background: var(--col-bg-1);
   color: var(--col-tx-2);
+  font-family: var(--ter-font-sans);
+  font-feature-settings: "calt", "tnum", "ss02";
   font-size: var(--text-size-md);
   line-height: 1.5;
 }
@@ -311,11 +313,13 @@ samp {
 }
 
 pre {
-  background-color: var(--col-bg-2);
   font-size: var(--text-size-sm);
-  line-height: 1.375;
+  line-height: 1.25;
   border-radius: var(--radius-md);
-  padding: 0.75rem 1rem;
+  background-color: var(--col-bg-2);
+  padding: 0.5rem 0.75rem;
+  margin-left: -0.75rem;
+  margin-right: -0.75rem;
   max-width: 100%;
   overflow: auto;
 }
@@ -552,7 +556,7 @@ INDEX LIST --------------------------------------------------------------------
 */
 
 main > nav {
-  color: var(--col-tx-3);
+  color: var(--col-tx-2);
   line-height: 1.75;
 }
 
