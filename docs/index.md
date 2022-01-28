@@ -10,3 +10,6 @@ site with automatically [indexed](index-pages.md) directories,
 - [features](features.md) for a full overview
 - [usage](usage.md) on how to get started
 - or feel free to just roam around
+
+Ter is open source. Contribute or submit issues:
+[github.com/kkga/ter](https://github.com/kkga/ter)
