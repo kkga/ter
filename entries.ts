@@ -53,10 +53,6 @@ export async function getStaticEntries(
     entries.push(entry);
   }
 
-  // console.log(glob);
-  // console.log(entries);
-  // Deno.exit();
-
   return entries;
 }
 

@@ -28,6 +28,7 @@ function getBacklinkPages(
   current: Page,
 ): Array<Page> {
   const pages: Array<Page> = [];
+
   for (const outPage of allPages) {
     if (outPage.links?.includes(current.path)) {
       pages.push(outPage);
@@ -42,7 +43,6 @@ function getChildPages(
   current: Page,
 ): Array<Page> {
   const pages = allPages.filter((p) => {
-    console.log(current.path, dirname(p.path));
     return current.path === dirname(p.path);
   });
 

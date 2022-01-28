@@ -11,7 +11,9 @@ export {
   isAbsolute,
   join,
   normalize,
+  parse,
   relative,
+  resolve,
 } from "https://deno.land/std/path/mod.ts";
 
 export { default as frontMatter } from "https://esm.sh/front-matter@4.0.2";

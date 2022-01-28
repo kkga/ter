@@ -1,9 +1,9 @@
 import {
   dirname,
   hljs,
+  isAbsolute,
   join,
   marked,
-  normalize,
   sanitizeHtml,
 } from "./deps.ts";
 import { Heading } from "./page.ts";
@@ -82,9 +82,9 @@ const _sanitize = (html: string) => {
 
 export function render(
   text: string,
-  relPath: string,
+  currentPath: string,
 ): [string, Array<string>, Array<Heading>] {
-  const links: Array<string> = [];
+  const links: Set<string> = new Set();
   const headings: Array<Heading> = [];
 
   renderer.heading = function (
@@ -103,17 +103,23 @@ export function render(
       return `<a href="${href}" rel="external noopener noreferrer" ${
         title ? "title=${title}" : ""
       }">${text}</a>`;
-    } else if (href.endsWith(".md")) {
-      const pagePath = join(dirname(relPath), href).replace(
-        /\.md$/i,
-        "",
-      );
-      links.push(pagePath);
-      return `<a href="${join("/", pagePath)}" ${
+    } else {
+      let url: string;
+      let link: string;
+
+      if (isAbsolute(href)) {
+        url = href.replace(/\.md$/i, "");
+        link = url.replace(/^\//, "");
+      } else {
+        url = join(dirname(currentPath), href).replace(/\.md$/i, "");
+        link = join("/", url).replace(/^\//, "");
+      }
+
+      links.add(link);
+      return `<a href="${join("/", url)}" ${
         title ? "title=${title}" : ""
       }">${text}</a>`;
     }
-    return `<a href="${href}" ${title ? "title=${title}" : ""}">${text}</a>`;
   };
 
   marked.use({
@@ -136,5 +142,5 @@ export function render(
   const html = marked.parse(text);
 
   // return [sanitize(html), links, headings];
-  return [html, links, headings];
+  return [html, Array.from(links), headings];
 }
