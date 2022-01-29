@@ -17,8 +17,8 @@ deno run -A --unstable https://deno.land/x/ter/init.ts
 
 This will create 2 folders:
 
-- `_views`, which contains the [templates](/templates.md) for rendering the
-  site;
+- `_views`, which contains the [templates](/customize/templates.md) for
+  rendering the site;
 - `_assets`, which contains the default CSS stylesheet.
 
 All files inside `_assets` are copied to the output directory as is, so it's a
@@ -40,3 +40,12 @@ directory and output the generated site into the `_site` directory.
 
 If your markdown content is in some other directory, or you want a different
 name for the output directory, adjust accordingy, for example:
+
+```
+deno run -A --unstable https://deno.land/x/ter/main.ts content _dist
+```
+
+## Next steps
+
+If you want to publish the site, see the [Deploy](/deploy.md) page. If you're
+looking to customize the output, see the docs on [Customization](/customize).
