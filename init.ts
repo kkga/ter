@@ -3,8 +3,16 @@ import { dirname, ensureDir, join } from "./deps.ts";
 import { createConfig } from "./config.ts";
 
 const modUrl = "https://deno.land/x/ter";
-const requiredViews = ["base.eta", "page.eta", "link-list.eta"];
-const requiredAssets = ["ter.css", "hljs.css"];
+const requiredViews = [
+  "base.eta",
+  "page.eta",
+  "breadcrumbs.eta",
+  "link-list.eta",
+];
+const requiredAssets = [
+  "ter.css",
+  "hljs.css",
+];
 
 const config = createConfig(Deno.args);
 
