@@ -31,6 +31,17 @@ export interface Page {
   links?: Array<string>;
 }
 
+export function isDeadLink(allPages: Array<Page>, path: string): boolean {
+  for (const page of allPages) {
+    if (page.path === path) {
+      return false;
+    } else {
+      continue;
+    }
+  }
+  return true;
+}
+
 export async function generatePage(
   entry: WalkEntry,
   inputPath: string,
@@ -45,9 +56,10 @@ export async function generatePage(
       extname(entry.path),
       "",
     );
+    const isIndex = false;
     const content = decoder.decode(await Deno.readFile(entry.path));
     const { attributes, body } = frontMatter(content);
-    const [html, links, headings] = render(body, relPath);
+    const [html, links, headings] = render(body, relPath, isIndex);
     const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
     const title = attr.getTitleFromAttrs(attributes) ||
       attr.getTitleFromHeadings(headings) || entry.name;
@@ -55,7 +67,6 @@ export async function generatePage(
     const tags = attr.getTagsFromAttrs(attributes);
     const date = attr.getDateFromAttrs(attributes) ||
       await Deno.fstat(file.rid).then((file) => file.mtime);
-    const isIndex = false;
     file.close();
 
     return {
@@ -93,7 +104,7 @@ export async function generatePage(
     if (indexEntry) {
       const content = decoder.decode(await Deno.readFile(indexEntry));
       const { attributes, body } = frontMatter(content);
-      const [html, links, headings] = render(body, relPath);
+      const [html, links, headings] = render(body, relPath, isIndex);
       const title = attr.getTitleFromAttrs(attributes) ||
         attr.getTitleFromHeadings(headings) || entry.name;
       const description = attr.getDescriptionFromAttrs(attributes) || "";

@@ -9,7 +9,7 @@ import {
 } from "./deps.ts";
 import { buildPage } from "./build.ts";
 import { createConfig } from "./config.ts";
-import { generatePage, Page } from "./page.ts";
+import { generatePage, isDeadLink, Page } from "./page.ts";
 import {
   getAssetEntries,
   getContentEntries,
@@ -139,6 +139,7 @@ async function main() {
     inputPath,
     config.staticExts,
   );
+  const deadLinks: Array<[string, string]> = [];
 
   await Deno.stat(pageViewPath).catch(() => {
     console.log(
@@ -151,15 +152,27 @@ async function main() {
     contentEntries,
     inputPath,
     ignoreKeys,
-  ).then((pages) =>
-    buildContentFiles(
+  ).then((pages) => {
+    for (const page of pages) {
+      if (page.links) {
+        for (const link of page.links) {
+          // const fullPath = #
+          if (isDeadLink(pages, link)) {
+            deadLinks.push([page.path, link]);
+          }
+        }
+      }
+    }
+    return buildContentFiles(
       pages,
       outputPath,
       join(Deno.cwd(), viewsPath, "page.eta"),
-    )
-  ).catch((err) => {
+    );
+  }).catch((err) => {
     throw new Error(err);
   });
+
+  console.log(deadLinks);
 
   await emptyDir(outputPath);
 
@@ -223,6 +236,13 @@ async function main() {
   Copied ${assetFiles.length} site assets
   In ${buildSeconds} seconds`,
   );
+
+  if (deadLinks.length > 0) {
+    console.log("\nFound dead links:");
+    deadLinks.forEach(([path, link]) => {
+      console.log(`  [${path}]\tlinks to [${link}] (dead)`);
+    });
+  }
 }
 
 await main();

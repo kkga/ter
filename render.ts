@@ -83,6 +83,7 @@ const _sanitize = (html: string) => {
 export function render(
   text: string,
   currentPath: string,
+  isIndex: boolean,
 ): [string, Array<string>, Array<Heading>] {
   const links: Set<string> = new Set();
   const headings: Array<Heading> = [];
@@ -111,11 +112,14 @@ export function render(
         url = href.replace(/\.md$/i, "");
         link = url.replace(/^\//, "");
       } else {
-        url = join(dirname(currentPath), href).replace(/\.md$/i, "");
+        url = isIndex
+          ? join(dirname(currentPath + "/index"), href)
+          : join(dirname(currentPath), href);
+        url = url.replace(/\.md$/i, "").replace(/\/index$/i, "");
         link = join("/", url).replace(/^\//, "");
       }
-
       links.add(link);
+
       return `<a href="${join("/", url)}" ${
         title ? "title=${title}" : ""
       }">${text}</a>`;
