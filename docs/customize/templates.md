@@ -8,10 +8,10 @@ By default, Ter uses a single layout template for both index and context files.
 
 The `page.eta` layout template has a a few includes:
 
-- `header.eta`: contains a list of [breadcrumbs](../breadcrumbs.md) and the last
-  edit date for current page;
+- `header.eta`: contains a list of [breadcrumbs](/features/breadcrumbs.md) and
+  the last edit date for current page;
 - `link-list.eta`: used for displaying both the index list and the list of
-  [backlinks](../backlinks.md).
+  [backlinks](/features/backlinks.md).
 
 The following variables are available to use inside templates:
 
