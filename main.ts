@@ -43,7 +43,7 @@ function getChildPages(
   current: Page,
 ): Array<Page> {
   const pages = allPages.filter((p) => {
-    return current.path === dirname(p.path);
+    return current.path !== p.path && current.path === dirname(p.path);
   });
 
   return pages;
