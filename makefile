@@ -7,19 +7,15 @@ clean:
 	rm -rf $(OUTPUTDIR)
 
 build:
-	$(DENO) main.ts $(INPUTDIR)
+	$(DENO) main.ts $(INPUTDIR) $(OUTPUTDIR)
 
 build-test:
 	$(DENO) main.ts 10000-files-test
 
 watch:
-	$(DENO) --watch=$(INPUTDIR),_assets,_views main.ts $(INPUTDIR)
+	$(DENO) --watch=$(INPUTDIR),_assets,_views main.ts $(INPUTDIR) $(OUTPUTDIR)
 
 serve:
 	$(DENO) https://deno.land/std/http/file_server.ts $(OUTPUTDIR) --port 8080
 
 dev: watch serve
-
-deploy-vercel:
-	curl -fsSL https://deno.land/x/install/install.sh | sh
-	/vercel/.deno/bin/$(DENO) main.ts $(INPUTDIR)
