@@ -129,7 +129,7 @@ button {
 body {
   margin: 0 auto;
   max-width: var(--width-body);
-  padding: 1rem;
+  padding: 0.5rem;
   overflow-x: hidden;
   word-break: break-word;
   overflow-wrap: break-word;
@@ -318,9 +318,6 @@ pre {
   border-radius: var(--radius-md);
   background-color: var(--col-bg-2);
   padding: 0.5rem 0.75rem;
-  margin-left: -0.75rem;
-  margin-right: -0.75rem;
-  max-width: 100%;
   overflow: auto;
 }
 
@@ -481,7 +478,7 @@ Top-level elements
 
 main > header,
 main > article,
-main > nav {
+main > .linkList {
   margin-bottom: 3rem;
 }
 
@@ -491,104 +488,76 @@ footer {
 }
 
 /*
-HEADER+BREADCRUMBS ------------------------------------------------------------
+HEADER ------------------------------------------------------------------------
 */
 
-header {
+main > header {
   display: flex;
+  flex-direction: column;
   align-items: baseline;
   justify-content: space-between;
+  gap: 1ch;
   font-size: var(--text-size-sm);
   line-height: 1.375;
-  padding-bottom: 0.25rem;
   color: var(--col-tx-3);
+}
+
+@media only screen and (min-width: 32em) {
+  main > header {
+    flex-direction: row;
+  }
 }
 
 header time {
   color: var(--col-tx-4);
 }
 
-header nav {
-  margin: 0;
-  padding: 0;
-}
+/*
+BREADCRUMBS -------------------------------------------------------------------
+*/
 
-header nav ol {
+.breadcrumbs {
   margin: 0;
   padding: 0;
-  display: flex;
   list-style: none;
 }
 
-header nav a {
-  text-decoration: none;
-  color: var(--col-tx-2);
-}
-
-header nav ol li {
+.breadcrumbs-item {
+  display: inline-block;
   margin: 0;
 }
 
-header nav ol li:not(:last-child)::after {
+.breadcrumbs-item:not(:last-child)::after {
   content: "/";
   color: var(--col-tx-4);
-  margin: 0 0.375em;
 }
 
-header h1,
-header h2,
-header h3 {
-  padding-bottom: 0;
-  border-bottom: 0;
-}
-
-header > *:first-child {
-  margin-top: 0;
-  padding-top: 0;
-}
-
-header > *:last-child {
-  margin-bottom: 0;
+.breadcrumbs-item a {
+  text-decoration: none;
+  color: var(--col-tx-2);
 }
 
 /*
 INDEX LIST --------------------------------------------------------------------
 */
 
-main > nav {
+.linkList {
   color: var(--col-tx-2);
   line-height: 1.75;
-}
-
-main > header + nav {
-  border-top: none;
-  padding-top: 0;
-}
-
-main > nav time {
-  font-size: var(--text-size-sm);
-  color: var(--col-tx-4);
-}
-
-main > nav a {
-  text-decoration: none;
-}
-
-main > nav h3 {
-  margin: 0;
-  line-height: inherit;
-  font-size: var(--text-size-sm);
-  font-weight: normal;
-  color: var(--col-tx-4);
-}
-
-main > nav ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-main > nav ul li a {
+.linkList-time {
+  font-size: var(--text-size-sm);
+  color: var(--col-tx-4);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.linkList-item a {
+  text-decoration: none;
   display: flex;
   gap: 1ch;
   align-items: baseline;
@@ -596,6 +565,18 @@ main > nav ul li a {
   color: currentColor;
 }
 
-main > nav ul li time {
-  margin-left: auto;
+.linkList-heading {
+  margin: 0;
+  line-height: inherit;
+  font-size: var(--text-size-sm);
+  letter-spacing: 0;
+  font-weight: normal;
+  color: var(--col-tx-4);
+}
+
+.linkList-name {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

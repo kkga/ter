@@ -1,18 +1,22 @@
-<nav>
-  <h3><%= it.title %></h3>
+<nav class="linkList">
+  <h3 class="linkList-heading"><%= it.title %></h3>
 
-  <ul>
+  <ul class="linkList">
     <% it.links.forEach(({ url, title, date, readableDate, isIndexPage }) => { %>
-    <li>
+    <li class="linkList-item">
       <a href="<%= url %>">
-        <% if (isIndexPage) { %>
-        <span>❖ <strong><%= title %>/</strong></span>
-        <% } else { %>
-        <span>◇ <%= title %></span>
-        <% } %>
+        <span class="linkList-name">
+          <% if (isIndexPage) { %>
+          ❖ <strong><%= title %>/</strong>
+          <% } else { %>
+          ◇ <%= title %>
+          <% } %>
+        </span>
 
         <% if (date && readableDate) { %>
-        <time datetime="<%= date %>"><%= readableDate %></time>
+        <time class="linkList-time" datetime="<%= date %>">
+          <%= readableDate %>
+        </time>
         <% } %>
       </a>
     </li>

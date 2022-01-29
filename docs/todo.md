@@ -3,12 +3,13 @@
 - [x] differentiate internal and external links
 - [x] resolve relative paths in content
 - [x] sort index by date edited with folders first
-- [ ] consolidate how paths and links are stored on pages independetly of input
+- [x] consolidate how paths and links are stored on pages independetly of input
       path
-- [ ] fix backLinks not working with `.` input
+- [x] fix backLinks not working with `.` input
+- [ ] dirs that contain only nested dirs and no markdown files aren't indexed
 - [ ] use streams to open and write markdown files
 - [ ] sanitize markdown output
-- [ ] stress-test with
+- [x] stress-test with
       https://github.com/Zettelkasten-Method/10000-markdown-files
 - [[wiki-style]] links?
 - add config file

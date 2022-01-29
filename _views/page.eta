@@ -1,19 +1,9 @@
 <% layout('./base') %>
 
 <header>
-  <nav aria-label="Breadcrumb">
-    <ol>
-      <% if (it.breadcrumbs.length > 0) { %>
-        <% it.breadcrumbs.forEach((crumb, index) => { %>
-          <% if (crumb.url !== "") { %>
-            <li><a href="<%= crumb.url %>"><%= crumb.slug %></a></li>
-          <% } else { %>
-            <li><%= crumb.slug %></li>
-          <% } %>
-        <% }) %>
-      <% } %>
-    </ol>
-  </nav>
+  <%~ includeFile('./breadcrumbs', {
+    breadcrumbs: it.breadcrumbs
+  }) %>
 
   <% if (it.date && it.readableDate) { %>
   <time datetime="<%= it.date %>"><%= it.readableDate %></time>
