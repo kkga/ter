@@ -11,6 +11,23 @@ import { parseURL } from "https://unpkg.com/ufo/dist/index.mjs";
 
 const renderer = new marked.Renderer();
 
+marked.use({
+  renderer,
+  highlight: function (code, lang) {
+    const language = hljs.getLanguage(lang) ? lang : "plaintext";
+    return hljs.highlight(code, { language }).value;
+  },
+  langPrefix: "hljs language-",
+  baseUrl: "/",
+  pedantic: false,
+  gfm: true,
+  breaks: false,
+  sanitize: false,
+  smartLists: true,
+  smartypants: false,
+  xhtml: false,
+});
+
 const isExternalLink = (href: string): boolean => {
   const { protocol } = parseURL(href);
   return protocol !== undefined;
@@ -125,23 +142,6 @@ export function render(
       }">${text}</a>`;
     }
   };
-
-  marked.use({
-    renderer,
-    highlight: function (code, lang) {
-      const language = hljs.getLanguage(lang) ? lang : "plaintext";
-      return hljs.highlight(code, { language }).value;
-    },
-    langPrefix: "hljs language-",
-    baseUrl: "/",
-    pedantic: false,
-    gfm: true,
-    breaks: false,
-    sanitize: false,
-    smartLists: true,
-    smartypants: false,
-    xhtml: false,
-  });
 
   const html = marked.parse(text);
 

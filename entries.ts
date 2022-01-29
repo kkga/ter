@@ -90,8 +90,5 @@ export async function getContentEntries(
 
   const entries = [...fileEntries, ...dirEntries];
 
-  // console.log(entries);
-  // Deno.exit();
-
   return entries;
 }

@@ -155,24 +155,19 @@ async function main() {
   ).then((pages) => {
     for (const page of pages) {
       if (page.links) {
-        for (const link of page.links) {
-          // const fullPath = #
-          if (isDeadLink(pages, link)) {
-            deadLinks.push([page.path, link]);
-          }
-        }
+        page.links.forEach((link) =>
+          isDeadLink(pages, link) && deadLinks.push([page.path, link])
+        );
       }
     }
     return buildContentFiles(
       pages,
       outputPath,
-      join(Deno.cwd(), viewsPath, "page.eta"),
+      pageViewPath,
     );
   }).catch((err) => {
     throw new Error(err);
   });
-
-  console.log(deadLinks);
 
   await emptyDir(outputPath);
 
