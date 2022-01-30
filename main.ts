@@ -132,14 +132,10 @@ async function main() {
   const config = createConfig(Deno.args);
   const { inputPath, outputPath, viewsPath, assetsPath, ignoreKeys } = config;
   const pageViewPath = join(Deno.cwd(), viewsPath, "page.eta");
-
   const assetEntries = await getAssetEntries(assetsPath);
   const contentEntries = await getContentEntries(inputPath);
-  const staticEntries = await getStaticEntries(
-    inputPath,
-    config.staticExts,
-  );
-  const deadLinks: Array<[string, string]> = [];
+  const staticEntries = await getStaticEntries(inputPath, config.staticExts);
+  const deadLinks: [string, string][] = [];
 
   await Deno.stat(pageViewPath).catch(() => {
     console.log(
@@ -148,30 +144,22 @@ async function main() {
     Deno.exit(1);
   });
 
-  const htmlFiles = await generatePages(
-    contentEntries,
-    inputPath,
-    ignoreKeys,
-  ).then((pages) => {
-    for (const page of pages) {
-      if (page.links) {
-        page.links.forEach((link) =>
-          isDeadLink(pages, link) && deadLinks.push([page.path, link])
-        );
-      }
+  const pages = await generatePages(contentEntries, inputPath, ignoreKeys);
+  const htmlFiles = await buildContentFiles(pages, outputPath, pageViewPath);
+  const staticFiles = getStaticFiles(staticEntries, inputPath, outputPath);
+  const assetFiles = getStaticFiles(assetEntries, assetsPath, outputPath);
+
+  for (const page of pages) {
+    if (page.links) {
+      page.links.forEach((link) =>
+        isDeadLink(pages, link) && deadLinks.push([page.path, link])
+      );
     }
-    return buildContentFiles(
-      pages,
-      outputPath,
-      pageViewPath,
-    );
-  }).catch((err) => {
-    throw new Error(err);
-  });
+  }
 
   await emptyDir(outputPath);
 
-  if (htmlFiles && htmlFiles.length > 0) {
+  if (htmlFiles.length > 0) {
     console.log("\nWriting content pages:");
 
     for (const file of htmlFiles) {
@@ -184,12 +172,6 @@ async function main() {
       }
     }
   }
-
-  const staticFiles = getStaticFiles(
-    staticEntries,
-    inputPath,
-    outputPath,
-  );
 
   if (staticFiles.length > 0) {
     console.log("\nCopying static files:");
@@ -204,8 +186,6 @@ async function main() {
       await Deno.copyFile(file.inputPath, file.filePath);
     }
   }
-
-  const assetFiles = getStaticFiles(assetEntries, assetsPath, outputPath);
 
   if (assetFiles.length > 0) {
     console.log("\nCopying site assets:");
