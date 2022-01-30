@@ -131,18 +131,19 @@ async function main() {
   const startDate = new Date();
   const config = createConfig(Deno.args);
   const { inputPath, outputPath, viewsPath, assetsPath, ignoreKeys } = config;
-  const pageViewPath = join(Deno.cwd(), viewsPath, "page.eta");
-  const assetEntries = await getAssetEntries(assetsPath);
-  const contentEntries = await getContentEntries(inputPath);
-  const staticEntries = await getStaticEntries(inputPath, config.staticExts);
   const deadLinks: [string, string][] = [];
 
+  const pageViewPath = join(Deno.cwd(), viewsPath, "page.eta");
   await Deno.stat(pageViewPath).catch(() => {
     console.log(
       "Can't find the 'page.eta' view. Did you forget to run 'init.ts'?",
     );
     Deno.exit(1);
   });
+
+  const contentEntries = await getContentEntries(inputPath);
+  const staticEntries = await getStaticEntries(inputPath, config.staticExts);
+  const assetEntries = await getAssetEntries(assetsPath);
 
   const pages = await generatePages(contentEntries, inputPath, ignoreKeys);
   const htmlFiles = await buildContentFiles(pages, outputPath, pageViewPath);
