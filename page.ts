@@ -9,6 +9,8 @@ import {
 import { render } from "./render.ts";
 import * as attr from "./attr.ts";
 
+const INDEX_FILENAME = "index.md";
+
 export interface Heading {
   text: string;
   level: 1 | 2 | 3 | 4 | 5 | 6;
@@ -42,16 +44,29 @@ export function isDeadLink(allPages: Array<Page>, path: string): boolean {
   return true;
 }
 
+const findIndexEntry = (
+  allEntries: Array<WalkEntry>,
+  current: WalkEntry,
+): WalkEntry | undefined => {
+  for (const entry of allEntries) {
+    if (
+      entry.isFile && entry.name === "index.md" &&
+      dirname(entry.path) === current.path
+    ) {
+      return entry;
+    }
+  }
+};
+
 export async function generatePage(
   entry: WalkEntry,
   inputPath: string,
   allEntries: Array<WalkEntry>,
 ): Promise<Page | undefined> {
   const decoder = new TextDecoder("utf-8");
+  let page: Page;
 
-  if (entry.isFile && entry.name !== "index.md") {
-    // TODO: use opened file for reading content
-    const file = await Deno.open(entry.path);
+  if (entry.isFile && entry.name !== INDEX_FILENAME) {
     const relPath = relative(inputPath, entry.path).replace(
       extname(entry.path),
       "",
@@ -59,17 +74,20 @@ export async function generatePage(
     const isIndex = false;
     const content = decoder.decode(await Deno.readFile(entry.path));
     const { attributes, body } = frontMatter(content);
+
+    const file = await Deno.open(entry.path);
+    const date = attr.getDateFromAttrs(attributes) ||
+      await Deno.fstat(file.rid).then((file) => file.birthtime);
+    file.close();
+
     const { html, links, headings } = render(body, relPath, isIndex);
     const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
     const title = attr.getTitleFromAttrs(attributes) ||
       attr.getTitleFromHeadings(headings) || entry.name;
     const description = attr.getDescriptionFromAttrs(attributes) || "";
     const tags = attr.getTagsFromAttrs(attributes);
-    const date = attr.getDateFromAttrs(attributes) ||
-      await Deno.fstat(file.rid).then((file) => file.mtime);
-    file.close();
 
-    return {
+    page = {
       name: entry.name,
       path: relPath,
       attributes,
@@ -85,24 +103,13 @@ export async function generatePage(
       isIndex,
     };
   } else if (entry.isDirectory) {
-    const findIndexEntryPath = (dirPath: string): string | undefined => {
-      for (const entry of allEntries) {
-        if (
-          entry.isFile && entry.name === "index.md" &&
-          dirname(entry.path) === dirPath
-        ) {
-          return entry.path;
-        }
-      }
-    };
-
     const relPath = relative(inputPath, entry.path) || ".";
     const slug = relPath === "." ? "." : slugify(entry.name);
     const isIndex = true;
-    const indexEntry = findIndexEntryPath(entry.path);
+    const indexEntry = findIndexEntry(allEntries, entry);
 
     if (indexEntry) {
-      const content = decoder.decode(await Deno.readFile(indexEntry));
+      const content = decoder.decode(await Deno.readFile(indexEntry.path));
       const { attributes, body } = frontMatter(content);
       const { html, links, headings } = render(body, relPath, isIndex);
       const title = attr.getTitleFromAttrs(attributes) ||
@@ -110,7 +117,7 @@ export async function generatePage(
       const description = attr.getDescriptionFromAttrs(attributes) || "";
       const tags = attr.getTagsFromAttrs(attributes);
 
-      return {
+      page = {
         name: entry.name,
         path: relPath,
         attributes,
@@ -125,7 +132,7 @@ export async function generatePage(
         isIndex,
       };
     } else {
-      return {
+      page = {
         name: entry.name,
         path: relPath,
         title: entry.name,
@@ -133,5 +140,9 @@ export async function generatePage(
         isIndex,
       };
     }
+  } else {
+    return;
   }
+
+  return page;
 }
