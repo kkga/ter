@@ -59,7 +59,7 @@ export async function generatePage(
     const isIndex = false;
     const content = decoder.decode(await Deno.readFile(entry.path));
     const { attributes, body } = frontMatter(content);
-    const [html, links, headings] = render(body, relPath, isIndex);
+    const { html, links, headings } = render(body, relPath, isIndex);
     const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
     const title = attr.getTitleFromAttrs(attributes) ||
       attr.getTitleFromHeadings(headings) || entry.name;
@@ -104,7 +104,7 @@ export async function generatePage(
     if (indexEntry) {
       const content = decoder.decode(await Deno.readFile(indexEntry));
       const { attributes, body } = frontMatter(content);
-      const [html, links, headings] = render(body, relPath, isIndex);
+      const { html, links, headings } = render(body, relPath, isIndex);
       const title = attr.getTitleFromAttrs(attributes) ||
         attr.getTitleFromHeadings(headings) || entry.name;
       const description = attr.getDescriptionFromAttrs(attributes) || "";
