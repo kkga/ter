@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="/ter.css">
     <link rel="stylesheet" href="/hljs.css">
     <link rel="icon" href="/favicon.svg">
-    <script data-host="https://microanalytics.io" data-dnt="false" src="https://microanalytics.io/js/script.js" id="ZwSg9rf6GA" async defer></script>
     <title><% if (it.title) { %><%= it.title %><% } %></title>
   </head>
 
