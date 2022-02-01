@@ -17,12 +17,12 @@ deno run -A --unstable https://deno.land/x/ter/init.ts
 
 This will create 2 folders:
 
-- `_views`, which contains the [templates](/customize/templates.md) for
+- `.ter/views`, which contains the [templates](/customize/templates.md) for
   rendering the site;
-- `_assets`, which contains the default CSS stylesheet.
+- `.ter/assets`, which contains the default CSS stylesheet.
 
-All files inside `_assets` are copied to the output directory as is, so it's a
-good place to store any static files that you want to be accessible.
+All files inside `.ter/assets` are copied to the output directory as is, so it's
+a good place to store any static files that you want to be accessible.
 
 ## Build
 
