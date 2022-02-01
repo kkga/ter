@@ -14,8 +14,8 @@ interface TerConfig {
 const defaultConfig: TerConfig = {
   inputPath: Deno.cwd(),
   outputPath: "_site",
-  assetsPath: "_assets",
-  viewsPath: "_views",
+  assetsPath: ".ter/assets",
+  viewsPath: ".ter/views",
   title: "Ter wiki",
   description: "A tiny wiki-style site builder with Zettelkasten flavor",
   ignoreKeys: ["private", "draft"],

@@ -223,8 +223,7 @@ a[href]:hover {
 a[rel~="external"] {
   color: currentColor;
   text-decoration: underline;
-  text-decoration-style: dashed;
-  text-decoration-color: var(--col-tx-4);
+  text-decoration-color: var(--col-bg-3);
 }
 
 a[rel~="external"]::after {
