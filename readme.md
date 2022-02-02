@@ -4,6 +4,6 @@
 
 A tiny wiki-style site builder with Zettelkasten flavor.
 
-Build with [Deno](https://deno.land/).
+Built with [Deno](https://deno.land/).
 
 Doc-food: https://ter.kkga.me (early WIP)
