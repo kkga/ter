@@ -12,7 +12,7 @@ site with automatically [indexed](features/index-pages.md) directories,
 - [usage](usage.md) on how to get started
 - or feel free to just roam around
 
-**Note**: This is PRE-ALPHA software. It will not damage your files, but some
+**Note:** This is PRE-ALPHA software. It will not damage your files, but some
 aspects of site generation might change in future.
 
 Ter is open source, written in [TypeScript](https://www.typescriptlang.org/) and
