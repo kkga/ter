@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title><%= it.title %></title>
+	<subtitle><%= it.description %></subtitle>
+	<link href="<%= it.url %>" rel="self"/>
+	<updated><%= it.dateUpdated %></updated>
+	<id><%= it.url %></id>
+	<author>
+		<name><%= it.authorName %></name>
+		<email><%= it.authorEmal %></email>
+	</author>
+    <% it.posts.forEach(({ url, title, date, html }) => { %>
+	<entry>
+		<title><%= title %></title>
+		<link href="<%= url %>"/>
+		<updated><%= date %></updated>
+		<id><%= url %></id>
+		<content type="html"><%= html %></content>
+	</entry>
+	<% }) %>
+</feed>
