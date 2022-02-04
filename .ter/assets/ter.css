@@ -312,6 +312,7 @@ kbd,
 samp {
   font-family: var(--ter-font-mono);
   color: var(--col-ac-tx);
+  font-size: 0.95em;
 }
 
 pre {
@@ -414,7 +415,7 @@ td,
 th {
   border: 1px solid var(--col-bg-3);
   text-align: left;
-  padding: 0.5rem;
+  padding: 0.25rem 0.5rem;
 }
 
 th {
