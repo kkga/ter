@@ -118,3 +118,15 @@ export async function buildPage(
 
   return result;
 }
+
+export async function buildFeed(
+  pages: Array<Page>,
+  viewPath: string,
+  siteConf: SiteConfig,
+): Promise<string | void> {
+  const result = await etaRenderFile(viewPath, {
+    pages,
+    site: siteConf,
+  });
+  return result;
+}

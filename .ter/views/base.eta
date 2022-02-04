@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/ter.css">
     <link rel="stylesheet" href="/hljs.css">
     <link rel="icon" href="/favicon.svg">
+    <link rel="alternate" href="/feed.xml" type="application/atom+xml" title="<%= it.site.title %>">
     <script data-host="https://microanalytics.io" data-dnt="false" src="https://microanalytics.io/js/script.js" id="ZwSg9rf6GA" async defer></script>
   </head>
 

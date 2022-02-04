@@ -7,7 +7,7 @@ import {
   relative,
   WalkEntry,
 } from "./deps.ts";
-import { buildPage } from "./build.ts";
+import { buildFeed, buildPage } from "./build.ts";
 import { createConfig, SiteConfig } from "./config.ts";
 import { generatePage, isDeadLink, Page } from "./page.ts";
 import {
@@ -106,6 +106,27 @@ async function buildContentFiles(
   return files;
 }
 
+async function buildFeedFile(
+  pages: Array<Page>,
+  feedViewPath: string,
+  outputPath: string,
+  siteConf: SiteConfig,
+): Promise<OutputFile | undefined> {
+  const xml = await buildFeed(
+    pages,
+    feedViewPath,
+    siteConf,
+  );
+
+  if (typeof xml === "string") {
+    return {
+      inputPath: "",
+      filePath: outputPath,
+      fileContent: xml,
+    };
+  }
+}
+
 function getStaticFiles(
   entries: Array<WalkEntry>,
   inputPath: string,
@@ -150,6 +171,14 @@ async function main() {
     Deno.exit(1);
   });
 
+  const feedViewPath = join(Deno.cwd(), viewsPath, "feed.xml.eta");
+  await Deno.stat(feedViewPath).catch(() => {
+    console.log(
+      "Can't find the 'feed.xml.eta' view. Did you forget to run 'init.ts'?",
+    );
+    Deno.exit(1);
+  });
+
   const contentEntries = await getContentEntries(inputPath);
   const staticEntries = await getStaticEntries(inputPath, config.staticExts);
   const assetEntries = await getAssetEntries(assetsPath);
@@ -173,6 +202,20 @@ async function main() {
   }
 
   await emptyDir(outputPath);
+
+  if (pages.length > 0) {
+    const feedFile = await buildFeedFile(
+      pages,
+      feedViewPath,
+      join(config.outputPath, "feed.xml"),
+      siteConf,
+    );
+    if (feedFile && feedFile.fileContent) {
+      console.log(feedFile.fileContent);
+      await ensureDir(dirname(feedFile.filePath));
+      await Deno.writeTextFile(feedFile.filePath, feedFile.fileContent);
+    }
+  }
 
   if (htmlFiles.length > 0) {
     console.log("\nWriting content pages:");

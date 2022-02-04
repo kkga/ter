@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <feed xmlns="http://www.w3.org/2005/Atom">
-	<title><%= it.title %></title>
-	<subtitle><%= it.description %></subtitle>
-	<link href="<%= it.url %>" rel="self"/>
-	<updated><%= it.dateUpdated %></updated>
-	<id><%= it.url %></id>
+	<title><%= it.site.title %></title>
+	<subtitle><%= it.site.description %></subtitle>
+	<link href="https://ter.kkga.me" rel="self"/>
+	<updated><%= it.pages[0].date %></updated>
+	<id>https://ter.kkga.me</id>
 	<author>
-		<name><%= it.authorName %></name>
-		<email><%= it.authorEmal %></email>
+		<name><%= it.site.author.name %></name>
+		<email><%= it.site.author.email %></email>
 	</author>
-    <% it.posts.forEach(({ url, title, date, html }) => { %>
+    <% it.pages.forEach(({ path, title, date, html }) => { %>
+    <% const url = `https://ter.kkga.me/${path}` %>
 	<entry>
 		<title><%= title %></title>
 		<link href="<%= url %>"/>
