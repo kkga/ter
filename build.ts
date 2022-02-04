@@ -1,5 +1,6 @@
 import { dirname, etaConfigure, etaRenderFile, join } from "./deps.ts";
 import { Page } from "./page.ts";
+import { SiteConfig } from "./config.ts";
 
 etaConfigure({
   autotrim: true,
@@ -51,7 +52,10 @@ function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
   return items;
 }
 
-function generateBreadcrumbs(currentPage: Page): Array<Breadcrumb> {
+function generateBreadcrumbs(
+  currentPage: Page,
+  homeSlug?: string,
+): Array<Breadcrumb> {
   const dir: string = dirname(currentPage.path);
   const chunks = dir.split("/").filter((path) => path !== ".");
   const { slug } = currentPage;
@@ -66,10 +70,17 @@ function generateBreadcrumbs(currentPage: Page): Array<Breadcrumb> {
     };
   });
 
-  breadcrumbs = [
-    { slug: "index", url: "/", current: false },
-    ...breadcrumbs,
-  ];
+  if (homeSlug && homeSlug !== "") {
+    breadcrumbs = [
+      { slug: homeSlug, url: "/", current: false },
+      ...breadcrumbs,
+    ];
+  } else {
+    breadcrumbs = [
+      { slug: "index", url: "/", current: false },
+      ...breadcrumbs,
+    ];
+  }
 
   if (slug !== "") {
     breadcrumbs = [
@@ -86,9 +97,10 @@ export async function buildPage(
   childPages: Array<Page>,
   backLinkedPages: Array<Page>,
   viewPath: string,
+  siteConf: SiteConfig,
 ): Promise<string | void> {
-  const { title, date, html: body } = page;
-  const breadcrumbs = generateBreadcrumbs(page);
+  const { title, description, date, html: body } = page;
+  const breadcrumbs = generateBreadcrumbs(page, siteConf.shortTitle);
   const backlinkIndexItems = generateIndexItems(backLinkedPages);
   const childIndexItems = generateIndexItems(childPages);
   const readableDate = date ? toReadableDate(date) : null;
@@ -97,9 +109,11 @@ export async function buildPage(
     date,
     readableDate,
     title,
+    description,
     body,
     indexLinks: childIndexItems,
     backLinks: backlinkIndexItems,
+    site: siteConf,
   });
 
   return result;

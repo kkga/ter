@@ -3,12 +3,15 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>
+      <% if (it.title) { %><%= it.title %> - <% } %>
+      <%= it.site.title %>
+    </title>
+    <meta name="description" content="<%= it.description? it.description : it.site.description %>">
     <link rel="stylesheet" href="/ter.css">
     <link rel="stylesheet" href="/hljs.css">
     <link rel="icon" href="/favicon.svg">
     <script data-host="https://microanalytics.io" data-dnt="false" src="https://microanalytics.io/js/script.js" id="ZwSg9rf6GA" async defer></script>
-    <title><% if (it.title) { %><%= it.title %><% } %></title>
   </head>
 
   <body>

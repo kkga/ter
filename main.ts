@@ -8,7 +8,7 @@ import {
   WalkEntry,
 } from "./deps.ts";
 import { buildPage } from "./build.ts";
-import { createConfig } from "./config.ts";
+import { createConfig, SiteConfig } from "./config.ts";
 import { generatePage, isDeadLink, Page } from "./page.ts";
 import {
   getAssetEntries,
@@ -74,6 +74,7 @@ async function buildContentFiles(
   pages: Array<Page>,
   outputPath: string,
   pageViewPath: string,
+  siteConf: SiteConfig,
 ): Promise<OutputFile[]> {
   const files: Array<OutputFile> = [];
 
@@ -90,6 +91,7 @@ async function buildContentFiles(
       page.isIndex ? getChildPages(pages, page) : [],
       getBacklinkPages(pages, page),
       pageViewPath,
+      siteConf,
     );
 
     if (typeof html === "string") {
@@ -129,9 +131,16 @@ function getStaticFiles(
 
 async function main() {
   const startDate = new Date();
-  const config = createConfig(Deno.args);
+  const config = await createConfig(Deno.args);
   const { inputPath, outputPath, viewsPath, assetsPath, ignoreKeys } = config;
   const deadLinks: [string, string][] = [];
+
+  const siteConf: SiteConfig = {
+    title: config.title,
+    description: config.description,
+    shortTitle: config.shortTitle,
+    author: config.author,
+  };
 
   const pageViewPath = join(Deno.cwd(), viewsPath, "page.eta");
   await Deno.stat(pageViewPath).catch(() => {
@@ -146,7 +155,12 @@ async function main() {
   const assetEntries = await getAssetEntries(assetsPath);
 
   const pages = await generatePages(contentEntries, inputPath, ignoreKeys);
-  const htmlFiles = await buildContentFiles(pages, outputPath, pageViewPath);
+  const htmlFiles = await buildContentFiles(
+    pages,
+    outputPath,
+    pageViewPath,
+    siteConf,
+  );
   const staticFiles = getStaticFiles(staticEntries, inputPath, outputPath);
   const assetFiles = getStaticFiles(assetEntries, assetsPath, outputPath);
 
