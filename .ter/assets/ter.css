@@ -40,9 +40,9 @@ Based on: https://github.com/xz/new.css
 
   --width-body: 72ch;
 
+  --text-size-base: 15px;
   --text-size-xs: 0.79rem;
   --text-size-sm: 0.89rem;
-  --text-size-md: 1rem;
   --text-size-lg: 1.13rem;
   --text-size-xl: 1.27rem;
   --text-size-2xl: 1.42rem;
@@ -52,6 +52,8 @@ Based on: https://github.com/xz/new.css
 
   --radius-xs: 4px;
   --radius-md: 6px;
+
+  font-size: 15px;
 }
 
 @supports (font-variation-settings: normal) {
@@ -129,16 +131,17 @@ button {
 body {
   margin: 0 auto;
   max-width: var(--width-body);
-  padding: 0.5rem;
+  padding: 1rem;
   overflow-x: hidden;
   word-break: break-word;
   overflow-wrap: break-word;
   background: var(--col-bg-1);
   color: var(--col-tx-2);
-  font-family: var(--ter-font-sans);
+  font-family: var(--ter-font-sans), system-ui, sans-serif;
   font-feature-settings: "calt", "tnum", "ss02";
-  font-size: var(--text-size-md);
+  font-size: 15px;
   line-height: 1.5;
+  letter-spacing: -0.009em;
 }
 
 /*
@@ -170,7 +173,7 @@ h6 {
 }
 
 h1 {
-  font-size: var(--text-size-5xl);
+  font-size: var(--text-size-4xl);
 }
 h2 {
   font-size: var(--text-size-3xl);
