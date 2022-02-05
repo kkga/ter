@@ -27,4 +27,4 @@ Some properties are utilized when building a site.
 ## Other properties
 
 All other properties are ignored but can be used in
-[templates](/customize/templates.md).
+[templates](/customize.md#templates).

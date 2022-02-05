@@ -21,7 +21,7 @@ deno run -A --unstable https://deno.land/x/ter/init.ts
 
 This will create 2 folders:
 
-- `.ter/views`, which contains the [templates](/customize/templates.md) for
+- `.ter/views`, which contains the [templates](customize.md#templates) for
   rendering the site;
 - `.ter/assets`, which contains the default CSS stylesheet.
 
