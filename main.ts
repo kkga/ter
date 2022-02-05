@@ -15,7 +15,7 @@ import {
   getContentEntries,
   getStaticEntries,
 } from "./entries.ts";
-import { hasIgnoredKey } from "./attr.ts";
+import { hasKey } from "./attr.ts";
 
 interface OutputFile {
   inputPath: string;
@@ -65,7 +65,7 @@ async function generatePages(
     page && pages.push(page);
   }
 
-  pages = pages.filter((page) => !hasIgnoredKey(page.attributes, ignoredKeys));
+  pages = pages.filter((page) => !hasKey(page.attributes, ignoredKeys));
 
   return pages;
 }
@@ -211,7 +211,7 @@ async function main() {
       siteConf,
     );
     if (feedFile && feedFile.fileContent) {
-      console.log(feedFile.fileContent);
+      // console.log(feedFile.fileContent);
       await ensureDir(dirname(feedFile.filePath));
       await Deno.writeTextFile(feedFile.filePath, feedFile.fileContent);
     }

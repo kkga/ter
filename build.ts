@@ -1,6 +1,7 @@
 import { dirname, etaConfigure, etaRenderFile, join } from "./deps.ts";
 import { Page } from "./page.ts";
 import { SiteConfig } from "./config.ts";
+import { hasKey } from "./attr.ts";
 
 etaConfigure({
   autotrim: true,
@@ -16,6 +17,7 @@ interface IndexItem {
   url: string;
   title: string;
   isIndexPage: boolean;
+  pinned: boolean;
   date: Date | null;
   readableDate: string | null;
 }
@@ -31,6 +33,7 @@ function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
   const items: Array<IndexItem> = [];
 
   for (const p of pages) {
+    const isPinned = hasKey(p.attributes, ["pinned"]);
     const readableDate = p.date ? toReadableDate(p.date) : null;
     items.push({
       url: join("/", dirname(p.path), p.slug),
@@ -38,16 +41,20 @@ function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
       date: p.date ? p.date : null,
       readableDate,
       isIndexPage: p.isIndex,
+      pinned: isPinned,
     });
   }
 
-  items.sort((a, b) => {
-    if (a.date && b.date) {
-      return b.date.valueOf() - a.date.valueOf();
-    } else {
-      return 0;
-    }
-  }).sort((a) => a.isIndexPage ? -1 : 0);
+  items
+    .sort((a, b) => {
+      if (a.date && b.date) {
+        return b.date.valueOf() - a.date.valueOf();
+      } else {
+        return 0;
+      }
+    })
+    .sort((a) => a.pinned ? -1 : 0)
+    .sort((a) => a.isIndexPage ? -1 : 0);
 
   return items;
 }

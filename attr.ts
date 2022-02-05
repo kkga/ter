@@ -10,11 +10,11 @@ const getTitleFromAttrs = (attrs: unknown): string | undefined => {
   }
 };
 
-const hasIgnoredKey = (attrs: unknown, ignoreKeys: Array<string>): boolean => {
+const hasKey = (attrs: unknown, keys: Array<string>): boolean => {
   if (attrs && typeof attrs === "object") {
     for (const key of Object.keys(attrs)) {
       const keyTyped = key as keyof typeof attrs;
-      if (ignoreKeys.includes(keyTyped) && attrs[keyTyped] === true) {
+      if (keys.includes(keyTyped) && attrs[keyTyped] === true) {
         return true;
       }
     }
@@ -64,5 +64,5 @@ export {
   getTagsFromAttrs,
   getTitleFromAttrs,
   getTitleFromHeadings,
-  hasIgnoredKey,
+  hasKey,
 };
