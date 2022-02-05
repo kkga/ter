@@ -6,7 +6,7 @@ import {
   joinURL,
   marked,
   parseURL,
-  sanitizeHtml,
+  // sanitizeHtml,
   withLeadingSlash,
   withoutLeadingSlash,
   withoutTrailingSlash,
@@ -15,13 +15,13 @@ import { Heading } from "./page.ts";
 
 const renderer = new marked.Renderer();
 
-const allowedTags = sanitizeHtml.defaults.allowedTags.concat([
-  "img",
-  "video",
-  "svg",
-  "path",
-  "iframe",
-]);
+// const allowedTags = sanitizeHtml.defaults.allowedTags.concat([
+//   "img",
+//   "video",
+//   "svg",
+//   "path",
+//   "iframe",
+// ]);
 
 // const _sanitize = (html: string) => {
 //   return sanitizeHtml(html, {
