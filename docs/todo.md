@@ -1,3 +1,7 @@
+---
+private: true
+---
+
 # Todos
 
 - [x] differentiate internal and external links
@@ -6,6 +10,7 @@
 - [x] consolidate how paths and links are stored on pages independetly of input
       path
 - [x] fix backLinks not working with `.` input
+- [ ] add config file
 - [ ] strip index/index.md from internal links when they point to index pages
 - [ ] dirs that contain only nested dirs and no markdown files aren't indexed
 - [ ] use streams to open and write markdown files
@@ -13,6 +18,3 @@
 - [x] stress-test with
       https://github.com/Zettelkasten-Method/10000-markdown-files
 - [[wiki-style]] links?
-- add config file
-
-``

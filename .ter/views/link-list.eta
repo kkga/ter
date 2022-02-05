@@ -2,14 +2,14 @@
   <h3 class="linkList-heading"><%= it.title %></h3>
 
   <ul class="linkList">
-    <% it.links.forEach(({ url, title, date, readableDate, isIndexPage }) => { %>
+    <% it.links.forEach(({ url, title, date, readableDate, isIndexPage, pinned }) => { %>
     <li class="linkList-item">
       <a href="<%= url %>">
         <span class="linkList-name">
           <% if (isIndexPage) { %>
           ❖ <strong><%= title %>/</strong>
           <% } else { %>
-          ◇ <%= title %>
+          ◇ <%= title %><%= pinned ? "★" : "" %>
           <% } %>
         </span>
 

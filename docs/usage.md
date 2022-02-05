@@ -1,3 +1,7 @@
+---
+pinned: true
+---
+
 # Usage
 
 Ter is built with [Deno](https://deno.land/), so you'll need to have it
