@@ -1,3 +1,7 @@
+---
+pinned: true
+---
+
 # Goals and use cases
 
 Ter tries to solve some specific use-cases effortlessly, rather than being a
