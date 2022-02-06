@@ -22,7 +22,7 @@ const defaultConfig: TerConfig = {
   outputPath: "_site",
   assetsPath: ".ter/assets",
   viewsPath: ".ter/views",
-  siteConfigPath: ".ter/site.yml",
+  siteConfigPath: ".ter/config.yml",
   ignoreKeys: ["private", "draft"],
   staticExts: [
     "png",
@@ -42,7 +42,7 @@ async function parseSiteConfig(path: string): Promise<SiteConfig | undefined> {
     const decoder = new TextDecoder("utf-8");
     const data = decoder.decode(await Deno.readFile(path));
     const conf = yamlParse(data) as SiteConfig;
-    console.log(`Found configuration file: ${path}`);
+    console.log(`Found configuration: ${path}`);
     return conf;
   } catch {
     console.log("Configuration file not found: using defaults");
