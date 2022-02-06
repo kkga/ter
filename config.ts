@@ -4,6 +4,7 @@ export interface SiteConfig {
   title?: string;
   shortTitle?: string;
   description?: string;
+  url?: string;
   author?: { name?: string; email?: string; url?: string };
 }
 
@@ -54,6 +55,7 @@ export function createDefaultSiteConfig(): SiteConfig {
     title: "My ter site",
     shortTitle: "",
     description: "",
+    url: "",
     author: {
       name: "",
       email: "",
@@ -77,6 +79,9 @@ export async function createConfig(
     }
     if (typeof siteConf.description === "string") {
       conf.description = siteConf.description;
+    }
+    if (typeof siteConf.url === "string") {
+      conf.url = siteConf.url;
     }
     if (typeof siteConf.author?.name === "string") {
       conf.author = { ...conf.author, name: siteConf.author.name };
@@ -103,7 +108,7 @@ export async function createConfig(
       : join(Deno.cwd(), outputPath);
   }
 
-  // console.log(conf);
+  console.log(conf);
   // Deno.exit();
 
   return conf;
