@@ -168,7 +168,7 @@ export function render(
     xhtml: false,
   });
 
-  const html = marked.parse(text);
+  const html = marked(text);
 
   // return [sanitize(html), links, headings];
   return { html, links: Array.from(internalLinks), headings };
