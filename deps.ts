@@ -19,6 +19,7 @@ export {
   parse as yamlParse,
   stringify as yamlStringify,
 } from "https://deno.land/std@0.125.0/encoding/yaml.ts";
+export { writableStreamFromWriter } from "https://deno.land/std@0.125.0/streams/mod.ts";
 
 export { default as frontMatter } from "https://esm.sh/front-matter";
 export { default as slugify } from "https://esm.sh/slugify";
