@@ -1,6 +1,11 @@
-import { writableStreamFromWriter } from "https://deno.land/std@0.122.0/streams/mod.ts";
-import { dirname, ensureDir, join, yamlStringify } from "./deps.ts";
-import { createConfig, createDefaultSiteConfig } from "./config.ts";
+import {
+  dirname,
+  ensureDir,
+  join,
+  writableStreamFromWriter,
+  yamlStringify,
+} from "./deps.ts";
+import { createConfig } from "./config.ts";
 
 const modUrl = "https://deno.land/x/ter";
 const requiredViews = [
@@ -37,9 +42,7 @@ try {
   await Deno.stat(join(Deno.cwd(), config.siteConfigPath));
   console.log("File exists, skipping\t", config.siteConfigPath);
 } catch {
-  const yaml = yamlStringify(
-    createDefaultSiteConfig() as Record<string, unknown>,
-  );
+  const yaml = yamlStringify(config.site as Record<string, unknown>);
   await ensureDir(dirname(config.siteConfigPath));
   await Deno.writeTextFile(config.siteConfigPath, yaml);
   console.log("Initialized\t", config.siteConfigPath);

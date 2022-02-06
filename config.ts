@@ -8,7 +8,7 @@ export interface SiteConfig {
   author?: { name?: string; email?: string; url?: string };
 }
 
-interface TerConfig extends SiteConfig {
+interface TerConfig {
   inputPath: string;
   outputPath: string;
   assetsPath: string;
@@ -16,7 +16,20 @@ interface TerConfig extends SiteConfig {
   siteConfigPath: string;
   ignoreKeys: Array<string>;
   staticExts: Array<string>;
+  site: SiteConfig;
 }
+
+const defaultSiteConfig: SiteConfig = {
+  title: "My Ter site",
+  shortTitle: "",
+  description: "",
+  url: "",
+  author: {
+    name: "",
+    email: "",
+    url: "",
+  },
+};
 
 const defaultConfig: TerConfig = {
   inputPath: Deno.cwd(),
@@ -36,6 +49,7 @@ const defaultConfig: TerConfig = {
     "webm",
     "mp4",
   ],
+  site: defaultSiteConfig,
 };
 
 async function parseSiteConfig(path: string): Promise<SiteConfig | undefined> {
@@ -50,20 +64,6 @@ async function parseSiteConfig(path: string): Promise<SiteConfig | undefined> {
   }
 }
 
-export function createDefaultSiteConfig(): SiteConfig {
-  return {
-    title: "My ter site",
-    shortTitle: "",
-    description: "",
-    url: "",
-    author: {
-      name: "",
-      email: "",
-      url: "",
-    },
-  };
-}
-
 export async function createConfig(
   args?: Array<string>,
 ): Promise<TerConfig> {
@@ -72,25 +72,25 @@ export async function createConfig(
 
   if (siteConf) {
     if (typeof siteConf.title === "string") {
-      conf.title = siteConf.title;
+      conf.site.title = siteConf.title;
     }
     if (typeof siteConf.shortTitle === "string") {
-      conf.shortTitle = siteConf.shortTitle;
+      conf.site.shortTitle = siteConf.shortTitle;
     }
     if (typeof siteConf.description === "string") {
-      conf.description = siteConf.description;
+      conf.site.description = siteConf.description;
     }
     if (typeof siteConf.url === "string") {
-      conf.url = siteConf.url;
+      conf.site.url = siteConf.url;
     }
     if (typeof siteConf.author?.name === "string") {
-      conf.author = { ...conf.author, name: siteConf.author.name };
+      conf.site.author = { ...conf.site.author, name: siteConf.author.name };
     }
     if (typeof siteConf.author?.email === "string") {
-      conf.author = { ...conf.author, email: siteConf.author.email };
+      conf.site.author = { ...conf.site.author, email: siteConf.author.email };
     }
     if (typeof siteConf.author?.url === "string") {
-      conf.author = { ...conf.author, url: siteConf.author.url };
+      conf.site.author = { ...conf.site.author, url: siteConf.author.url };
     }
   }
 
@@ -108,8 +108,7 @@ export async function createConfig(
       : join(Deno.cwd(), outputPath);
   }
 
-  console.log(conf);
-  // Deno.exit();
+  // console.log(conf);
 
   return conf;
 }

@@ -155,13 +155,7 @@ async function main() {
   const config = await createConfig(Deno.args);
   const { inputPath, outputPath, viewsPath, assetsPath, ignoreKeys } = config;
   const deadLinks: [string, string][] = [];
-
-  const siteConf: SiteConfig = {
-    title: config.title,
-    description: config.description,
-    shortTitle: config.shortTitle,
-    author: config.author,
-  };
+  const { site: siteConf } = config;
 
   const pageViewPath = join(Deno.cwd(), viewsPath, "page.eta");
   await Deno.stat(pageViewPath).catch(() => {
