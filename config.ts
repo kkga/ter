@@ -7,7 +7,7 @@ export interface SiteConfig {
   author?: { name?: string; email?: string; url?: string };
 }
 
-type TerConfig = {
+interface TerConfig extends SiteConfig {
   inputPath: string;
   outputPath: string;
   assetsPath: string;
@@ -15,7 +15,7 @@ type TerConfig = {
   siteConfigPath: string;
   ignoreKeys: Array<string>;
   staticExts: Array<string>;
-} & SiteConfig;
+}
 
 const defaultConfig: TerConfig = {
   inputPath: Deno.cwd(),
@@ -24,19 +24,42 @@ const defaultConfig: TerConfig = {
   viewsPath: ".ter/views",
   siteConfigPath: ".ter/site.yml",
   ignoreKeys: ["private", "draft"],
-  staticExts: ["png", "jpg", "jpeg", "gif", "webp", "webm", "mp4"],
+  staticExts: [
+    "png",
+    "jpg",
+    "jpeg",
+    "gif",
+    "webp",
+    "pdf",
+    "ico",
+    "webm",
+    "mp4",
+  ],
 };
 
 async function parseSiteConfig(path: string): Promise<SiteConfig | undefined> {
   try {
     const decoder = new TextDecoder("utf-8");
     const data = decoder.decode(await Deno.readFile(path));
-
     const conf = yamlParse(data) as SiteConfig;
+    console.log(`Found configuration file: ${path}`);
     return conf;
-  } catch (err) {
-    console.log(String(err));
+  } catch {
+    console.log("Configuration file not found: using defaults");
   }
+}
+
+export function createDefaultSiteConfig(): SiteConfig {
+  return {
+    title: "My ter site",
+    shortTitle: "",
+    description: "",
+    author: {
+      name: "",
+      email: "",
+      url: "",
+    },
+  };
 }
 
 export async function createConfig(
@@ -80,7 +103,7 @@ export async function createConfig(
       : join(Deno.cwd(), outputPath);
   }
 
-  console.log(conf);
+  // console.log(conf);
   // Deno.exit();
 
   return conf;
