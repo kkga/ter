@@ -19,11 +19,13 @@ Otherwise, create a new directory, go inside, and run Ter's init script:
 deno run -A --unstable https://deno.land/x/ter/init.ts
 ```
 
-This will create 2 folders:
+This will create default site configuration and 2 folders:
 
+- `.ter/config.yml` -- site [configuration](configuration.md) file;
 - `.ter/views`, which contains the [templates](customize.md#templates) for
   rendering the site;
-- `.ter/assets`, which contains the default CSS stylesheet.
+- `.ter/assets`, which contains CSS [stylesheets](customize.md#styles) for the
+  site and code syntax.
 
 All files inside `.ter/assets` are copied to the output directory as is, so it's
 a good place to store any static files that you want to be accessible.
