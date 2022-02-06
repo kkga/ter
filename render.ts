@@ -5,6 +5,7 @@ import {
   join,
   joinURL,
   marked,
+  normalizeURL,
   parseURL,
   // sanitizeHtml,
   withLeadingSlash,
@@ -103,8 +104,11 @@ export function render(
     let url: string;
 
     if (parsed.protocol !== undefined) {
-      url = joinURL(parsed.protocol, parsed.host, parsed.pathname) +
-        parsed.search + parsed.hash;
+      url = normalizeURL(
+        `${parsed.protocol}//${
+          joinURL(parsed.host, parsed.pathname)
+        }${parsed.search}${parsed.hash}`,
+      );
       return `<a href="${url}" rel="external noopener noreferrer" ${
         title ? "title=${title}" : ""
       }">${text}</a>`;

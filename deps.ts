@@ -28,6 +28,7 @@ export { default as hljs } from "https://cdn.skypack.dev/highlight.js";
 // export { escape as htmlEscape } from "https://esm.sh/he@1.2.0";
 export {
   joinURL,
+  normalizeURL,
   parseURL,
   withLeadingSlash,
   withoutLeadingSlash,
