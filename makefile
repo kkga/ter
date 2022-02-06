@@ -12,7 +12,7 @@ build:
 	$(DENO) main.ts $(INPUTDIR) $(OUTPUTDIR)
 
 build-test:
-	$(DENO) main.ts 10000-files-test
+	$(DENO) main.ts test-10000
 
 watch:
 	$(DENO) --watch=$(INPUTDIR),$(ASSETSDIR),$(VIEWSDIR) main.ts $(INPUTDIR) $(OUTPUTDIR)
