@@ -1,7 +1,4 @@
-/*
-Default stylesheet for Ter: https://github.com/kkga/ter
-Based on: https://github.com/xz/new.css
-*/
+/* Default stylesheet for Ter: https://github.com/kkga/ter */
 
 @import url("https://rsms.me/inter/inter.css");
 
@@ -206,15 +203,9 @@ a {
   display: inline-block;
 }
 
-/*a:hover {
-  text-decoration: underline;
-  text-decoration-color: currentColor !important;
-  text-decoration-style: solid !important;
-  color: var(--col-lk-1);
-}
-*/
 a[href]:hover {
   text-decoration: none;
+  color: var(--col-lk-1);
   background-color: var(--col-bg-2);
   border-radius: calc(1em * 0.25);
   padding-left: calc(1em * 0.25);
@@ -226,13 +217,7 @@ a[href]:hover {
 a[rel~="external"] {
   color: currentColor;
   text-decoration: underline;
-  text-decoration-color: var(--col-bg-3);
-}
-
-a[rel~="external"]::after {
-  content: "↗";
-  color: var(--col-lk-1);
-  text-decoration: none;
+  text-decoration-color: var(--col-d-lk-2);
 }
 
 abbr:hover {
@@ -476,7 +461,7 @@ video {
 }
 
 /*
-Top-level elements
+TOP-LEVEL ELEMENTS ------------------------------------------------------------
 */
 
 main > header,
