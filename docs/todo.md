@@ -10,8 +10,11 @@ private: true
 - [x] consolidate how paths and links are stored on pages independetly of input
       path
 - [x] fix backLinks not working with `.` input
-- [ ] add config file
-- [ ] strip index/index.md from internal links when they point to index pages
+- [x] add config file
+- [x] strip index/index.md from internal links when they point to index pages
+- [ ] add twitter and og metadata in base view
+- [ ] add og image
+- [ ] add favicon
 - [ ] dirs that contain only nested dirs and no markdown files aren't indexed
 - [ ] use streams to open and write markdown files
 - [ ] sanitize markdown output
