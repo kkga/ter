@@ -160,6 +160,25 @@ var foo =
   "The same thing is true for code with syntax highlighting. A single line of code should horizontally scroll if it is really long.";
 ```
 
+```typescript
+async function initializeFile(filePath: string, url: URL) {
+  const fileResponse = await fetch(url).catch((err) => {
+    console.log(`Can't fetch file: ${url}, Error: ${err}`);
+    // Exit if we can't get the file
+    Deno.exit(1);
+  });
+  if (fileResponse && fileResponse.body) {
+    await ensureDir(dirname(filePath));
+    const file = await Deno.open(filePath, {
+      write: true,
+      create: true,
+    });
+    const writableStream = writableStreamFromWriter(file);
+    await fileResponse.body.pipeTo(writableStream);
+  }
+}
+```
+
 Inline code inside table cells should still be distinguishable.
 
 | Language   | Code               |

@@ -673,7 +673,7 @@ samp {
 
 pre {
   font-size: 0.875rem;
-  line-height: 1.25;
+  line-height: 1.375;
   border-radius: var(--radius-md);
   background-color: var(--col-bg-2);
   padding: 0.75rem;
