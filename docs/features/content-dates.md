@@ -9,7 +9,7 @@ key in the [YAML front matter](frontmatter.md) to any date string that can be
 [parsed by JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse),
 for example:
 
-```markdown
+```
 ---
 date: 1995-12-31
 ---
