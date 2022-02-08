@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-      <% if (it.title) { %><%= it.title %> - <% } %>
+      <% if (it.title !== it.site.title) { %><%= it.title %> - <% } %>
       <%= it.site.title %>
     </title>
     <meta name="description" content="<%= it.description? it.description : it.site.description %>">
@@ -23,9 +23,20 @@
   </head>
 
   <body>
+    <header>
+      <%~ includeFile('breadcrumbs', {
+        breadcrumbs: it.breadcrumbs
+      }) %>
+
+      <% if (it.date && it.readableDate) { %>
+      <time datetime="<%= it.date %>"><%= it.readableDate %></time>
+      <% } %>
+    </header>
+
     <main>
       <%~ it.body %>
     </main>
+
     <footer>
       Made with <a href="https://github.com/kkga/ter">Ter</a>.
     </footer>

@@ -1,7 +1,7 @@
 <nav class="linkList">
   <h3 class="linkList-heading"><%= it.title %></h3>
 
-  <ul class="linkList">
+  <ul class="linkList-list">
     <% it.links.forEach(({ url, title, date, readableDate, isIndexPage, pinned }) => { %>
     <li class="linkList-item">
       <a href="<%= url %>">

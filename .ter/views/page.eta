@@ -1,15 +1,5 @@
 <% layout('./base') %>
 
-<header>
-  <%~ includeFile('./breadcrumbs', {
-    breadcrumbs: it.breadcrumbs
-  }) %>
-
-  <% if (it.date && it.readableDate) { %>
-  <time datetime="<%= it.date %>"><%= it.readableDate %></time>
-  <% } %>
-</header>
-
 <%if (it.body) { %>
 <article>
   <%~ it.body %>
