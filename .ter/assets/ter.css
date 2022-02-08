@@ -159,9 +159,6 @@ BASE TAGS ---------------------------------------------------------------------
 */
 
 body {
-  overflow-x: hidden;
-  word-break: break-word;
-  overflow-wrap: break-word;
   background: var(--col-bg-1);
   color: var(--col-tx-2);
   font-family: var(--font-sans), system-ui, sans-serif;
@@ -170,6 +167,12 @@ body {
   font-weight: var(--weight-norm);
   line-height: 1.5;
   letter-spacing: -0.009em;
+}
+
+footer {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--col-tx-4);
 }
 
 a {
@@ -219,7 +222,6 @@ button,
 input[type="submit"],
 input[type="reset"],
 input[type="button"] {
-  font-size: 0.875rem;
   display: inline-block;
   padding: 6px 12px;
   text-align: center;
@@ -456,12 +458,6 @@ main > article {
 main > nav {
   margin: 0;
   margin-top: 3rem;
-}
-
-footer {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--col-tx-4);
 }
 
 /*
