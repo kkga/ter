@@ -1,6 +1,6 @@
 title: Ter
-shortTitle: ter
-description: A tiny wiki-style site builder with Zettelkasten flavor.
+description: A tiny wiki-style site builder with Zettelkasten flavor
+rootName: index
 url: https://ter.kkga.me
 author:
   name: Gadzhi Kharkharov

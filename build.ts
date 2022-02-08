@@ -107,7 +107,7 @@ export async function buildPage(
   siteConf: SiteConfig,
 ): Promise<string | void> {
   const { title, description, date, html: body } = page;
-  const breadcrumbs = generateBreadcrumbs(page, siteConf.shortTitle);
+  const breadcrumbs = generateBreadcrumbs(page, siteConf.rootName);
   const backlinkIndexItems = generateIndexItems(backLinkedPages);
   const childIndexItems = generateIndexItems(childPages);
   const readableDate = date ? toReadableDate(date) : null;

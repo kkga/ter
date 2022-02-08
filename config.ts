@@ -2,8 +2,8 @@ import { isAbsolute, join, yamlParse } from "./deps.ts";
 
 export interface SiteConfig {
   title?: string;
-  shortTitle?: string;
   description?: string;
+  rootName?: string;
   url?: string;
   author?: { name?: string; email?: string; url?: string };
 }
@@ -21,7 +21,7 @@ interface TerConfig {
 
 const defaultSiteConfig: SiteConfig = {
   title: "My Ter site",
-  shortTitle: "",
+  rootName: "index",
   description: "",
   url: "",
   author: {
@@ -74,8 +74,8 @@ export async function createConfig(
     if (typeof siteConf.title === "string") {
       conf.site.title = siteConf.title;
     }
-    if (typeof siteConf.shortTitle === "string") {
-      conf.site.shortTitle = siteConf.shortTitle;
+    if (typeof siteConf.rootName === "string") {
+      conf.site.rootName = siteConf.rootName;
     }
     if (typeof siteConf.description === "string") {
       conf.site.description = siteConf.description;
