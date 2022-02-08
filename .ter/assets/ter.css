@@ -523,6 +523,24 @@ INDEX LIST --------------------------------------------------------------------
   line-height: 1.75;
 }
 
+.linkList-heading {
+  margin: 0;
+  line-height: inherit;
+  font-size: 0.875rem;
+  letter-spacing: 0;
+  font-weight: normal;
+  color: var(--col-tx-4);
+  display: flex;
+  gap: 0.5ch;
+  align-items: baseline;
+}
+
+.linkList-heading::after {
+  flex: 1;
+  content: "";
+  border-top: 1px solid var(--col-bg-3);
+}
+
 .linkList-list {
   margin: 0;
   padding: 0;
@@ -543,15 +561,6 @@ INDEX LIST --------------------------------------------------------------------
   align-items: baseline;
   margin: 0;
   color: currentColor;
-}
-
-.linkList-heading {
-  margin: 0;
-  line-height: inherit;
-  font-size: 0.875rem;
-  letter-spacing: 0;
-  font-weight: normal;
-  color: var(--col-tx-4);
 }
 
 .linkList-name {
