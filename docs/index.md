@@ -17,8 +17,9 @@ replicates its structure into a static site with automatically
 ### Open source
 
 Ter is open source, written in [TypeScript](https://www.typescriptlang.org/) and
-[Deno](https://deno.land). Deno is fun. Contribute or submit issues:
-[github.com/kkga/ter](https://github.com/kkga/ter)
+[Deno](https://deno.land). Deno is fun.
 
-**Note:** This is PRE-ALPHA software. It will not damage your files, but some
+Contribute or submit issues: [github.com/kkga/ter](https://github.com/kkga/ter)
+
+**Note:** This is pre-alpha software. It will not damage your files, but some
 aspects of site generation might change in future.

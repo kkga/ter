@@ -195,19 +195,3 @@ Small images should be shown at their actual size.
 Large images should always scale down and fit in the content container.
 
 ![](http://placekitten.com/g/1200/800/)
-
-Here's a simple footnote,[^1] and here's a longer one.[^bignote]
-
-[^1]: This is the first footnote.
-
-[^bignote]: Here's one with multiple paragraphs and code.
-
-Indent paragraphs to include them in the footnote.
-
-`{ my code }`
-
-Add as many paragraphs as you like.
-
-```
-This is the final element on the page and there should be no margin below this.
-```
