@@ -20,14 +20,14 @@ interface TerConfig {
 }
 
 const defaultSiteConfig: SiteConfig = {
-  title: "My Ter site",
+  title: "Your Blog Name",
   rootName: "index",
-  description: "",
-  url: "",
+  description: "I am writing about my experiences as a naval navel-gazer",
+  url: "https://example.com/",
   author: {
-    name: "",
-    email: "",
-    url: "",
+    name: "Your Name Here",
+    email: "youremailaddress@example.com",
+    url: "https://example.com/about-me/",
   },
 };
 
@@ -107,8 +107,6 @@ export async function createConfig(
       ? outputPath
       : join(Deno.cwd(), outputPath);
   }
-
-  // console.log(conf);
 
   return conf;
 }
