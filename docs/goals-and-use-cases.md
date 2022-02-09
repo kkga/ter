@@ -4,11 +4,10 @@ pinned: true
 
 # Goals and use cases
 
-Ter tries to solve some specific use-cases effortlessly, rather than being a
+Ter tries to solve some specific use cases effortlessly, rather than being a
 full-fledged static site builder.
 
-If any of the following goals and use-cases sound relevant, Ter might be for
-you.
+If any of the following sounds relevant, Ter might be for you.
 
 ## Goals
 
@@ -26,5 +25,5 @@ you.
 - A simple blog;
 - Software documentation (just like the one you're currently browsing).
 
-If you're looking for a real static site generator, try something like
+If you're looking for a more flexible static site generator, try something like
 [11ty](https://www.11ty.dev/) or [Astro](https://astro.build/).
