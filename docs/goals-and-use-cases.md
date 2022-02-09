@@ -12,7 +12,7 @@ If any of the following sounds relevant, Ter might be for you.
 ## Goals
 
 - The filesystem is the navigation and organization method;
-- Creating a new page (or category) should be as easy as creating a file (or
+- Creating a new page (or category) should be as simple as creating a file (or
   directory);
 - No bundled JavaScript -- it's just a bunch of hyperlinked documents, after
   all;
