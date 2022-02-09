@@ -8,11 +8,14 @@ At the moment, the following configuration options are available:
 # Site title: used in HTML title tags and in feeds
 title: Ter
 
+# Site description: used in HTML description tags and in feeds
+description: A tiny wiki-style site builder with Zettelkasten flavor.
+
 # Root name: used for root breadcrumb label
 rootName: index
 
-# Site description: used in HTML description tags and in feeds
-description: A tiny wiki-style site builder with Zettelkasten flavor.
+# URL: used in feed
+url: https://ter.kkga.me/
 
 # Author name: used in feeds
 author:
