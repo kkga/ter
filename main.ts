@@ -16,6 +16,7 @@ import {
   getStaticEntries,
 } from "./entries.ts";
 import { hasKey } from "./attr.ts";
+import { init, requiredAssets, requiredViews } from "./init.ts";
 
 interface OutputFile {
   inputPath: string;
@@ -150,34 +151,49 @@ function getStaticFiles(
   return files;
 }
 
+async function checkRequiredFiles(
+  viewsPath: string,
+  assetsPath: string,
+  requiredViews: Array<string>,
+  requiredAssets: Array<string>,
+): Promise<boolean> {
+  for (const file of requiredViews) {
+    const path = join(Deno.cwd(), viewsPath, file);
+    await Deno.stat(path).catch(() => Promise.reject(path));
+  }
+  for (const file of requiredAssets) {
+    const path = join(Deno.cwd(), assetsPath, file);
+    await Deno.stat(path).catch(() => Promise.reject(path));
+  }
+  return Promise.resolve(true);
+}
+
 async function main() {
-  const startDate = new Date();
+  const START = performance.now();
   const config = await createConfig(Deno.args);
   const { inputPath, outputPath, viewsPath, assetsPath, ignoreKeys } = config;
   const deadLinks: [string, string][] = [];
   const { site: siteConf } = config;
 
-  const pageViewPath = join(Deno.cwd(), viewsPath, "page.eta");
-  await Deno.stat(pageViewPath).catch(() => {
-    console.log(
-      "Can't find the 'page.eta' view. Did you forget to run 'init.ts'?",
-    );
-    Deno.exit(1);
-  });
-
-  const feedViewPath = join(Deno.cwd(), viewsPath, "feed.xml.eta");
-  await Deno.stat(feedViewPath).catch(() => {
-    console.log(
-      "Can't find the 'feed.xml.eta' view. Did you forget to run 'init.ts'?",
-    );
-    Deno.exit(1);
-  });
+  await checkRequiredFiles(viewsPath, assetsPath, requiredViews, requiredAssets)
+    .catch(async (err) => {
+      console.error(
+        `%cMissing required file: ${relative(Deno.cwd(), err)}`,
+        "color: red",
+      );
+      if (confirm("Do you want to initialize Ter?")) {
+        await init();
+      } else {
+        Deno.exit(1);
+      }
+    });
 
   const contentEntries = await getContentEntries(inputPath);
   const staticEntries = await getStaticEntries(inputPath, config.staticExts);
   const assetEntries = await getAssetEntries(assetsPath);
 
   const pages = await generatePages(contentEntries, inputPath, ignoreKeys);
+  const pageViewPath = join(Deno.cwd(), viewsPath, "page.eta");
   const htmlFiles = await buildContentFiles(
     pages,
     outputPath,
@@ -198,6 +214,7 @@ async function main() {
   await emptyDir(outputPath);
 
   if (pages.length > 0) {
+    const feedViewPath = join(Deno.cwd(), viewsPath, "feed.xml.eta");
     const feedFile = await buildFeedFile(
       pages,
       feedViewPath,
@@ -212,7 +229,7 @@ async function main() {
   }
 
   if (htmlFiles.length > 0) {
-    console.log("\nWriting content pages:");
+    console.log("%c\nWriting content pages:", "font-weight: bold");
 
     for (const file of htmlFiles) {
       if (file.fileContent) {
@@ -226,7 +243,7 @@ async function main() {
   }
 
   if (staticFiles.length > 0) {
-    console.log("\nCopying static files:");
+    console.log("%c\nCopying static files:", "font-weight: bold");
 
     for (const file of staticFiles) {
       console.log(
@@ -240,7 +257,7 @@ async function main() {
   }
 
   if (assetFiles.length > 0) {
-    console.log("\nCopying site assets:");
+    console.log("%c\nCopying site assets:", "font-weight: bold");
 
     for (const file of assetFiles) {
       console.log(
@@ -253,16 +270,15 @@ async function main() {
     }
   }
 
-  const endDate = new Date();
-  const buildSeconds = (endDate.getTime() - startDate.getTime()) / 1000;
+  const END = performance.now();
+  const BUILD_SECS = (END - START) / 1000;
 
-  console.log(
-    `\nResult:
+  console.log("%c\nResult:", "font-weight: bold");
+  console.log(`\
   Built ${Array.isArray(htmlFiles) && htmlFiles.length} pages
   Copied ${staticFiles.length} static files
   Copied ${assetFiles.length} site assets
-  In ${buildSeconds} seconds`,
-  );
+  In ${BUILD_SECS} seconds`);
 
   if (deadLinks.length > 0) {
     console.log("\nFound dead links:");
