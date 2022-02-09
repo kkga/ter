@@ -12,7 +12,7 @@
 	</author>
 
     <% it.pages.forEach(({ path, title, date, html }) => { %>
-    <% const url = `<%= it.site.url.replace(/\/$/i, "") %>/${path}` %>
+    <% const url = `${it.site.url.replace(/\/$/i, "")}/${path}` %>
 	<entry>
 		<title><%= title %></title>
 		<link href="<%= url %>"/>
