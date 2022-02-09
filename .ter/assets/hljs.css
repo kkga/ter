@@ -1,1 +1,70 @@
-../../assets/hljs.css
+.hljs-comment {
+  opacity: 0.5;
+  font-style: italic;
+}
+.hljs-punctuation,
+.hljs-tag {
+  color: currentColor;
+}
+.hljs-tag .hljs-attr,
+.hljs-tag .hljs-name {
+  color: currentColor;
+}
+.hljs-attribute,
+.hljs-doctag,
+.hljs-keyword,
+.hljs-meta .hljs-keyword,
+.hljs-name,
+.hljs-selector-tag {
+  color: currentColor;
+}
+.hljs-deletion,
+.hljs-number,
+.hljs-quote,
+.hljs-selector-class,
+.hljs-selector-id,
+.hljs-string,
+.hljs-template-tag,
+.hljs-type {
+  color: var(--col-ac-tx);
+}
+.hljs-section,
+.hljs-title {
+  color: currentColor;
+  font-weight: bold;
+}
+.hljs-link,
+.hljs-operator,
+.hljs-regexp,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-symbol,
+.hljs-template-variable,
+.hljs-variable,
+.hljs-function {
+  color: var(--col-tx-3);
+}
+.hljs-literal {
+  color: currentColor;
+}
+.hljs-addition,
+.hljs-built_in,
+.hljs-bullet,
+.hljs-code {
+  color: var(--col-tx-3);
+}
+.hljs-meta {
+  color: currentColor;
+}
+.hljs-meta .hljs-string {
+  color: currentColor;
+}
+.hljs-subs {
+  font-weight: bold;
+}
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: bold;
+}

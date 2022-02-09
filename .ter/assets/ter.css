@@ -1,1 +1,567 @@
-../../assets/ter.css
+/* Default stylesheet for Ter: https://github.com/kkga/ter */
+
+@import url("https://rsms.me/inter/inter.css");
+
+/*
+ROOT -------------------------------------------------------------------------
+*/
+
+:root {
+  --font-sans: "Inter", sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Light theme */
+  --col-tx-1: #1c1917;
+  --col-tx-2: #1c1917;
+  --col-tx-3: #57534e;
+  --col-tx-4: #78716c;
+  --col-bg-1: #f5f5f4;
+  --col-bg-2: #e7e5e4;
+  --col-bg-3: #d6d3d1;
+  --col-lk-1: #0369a1;
+  --col-lk-2: #0366d6;
+  --col-lk-3: #99f6e4;
+  --col-lk-tx: #ffffff;
+  --col-ac-1: #79ffe1;
+  --col-ac-tx: #b45309;
+
+  /* Dark theme */
+  --col-d-tx-1: #f5f5f4;
+  --col-d-tx-2: #e7e5e4;
+  --col-d-tx-3: #a8a29e;
+  --col-d-tx-4: #78716c;
+  --col-d-bg-1: #1c1917;
+  --col-d-bg-2: #292524;
+  --col-d-bg-3: #44403c;
+  --col-d-lk-1: #0ea5e9;
+  --col-d-lk-2: #0284c7;
+  --col-d-lk-tx: #ffffff;
+  --col-d-ac-1: #7928ca;
+  --col-d-ac-tx: #ffffff;
+
+  --width-body: 72ch;
+
+  --radius-xs: 4px;
+  --radius-md: 6px;
+}
+
+@supports (font-variation-settings: normal) {
+  :root {
+    --font-sans: "Inter var", sans-serif;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --col-tx-1: var(--col-d-tx-1);
+    --col-tx-2: var(--col-d-tx-2);
+    --col-tx-3: var(--col-d-tx-3);
+    --col-tx-4: var(--col-d-tx-4);
+    --col-bg-1: var(--col-d-bg-1);
+    --col-bg-2: var(--col-d-bg-2);
+    --col-bg-3: var(--col-d-bg-3);
+    --col-lk-1: var(--col-d-lk-1);
+    --col-lk-2: var(--col-d-lk-2);
+    --col-lk-tx: var(--col-d-lk-tx);
+    --col-ac-1: var(--col-d-ac-1);
+    --col-ac-tx: var(--col-d-ac-tx);
+  }
+}
+
+/*
+RESET -------------------------------------------------------------------------
+*/
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+address,
+area,
+article,
+aside,
+audio,
+blockquote,
+datalist,
+details,
+dl,
+fieldset,
+figure,
+form,
+input,
+iframe,
+img,
+meter,
+nav,
+ol,
+optgroup,
+option,
+output,
+p,
+pre,
+progress,
+ruby,
+section,
+table,
+textarea,
+ul,
+video {
+  margin-bottom: 1rem;
+}
+
+html,
+input,
+select,
+button {
+  font-family: var(--font-sans);
+}
+
+/*
+TYPE SCALE --------------------------------------------------------------------
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: 1rem;
+  letter-spacing: -0.025em;
+  margin-top: 1.5em;
+  margin-bottom: 0.875em;
+}
+
+h1 {
+  font-weight: bold;
+  font-size: 2rem;
+  line-height: 2.5rem;
+}
+h1:first-child {
+  margin-top: 0;
+}
+
+h2 {
+  font-weight: 500;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+small {
+  font-size: 0.75rem;
+}
+
+/*
+BASE TAGS ---------------------------------------------------------------------
+*/
+
+body {
+  background: var(--col-bg-1);
+  color: var(--col-tx-2);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-feature-settings: "calt", "tnum", "ss02";
+  font-size: 16px;
+  font-weight: var(--weight-norm);
+  line-height: 1.5;
+  letter-spacing: -0.009em;
+}
+
+footer {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--col-tx-4);
+}
+
+a {
+  color: var(--col-lk-1);
+  text-decoration: none;
+  display: inline-block;
+}
+
+a[href]:hover {
+  text-decoration: none;
+  color: var(--col-lk-1);
+  background-color: var(--col-bg-2);
+  border-radius: calc(1em * 0.25);
+  padding-left: calc(1em * 0.25);
+  padding-right: calc(1em * 0.25);
+  margin-left: calc(1em * -0.25);
+  margin-right: calc(1em * -0.25);
+}
+
+a[rel~="external"] {
+  color: currentColor;
+  text-decoration: underline;
+  text-decoration-color: var(--col-d-lk-2);
+}
+
+abbr:hover {
+  /* Set the '?' cursor while hovering an abbreviation */
+  cursor: help;
+}
+
+blockquote {
+  padding: 0 3rem;
+  color: var(--col-tx-3);
+}
+
+abbr {
+  cursor: help;
+}
+
+blockquote *:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+a button,
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+  display: inline-block;
+  padding: 6px 12px;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  background: var(--col-lk-1);
+  color: var(--col-lk-tx);
+  border: 0;
+  border-radius: 4px;
+  box-sizing: border-box;
+  cursor: pointer;
+  color: var(--col-lk-tx);
+}
+
+a button[disabled],
+button[disabled],
+input[type="submit"][disabled],
+input[type="reset"][disabled],
+input[type="button"][disabled] {
+  cursor: default;
+  opacity: 0.5;
+
+  /* Set the [X] cursor while hovering a disabled link */
+  cursor: not-allowed;
+}
+
+.button:focus,
+.button:enabled:hover,
+button:focus,
+button:enabled:hover,
+input[type="submit"]:focus,
+input[type="submit"]:enabled:hover,
+input[type="reset"]:focus,
+input[type="reset"]:enabled:hover,
+input[type="button"]:focus,
+input[type="button"]:enabled:hover {
+  background: var(--col-lk-2);
+}
+
+a img {
+  margin-bottom: 0px;
+}
+
+/*
+Preformatted elements
+*/
+
+code,
+kbd,
+samp {
+  font-family: var(--font-mono);
+  color: var(--col-ac-tx);
+}
+
+pre {
+  font-size: 0.875rem;
+  line-height: 1.375;
+  border-radius: var(--radius-md);
+  background-color: var(--col-bg-2);
+  padding: 0.75rem;
+  overflow: auto;
+}
+
+pre code {
+  /* When <code> is in a <pre>, reset it's formatting to blend in */
+  background: inherit;
+  font-size: inherit;
+  color: inherit;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+code pre {
+  /* When <pre> is in a <code>, reset it's formatting to blend in */
+  display: inline;
+  background: inherit;
+  font-size: inherit;
+  color: inherit;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/*
+Miscellaneous
+*/
+
+details {
+  /* Make the <details> look more "clickable" */
+  padding: 0.6rem 1rem;
+  background: var(--col-bg-2);
+  border: 1px solid var(--col-bg-3);
+  border-radius: 4px;
+}
+
+summary {
+  /* Makes the <summary> look more like a "clickable" link with the pointer cursor */
+  cursor: pointer;
+  font-weight: var(--weight-bold);
+}
+
+details[open] {
+  /* Adjust the <details> padding while open */
+  padding-bottom: 0.75rem;
+}
+
+details[open] summary {
+  /* Adjust the <details> padding while open */
+  margin-bottom: 6px;
+}
+
+details[open] > *:last-child {
+  /* Resets the bottom margin of the last element in the <details> while <details> is opened. This prevents double margins/paddings. */
+  margin-bottom: 0;
+}
+
+dt {
+  font-weight: bold;
+}
+
+dd::before {
+  content: ":: ";
+}
+
+hr {
+  border: 0;
+  border-bottom: 1px solid var(--col-bg-3);
+  margin: 1.5rem auto;
+}
+
+fieldset {
+  margin-top: 1rem;
+  padding: 2rem;
+  border: 1px solid var(--col-bg-3);
+  border-radius: 4px;
+}
+
+legend {
+  padding: auto 0.5rem;
+}
+
+table {
+  width: 100%;
+  font-size: 0.875rem;
+  line-height: 1.375;
+}
+
+td,
+th {
+  text-align: left;
+  padding: 0.25rem 0.5rem;
+}
+
+th {
+  background: var(--col-bg-3);
+}
+
+tr {
+  background: var(--col-bg-2);
+}
+
+table caption {
+  font-weight: var(--weight-bold);
+  margin-bottom: 0.5rem;
+}
+
+textarea {
+  /* Don't let the <textarea> extend off the screen naturally or when dragged by the user */
+  max-width: 100%;
+}
+
+ol,
+ul {
+  list-style: inside;
+  padding: 0;
+}
+
+ul ul,
+ol ul,
+ul ol,
+ol ol {
+  margin-bottom: 0;
+  padding-left: 2rem;
+}
+
+mark {
+  padding: 3px 6px;
+  background: var(--col-ac-1);
+  color: var(--col-ac-tx);
+}
+
+textarea,
+select,
+input {
+  padding: 6px 12px;
+  margin-bottom: 0.5rem;
+  background: var(--col-bg-2);
+  color: var(--col-tx-2);
+  border: 1px solid var(--col-bg-3);
+  border-radius: 4px;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+
+img,
+video {
+  max-width: 100%;
+}
+
+/*
+TOP-LEVEL LAYOUT ------------------------------------------------------------
+*/
+
+body {
+  display: grid;
+  grid-template-columns: 1fr min(var(--width-body), calc(100% - 2rem)) 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-column-gap: 1rem;
+  grid-row-gap: 3rem;
+  min-height: 100vh;
+  padding: 1rem 0;
+}
+
+body > header,
+body > footer,
+body > main {
+  grid-column: 2;
+}
+
+main > article {
+  margin: 0;
+}
+main > nav {
+  margin: 0;
+  margin-top: 3rem;
+}
+
+/*
+HEADER ------------------------------------------------------------------------
+*/
+
+body > header {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1ch;
+  font-size: 0.875rem;
+  line-height: 1.375;
+  color: var(--col-tx-3);
+}
+
+@media only screen and (min-width: 32em) {
+  body > header {
+    flex-direction: row;
+  }
+}
+
+body > header time {
+  color: var(--col-tx-4);
+}
+
+/*
+BREADCRUMBS -------------------------------------------------------------------
+*/
+
+.breadcrumbs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.breadcrumbs-item {
+  display: inline-block;
+  margin: 0;
+}
+
+.breadcrumbs-item:not(:last-child)::after {
+  content: "/";
+  color: var(--col-tx-4);
+}
+
+.breadcrumbs-item a {
+  text-decoration: none;
+  color: var(--col-tx-2);
+}
+
+/*
+INDEX LIST --------------------------------------------------------------------
+*/
+
+.linkList {
+  color: var(--col-tx-2);
+  line-height: 1.75;
+}
+
+.linkList-heading {
+  margin: 0;
+  line-height: inherit;
+  font-size: 0.875rem;
+  letter-spacing: 0;
+  font-weight: normal;
+  color: var(--col-tx-4);
+  display: flex;
+  gap: 0.5ch;
+  align-items: baseline;
+}
+
+.linkList-heading::after {
+  flex: 1;
+  content: "";
+  border-top: 1px solid var(--col-bg-3);
+}
+
+.linkList-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.linkList-time {
+  font-size: 0.75rem;
+  color: var(--col-tx-4);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.linkList-item a {
+  text-decoration: none;
+  display: flex;
+  gap: 1ch;
+  align-items: baseline;
+  margin: 0;
+  color: currentColor;
+}
+
+.linkList-name {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
