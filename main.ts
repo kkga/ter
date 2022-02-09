@@ -169,7 +169,6 @@ async function checkRequiredFiles(
 }
 
 async function main() {
-  const START = performance.now();
   const config = await createConfig(Deno.args);
   const { inputPath, outputPath, viewsPath, assetsPath, ignoreKeys } = config;
   const deadLinks: [string, string][] = [];
@@ -187,6 +186,8 @@ async function main() {
         Deno.exit(1);
       }
     });
+
+  const START = performance.now();
 
   const contentEntries = await getContentEntries(inputPath);
   const staticEntries = await getStaticEntries(inputPath, config.staticExts);
