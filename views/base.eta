@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-      <% if (it.title !== it.site.title) { %><%= it.title %> - <% } %>
-      <%= it.site.title %>
+      <%_ if (it.title !== it.site.title) { %><%_= it.title _%> - <% } _%>
+      <%_= it.site.title _%>
     </title>
     <meta name="description" content="<%= it.description? it.description : it.site.description %>">
     <link rel="stylesheet" href="/ter.css">
@@ -19,13 +19,12 @@
     <meta property="og:title" content="<%= it.title? it.title : it.site.title %>">
     <meta property="og:description" content="<%= it.description? it.description : it.site.description %>">
     <meta property="og:url" content="<%= it.site.url %>">
+    <%~ include("head") %>
   </head>
 
   <body>
     <header>
-      <%~ includeFile('breadcrumbs', {
-        breadcrumbs: it.breadcrumbs
-      }) %>
+      <%~ includeFile('breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
 
       <% if (it.date && it.readableDate) { %>
       <time datetime="<%= it.date %>"><%= it.readableDate %></time>

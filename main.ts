@@ -71,10 +71,21 @@ async function generatePages(
   return pages;
 }
 
+async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
+  try {
+    const decoder = new TextDecoder("utf-8");
+    const path = join(Deno.cwd(), viewsPath, "head.eta");
+    return decoder.decode(await Deno.readFile(path));
+  } catch {
+    return undefined;
+  }
+}
+
 async function buildContentFiles(
   pages: Array<Page>,
   outputPath: string,
   pageViewPath: string,
+  headInclude: string,
   siteConf: SiteConfig,
 ): Promise<OutputFile[]> {
   const files: Array<OutputFile> = [];
@@ -89,6 +100,7 @@ async function buildContentFiles(
 
     const html = await buildPage(
       page,
+      headInclude,
       page.isIndex ? getChildPages(pages, page) : [],
       getBacklinkPages(pages, page),
       pageViewPath,
@@ -180,7 +192,7 @@ async function main() {
         `%cMissing required file: ${relative(Deno.cwd(), err)}`,
         "color: red",
       );
-      if (confirm("Do you want to initialize Ter?")) {
+      if (confirm("Initialize default views and assets?")) {
         await init();
       } else {
         Deno.exit(1);
@@ -195,10 +207,12 @@ async function main() {
 
   const pages = await generatePages(contentEntries, inputPath, ignoreKeys);
   const pageViewPath = join(Deno.cwd(), viewsPath, "page.eta");
+  const headInclude = await getHeadInclude(viewsPath) ?? "";
   const htmlFiles = await buildContentFiles(
     pages,
     outputPath,
     pageViewPath,
+    headInclude,
     siteConf,
   );
   const staticFiles = getStaticFiles(staticEntries, inputPath, outputPath);
@@ -223,7 +237,6 @@ async function main() {
       siteConf,
     );
     if (feedFile && feedFile.fileContent) {
-      // console.log(feedFile.fileContent);
       await ensureDir(dirname(feedFile.filePath));
       await Deno.writeTextFile(feedFile.filePath, feedFile.fileContent);
     }

@@ -36,6 +36,8 @@ export {
   withoutTrailingSlash,
 } from "https://unpkg.com/ufo/dist/index.mjs";
 export {
+  compile as etaCompile,
   configure as etaConfigure,
   renderFile as etaRenderFile,
+  templates as etaTemplates,
 } from "https://deno.land/x/eta@v1.12.3/mod.ts";

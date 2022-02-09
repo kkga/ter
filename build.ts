@@ -1,4 +1,11 @@
-import { dirname, etaConfigure, etaRenderFile, join } from "./deps.ts";
+import {
+  dirname,
+  etaCompile,
+  etaConfigure,
+  etaRenderFile,
+  etaTemplates,
+  join,
+} from "./deps.ts";
 import { Page } from "./page.ts";
 import { SiteConfig } from "./config.ts";
 import { hasKey } from "./attr.ts";
@@ -101,6 +108,7 @@ function generateBreadcrumbs(
 
 export async function buildPage(
   page: Page,
+  headInclude: string,
   childPages: Array<Page>,
   backLinkedPages: Array<Page>,
   viewPath: string,
@@ -111,7 +119,10 @@ export async function buildPage(
   const backlinkIndexItems = generateIndexItems(backLinkedPages);
   const childIndexItems = generateIndexItems(childPages);
   const readableDate = date ? toReadableDate(date) : null;
-  const result = await etaRenderFile(viewPath, {
+
+  etaTemplates.define("head", etaCompile(headInclude));
+
+  return await etaRenderFile(viewPath, {
     breadcrumbs,
     date,
     readableDate,
@@ -122,8 +133,6 @@ export async function buildPage(
     backLinks: backlinkIndexItems,
     site: siteConf,
   });
-
-  return result;
 }
 
 export async function buildFeed(
