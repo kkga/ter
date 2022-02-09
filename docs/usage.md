@@ -10,16 +10,17 @@ installed.
 Once the `deno` command is available to run in your terminal, proceed to the
 initial setup.
 
-## Initial setup
+## Initial setup and build
 
 If you want to use an existing folder of markdown files, navigate to it.
-Otherwise, create a new directory, go inside, and run Ter's init script:
+Otherwise, create a new directory, go inside, and run Ter for the first time:
 
 ```
-deno run -A --unstable https://deno.land/x/ter/init.ts
+deno run -A --unstable https://deno.land/x/ter/main.ts
 ```
 
-This will create default site configuration and 2 folders:
+Ter will check for required views and assets. If it can't find any, it will
+prompt to fetch required files and create default site configuration:
 
 - `.ter/config.yml` -- site [configuration](configuration.md) file;
 - `.ter/views`, which contains the [templates](customize.md#templates) for
@@ -27,18 +28,11 @@ This will create default site configuration and 2 folders:
 - `.ter/assets`, which contains CSS [stylesheets](customize.md#styles) for the
   site and code syntax.
 
-All files inside `.ter/assets` are copied to the output directory as is, so it's
-a good place to store any static files that you want to be accessible.
+Once the initialization is done, Ter will carry on building the site.
 
-## Build
+## Build arguments
 
-Once, the initial setup is done, build the site:
-
-```
-deno run -A --unstable https://deno.land/x/ter/main.ts
-```
-
-This script takes 2 optional arguments: `input` (default: `.`) and `output`
+The build script takes 2 optional arguments: `input` (default: `.`) and `output`
 (default: `_site`).
 
 By default, it will recursively search for all `*.md` files in the current
