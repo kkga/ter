@@ -1,0 +1,21 @@
+<% layout('./base') %>
+
+<%if (it.body) { %>
+<article>
+  <%~ it.body %>
+</article>
+<% } %>
+
+<% if (it.indexLinks?.length > 0) { %>
+<%~ includeFile('./link-list', {
+  links: it.indexLinks,
+  title: "Index"
+}) %>
+<% } %>
+
+<% if (it.backLinks?.length > 0) { %>
+<%~ includeFile('./link-list', {
+  links: it.backLinks,
+  title: "Backlinks"
+}) %>
+<% } %>
