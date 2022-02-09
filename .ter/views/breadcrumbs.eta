@@ -1,15 +1,1 @@
-<nav class="breadcrumbs" aria-label="breadcrumb">
-  <ol class="breadcrumbs">
-    <% if (it.breadcrumbs.length > 0) { %>
-      <% it.breadcrumbs.forEach((crumb, index) => { %>
-        <li class="breadcrumbs-item">
-          <% if (crumb.url !== "") { %>
-          <a href="<%= crumb.url %>"><%= crumb.slug %></a>
-          <% } else { %>
-          <%= crumb.slug %>
-          <% } %>
-        </li>
-      <% }) %>
-    <% } %>
-  </ol>
-</nav>
+../../views/breadcrumbs.eta
