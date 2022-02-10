@@ -150,12 +150,6 @@ main > nav {
 BASE TAGS ---------------------------------------------------------------------
 */
 
-img,
-video {
-  max-width: 100%;
-  vertical-align: bottom;
-}
-
 a {
   color: var(--color-text-accent);
   text-decoration: none;
@@ -181,6 +175,16 @@ a[rel~="external"] {
   color: currentcolor;
   text-decoration: underline;
   text-decoration-color: var(--color-text-accent);
+}
+
+img,
+video {
+  max-width: 100%;
+  vertical-align: bottom;
+}
+
+article > img {
+  margin: 1.5rem 0;
 }
 
 blockquote {
@@ -214,7 +218,7 @@ pre code {
 }
 
 figure {
-  margin: 1rem 0;
+  margin: 1.5rem 0;
 }
 
 figcaption {
@@ -274,16 +278,12 @@ table caption {
   margin-bottom: 0.5rem;
 }
 
-textarea {
-  max-width: 100%;
-}
-
 ul ul,
 ol ul,
 ul ol,
 ol ol {
   margin-bottom: 0;
-  padding-left: 2rem;
+  padding-left: 1.5rem;
 }
 
 /*
