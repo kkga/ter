@@ -103,7 +103,11 @@ export function render(
     const parsed = parseURL(href);
     let url: string;
 
-    if (parsed.protocol !== undefined) {
+    if (
+      parsed.protocol !== undefined ||
+      typeof parsed.pathname === "string" &&
+        parsed.pathname.startsWith("mailto")
+    ) {
       url = normalizeURL(
         `${parsed.protocol}//${
           joinURL(parsed.host, parsed.pathname)
