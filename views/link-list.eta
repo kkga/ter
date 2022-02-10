@@ -1,11 +1,11 @@
-<nav class="linkList">
-  <h3 class="linkList-heading"><%= it.title %></h3>
+<nav class="linklist">
+  <h3 class="linklist-heading"><%= it.title %></h3>
 
-  <ul class="linkList-list">
+  <ul class="linklist-list">
     <% it.links.forEach(({ url, title, date, readableDate, isIndexPage, pinned }) => { %>
-    <li class="linkList-item">
+    <li class="linklist-item">
       <a href="<%= url %>">
-        <span class="linkList-name">
+        <span class="linklist-name">
           <% if (isIndexPage) { %>
           ❖ <strong><%= title %>/</strong>
           <% } else { %>
@@ -14,7 +14,7 @@
         </span>
 
         <% if (date && readableDate) { %>
-        <time class="linkList-time" datetime="<%= date %>">
+        <time class="linklist-time" datetime="<%= date %>">
           <%= readableDate %>
         </time>
         <% } %>
