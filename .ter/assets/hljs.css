@@ -4,11 +4,11 @@
 }
 .hljs-punctuation,
 .hljs-tag {
-  color: currentColor;
+  color: currentcolor;
 }
 .hljs-tag .hljs-attr,
 .hljs-tag .hljs-name {
-  color: currentColor;
+  color: currentcolor;
 }
 .hljs-attribute,
 .hljs-doctag,
@@ -16,7 +16,7 @@
 .hljs-meta .hljs-keyword,
 .hljs-name,
 .hljs-selector-tag {
-  color: currentColor;
+  opacity: 0.75;
 }
 .hljs-deletion,
 .hljs-number,
@@ -26,12 +26,11 @@
 .hljs-string,
 .hljs-template-tag,
 .hljs-type {
-  color: var(--col-ac-tx);
+  color: var(--color-text-accent-alt);
 }
 .hljs-section,
 .hljs-title {
-  color: currentColor;
-  font-weight: bold;
+  color: currentcolor;
 }
 .hljs-link,
 .hljs-operator,
@@ -42,22 +41,22 @@
 .hljs-template-variable,
 .hljs-variable,
 .hljs-function {
-  color: var(--col-tx-3);
+  color: currentcolor;
 }
 .hljs-literal {
-  color: currentColor;
+  color: currentcolor;
 }
 .hljs-addition,
 .hljs-built_in,
 .hljs-bullet,
 .hljs-code {
-  color: var(--col-tx-3);
+  color: currentcolor;
 }
 .hljs-meta {
-  color: currentColor;
+  color: currentcolor;
 }
 .hljs-meta .hljs-string {
-  color: currentColor;
+  color: currentcolor;
 }
 .hljs-subs {
   font-weight: bold;
