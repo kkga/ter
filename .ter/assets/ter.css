@@ -341,13 +341,13 @@ INDEX LIST --------------------------------------------------------------------
 */
 
 .linklist {
-  color: var(--color-text-secondary);
   line-height: var(--line-height-spaced);
 }
 
 .linklist-heading {
+  color: var(--color-text-secondary);
   margin: 0;
-  line-height: inherit;
+  line-height: 2;
   font-size: var(--font-size-xs);
   letter-spacing: 0;
   font-weight: var(--font-weight-m);
@@ -368,17 +368,11 @@ INDEX LIST --------------------------------------------------------------------
   list-style: none;
 }
 
-.linklist-time {
-  font-size: var(--font-size-xs);
-  margin-left: auto;
-  white-space: nowrap;
-}
-
 .linklist-item a {
   text-decoration: none;
   display: flex;
   gap: 1ch;
-  align-items: baseline;
+  align-items: center;
   margin: 0;
   color: currentcolor;
 }
@@ -388,4 +382,11 @@ INDEX LIST --------------------------------------------------------------------
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.linklist-time {
+  font-size: var(--font-size-xs);
+  margin-left: auto;
+  margin-right: 0.25em;
+  white-space: nowrap;
 }
