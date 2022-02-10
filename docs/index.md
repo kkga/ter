@@ -16,10 +16,12 @@ replicates its structure into a static site with automatically
 
 ### Open source
 
-Ter is open source, written in [TypeScript](https://www.typescriptlang.org/) and
-[Deno](https://deno.land). Deno is fun.
+Ter is written in [TypeScript](https://www.typescriptlang.org/) and
+[Deno](https://deno.land). Deno is fun.<br/>Contribute or submit issues:
+[github.com/kkga/ter](https://github.com/kkga/ter)
 
-Contribute or submit issues: [github.com/kkga/ter](https://github.com/kkga/ter)
-
-**Note:** This is pre-alpha software. It will not damage your files, but some
-aspects of site generation might change in future.
+<small>
+<strong>*</strong>
+This is pre-alpha software. It can not damage your files, but some
+aspects of site generation are in flux.
+</small>

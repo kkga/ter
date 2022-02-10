@@ -117,6 +117,18 @@ Definition lists can be used with HTML syntax.
 
 ---
 
+<details>
+  <summary>This is a summary of details</summary>
+  <p>
+    This is a paragraph inside details. Bacon ipsum dolor sit amet t-bone doner shank
+    drumstick, pork belly porchetta chuck sausage brisket ham hock rump pig. Chuck
+    kielbasa leberkas, pork bresaola ham hock filet mignon cow shoulder short ribs
+    biltong.
+  </p>
+</details>
+
+---
+
 Tables should have bold headings and alternating shaded rows.
 
 | Artist          | Album          | Year |
@@ -194,4 +206,7 @@ Small images should be shown at their actual size.
 
 Large images should always scale down and fit in the content container.
 
-![](http://placekitten.com/g/1200/800/)
+<figure>
+  <img src="http://placekitten.com/g/1200/800/">
+  <figcaption>This a figcaption</figcaption>
+</figure>
