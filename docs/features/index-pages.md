@@ -17,13 +17,14 @@ content
 ... the `life` directory will get an `life/index.html` page with an index of its
 content.
 
-## Sorting
+## Index sorting
 
-- child directories are listed at the top of index;
-- markdown files with `pinned: true` in [front matter](./frontmatter.md) are
-  listed after directories and get an ★ symbol next to title;
-- rest of markdown files are listed after pinned items, sorted by
-  [date](./content-dates.md).
+Items in the index are sorted in the following order:
+
+1. files with `pinned: true` in the [frontmatter](./frontmatter.md) are listed
+   at the top and get an ★ symbol;
+2. directories (child index pages);
+3. rest of markdown files, sorted by [date](./content-dates.md).
 
 ## Markdown in index files
 

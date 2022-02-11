@@ -1,6 +1,6 @@
 # Frontmatter
 
-Ter extracts [YAML front matter](https://jekyllrb.com/docs/front-matter/)
+Ter extracts [YAML frontmatter](https://jekyllrb.com/docs/front-matter/)
 delimited by `---` from markdown files.
 
 Here's an example:
