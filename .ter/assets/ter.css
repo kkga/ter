@@ -413,7 +413,7 @@ INDEX LIST --------------------------------------------------------------------
 }
 
 .linklist-item--index .linklist-name::after {
-  content: "/";
+  content: "";
 }
 
 .linklist-item--pinned .linklist-name::after {

@@ -60,8 +60,8 @@ function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
         return 0;
       }
     })
-    .sort((a) => a.pinned ? -1 : 0)
-    .sort((a) => a.isIndexPage ? -1 : 0);
+    .sort((a) => a.isIndexPage ? -1 : 0)
+    .sort((a) => a.pinned ? -1 : 0);
 
   return items;
 }
