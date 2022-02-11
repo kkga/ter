@@ -83,6 +83,13 @@ h6 {
   margin-bottom: 0.75em;
 }
 
+h3,
+h4,
+h5,
+h6 {
+  margin-bottom: 0.25em;
+}
+
 h1 {
   font-size: var(--font-size-xl);
   line-height: var(--line-height-head);
@@ -101,6 +108,15 @@ h2 {
 small {
   font-size: var(--font-size-s);
   color: var(--color-text-secondary);
+}
+
+h1 + *,
+h2 + *,
+h3 + *,
+h4 + *,
+h5 + *,
+h6 + * {
+  margin-top: 0;
 }
 
 /*
@@ -377,11 +393,31 @@ INDEX LIST --------------------------------------------------------------------
   color: currentcolor;
 }
 
+.linklist-item--index {
+  font-weight: var(--font-weight-m);
+}
+
 .linklist-name {
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.linklist-name::before {
+  content: "◇ ";
+}
+
+.linklist-item--index .linklist-name::before {
+  content: "❖ ";
+}
+
+.linklist-item--index .linklist-name::after {
+  content: "/";
+}
+
+.linklist-item--pinned .linklist-name::after {
+  content: "★";
 }
 
 .linklist-time {
