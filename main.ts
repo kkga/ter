@@ -204,7 +204,7 @@ async function main() {
   const contentEntries = await getContentEntries(inputPath);
   const staticEntries = await getStaticEntries(
     inputPath,
-    config.inputPath,
+    config.outputPath,
     config.staticExts,
   );
   const assetEntries = await getAssetEntries(assetsPath);

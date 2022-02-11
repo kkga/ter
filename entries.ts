@@ -31,7 +31,7 @@ export async function getAssetEntries(
 
 export async function getStaticEntries(
   path: string,
-  inputPath: string,
+  outputPath: string,
   extensions?: Array<string>,
 ): Promise<Array<WalkEntry>> {
   const entries: Array<WalkEntry> = [];
@@ -46,7 +46,7 @@ export async function getStaticEntries(
       root: path,
       includeDirs: false,
       caseInsensitive: true,
-      exclude: [inputPath],
+      exclude: [outputPath],
     })
   ) {
     if (hasIgnoredPrefix(entry.path)) {
