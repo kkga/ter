@@ -202,7 +202,11 @@ async function main() {
   const START = performance.now();
 
   const contentEntries = await getContentEntries(inputPath);
-  const staticEntries = await getStaticEntries(inputPath, config.staticExts);
+  const staticEntries = await getStaticEntries(
+    inputPath,
+    config.inputPath,
+    config.staticExts,
+  );
   const assetEntries = await getAssetEntries(assetsPath);
 
   const pages = await generatePages(contentEntries, inputPath, ignoreKeys);
