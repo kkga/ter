@@ -1,0 +1,28 @@
+<header class="header">
+  <nav class="breadcrumbs" aria-label="breadcrumb">
+    <ol class="breadcrumbs">
+      <% if (it.breadcrumbs.length > 0) { %>
+        <% it.breadcrumbs.forEach((crumb, index) => { %>
+          <li class="breadcrumbs-item">
+            <% if (crumb.url !== "") { %>
+            <a href="<%= crumb.url %>"><%= crumb.slug %></a>
+            <% } else { %>
+            <%= crumb.slug %>
+            <% } %>
+          </li>
+        <% }) %>
+      <% } %>
+    </ol>
+  </nav>
+
+  <div style="text-align:right" class="header-meta">
+    <% if (it.page?.description) { %>
+    <div><%= it.page.description %></div>
+    <% } %>
+
+    <% if (it.page?.date && it.page?.readableDate) { %>
+    <time style="display: block" datetime="<%= it.page.date %>"><%= it.page.readableDate %></time>
+    <% } %>
+  </div>
+
+</header>

@@ -113,26 +113,41 @@ export async function buildPage(
   headInclude: string,
   childPages: Array<Page>,
   backLinkedPages: Array<Page>,
+  taggedPages: { [tag: string]: Array<Page> },
   viewPath: string,
   siteConf: SiteConfig,
 ): Promise<string | void> {
-  const { title, description, date, html: body } = page;
+  const { title, description, tags, date, html: content } = page;
+  const readableDate = date ? toReadableDate(date) : null;
   const breadcrumbs = generateBreadcrumbs(page, siteConf.rootName);
   const backlinkIndexItems = generateIndexItems(backLinkedPages);
   const childIndexItems = generateIndexItems(childPages);
-  const readableDate = date ? toReadableDate(date) : null;
+
+  const tagLists: { [tag: string]: Array<IndexItem> } = {};
+  for (const tag of Object.keys(taggedPages)) {
+    const tagIndex = generateIndexItems(
+      taggedPages[tag].filter((taggedPage) => taggedPage !== page),
+    );
+    if (tagIndex.length !== 0) {
+      tagLists[tag] = tagIndex;
+    }
+  }
 
   etaTemplates.define("head", etaCompile(headInclude));
 
   return await etaRenderFile(viewPath, {
+    page: {
+      title,
+      description,
+      content,
+      date: date,
+      tags,
+      readableDate: readableDate,
+    },
     breadcrumbs,
-    date,
-    readableDate,
-    title,
-    description,
-    body,
     indexLinks: childIndexItems,
     backLinks: backlinkIndexItems,
+    taggedIndexLinks: tagLists,
     site: siteConf,
   });
 }

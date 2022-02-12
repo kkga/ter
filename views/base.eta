@@ -4,32 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-      <%_ if (it.title !== it.site.title) { %><%_= it.title %> - <% } %>
+      <%_ if (it.page?.title !== it.site.title) { %><%_= it.page?.title %> - <% } %>
       <%_= it.site.title _%>
     </title>
-    <meta name="description" content="<%= it.description? it.description : it.site.description %>">
+    <meta name="description" content="<%= it.page?.description ? it.page.description : it.site.description %>">
     <link rel="stylesheet" href="/ter.css">
     <link rel="stylesheet" href="/hljs.css">
     <link rel="icon" href="/favicon.svg">
     <link rel="alternate" href="/feed.xml" type="application/atom+xml" title="<%= it.site.title %>">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="<%= it.title? it.title : it.site.title %>">
-    <meta name="twitter:description" content="<%= it.description? it.description : it.site.description %>">
+    <meta name="twitter:title" content="<%= it.page?.title ? it.page.title : it.site.title %>">
+    <meta name="twitter:description" content="<%= it.page?.description? it.page.description : it.site.description %>">
     <meta property="og:type" content="article">
-    <meta property="og:title" content="<%= it.title? it.title : it.site.title %>">
-    <meta property="og:description" content="<%= it.description? it.description : it.site.description %>">
+    <meta property="og:title" content="<%= it.page?.title? it.page.title : it.site.title %>">
+    <meta property="og:description" content="<%= it.page?.description ? it.page.description : it.site.description %>">
     <meta property="og:url" content="<%= it.site.url %>">
     <%~ include("head") %>
   </head>
 
   <body>
-    <header>
-      <%~ includeFile('breadcrumbs', { breadcrumbs: it.breadcrumbs }) %>
-
-      <% if (it.date && it.readableDate) { %>
-      <time datetime="<%= it.date %>"><%= it.readableDate %></time>
-      <% } %>
-    </header>
+    <%~ includeFile('header', { breadcrumbs: it.breadcrumbs, page: it.page }) %>
 
     <main>
       <%~ it.body %>

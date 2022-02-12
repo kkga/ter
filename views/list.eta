@@ -2,7 +2,15 @@
   <h3 class="linklist-heading"><%= it.title %></h3>
 
   <ul class="linklist-list">
-    <% it.links.forEach(({ url, title, description, date, readableDate, isIndexPage, pinned }) => { %>
+    <% it.links.forEach(({
+      url,
+      title,
+      description,
+      date,
+      readableDate,
+      isIndexPage,
+      pinned
+    }) => { %>
     <li class="linklist-item
       <%_= isIndexPage ? ' linklist-item--index' : '' %>
       <%_= pinned ? ' linklist-item--pinned' : '' %>">

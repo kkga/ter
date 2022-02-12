@@ -13,8 +13,8 @@ const MOD_URL = "https://deno.land/x/ter";
 export const requiredViews = [
   "base.eta",
   "page.eta",
-  "breadcrumbs.eta",
-  "link-list.eta",
+  "header.eta",
+  "list.eta",
   "feed.xml.eta",
 ];
 export const requiredAssets = [

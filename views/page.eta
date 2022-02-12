@@ -1,21 +1,28 @@
 <% layout('./base') %>
 
-<%if (it.body) { %>
+<%if (it.page?.content) { %>
 <article>
-  <%~ it.body %>
+  <%~ it.page?.content %>
 </article>
 <% } %>
 
 <% if (it.indexLinks?.length > 0) { %>
-<%~ includeFile('./link-list', {
+<%~ includeFile('./list', {
   links: it.indexLinks,
   title: "Index"
 }) %>
 <% } %>
 
 <% if (it.backLinks?.length > 0) { %>
-<%~ includeFile('./link-list', {
+<%~ includeFile('./list', {
   links: it.backLinks,
   title: "Backlinks"
 }) %>
 <% } %>
+
+<% Object.keys(it.taggedIndexLinks).forEach((tag) => { %>
+<%~ includeFile('./list', {
+  links: it.taggedIndexLinks[tag],
+  title: `Tagged #${tag}`
+}) %>
+<% }) %>

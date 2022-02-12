@@ -15,7 +15,7 @@ import {
   getContentEntries,
   getStaticEntries,
 } from "./entries.ts";
-import { hasKey } from "./attr.ts";
+import { getTagsFromAttrs, hasKey } from "./attr.ts";
 import { init, requiredAssets, requiredViews } from "./init.ts";
 
 interface OutputFile {
@@ -24,10 +24,7 @@ interface OutputFile {
   fileContent?: string;
 }
 
-function getBacklinkPages(
-  allPages: Array<Page>,
-  current: Page,
-): Array<Page> {
+function getBacklinkPages(allPages: Array<Page>, current: Page): Array<Page> {
   const pages: Array<Page> = [];
 
   for (const outPage of allPages) {
@@ -39,15 +36,33 @@ function getBacklinkPages(
   return pages;
 }
 
-function getChildPages(
-  allPages: Array<Page>,
-  current: Page,
-): Array<Page> {
+function getChildPages(allPages: Array<Page>, current: Page): Array<Page> {
   const pages = allPages.filter((p) => {
     return current.path !== p.path && current.path === dirname(p.path);
   });
 
   return pages;
+}
+
+function getPagesByTags(
+  allPages: Array<Page>,
+  tags: Array<string>,
+): { [tag: string]: Array<Page> } {
+  const tagged: { [tag: string]: Array<Page> } = {};
+
+  tags.forEach((tag) => {
+    tagged[tag] = [];
+    for (const page of allPages) {
+      if (getTagsFromAttrs(page.attributes).includes(tag)) {
+        tagged[tag] = [...tagged[tag], page];
+      }
+    }
+    if (tagged[tag].length === 0) {
+      delete tagged[tag];
+    }
+  });
+
+  return tagged;
 }
 
 async function generatePages(
@@ -103,6 +118,7 @@ async function buildContentFiles(
       headInclude,
       page.isIndex ? getChildPages(pages, page) : [],
       getBacklinkPages(pages, page),
+      getPagesByTags(pages, getTagsFromAttrs(page.attributes)),
       pageViewPath,
       siteConf,
     );

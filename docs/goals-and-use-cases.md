@@ -1,6 +1,8 @@
 ---
 description: See if Ter works for you
 pinned: true
+tags:
+  - yo
 ---
 
 # Goals and use cases
