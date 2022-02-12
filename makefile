@@ -5,14 +5,16 @@ OUTPUTDIR = _site
 ASSETSDIR = .ter/assets
 VIEWSDIR = .ter/views
 
+build-test:
+	$(DENO) main.ts test-10000
+
 clean:
 	rm -rf $(OUTPUTDIR)
 
 build:
+	mkdir -p $(ASSETSDIR)
+	cp assets/* $(ASSETSDIR)
 	$(DENO) main.ts $(INPUTDIR) $(OUTPUTDIR)
-
-build-test:
-	$(DENO) main.ts test-10000
 
 watch:
 	$(DENO) --watch=$(INPUTDIR),$(ASSETSDIR),$(VIEWSDIR) main.ts $(INPUTDIR) $(OUTPUTDIR)
