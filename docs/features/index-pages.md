@@ -1,3 +1,7 @@
+---
+description: Overview of index page generation
+---
+
 # Index pages
 
 Ter recursively recreates the source file system on the rendered site and each

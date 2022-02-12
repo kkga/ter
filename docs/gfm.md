@@ -1,3 +1,7 @@
+---
+description: Sample of Markdown
+---
+
 # Markdown
 
 Ter uses [GitHub Flavored Markdown (GFM)](https://github.github.com/gfm/) via

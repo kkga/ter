@@ -1,3 +1,7 @@
+---
+description: How to change Ter's configuration file
+---
+
 # Configuration
 
 The configuration file is located at `.ter/config.yml`.

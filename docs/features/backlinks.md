@@ -1,3 +1,7 @@
+---
+description: Connections between pages
+---
+
 # Backlinks
 
 Ter adheres to the [Zettelksten](/zettelkasten.md) method and tracks connections

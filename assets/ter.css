@@ -388,7 +388,7 @@ INDEX LIST --------------------------------------------------------------------
   text-decoration: none;
   display: flex;
   gap: 1ch;
-  align-items: center;
+  align-items: baseline;
   margin: 0;
   color: currentcolor;
 }
@@ -420,9 +420,26 @@ INDEX LIST --------------------------------------------------------------------
   content: "★";
 }
 
+.linklist-description {
+  max-width: 100%;
+  flex: 1;
+  text-align: right;
+  font-weight: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--font-size-s);
+  color: var(--color-text-secondary);
+}
+
+.linklist-item--index .linklist-description {
+  text-align: left;
+}
+
 .linklist-time {
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-s);
   margin-left: auto;
   margin-right: 0.25em;
   white-space: nowrap;
+  color: var(--color-text-tertiary);
 }

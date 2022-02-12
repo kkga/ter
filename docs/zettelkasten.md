@@ -1,3 +1,7 @@
+---
+description: Note-taking system
+---
+
 # Zettelkasten
 
 From [Wikipedia](https://en.wikipedia.org/wiki/Zettelkasten):

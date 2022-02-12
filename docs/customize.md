@@ -1,3 +1,7 @@
+---
+description: Customize templates and styles
+---
+
 # Customize
 
 Ter should work out of the box with zero configuration needed to get a decent

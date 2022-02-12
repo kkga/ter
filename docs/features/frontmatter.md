@@ -1,3 +1,7 @@
+---
+description: Adding metadata to pages
+---
+
 # Frontmatter
 
 Ter extracts [YAML frontmatter](https://jekyllrb.com/docs/front-matter/)

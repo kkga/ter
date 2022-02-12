@@ -1,4 +1,5 @@
 ---
+description: How to build a Ter site
 pinned: true
 ---
 

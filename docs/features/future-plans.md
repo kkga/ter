@@ -1,3 +1,7 @@
+---
+description: Some ideas on what to improve
+---
+
 # Future plans
 
 - expand [configuration](../configuration.md) options to allow custom content

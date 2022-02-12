@@ -1,3 +1,7 @@
+---
+description: Overview of main features
+---
+
 # Features
 
 - Turns a folder of markdown files into a wiki site

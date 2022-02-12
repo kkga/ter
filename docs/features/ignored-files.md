@@ -1,3 +1,7 @@
+---
+description: Excluding files from site generation
+---
+
 # Ignored files
 
 Any files and folders that start with an `_` or `.` (hidden) are ignored.

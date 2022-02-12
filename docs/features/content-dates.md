@@ -1,3 +1,7 @@
+---
+description: Using custom dates in markdown files
+---
+
 # Content dates
 
 Ter tries to replicate the content file system on a generated site. And with

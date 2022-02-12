@@ -23,6 +23,7 @@ interface Breadcrumb {
 interface IndexItem {
   url: string;
   title: string;
+  description?: string;
   isIndexPage: boolean;
   pinned: boolean;
   date: Date | null;
@@ -33,7 +34,7 @@ const toReadableDate = (date: Date) =>
   new Date(date).toLocaleDateString("en-us", {
     year: "numeric",
     month: "short",
-    day: "numeric",
+    day: "2-digit",
   });
 
 function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
@@ -45,6 +46,7 @@ function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
     items.push({
       url: join("/", dirname(p.path), p.slug),
       title: p.title,
+      description: p.description,
       date: p.date ? p.date : null,
       readableDate,
       isIndexPage: p.isIndex,
