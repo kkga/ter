@@ -158,7 +158,10 @@ main > article {
 }
 
 main > nav {
-  margin: 0;
+  margin-bottom: 1rem;
+}
+
+main > nav:first-of-type {
   margin-top: 3rem;
 }
 

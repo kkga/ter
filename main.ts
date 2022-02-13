@@ -44,25 +44,10 @@ function getChildPages(allPages: Array<Page>, current: Page): Array<Page> {
   return pages;
 }
 
-function getPagesByTags(
-  allPages: Array<Page>,
-  tags: Array<string>,
-): { [tag: string]: Array<Page> } {
-  const tagged: { [tag: string]: Array<Page> } = {};
-
-  tags.forEach((tag) => {
-    tagged[tag] = [];
-    for (const page of allPages) {
-      if (getTagsFromAttrs(page.attributes).includes(tag)) {
-        tagged[tag] = [...tagged[tag], page];
-      }
-    }
-    if (tagged[tag].length === 0) {
-      delete tagged[tag];
-    }
-  });
-
-  return tagged;
+function getPagesByTag(allPages: Array<Page>, tag: string): Array<Page> {
+  return allPages.filter((page) =>
+    getTagsFromAttrs(page.attributes).includes(tag)
+  );
 }
 
 async function generatePages(
@@ -113,12 +98,18 @@ async function buildContentFiles(
       "index.html",
     );
 
+    const tags = getTagsFromAttrs(page.attributes);
+    const pagesByTag: { [tag: string]: Array<Page> } = {};
+    tags.forEach((tag) => {
+      pagesByTag[tag] = getPagesByTag(pages, tag);
+    });
+
     const html = await buildPage(
       page,
       headInclude,
       page.isIndex ? getChildPages(pages, page) : [],
       getBacklinkPages(pages, page),
-      getPagesByTags(pages, getTagsFromAttrs(page.attributes)),
+      pagesByTag,
       pageViewPath,
       siteConf,
     );
