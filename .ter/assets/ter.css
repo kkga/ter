@@ -8,9 +8,8 @@ ROOT -------------------------------------------------------------------------
 
 :root {
   --font-sans: "Inter", sans-serif;
-  --font-mono: ui-monospace, "input", "input mono", "cascadia code",
-    sfmono-regular, menlo, monaco, consolas, "liberation mono", "courier new",
-    monospace;
+  --font-mono: ui-monospace, sfmono-regular, menlo, monaco, consolas,
+    "liberation mono", "courier new", monospace;
 
   /* Light theme */
   --color-text-body: #1c1917;
@@ -385,6 +384,12 @@ INDEX LIST --------------------------------------------------------------------
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.linklist-list--tags {
+  display: flex;
+  gap: 1ch;
+  flex-flow: row wrap;
 }
 
 .linklist-item a {

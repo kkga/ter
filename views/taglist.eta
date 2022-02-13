@@ -1,0 +1,13 @@
+<nav class="linklist">
+  <h3 class="linklist-heading"><%= it.title %></h3>
+
+  <ul class="linklist-list linklist-list--tags">
+    <% it.tags.forEach((tag) => { %>
+    <li class="linklist-item">
+      <a href="<%= `/tag/${tag}` %>">
+        <%_= `#${tag}` _%>
+      </a>
+    </li>
+    <% }) %>
+  </ul>
+</nav>

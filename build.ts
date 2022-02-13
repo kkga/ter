@@ -114,6 +114,7 @@ export async function buildPage(
   childPages: Array<Page>,
   backLinkedPages: Array<Page>,
   taggedPages: { [tag: string]: Array<Page> },
+  childTags: Array<string>,
   viewPath: string,
   siteConf: SiteConfig,
 ): Promise<string | void> {
@@ -148,6 +149,7 @@ export async function buildPage(
     indexLinks: childIndexItems,
     backLinks: backlinkIndexItems,
     taggedIndexLinks: tagLists,
+    childTags,
     site: siteConf,
   });
 }

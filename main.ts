@@ -44,6 +44,18 @@ function getChildPages(allPages: Array<Page>, current: Page): Array<Page> {
   return pages;
 }
 
+function getChildTags(allPages: Array<Page>, current: Page): Array<string> {
+  const tags: Set<string> = new Set();
+
+  allPages.forEach((page) => {
+    if (current.path !== page.path && current.path === dirname(page.path)) {
+      getTagsFromAttrs(page.attributes).forEach((tag) => tags.add(tag));
+    }
+  });
+
+  return [...tags];
+}
+
 function getPagesByTag(allPages: Array<Page>, tag: string): Array<Page> {
   return allPages.filter((page) =>
     getTagsFromAttrs(page.attributes).includes(tag)
@@ -110,6 +122,7 @@ async function buildContentFiles(
       page.isIndex ? getChildPages(pages, page) : [],
       getBacklinkPages(pages, page),
       pagesByTag,
+      getChildTags(pages, page),
       pageViewPath,
       siteConf,
     );
