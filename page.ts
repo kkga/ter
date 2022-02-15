@@ -1,11 +1,4 @@
-import {
-  dirname,
-  extname,
-  frontMatter,
-  relative,
-  slugify,
-  WalkEntry,
-} from "./deps.ts";
+import { frontMatter, path, slugify, WalkEntry } from "./deps.ts";
 import { render } from "./render.ts";
 import * as attr from "./attr.ts";
 
@@ -56,7 +49,7 @@ const findIndexEntry = (
   for (const entry of allEntries) {
     if (
       entry.isFile && entry.name === "index.md" &&
-      dirname(entry.path) === current.path
+      path.dirname(entry.path) === current.path
     ) {
       return entry;
     }
@@ -72,8 +65,8 @@ export async function generatePage(
   let page: Page;
 
   if (entry.isFile && entry.name !== INDEX_FILENAME) {
-    const relPath = relative(inputPath, entry.path).replace(
-      extname(entry.path),
+    const relPath = path.relative(inputPath, entry.path).replace(
+      path.extname(entry.path),
       "",
     );
     const isIndex = false;
@@ -108,7 +101,7 @@ export async function generatePage(
       isIndex,
     };
   } else if (entry.isDirectory) {
-    const relPath = relative(inputPath, entry.path) || ".";
+    const relPath = path.relative(inputPath, entry.path) || ".";
     const slug = relPath === "." ? "." : slugify(entry.name);
     const isIndex = true;
     const indexEntry = findIndexEntry(allEntries, entry);

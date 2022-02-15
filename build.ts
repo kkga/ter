@@ -1,10 +1,9 @@
 import {
-  dirname,
   etaCompile,
   etaConfigure,
   etaRenderFile,
   etaTemplates,
-  join,
+  path,
 } from "./deps.ts";
 import { Page } from "./page.ts";
 import { SiteConfig } from "./config.ts";
@@ -45,7 +44,7 @@ function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
     const isPinned = hasKey(p.attributes, ["pinned"]);
     const readableDate = p.date ? toReadableDate(p.date) : null;
     items.push({
-      url: join("/", dirname(p.path), p.slug),
+      url: path.join("/", path.dirname(p.path), p.slug),
       title: p.title,
       description: p.description,
       date: p.date ? p.date : null,
@@ -73,13 +72,13 @@ function generateBreadcrumbs(
   currentPage: Page,
   homeSlug?: string,
 ): Array<Breadcrumb> {
-  const dir: string = dirname(currentPage.path);
+  const dir: string = path.dirname(currentPage.path);
   const chunks = dir.split("/").filter((path) => path !== ".");
   const { slug } = currentPage;
 
   let breadcrumbs: Array<Breadcrumb> = chunks.map((chunk, index) => {
     const slug = chunk;
-    const url = join("/", ...chunks.slice(0, index + 1));
+    const url = path.join("/", ...chunks.slice(0, index + 1));
     return {
       slug,
       url,

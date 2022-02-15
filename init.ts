@@ -1,8 +1,6 @@
 import {
-  basename,
-  dirname,
   ensureDir,
-  join,
+  path,
   writableStreamFromWriter,
   yamlStringify,
 } from "./deps.ts";
@@ -28,7 +26,7 @@ async function initializeFile(filePath: string, url: URL) {
     Deno.exit(1);
   });
   if (fileResponse.ok && fileResponse.body) {
-    await ensureDir(dirname(filePath));
+    await ensureDir(path.dirname(filePath));
     const file = await Deno.open(filePath, {
       write: true,
       create: true,
@@ -45,35 +43,39 @@ export async function init() {
   const config = await createConfig(Deno.args);
 
   try {
-    await Deno.stat(join(Deno.cwd(), config.siteConfigPath));
+    await Deno.stat(path.join(Deno.cwd(), config.siteConfigPath));
     console.log("File exists, skipping\t", config.siteConfigPath);
   } catch {
     const yaml = yamlStringify(config.site as Record<string, unknown>);
-    await ensureDir(dirname(config.siteConfigPath));
+    await ensureDir(path.dirname(config.siteConfigPath));
     await Deno.writeTextFile(config.siteConfigPath, yaml);
     console.log("Initialized\t", config.siteConfigPath);
   }
 
   for await (const view of requiredViews) {
-    const path = join(config.viewsPath, view);
+    const viewPath = path.join(config.viewsPath, view);
     try {
-      await Deno.stat(path);
+      await Deno.stat(viewPath);
       console.log("File exists, skipping\t", path);
     } catch {
-      const url = new URL(join(MOD_URL, basename(config.viewsPath), view));
-      await initializeFile(join(config.viewsPath, view), url);
+      const url = new URL(
+        path.join(MOD_URL, path.basename(config.viewsPath), view),
+      );
+      await initializeFile(path.join(config.viewsPath, view), url);
       console.log("Initialized\t", path);
     }
   }
 
   for await (const asset of requiredAssets) {
-    const path = join(config.assetsPath, asset);
+    const assetPath = path.join(config.assetsPath, asset);
     try {
-      await Deno.stat(path);
+      await Deno.stat(assetPath);
       console.log("File exists, skipping\t", path);
     } catch {
-      const url = new URL(join(MOD_URL, basename(config.assetsPath), asset));
-      await initializeFile(join(config.assetsPath, asset), url);
+      const url = new URL(
+        path.join(MOD_URL, path.basename(config.assetsPath), asset),
+      );
+      await initializeFile(path.join(config.assetsPath, asset), url);
       console.log("Initialized\t", path);
     }
   }

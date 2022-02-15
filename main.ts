@@ -1,12 +1,4 @@
-import {
-  basename,
-  dirname,
-  emptyDir,
-  ensureDir,
-  join,
-  relative,
-  WalkEntry,
-} from "./deps.ts";
+import { emptyDir, ensureDir, path, WalkEntry } from "./deps.ts";
 import { buildFeed, buildPage, buildTagPage } from "./build.ts";
 import { createConfig, SiteConfig } from "./config.ts";
 import { generatePage, isDeadLink, Page, TagPage } from "./page.ts";
@@ -38,7 +30,7 @@ function getBacklinkPages(allPages: Array<Page>, current: Page): Array<Page> {
 
 function getChildPages(allPages: Array<Page>, current: Page): Array<Page> {
   const pages = allPages.filter((p) => {
-    return current.path !== p.path && current.path === dirname(p.path);
+    return current.path !== p.path && current.path === path.dirname(p.path);
   });
 
   return pages;
@@ -48,7 +40,7 @@ function getChildTags(allPages: Array<Page>, current: Page): Array<string> {
   const tags: Set<string> = new Set();
 
   allPages.forEach((page) => {
-    const relPath = relative(current.path, page.path);
+    const relPath = path.relative(current.path, page.path);
     if (!relPath.startsWith("..") && relPath !== "") {
       getTagsFromAttrs(page.attributes).forEach((tag) => tags.add(tag));
     }
@@ -111,8 +103,8 @@ async function generatePages(
 async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
   try {
     const decoder = new TextDecoder("utf-8");
-    const path = join(Deno.cwd(), viewsPath, "head.eta");
-    return decoder.decode(await Deno.readFile(path));
+    const headPath = path.join(Deno.cwd(), viewsPath, "head.eta");
+    return decoder.decode(await Deno.readFile(headPath));
   } catch {
     return undefined;
   }
@@ -128,9 +120,9 @@ async function buildContentFiles(
   const files: Array<OutputFile> = [];
 
   for (const page of pages) {
-    const filePath = join(
+    const filePath = path.join(
       outputPath,
-      dirname(page.path),
+      path.dirname(page.path),
       page.slug,
       "index.html",
     );
@@ -174,7 +166,7 @@ async function buildTagFiles(
   const files: Array<OutputFile> = [];
 
   for (const tag of tagPages) {
-    const filePath = join(
+    const filePath = path.join(
       outputPath,
       "tag",
       tag.name,
@@ -230,11 +222,11 @@ function getStaticFiles(
   const files: Array<OutputFile> = [];
 
   for (const entry of entries) {
-    const relPath = relative(inputPath, entry.path);
-    const filePath = join(
+    const relPath = path.relative(inputPath, entry.path);
+    const filePath = path.join(
       outputPath,
-      dirname(relPath),
-      basename(relPath),
+      path.dirname(relPath),
+      path.basename(relPath),
     );
     files.push({
       inputPath: entry.path,
@@ -252,12 +244,12 @@ async function checkRequiredFiles(
   requiredAssets: Array<string>,
 ): Promise<boolean> {
   for (const file of requiredViews) {
-    const path = join(Deno.cwd(), viewsPath, file);
-    await Deno.stat(path).catch(() => Promise.reject(path));
+    const filepath = path.join(Deno.cwd(), viewsPath, file);
+    await Deno.stat(filepath).catch(() => Promise.reject(path));
   }
   for (const file of requiredAssets) {
-    const path = join(Deno.cwd(), assetsPath, file);
-    await Deno.stat(path).catch(() => Promise.reject(path));
+    const filepath = path.join(Deno.cwd(), assetsPath, file);
+    await Deno.stat(filepath).catch(() => Promise.reject(path));
   }
   return Promise.resolve(true);
 }
@@ -271,7 +263,7 @@ async function main() {
   await checkRequiredFiles(viewsPath, assetsPath, requiredViews, requiredAssets)
     .catch(async (err) => {
       console.error(
-        `%cMissing required file: ${relative(Deno.cwd(), err)}`,
+        `%cMissing required file: ${path.relative(Deno.cwd(), err)}`,
         "color: red",
       );
       if (confirm("Initialize default views and assets?")) {
@@ -297,8 +289,8 @@ async function main() {
   const tags = getAllTags(pages);
   const tagPages = generateTagPages(tags, pages);
 
-  const pageViewPath = join(Deno.cwd(), viewsPath, "page.eta");
-  const tagViewPath = join(Deno.cwd(), viewsPath, "tag-page.eta");
+  const pageViewPath = path.join(Deno.cwd(), viewsPath, "page.eta");
+  const tagViewPath = path.join(Deno.cwd(), viewsPath, "tag-page.eta");
   const headInclude = await getHeadInclude(viewsPath) ?? "";
   const htmlFiles = await buildContentFiles(
     pages,
@@ -328,15 +320,15 @@ async function main() {
   await emptyDir(outputPath);
 
   if (pages.length > 0) {
-    const feedViewPath = join(Deno.cwd(), viewsPath, "feed.xml.eta");
+    const feedViewPath = path.join(Deno.cwd(), viewsPath, "feed.xml.eta");
     const feedFile = await buildFeedFile(
       pages,
       feedViewPath,
-      join(config.outputPath, "feed.xml"),
+      path.join(config.outputPath, "feed.xml"),
       siteConf,
     );
     if (feedFile && feedFile.fileContent) {
-      await ensureDir(dirname(feedFile.filePath));
+      await ensureDir(path.dirname(feedFile.filePath));
       await Deno.writeTextFile(feedFile.filePath, feedFile.fileContent);
     }
   }
@@ -347,11 +339,11 @@ async function main() {
     for (const file of tagFiles) {
       if (file.fileContent) {
         console.log(
-          `  #${basename(dirname(file.filePath))}\t-> ${
-            relative(outputPath, file.filePath)
+          `  #${path.basename(path.dirname(file.filePath))}\t-> ${
+            path.relative(outputPath, file.filePath)
           }`,
         );
-        await ensureDir(dirname(file.filePath));
+        await ensureDir(path.dirname(file.filePath));
         await Deno.writeTextFile(file.filePath, file.fileContent);
       }
     }
@@ -363,9 +355,9 @@ async function main() {
     for (const file of htmlFiles) {
       if (file.fileContent) {
         console.log(
-          `  ${file.inputPath}\t-> ${relative(outputPath, file.filePath)}`,
+          `  ${file.inputPath}\t-> ${path.relative(outputPath, file.filePath)}`,
         );
-        await ensureDir(dirname(file.filePath));
+        await ensureDir(path.dirname(file.filePath));
         await Deno.writeTextFile(file.filePath, file.fileContent);
       }
     }
@@ -376,11 +368,11 @@ async function main() {
 
     for (const file of staticFiles) {
       console.log(
-        `  ${relative(inputPath, file.inputPath)}\t-> ${
-          relative(outputPath, file.filePath)
+        `  ${path.relative(inputPath, file.inputPath)}\t-> ${
+          path.relative(outputPath, file.filePath)
         }`,
       );
-      await ensureDir(dirname(file.filePath));
+      await ensureDir(path.dirname(file.filePath));
       await Deno.copyFile(file.inputPath, file.filePath);
     }
   }
@@ -390,11 +382,11 @@ async function main() {
 
     for (const file of assetFiles) {
       console.log(
-        `  ${relative(assetsPath, file.inputPath)}\t-> ${
-          relative(outputPath, file.filePath)
+        `  ${path.relative(assetsPath, file.inputPath)}\t-> ${
+          path.relative(outputPath, file.filePath)
         }`,
       );
-      await ensureDir(dirname(file.filePath));
+      await ensureDir(path.dirname(file.filePath));
       await Deno.copyFile(file.inputPath, file.filePath);
     }
   }

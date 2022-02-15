@@ -1,4 +1,4 @@
-import { basename, dirname, expandGlob, WalkEntry } from "./deps.ts";
+import { expandGlob, path, WalkEntry } from "./deps.ts";
 
 const hasIgnoredPrefix = (path: string): boolean => {
   const pathChunks = path.split("/");
@@ -11,14 +11,14 @@ const hasIgnoredPrefix = (path: string): boolean => {
 };
 
 export async function getAssetEntries(
-  path: string,
+  assetPath: string,
 ) {
   const entries: Array<WalkEntry> = [];
   const glob = "**/*";
 
   for await (
     const entry of expandGlob(glob, {
-      root: path,
+      root: assetPath,
       includeDirs: false,
       caseInsensitive: true,
     })
@@ -30,7 +30,7 @@ export async function getAssetEntries(
 }
 
 export async function getStaticEntries(
-  path: string,
+  staticPath: string,
   outputPath: string,
   extensions?: Array<string>,
 ): Promise<Array<WalkEntry>> {
@@ -43,7 +43,7 @@ export async function getStaticEntries(
 
   for await (
     const entry of expandGlob(glob, {
-      root: path,
+      root: staticPath,
       includeDirs: false,
       caseInsensitive: true,
       exclude: [outputPath],
@@ -59,13 +59,13 @@ export async function getStaticEntries(
 }
 
 export async function getContentEntries(
-  path: string,
+  contentPath: string,
 ): Promise<Array<WalkEntry>> {
   const fileEntries: Array<WalkEntry> = [];
 
   for await (
     const entry of expandGlob("**/*.md", {
-      root: path,
+      root: contentPath,
       caseInsensitive: true,
     })
   ) {
@@ -77,13 +77,13 @@ export async function getContentEntries(
   const dirEntries: Array<WalkEntry> = [];
   const indexDirs: Set<string> = new Set();
   for (const entry of fileEntries) {
-    const dirPath = dirname(entry.path);
+    const dirPath = path.dirname(entry.path);
     indexDirs.add(dirPath);
   }
   for (const dir of indexDirs) {
     dirEntries.push({
       path: dir,
-      name: basename(dir),
+      name: path.basename(dir),
       isFile: false,
       isDirectory: true,
       isSymlink: false,

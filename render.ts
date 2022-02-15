@@ -1,12 +1,10 @@
 import {
-  dirname,
   hljs,
-  isAbsolute,
-  join,
   joinURL,
   marked,
   normalizeURL,
   parseURL,
+  path,
   // sanitizeHtml,
   withLeadingSlash,
   withoutLeadingSlash,
@@ -121,7 +119,7 @@ export function render(
         parsed.pathname.replace(/\.md$/i, ""),
       );
 
-      if (isAbsolute(href)) {
+      if (path.isAbsolute(href)) {
         url = cleanPathname + parsed.hash;
         internalLinks.add(withoutLeadingSlash(cleanPathname));
       } else {
@@ -131,7 +129,7 @@ export function render(
           resolved = "";
         } else if (isIndex) {
           resolved = withoutTrailingSlash(
-            join(dirname(currentPath + "/index"), cleanPathname)
+            path.join(path.dirname(currentPath + "/index"), cleanPathname)
               .replace(
                 /\/index$/i,
                 "",
@@ -139,7 +137,7 @@ export function render(
           );
         } else {
           resolved = withoutTrailingSlash(
-            join(dirname(currentPath), cleanPathname).replace(
+            path.join(path.dirname(currentPath), cleanPathname).replace(
               /\/index$/i,
               "",
             ),

@@ -1,4 +1,4 @@
-import { isAbsolute, join, yamlParse } from "./deps.ts";
+import { path, yamlParse } from "./deps.ts";
 
 export interface SiteConfig {
   title?: string;
@@ -96,16 +96,16 @@ export async function createConfig(
 
   if (args && args[0]) {
     const inputPath = Deno.args[0];
-    conf.inputPath = isAbsolute(inputPath)
+    conf.inputPath = path.isAbsolute(inputPath)
       ? inputPath
-      : join(Deno.cwd(), inputPath);
+      : path.join(Deno.cwd(), inputPath);
   }
 
   if (args && args[1]) {
     const outputPath = Deno.args[1];
-    conf.outputPath = isAbsolute(outputPath)
+    conf.outputPath = path.isAbsolute(outputPath)
       ? outputPath
-      : join(Deno.cwd(), outputPath);
+      : path.join(Deno.cwd(), outputPath);
   }
 
   return conf;

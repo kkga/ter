@@ -4,18 +4,7 @@ export {
   expandGlob,
 } from "https://deno.land/std@0.125.0/fs/mod.ts";
 export type { WalkEntry } from "https://deno.land/std@0.125.0/fs/mod.ts";
-export {
-  basename,
-  common,
-  dirname,
-  extname,
-  isAbsolute,
-  join,
-  normalize,
-  parse,
-  relative,
-  resolve,
-} from "https://deno.land/std@0.125.0/path/mod.ts";
+export * as path from "https://deno.land/std@0.125.0/path/mod.ts";
 export {
   parse as yamlParse,
   stringify as yamlStringify,
