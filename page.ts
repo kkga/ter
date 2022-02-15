@@ -33,6 +33,11 @@ export interface Page {
   links?: Array<string>;
 }
 
+export interface TagPage {
+  name: string;
+  pages: Array<Page>;
+}
+
 export function isDeadLink(allPages: Array<Page>, path: string): boolean {
   for (const page of allPages) {
     if (page.path === path) {

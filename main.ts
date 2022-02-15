@@ -7,7 +7,7 @@ import {
   relative,
   WalkEntry,
 } from "./deps.ts";
-import { buildFeed, buildPage } from "./build.ts";
+import { buildFeed, buildPage, buildTagPage } from "./build.ts";
 import { createConfig, SiteConfig } from "./config.ts";
 import { generatePage, isDeadLink, Page } from "./page.ts";
 import {
@@ -56,14 +56,40 @@ function getChildTags(allPages: Array<Page>, current: Page): Array<string> {
   return [...tags];
 }
 
+function getAllTags(pages: Array<Page>): Array<string> {
+  const tags: Set<string> = new Set();
+
+  pages.forEach((page) => {
+    getTagsFromAttrs(page.attributes).forEach((tag) => tags.add(tag));
+  });
+
+  return [...tags];
+}
+
 function getPagesByTag(allPages: Array<Page>, tag: string): Array<Page> {
   return allPages.filter((page) =>
     getTagsFromAttrs(page.attributes).includes(tag)
   );
 }
 
+function generateTagPages(
+  tags: Array<string>,
+  allPages: Array<Page>,
+): Array<{ name: string; pages: Array<Page> }> {
+  const tagPages: Array<{ name: string; pages: Array<Page> }> = [];
+
+  for (const tag of tags) {
+    const pagesWithTag = getPagesByTag(allPages, tag);
+    tagPages.push({ name: tag, pages: pagesWithTag });
+  }
+
+  return tagPages;
+}
+
 async function generatePages(
   entries: Array<WalkEntry>,
+  // TODO: generate pages for each
+  // tags: Array<string>
   inputPath: string,
   ignoredKeys: Array<string>,
 ): Promise<Page[]> {
@@ -130,6 +156,43 @@ async function buildContentFiles(
     if (typeof html === "string") {
       files.push({
         inputPath: page.path,
+        filePath,
+        fileContent: html,
+      });
+    }
+  }
+
+  return files;
+}
+
+async function buildTagFiles(
+  tagPages: Array<{ name: string; pages: Array<Page> }>,
+  outputPath: string,
+  tagViewPath: string,
+  headInclude: string,
+  siteConf: SiteConfig,
+): Promise<OutputFile[]> {
+  const files: Array<OutputFile> = [];
+
+  for (const tag of tagPages) {
+    const filePath = join(
+      outputPath,
+      "tag",
+      tag.name,
+      "index.html",
+    );
+
+    const html = await buildTagPage(
+      tag.name,
+      tag.pages,
+      tagViewPath,
+      headInclude,
+      siteConf,
+    );
+
+    if (typeof html === "string") {
+      files.push({
+        inputPath: "",
         filePath,
         fileContent: html,
       });
@@ -230,12 +293,25 @@ async function main() {
   const assetEntries = await getAssetEntries(assetsPath);
 
   const pages = await generatePages(contentEntries, inputPath, ignoreKeys);
+
+  // TODO generate pages for tags
+  const tags = getAllTags(pages);
+  const tagPages = generateTagPages(tags, pages);
+
   const pageViewPath = join(Deno.cwd(), viewsPath, "page.eta");
+  const tagViewPath = join(Deno.cwd(), viewsPath, "tag-page.eta");
   const headInclude = await getHeadInclude(viewsPath) ?? "";
   const htmlFiles = await buildContentFiles(
     pages,
     outputPath,
     pageViewPath,
+    headInclude,
+    siteConf,
+  );
+  const tagFiles = await buildTagFiles(
+    tagPages,
+    outputPath,
+    tagViewPath,
     headInclude,
     siteConf,
   );
@@ -263,6 +339,22 @@ async function main() {
     if (feedFile && feedFile.fileContent) {
       await ensureDir(dirname(feedFile.filePath));
       await Deno.writeTextFile(feedFile.filePath, feedFile.fileContent);
+    }
+  }
+
+  if (tagFiles.length > 0) {
+    console.log("%c\nWriting tag pages:", "font-weight: bold");
+
+    for (const file of tagFiles) {
+      if (file.fileContent) {
+        console.log(
+          `  #${basename(dirname(file.filePath))}\t-> ${
+            relative(outputPath, file.filePath)
+          }`,
+        );
+        await ensureDir(dirname(file.filePath));
+        await Deno.writeTextFile(file.filePath, file.fileContent);
+      }
     }
   }
 

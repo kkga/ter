@@ -1,7 +1,7 @@
 <header class="header">
   <nav class="breadcrumbs" aria-label="breadcrumb">
     <ol class="breadcrumbs">
-      <% if (it.breadcrumbs.length > 0) { %>
+      <% if (it.breadcrumbs?.length > 0) { %>
         <% it.breadcrumbs.forEach((crumb, index) => { %>
           <li class="breadcrumbs-item">
             <% if (crumb.url !== "") { %>

@@ -28,7 +28,7 @@
 <% }) %>
 
 <% if (it.childTags?.length > 0) { %>
-<%~ includeFile('./taglist', {
+<%~ includeFile('./tag-list', {
   tags: it.childTags,
   title: "Tag index"
 }) %>

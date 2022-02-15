@@ -154,6 +154,24 @@ export async function buildPage(
   });
 }
 
+export async function buildTagPage(
+  name: string,
+  pages: Array<Page>,
+  tagViewPath: string,
+  headInclude: string,
+  siteConf: SiteConfig,
+): Promise<string | void> {
+  etaTemplates.define("head", etaCompile(headInclude));
+  const indexItems = generateIndexItems(pages);
+
+  const result = await etaRenderFile(tagViewPath, {
+    name,
+    indexLinks: indexItems,
+    site: siteConf,
+  });
+  return result;
+}
+
 export async function buildFeed(
   pages: Array<Page>,
   viewPath: string,
