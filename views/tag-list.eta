@@ -1,11 +1,11 @@
-<div class="linklist">
-  <h3 class="linklist-heading"><%= it.title %></h3>
+<div class="list">
+  <h3 class="list-heading"><%= it.title %></h3>
 
-  <ul class="linklist-list linklist-list--tags">
+  <ul class="list-tags">
     <% it.tags.forEach((tag) => { %>
-    <li class="linklist-item">
+    <li class="list-tag">
       <a href="<%= `/tag/${tag}` %>">
-        <%_= `#${tag}` _%>
+        <%_= `${tag}` _%>
       </a>
     </li>
     <% }) %>

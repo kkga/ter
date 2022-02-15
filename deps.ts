@@ -6,6 +6,7 @@ export {
 export type { WalkEntry } from "https://deno.land/std@0.125.0/fs/mod.ts";
 export {
   basename,
+  common,
   dirname,
   extname,
   isAbsolute,

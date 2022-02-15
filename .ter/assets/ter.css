@@ -357,14 +357,14 @@ BREADCRUMBS -------------------------------------------------------------------
 }
 
 /*
-INDEX LIST --------------------------------------------------------------------
+INDEX/TAG LIST -----------------------------------------------------------------
 */
 
-.linklist {
+.list {
   line-height: var(--line-height-spaced);
 }
 
-.linklist-heading {
+.list-heading {
   color: var(--color-text-secondary);
   margin: 0;
   line-height: 2;
@@ -376,29 +376,32 @@ INDEX LIST --------------------------------------------------------------------
   align-items: baseline;
 }
 
-.linklist-heading a {
+.list-heading a {
   color: inherit;
 }
 
-.linklist-heading::after {
+.list-heading::after {
   flex: 1;
   content: "";
   border-top: 1px solid var(--color-bg-secondary);
 }
 
-.linklist-list {
+.list-pages {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.linklist-list--tags {
+.list-tags {
   display: flex;
-  gap: 1ch;
+  column-gap: 1ch;
   flex-flow: row wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.linklist-item a {
+.list-page a {
   text-decoration: none;
   display: flex;
   gap: 1ch;
@@ -407,34 +410,44 @@ INDEX LIST --------------------------------------------------------------------
   color: currentcolor;
 }
 
-.linklist-item--index {
+.list-tag a {
+  text-decoration: none;
+  color: currentcolor;
+}
+
+.list-tag a::before {
+  content: "#";
+  color: var(--color-text-tertiary);
+}
+
+.list-page--index {
   font-weight: var(--font-weight-m);
 }
 
-.linklist-name {
+.list-page-name {
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.linklist-name::before {
+.list-page-name::before {
   content: "◇ ";
 }
 
-.linklist-item--index .linklist-name::before {
+.list-page--index .list-page-name::before {
   content: "❖ ";
 }
 
-.linklist-item--index .linklist-name::after {
+.list-page--index .list-page-name::after {
   content: "";
 }
 
-.linklist-item--pinned .linklist-name::after {
+.list-page--pinned .list-page-name::after {
   content: "★";
 }
 
-.linklist-description {
+.list-page-description {
   max-width: 100%;
   flex: 1;
   text-align: right;
@@ -446,11 +459,11 @@ INDEX LIST --------------------------------------------------------------------
   color: var(--color-text-secondary);
 }
 
-.linklist-item--index .linklist-description {
+.list-page--index .list-page-description {
   text-align: left;
 }
 
-.linklist-time {
+.list-page-time {
   font-size: var(--font-size-s);
   margin-left: auto;
   margin-right: 0.25em;

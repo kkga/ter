@@ -1,6 +1,6 @@
-<div class="linklist">
+<div class="list">
   <% if (it.title) { %>
-  <h3 class="linklist-heading">
+  <h3 class="list-heading">
     <% if (it.rootUrl) { %>
     <a href="<%= it.rootUrl %>">
       <%= it.title %>
@@ -11,7 +11,7 @@
   </h3>
   <% } %>
 
-  <ul class="linklist-list">
+  <ul class="list-pages">
     <% it.links.forEach(({
       url,
       title,
@@ -21,16 +21,16 @@
       isIndexPage,
       pinned
     }) => { %>
-    <li class="linklist-item
-      <%_= isIndexPage ? ' linklist-item--index' : '' %>
-      <%_= pinned ? ' linklist-item--pinned' : '' %>">
+    <li class="list-page
+      <%_= isIndexPage ? ' list-page--index' : '' %>
+      <%_= pinned ? ' list-page--pinned' : '' %>">
       <a href="<%= url %>">
-        <span class="linklist-name"><%= title %></span>
+        <span class="list-page-name"><%= title %></span>
         <% if (description && description !== "") { %>
-        <span class="linklist-description"><%= description %></span>
+        <span class="list-page-description"><%= description %></span>
         <% } %>
         <% if (date && readableDate) { %>
-        <time class="linklist-time" datetime="<%= date %>">
+        <time class="list-page-time" datetime="<%= date %>">
           <%= readableDate %>
         </time>
         <% } %>
