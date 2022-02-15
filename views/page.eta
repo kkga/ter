@@ -6,30 +6,33 @@
 </article>
 <% } %>
 
-<% if (it.indexLinks?.length > 0) { %>
-<%~ includeFile('./list', {
-  links: it.indexLinks,
-  title: "Index"
-}) %>
-<% } %>
+<nav>
+  <% if (it.indexLinks?.length > 0) { %>
+  <%~ includeFile('./list', {
+    links: it.indexLinks,
+    title: "Index"
+  }) %>
+  <% } %>
 
-<% if (it.backLinks?.length > 0) { %>
-<%~ includeFile('./list', {
-  links: it.backLinks,
-  title: "Backlinks"
-}) %>
-<% } %>
+  <% if (it.backLinks?.length > 0) { %>
+  <%~ includeFile('./list', {
+    links: it.backLinks,
+    title: "Backlinks"
+  }) %>
+  <% } %>
 
-<% Object.keys(it.taggedIndexLinks).forEach((tag) => { %>
-<%~ includeFile('./list', {
-  links: it.taggedIndexLinks[tag],
-  title: `Tagged #${tag}`
-}) %>
-<% }) %>
+  <% Object.keys(it.taggedIndexLinks).forEach((tag) => { %>
+  <%~ includeFile('./list', {
+    links: it.taggedIndexLinks[tag],
+    title: `Tagged #${tag}`,
+    rootUrl: `/tag/${tag}`
+  }) %>
+  <% }) %>
 
-<% if (it.childTags?.length > 0) { %>
-<%~ includeFile('./tag-list', {
-  tags: it.childTags,
-  title: "Tag index"
-}) %>
-<% } %>
+  <% if (it.childTags?.length > 0) { %>
+  <%~ includeFile('./tag-list', {
+    tags: it.childTags,
+    title: "Tag index"
+  }) %>
+  <% } %>
+</nav>

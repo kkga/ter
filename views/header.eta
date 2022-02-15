@@ -3,7 +3,9 @@
     <ol class="breadcrumbs">
       <% if (it.breadcrumbs?.length > 0) { %>
         <% it.breadcrumbs.forEach((crumb, index) => { %>
-          <li class="breadcrumbs-item">
+          <li class="breadcrumbs-item
+          <%_= crumb.isTag ? ' breadcrumbs-item--tag' : '' %>
+          <%_= crumb.current ? ' breadcrumbs-item--current' : '' %>">
             <% if (crumb.url !== "") { %>
             <a href="<%= crumb.url %>"><%= crumb.slug %></a>
             <% } else { %>
@@ -15,7 +17,7 @@
     </ol>
   </nav>
 
-  <div style="text-align:right" class="header-meta">
+  <div class="header-meta">
     <% if (it.page?.description) { %>
     <div><%= it.page.description %></div>
     <% } %>

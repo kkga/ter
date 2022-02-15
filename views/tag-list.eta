@@ -1,4 +1,4 @@
-<nav class="linklist">
+<div class="linklist">
   <h3 class="linklist-heading"><%= it.title %></h3>
 
   <ul class="linklist-list linklist-list--tags">
@@ -10,4 +10,4 @@
     </li>
     <% }) %>
   </ul>
-</nav>
+</div>

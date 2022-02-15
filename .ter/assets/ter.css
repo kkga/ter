@@ -153,15 +153,13 @@ body > main {
 }
 
 main > article {
-  margin: 0;
+  margin-bottom: 3rem;
 }
 
 main > nav {
-  margin-bottom: 1rem;
-}
-
-main > nav:first-of-type {
-  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 /*
@@ -344,9 +342,13 @@ BREADCRUMBS -------------------------------------------------------------------
   margin: 0;
 }
 
-.breadcrumbs-item:not(:last-child)::after {
+.breadcrumbs-item:not(:first-child)::before {
   content: "/";
   color: var(--color-text-tertiary);
+}
+
+.breadcrumbs-item--tag:not(:first-child)::before {
+  content: "|";
 }
 
 .breadcrumbs-item a {
@@ -372,6 +374,10 @@ INDEX LIST --------------------------------------------------------------------
   display: flex;
   gap: 0.5ch;
   align-items: baseline;
+}
+
+.linklist-heading a {
+  color: inherit;
 }
 
 .linklist-heading::after {

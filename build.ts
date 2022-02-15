@@ -18,6 +18,7 @@ interface Breadcrumb {
   slug: string;
   url: string;
   current: boolean;
+  isTag?: boolean;
 }
 
 interface IndexItem {
@@ -163,9 +164,18 @@ export async function buildTagPage(
 ): Promise<string | void> {
   etaTemplates.define("head", etaCompile(headInclude));
   const indexItems = generateIndexItems(pages);
+  const breadcrumbs: Array<Breadcrumb> = [
+    { slug: "index", url: "/", current: false },
+    { slug: `#${name}`, url: "", current: true, isTag: true },
+  ];
 
   const result = await etaRenderFile(tagViewPath, {
+    page: {
+      title: `#${name}`,
+      description: `Pages tagged #${name}`,
+    },
     name,
+    breadcrumbs,
     indexLinks: indexItems,
     site: siteConf,
   });

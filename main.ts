@@ -9,7 +9,7 @@ import {
 } from "./deps.ts";
 import { buildFeed, buildPage, buildTagPage } from "./build.ts";
 import { createConfig, SiteConfig } from "./config.ts";
-import { generatePage, isDeadLink, Page } from "./page.ts";
+import { generatePage, isDeadLink, Page, TagPage } from "./page.ts";
 import {
   getAssetEntries,
   getContentEntries,
@@ -75,8 +75,8 @@ function getPagesByTag(allPages: Array<Page>, tag: string): Array<Page> {
 function generateTagPages(
   tags: Array<string>,
   allPages: Array<Page>,
-): Array<{ name: string; pages: Array<Page> }> {
-  const tagPages: Array<{ name: string; pages: Array<Page> }> = [];
+): Array<TagPage> {
+  const tagPages: Array<TagPage> = [];
 
   for (const tag of tags) {
     const pagesWithTag = getPagesByTag(allPages, tag);
@@ -88,8 +88,6 @@ function generateTagPages(
 
 async function generatePages(
   entries: Array<WalkEntry>,
-  // TODO: generate pages for each
-  // tags: Array<string>
   inputPath: string,
   ignoredKeys: Array<string>,
 ): Promise<Page[]> {
@@ -166,7 +164,7 @@ async function buildContentFiles(
 }
 
 async function buildTagFiles(
-  tagPages: Array<{ name: string; pages: Array<Page> }>,
+  tagPages: Array<TagPage>,
   outputPath: string,
   tagViewPath: string,
   headInclude: string,

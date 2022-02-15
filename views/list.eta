@@ -1,5 +1,15 @@
-<nav class="linklist">
-  <h3 class="linklist-heading"><%= it.title %></h3>
+<div class="linklist">
+  <% if (it.title) { %>
+  <h3 class="linklist-heading">
+    <% if (it.rootUrl) { %>
+    <a href="<%= it.rootUrl %>">
+      <%= it.title %>
+    </a>
+    <% } else { %>
+    <%= it.title %>
+    <% } %>
+  </h3>
+  <% } %>
 
   <ul class="linklist-list">
     <% it.links.forEach(({
@@ -28,4 +38,4 @@
     </li>
     <% }) %>
   </ul>
-</nav>
+</div>
