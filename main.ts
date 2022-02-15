@@ -48,7 +48,8 @@ function getChildTags(allPages: Array<Page>, current: Page): Array<string> {
   const tags: Set<string> = new Set();
 
   allPages.forEach((page) => {
-    if (current.path !== page.path && current.path === dirname(page.path)) {
+    const relPath = relative(current.path, page.path);
+    if (!relPath.startsWith("..") && relPath !== "") {
       getTagsFromAttrs(page.attributes).forEach((tag) => tags.add(tag));
     }
   });
