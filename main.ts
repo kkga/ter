@@ -29,9 +29,9 @@ function getBacklinkPages(allPages: Array<Page>, current: Page): Array<Page> {
 }
 
 function getChildPages(allPages: Array<Page>, current: Page): Array<Page> {
-  const pages = allPages.filter((p) => {
-    return current.path !== p.path && current.path === path.dirname(p.path);
-  });
+  const pages = allPages.filter((p) =>
+    current.path !== p.path && current.path === path.dirname(p.path)
+  );
 
   return pages;
 }
@@ -63,41 +63,6 @@ function getPagesByTag(allPages: Array<Page>, tag: string): Array<Page> {
   return allPages.filter((page) =>
     getTagsFromAttrs(page.attributes).includes(tag)
   );
-}
-
-function generateTagPages(
-  tags: Array<string>,
-  allPages: Array<Page>,
-): Array<TagPage> {
-  const tagPages: Array<TagPage> = [];
-
-  for (const tag of tags) {
-    const pagesWithTag = getPagesByTag(allPages, tag);
-    tagPages.push({ name: tag, pages: pagesWithTag });
-  }
-
-  return tagPages;
-}
-
-async function generatePages(
-  entries: Array<WalkEntry>,
-  inputPath: string,
-  ignoredKeys: Array<string>,
-): Promise<Page[]> {
-  let pages: Array<Page> = [];
-
-  for (const entry of entries) {
-    const page = await generatePage(entry, inputPath, entries).catch(
-      (reason) => {
-        console.log(`Can't generate page ${entry}: ${reason}`);
-      },
-    );
-    page && pages.push(page);
-  }
-
-  pages = pages.filter((page) => !hasKey(page.attributes, ignoredKeys));
-
-  return pages;
 }
 
 async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
@@ -254,11 +219,57 @@ async function checkRequiredFiles(
   return Promise.resolve(true);
 }
 
+async function writeFiles(
+  files: OutputFile[],
+  outputPath: string,
+  description: string,
+) {
+  files.length > 0 &&
+    console.log(`%c\nWriting ${description}:`, "font-weight: bold");
+
+  for (const file of files) {
+    if (file.fileContent) {
+      console.log(
+        `  #${path.basename(path.dirname(file.filePath))}\t-> ${
+          path.relative(outputPath, file.filePath)
+        }`,
+      );
+      await ensureDir(path.dirname(file.filePath));
+      await Deno.writeTextFile(file.filePath, file.fileContent);
+    }
+  }
+}
+
+async function copyFiles(
+  files: OutputFile[],
+  inputPath: string,
+  outputPath: string,
+  description: string,
+) {
+  files.length > 0 &&
+    console.log(`%c\nCopying ${description}:`, "font-weight: bold");
+
+  for (const file of files) {
+    console.log(
+      `  ${path.relative(inputPath, file.inputPath)}\t-> ${
+        path.relative(outputPath, file.filePath)
+      }`,
+    );
+    await ensureDir(path.dirname(file.filePath));
+    await Deno.copyFile(file.inputPath, file.filePath);
+  }
+}
+
 async function main() {
-  const config = await createConfig(Deno.args);
-  const { inputPath, outputPath, viewsPath, assetsPath, ignoreKeys } = config;
-  const deadLinks: [string, string][] = [];
-  const { site: siteConf } = config;
+  const {
+    inputPath,
+    outputPath,
+    viewsPath,
+    assetsPath,
+    ignoreKeys,
+    staticExts,
+    site: siteConf,
+  } = await createConfig(Deno.args);
 
   await checkRequiredFiles(viewsPath, assetsPath, requiredViews, requiredAssets)
     .catch(async (err) => {
@@ -278,22 +289,39 @@ async function main() {
   const contentEntries = await getContentEntries(inputPath);
   const staticEntries = await getStaticEntries(
     inputPath,
-    config.outputPath,
-    config.staticExts,
+    outputPath,
+    staticExts,
   );
   const assetEntries = await getAssetEntries(assetsPath);
 
-  const pages = await generatePages(contentEntries, inputPath, ignoreKeys);
+  let contentPages: Page[] = [];
 
-  // TODO generate pages for tags
-  const tags = getAllTags(pages);
-  const tagPages = generateTagPages(tags, pages);
+  for await (const entry of contentEntries) {
+    const page = await generatePage(entry, inputPath, contentEntries).catch(
+      (reason) => {
+        console.log(`Can't generate page ${entry}: ${reason}`);
+      },
+    );
+    page && contentPages.push(page);
+  }
+
+  contentPages = contentPages.filter((page) =>
+    !hasKey(page.attributes, ignoreKeys)
+  );
+
+  const tagPages: TagPage[] = [];
+
+  for (const tag of getAllTags(contentPages)) {
+    const pagesWithTag = getPagesByTag(contentPages, tag);
+    tagPages.push({ name: tag, pages: pagesWithTag });
+  }
 
   const pageViewPath = path.join(Deno.cwd(), viewsPath, "page.eta");
   const tagViewPath = path.join(Deno.cwd(), viewsPath, "tag-page.eta");
   const headInclude = await getHeadInclude(viewsPath) ?? "";
-  const htmlFiles = await buildContentFiles(
-    pages,
+
+  const contentFiles = await buildContentFiles(
+    contentPages,
     outputPath,
     pageViewPath,
     headInclude,
@@ -309,22 +337,23 @@ async function main() {
   const staticFiles = getStaticFiles(staticEntries, inputPath, outputPath);
   const assetFiles = getStaticFiles(assetEntries, assetsPath, outputPath);
 
-  for (const page of pages) {
+  const deadLinks: [string, string][] = [];
+  for (const page of contentPages) {
     if (page.links) {
       page.links.forEach((link) =>
-        isDeadLink(pages, link) && deadLinks.push([page.path, link])
+        isDeadLink(contentPages, link) && deadLinks.push([page.path, link])
       );
     }
   }
 
   await emptyDir(outputPath);
 
-  if (pages.length > 0) {
+  if (contentPages.length > 0) {
     const feedViewPath = path.join(Deno.cwd(), viewsPath, "feed.xml.eta");
     const feedFile = await buildFeedFile(
-      pages,
+      contentPages,
       feedViewPath,
-      path.join(config.outputPath, "feed.xml"),
+      path.join(outputPath, "feed.xml"),
       siteConf,
     );
     if (feedFile && feedFile.fileContent) {
@@ -333,73 +362,20 @@ async function main() {
     }
   }
 
-  if (tagFiles.length > 0) {
-    console.log("%c\nWriting tag pages:", "font-weight: bold");
-
-    for (const file of tagFiles) {
-      if (file.fileContent) {
-        console.log(
-          `  #${path.basename(path.dirname(file.filePath))}\t-> ${
-            path.relative(outputPath, file.filePath)
-          }`,
-        );
-        await ensureDir(path.dirname(file.filePath));
-        await Deno.writeTextFile(file.filePath, file.fileContent);
-      }
-    }
-  }
-
-  if (htmlFiles.length > 0) {
-    console.log("%c\nWriting content pages:", "font-weight: bold");
-
-    for (const file of htmlFiles) {
-      if (file.fileContent) {
-        console.log(
-          `  ${file.inputPath}\t-> ${path.relative(outputPath, file.filePath)}`,
-        );
-        await ensureDir(path.dirname(file.filePath));
-        await Deno.writeTextFile(file.filePath, file.fileContent);
-      }
-    }
-  }
-
-  if (staticFiles.length > 0) {
-    console.log("%c\nCopying static files:", "font-weight: bold");
-
-    for (const file of staticFiles) {
-      console.log(
-        `  ${path.relative(inputPath, file.inputPath)}\t-> ${
-          path.relative(outputPath, file.filePath)
-        }`,
-      );
-      await ensureDir(path.dirname(file.filePath));
-      await Deno.copyFile(file.inputPath, file.filePath);
-    }
-  }
-
-  if (assetFiles.length > 0) {
-    console.log("%c\nCopying site assets:", "font-weight: bold");
-
-    for (const file of assetFiles) {
-      console.log(
-        `  ${path.relative(assetsPath, file.inputPath)}\t-> ${
-          path.relative(outputPath, file.filePath)
-        }`,
-      );
-      await ensureDir(path.dirname(file.filePath));
-      await Deno.copyFile(file.inputPath, file.filePath);
-    }
-  }
+  await writeFiles(tagFiles, outputPath, "tag pages");
+  await writeFiles(contentFiles, outputPath, "content Pages");
+  await copyFiles(staticFiles, inputPath, outputPath, "static files");
+  await copyFiles(assetFiles, assetsPath, outputPath, "site assets");
 
   const END = performance.now();
   const BUILD_SECS = (END - START) / 1000;
 
   console.log("%c\nResult:", "font-weight: bold");
   console.log(`\
-  Built ${Array.isArray(htmlFiles) && htmlFiles.length} pages
-  Copied ${staticFiles.length} static files
-  Copied ${assetFiles.length} site assets
-  In ${BUILD_SECS} seconds`);
+  Built\t\t${Array.isArray(contentFiles) && contentFiles.length} pages
+  Copied\t${staticFiles.length} static files
+  Copied\t${assetFiles.length} site assets
+  In\t\t${BUILD_SECS} seconds`);
 
   if (deadLinks.length > 0) {
     console.log("\nFound dead links:");
