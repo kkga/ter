@@ -42,6 +42,64 @@ export function isDeadLink(allPages: Array<Page>, path: string): boolean {
   return true;
 }
 
+export function getAllTags(pages: Array<Page>): Array<string> {
+  const tags: Set<string> = new Set();
+
+  pages.forEach((page) => {
+    attr.getTagsFromAttrs(page.attributes).forEach((tag) => tags.add(tag));
+  });
+
+  return [...tags];
+}
+
+export function getPagesByTag(allPages: Array<Page>, tag: string): Array<Page> {
+  return allPages.filter((page) =>
+    attr.getTagsFromAttrs(page.attributes).includes(tag)
+  );
+}
+
+export function getBacklinkPages(
+  allPages: Array<Page>,
+  current: Page,
+): Array<Page> {
+  const pages: Array<Page> = [];
+
+  for (const outPage of allPages) {
+    if (outPage.links?.includes(current.path)) {
+      pages.push(outPage);
+    }
+  }
+
+  return pages;
+}
+
+export function getChildPages(
+  allPages: Array<Page>,
+  current: Page,
+): Array<Page> {
+  const pages = allPages.filter((p) =>
+    current.path !== p.path && current.path === path.dirname(p.path)
+  );
+
+  return pages;
+}
+
+export function getChildTags(
+  allPages: Array<Page>,
+  current: Page,
+): Array<string> {
+  const tags: Set<string> = new Set();
+
+  allPages.forEach((page) => {
+    const relPath = path.relative(current.path, page.path);
+    if (!relPath.startsWith("..") && relPath !== "") {
+      attr.getTagsFromAttrs(page.attributes).forEach((tag) => tags.add(tag));
+    }
+  });
+
+  return [...tags];
+}
+
 const findIndexEntry = (
   allEntries: Array<WalkEntry>,
   current: WalkEntry,

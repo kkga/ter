@@ -1,7 +1,17 @@
 import { emptyDir, ensureDir, path, WalkEntry } from "./deps.ts";
 import { buildFeed, buildPage, buildTagPage } from "./build.ts";
 import { createConfig, SiteConfig } from "./config.ts";
-import { generatePage, isDeadLink, Page, TagPage } from "./page.ts";
+import {
+  generatePage,
+  getAllTags,
+  getBacklinkPages,
+  getChildPages,
+  getChildTags,
+  getPagesByTag,
+  isDeadLink,
+  Page,
+  TagPage,
+} from "./page.ts";
 import {
   getAssetEntries,
   getContentEntries,
@@ -14,55 +24,6 @@ interface OutputFile {
   inputPath: string;
   filePath: string;
   fileContent?: string;
-}
-
-function getBacklinkPages(allPages: Array<Page>, current: Page): Array<Page> {
-  const pages: Array<Page> = [];
-
-  for (const outPage of allPages) {
-    if (outPage.links?.includes(current.path)) {
-      pages.push(outPage);
-    }
-  }
-
-  return pages;
-}
-
-function getChildPages(allPages: Array<Page>, current: Page): Array<Page> {
-  const pages = allPages.filter((p) =>
-    current.path !== p.path && current.path === path.dirname(p.path)
-  );
-
-  return pages;
-}
-
-function getChildTags(allPages: Array<Page>, current: Page): Array<string> {
-  const tags: Set<string> = new Set();
-
-  allPages.forEach((page) => {
-    const relPath = path.relative(current.path, page.path);
-    if (!relPath.startsWith("..") && relPath !== "") {
-      getTagsFromAttrs(page.attributes).forEach((tag) => tags.add(tag));
-    }
-  });
-
-  return [...tags];
-}
-
-function getAllTags(pages: Array<Page>): Array<string> {
-  const tags: Set<string> = new Set();
-
-  pages.forEach((page) => {
-    getTagsFromAttrs(page.attributes).forEach((tag) => tags.add(tag));
-  });
-
-  return [...tags];
-}
-
-function getPagesByTag(allPages: Array<Page>, tag: string): Array<Page> {
-  return allPages.filter((page) =>
-    getTagsFromAttrs(page.attributes).includes(tag)
-  );
 }
 
 async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
