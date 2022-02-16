@@ -191,7 +191,7 @@ async function writeFiles(
   for (const file of files) {
     if (file.fileContent) {
       console.log(
-        `  #${path.basename(path.dirname(file.filePath))}\t-> ${
+        `  ${path.basename(path.dirname(file.filePath))}\t-> ${
           path.relative(outputPath, file.filePath)
         }`,
       );
@@ -258,9 +258,9 @@ async function main() {
   let contentPages: Page[] = [];
 
   for await (const entry of contentEntries) {
-    const page = await generatePage(entry, inputPath, contentEntries).catch(
+    const page = await generatePage(entry, inputPath).catch(
       (reason) => {
-        console.log(`Can't generate page ${entry}: ${reason}`);
+        console.log(`Can't generate page ${entry.path}: ${reason}`);
       },
     );
     page && contentPages.push(page);

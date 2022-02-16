@@ -1,4 +1,6 @@
-import { expandGlob, path, WalkEntry } from "./deps.ts";
+import { expandGlob, path, walk, WalkEntry } from "./deps.ts";
+
+const RE_HIDDEN_OR_UNDERSCORED = /^\.|^_|\/\.|\/\_/;
 
 const hasIgnoredPrefix = (path: string): boolean => {
   const pathChunks = path.split("/");
@@ -62,33 +64,35 @@ export async function getContentEntries(
   contentPath: string,
 ): Promise<Array<WalkEntry>> {
   const fileEntries: Array<WalkEntry> = [];
+  let dirEntries: Array<WalkEntry> = [];
 
   for await (
-    const entry of expandGlob("**/*.md", {
-      root: contentPath,
-      caseInsensitive: true,
+    const entry of walk(contentPath, {
+      includeDirs: false,
+      skip: [RE_HIDDEN_OR_UNDERSCORED],
     })
   ) {
-    if (!hasIgnoredPrefix(entry.path)) {
-      fileEntries.push(entry);
-    }
+    fileEntries.push(entry);
   }
 
-  const dirEntries: Array<WalkEntry> = [];
-  const indexDirs: Set<string> = new Set();
-  for (const entry of fileEntries) {
-    const dirPath = path.dirname(entry.path);
-    indexDirs.add(dirPath);
+  for await (
+    const entry of walk(contentPath, {
+      includeDirs: true,
+      includeFiles: false,
+      skip: [RE_HIDDEN_OR_UNDERSCORED],
+    })
+  ) {
+    dirEntries.push(entry);
   }
-  for (const dir of indexDirs) {
-    dirEntries.push({
-      path: dir,
-      name: path.basename(dir),
-      isFile: false,
-      isDirectory: true,
-      isSymlink: false,
-    });
-  }
+
+  const filePaths = fileEntries.map((file) => file.path);
+
+  // TODO: filter dirs that aren't included in filePaths (i.e. empty)
+  dirEntries = dirEntries.filter((dir) => {
+    return !filePaths.includes(path.join(dir.path, "index.md"));
+  });
+
+  console.log(fileEntries);
 
   const entries = [...fileEntries, ...dirEntries];
 

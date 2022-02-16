@@ -100,27 +100,25 @@ export function getChildTags(
   return [...tags];
 }
 
-const findIndexEntry = (
-  allEntries: Array<WalkEntry>,
-  current: WalkEntry,
-): WalkEntry | undefined => {
-  for (const entry of allEntries) {
-    if (
-      entry.isFile && entry.name === "index.md" &&
-      path.dirname(entry.path) === current.path
-    ) {
-      return entry;
-    }
-  }
-};
+// const findIndexEntry = (
+//   allEntries: Array<WalkEntry>,
+//   current: WalkEntry,
+// ): WalkEntry | undefined => {
+//   for (const entry of allEntries) {
+//     if (
+//       entry.isFile && entry.name === "index.md" &&
+//       path.dirname(entry.path) === current.path
+//     ) {
+//       return entry;
+//     }
+//   }
+// };
 
 export async function generatePage(
   entry: WalkEntry,
   inputPath: string,
-  allEntries: Array<WalkEntry>,
-): Promise<Page | undefined> {
+): Promise<Page> {
   const decoder = new TextDecoder("utf-8");
-  let page: Page;
 
   if (entry.isFile && entry.name !== INDEX_FILENAME) {
     const relPath = path.relative(inputPath, entry.path).replace(
@@ -143,7 +141,7 @@ export async function generatePage(
     const description = attr.getDescriptionFromAttrs(attributes) || "";
     const tags = attr.getTagsFromAttrs(attributes);
 
-    page = {
+    return {
       name: entry.name,
       path: relPath,
       attributes,
@@ -158,47 +156,45 @@ export async function generatePage(
       date,
       isIndex,
     };
+  } else if (entry.isFile && entry.name === INDEX_FILENAME) {
+    const relPath = path.relative(inputPath, path.dirname(entry.path)) || ".";
+    const slug = relPath === "." ? "." : slugify(entry.name);
+    const isIndex = true;
+    const content = decoder.decode(await Deno.readFile(entry.path));
+    const { attributes, body } = frontMatter(content);
+    const { html, links, headings } = render(body, relPath, isIndex);
+    const title = attr.getTitleFromAttrs(attributes) ||
+      attr.getTitleFromHeadings(headings) || entry.name;
+    const description = attr.getDescriptionFromAttrs(attributes) || "";
+    const tags = attr.getTagsFromAttrs(attributes);
+
+    return {
+      name: entry.name,
+      path: relPath,
+      attributes,
+      body,
+      html,
+      links,
+      headings,
+      title,
+      slug,
+      description,
+      tags,
+      isIndex,
+    };
   } else if (entry.isDirectory) {
     const relPath = path.relative(inputPath, entry.path) || ".";
     const slug = relPath === "." ? "." : slugify(entry.name);
     const isIndex = true;
-    const indexEntry = findIndexEntry(allEntries, entry);
 
-    if (indexEntry) {
-      const content = decoder.decode(await Deno.readFile(indexEntry.path));
-      const { attributes, body } = frontMatter(content);
-      const { html, links, headings } = render(body, relPath, isIndex);
-      const title = attr.getTitleFromAttrs(attributes) ||
-        attr.getTitleFromHeadings(headings) || entry.name;
-      const description = attr.getDescriptionFromAttrs(attributes) || "";
-      const tags = attr.getTagsFromAttrs(attributes);
-
-      page = {
-        name: entry.name,
-        path: relPath,
-        attributes,
-        body,
-        html,
-        links,
-        headings,
-        title,
-        slug,
-        description,
-        tags,
-        isIndex,
-      };
-    } else {
-      page = {
-        name: entry.name,
-        path: relPath,
-        title: entry.name,
-        slug,
-        isIndex,
-      };
-    }
+    return {
+      name: entry.name,
+      path: relPath,
+      title: entry.name,
+      slug,
+      isIndex,
+    };
   } else {
-    return;
+    return Promise.reject();
   }
-
-  return page;
 }
