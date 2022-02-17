@@ -303,7 +303,7 @@ ol ol {
 }
 
 /*
-HEADER ------------------------------------------------------------------------
+HEADER/BREADCRUMBS -------------------------------------------------------------------
 */
 
 body > header {
@@ -326,10 +326,6 @@ body > header {
 body > header time {
   color: var(--color-text-tertiary);
 }
-
-/*
-BREADCRUMBS -------------------------------------------------------------------
-*/
 
 .breadcrumbs {
   margin: 0;
@@ -354,6 +350,35 @@ BREADCRUMBS -------------------------------------------------------------------
 .breadcrumbs-item a {
   text-decoration: none;
   color: var(--color-text-secondary);
+}
+
+@media only screen and (min-width: 32em) {
+  .header-meta {
+    text-align: right;
+  }
+}
+
+.header-meta-time {
+  display: block;
+}
+
+.header-meta-tags {
+  display: flex;
+  gap: 1ch;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.header-meta-tag a {
+  text-decoration: none;
+  color: currentcolor;
+  margin: 0;
+}
+
+.header-meta-tag a::before {
+  content: "#";
+  color: var(--color-text-tertiary);
 }
 
 /*
@@ -449,6 +474,7 @@ INDEX/TAG LIST -----------------------------------------------------------------
 
 .list-page-description {
   max-width: 100%;
+  margin-right: 0.25em;
   flex: 1;
   text-align: right;
   font-weight: normal;
@@ -457,10 +483,6 @@ INDEX/TAG LIST -----------------------------------------------------------------
   text-overflow: ellipsis;
   font-size: var(--font-size-s);
   color: var(--color-text-secondary);
-}
-
-.list-page--index .list-page-description {
-  text-align: left;
 }
 
 .list-page-time {
