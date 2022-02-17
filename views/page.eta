@@ -21,7 +21,7 @@
   }) %>
   <% } %>
 
-  <% Object.keys(it.taggedIndexLinks).forEach((tag) => { %>
+  <% it.taggedIndexLinks && Object.keys(it.taggedIndexLinks).forEach((tag) => { %>
   <%~ includeFile('./pagelist', {
     links: it.taggedIndexLinks[tag],
     title: `Tagged #${tag}`,
