@@ -131,7 +131,7 @@ export async function generatePage(
 
     const file = await Deno.open(entry.path);
     const date = attr.getDateFromAttrs(attributes) ||
-      await Deno.fstat(file.rid).then((file) => file.mtime);
+      await Deno.fstat(file.rid).then((file) => file.birthtime);
     file.close();
 
     const { html, links, headings } = render(body, relPath, isIndex);
