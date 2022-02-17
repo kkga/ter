@@ -348,9 +348,9 @@ async function main() {
   In\t\t${BUILD_SECS} seconds`);
 
   if (deadLinks.length > 0) {
-    console.log("\nFound dead links:");
+    console.log("%c\nFound dead links:", "font-weight: bold; color: red");
     deadLinks.forEach(([path, link]) => {
-      console.log(`  [${path}]\tlinks to [${link}] (dead)`);
+      console.log(`  ${path}:\tlinks to %c<${link}>`, "color:red");
     });
   }
 }
