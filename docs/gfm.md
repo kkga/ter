@@ -1,8 +1,5 @@
 ---
 description: Sample of Markdown
-tags:
-  - haha
-  - yo
 ---
 
 # Markdown
