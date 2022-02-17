@@ -1,8 +1,10 @@
-import { frontMatter, path, slugify, WalkEntry } from "./deps.ts";
+import { frontMatter, fs, path, slugify } from "./deps.ts";
 import { render } from "./render.ts";
 import * as attr from "./attr.ts";
 
 const INDEX_FILENAME = "index.md";
+
+const decoder = new TextDecoder("utf-8");
 
 export interface Heading {
   text: string;
@@ -115,11 +117,9 @@ export function getChildTags(
 // };
 
 export async function generatePage(
-  entry: WalkEntry,
+  entry: fs.WalkEntry,
   inputPath: string,
 ): Promise<Page> {
-  const decoder = new TextDecoder("utf-8");
-
   if (entry.isFile && entry.name !== INDEX_FILENAME) {
     const relPath = path.relative(inputPath, entry.path).replace(
       path.extname(entry.path),

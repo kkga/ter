@@ -1,4 +1,4 @@
-import { fs, path, withoutTrailingSlash } from "./deps.ts";
+import { fs, path, ufo } from "./deps.ts";
 
 const RE_HIDDEN_OR_UNDERSCORED = /^\.|^_|\/\.|\/\_/;
 
@@ -88,17 +88,17 @@ export async function getContentEntries(
 
   const filePaths = fileEntries.map((file) => file.path);
 
-  // filter dirs that are already in fileEntries as "index.md"
+  // filter out dirs that are already in fileEntries as "index.md"
   dirEntries = dirEntries.filter((dir) => {
     return !filePaths.includes(path.join(dir.path, "index.md"));
   });
 
-  // filter dirs that don't have any fileEntries
+  // filter out dirs that don't have any fileEntries
   dirEntries = dirEntries.filter((dir) => {
     const commonPaths = fileEntries.map((file) =>
-      withoutTrailingSlash(path.common([dir.path, file.path]))
+      ufo.withoutTrailingSlash(path.common([dir.path, file.path]))
     );
-    return commonPaths.includes(withoutTrailingSlash(dir.path));
+    return commonPaths.includes(ufo.withoutTrailingSlash(dir.path));
   });
 
   const entries = [...fileEntries, ...dirEntries];

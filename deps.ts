@@ -1,5 +1,4 @@
 export * as fs from "https://deno.land/std@0.126.0/fs/mod.ts";
-export type { WalkEntry } from "https://deno.land/std@0.126.0/fs/mod.ts";
 export * as path from "https://deno.land/std@0.126.0/path/mod.ts";
 export {
   parse as yamlParse,
@@ -13,14 +12,7 @@ export { marked } from "https://esm.sh/marked";
 export { default as hljs } from "https://cdn.skypack.dev/highlight.js";
 // export { default as sanitizeHtml } from "https://esm.sh/sanitize-html@2.6.1";
 // export { escape as htmlEscape } from "https://esm.sh/he@1.2.0";
-export {
-  joinURL,
-  normalizeURL,
-  parseURL,
-  withLeadingSlash,
-  withoutLeadingSlash,
-  withoutTrailingSlash,
-} from "https://unpkg.com/ufo/dist/index.mjs";
+export * as ufo from "https://unpkg.com/ufo/dist/index.mjs";
 export {
   compile as etaCompile,
   configure as etaConfigure,

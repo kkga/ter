@@ -263,7 +263,7 @@ async function main() {
 
   let contentPages: Page[] = [];
 
-  console.log("%c\nGenerating pages...", "font-weight: bold");
+  console.log("%c\nRendering markdown files...", "font-weight: bold");
   for await (const entry of contentEntries) {
     const page = await generatePage(entry, inputPath).catch(
       (reason) => {
@@ -288,7 +288,7 @@ async function main() {
   const tagViewPath = path.join(Deno.cwd(), viewsPath, "page.eta");
   const headInclude = await getHeadInclude(viewsPath) ?? "";
 
-  console.log("%c\nRendering pages...", "font-weight: bold");
+  console.log("%c\nBuilding html files...", "font-weight: bold");
   const contentFiles = await buildContentFiles(
     contentPages,
     outputPath,
