@@ -37,7 +37,7 @@ const defaultConfig: TerConfig = {
   assetsPath: ".ter/assets",
   viewsPath: ".ter/views",
   siteConfigPath: ".ter/config.yml",
-  ignoreKeys: ["private", "draft"],
+  ignoreKeys: ["unlisted", "draft"],
   staticExts: [
     "png",
     "jpg",

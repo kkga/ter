@@ -8,21 +8,21 @@
 
 <nav>
   <% if (it.indexLinks?.length > 0) { %>
-  <%~ includeFile('./list', {
+  <%~ includeFile('./pagelist', {
     links: it.indexLinks,
     title: "Index"
   }) %>
   <% } %>
 
   <% if (it.backLinks?.length > 0) { %>
-  <%~ includeFile('./list', {
+  <%~ includeFile('./pagelist', {
     links: it.backLinks,
     title: "Backlinks"
   }) %>
   <% } %>
 
   <% Object.keys(it.taggedIndexLinks).forEach((tag) => { %>
-  <%~ includeFile('./list', {
+  <%~ includeFile('./pagelist', {
     links: it.taggedIndexLinks[tag],
     title: `Tagged #${tag}`,
     rootUrl: `/tag/${tag}`
@@ -30,7 +30,7 @@
   <% }) %>
 
   <% if (it.childTags?.length > 0) { %>
-  <%~ includeFile('./tag-list', {
+  <%~ includeFile('./taglist', {
     tags: it.childTags,
     title: "Tag index"
   }) %>

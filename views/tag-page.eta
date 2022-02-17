@@ -1,7 +1,0 @@
-<% layout('./base') %>
-
-<% if (it.indexLinks?.length > 0) { %>
-<%~ includeFile('./list', {
-  links: it.indexLinks,
-}) %>
-<% } %>

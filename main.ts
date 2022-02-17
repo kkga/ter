@@ -285,7 +285,7 @@ async function main() {
   }
 
   const pageViewPath = path.join(Deno.cwd(), viewsPath, "page.eta");
-  const tagViewPath = path.join(Deno.cwd(), viewsPath, "tag-page.eta");
+  const tagViewPath = path.join(Deno.cwd(), viewsPath, "page.eta");
   const headInclude = await getHeadInclude(viewsPath) ?? "";
 
   console.log("%c\nRendering pages...", "font-weight: bold");
