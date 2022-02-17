@@ -1,10 +1,4 @@
-import {
-  expandGlob,
-  path,
-  walk,
-  WalkEntry,
-  withoutTrailingSlash,
-} from "./deps.ts";
+import { fs, path, withoutTrailingSlash } from "./deps.ts";
 
 const RE_HIDDEN_OR_UNDERSCORED = /^\.|^_|\/\.|\/\_/;
 
@@ -21,11 +15,11 @@ const hasIgnoredPrefix = (path: string): boolean => {
 export async function getAssetEntries(
   assetPath: string,
 ) {
-  const entries: Array<WalkEntry> = [];
+  const entries: Array<fs.WalkEntry> = [];
   const glob = "**/*";
 
   for await (
-    const entry of expandGlob(glob, {
+    const entry of fs.expandGlob(glob, {
       root: assetPath,
       includeDirs: false,
       caseInsensitive: true,
@@ -41,8 +35,8 @@ export async function getStaticEntries(
   staticPath: string,
   outputPath: string,
   extensions?: Array<string>,
-): Promise<Array<WalkEntry>> {
-  const entries: Array<WalkEntry> = [];
+): Promise<Array<fs.WalkEntry>> {
+  const entries: Array<fs.WalkEntry> = [];
   let glob = "**/*";
 
   if (extensions && extensions.length > 0) {
@@ -50,7 +44,7 @@ export async function getStaticEntries(
   }
 
   for await (
-    const entry of expandGlob(glob, {
+    const entry of fs.expandGlob(glob, {
       root: staticPath,
       includeDirs: false,
       caseInsensitive: true,
@@ -68,21 +62,22 @@ export async function getStaticEntries(
 
 export async function getContentEntries(
   contentPath: string,
-): Promise<Array<WalkEntry>> {
-  const fileEntries: Array<WalkEntry> = [];
-  let dirEntries: Array<WalkEntry> = [];
+): Promise<Array<fs.WalkEntry>> {
+  const fileEntries: Array<fs.WalkEntry> = [];
+  let dirEntries: Array<fs.WalkEntry> = [];
 
   for await (
-    const entry of walk(contentPath, {
+    const entry of fs.walk(contentPath, {
       includeDirs: false,
       skip: [RE_HIDDEN_OR_UNDERSCORED],
+      exts: ["md"],
     })
   ) {
     fileEntries.push(entry);
   }
 
   for await (
-    const entry of walk(contentPath, {
+    const entry of fs.walk(contentPath, {
       includeDirs: true,
       includeFiles: false,
       skip: [RE_HIDDEN_OR_UNDERSCORED],

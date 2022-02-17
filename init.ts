@@ -1,9 +1,4 @@
-import {
-  ensureDir,
-  path,
-  writableStreamFromWriter,
-  yamlStringify,
-} from "./deps.ts";
+import { fs, path, writableStreamFromWriter, yamlStringify } from "./deps.ts";
 import { createConfig } from "./config.ts";
 
 const MOD_URL = "https://deno.land/x/ter";
@@ -27,7 +22,7 @@ async function initializeFile(filePath: string, url: URL) {
     Deno.exit(1);
   });
   if (fileResponse.ok && fileResponse.body) {
-    await ensureDir(path.dirname(filePath));
+    await fs.ensureDir(path.dirname(filePath));
     const file = await Deno.open(filePath, {
       write: true,
       create: true,
@@ -48,7 +43,7 @@ export async function init() {
     console.log("File exists, skipping\t", config.siteConfigPath);
   } catch {
     const yaml = yamlStringify(config.site as Record<string, unknown>);
-    await ensureDir(path.dirname(config.siteConfigPath));
+    await fs.ensureDir(path.dirname(config.siteConfigPath));
     await Deno.writeTextFile(config.siteConfigPath, yaml);
     console.log("Initialized\t", config.siteConfigPath);
   }

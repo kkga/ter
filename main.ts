@@ -1,4 +1,4 @@
-import { emptyDir, ensureDir, path, WalkEntry } from "./deps.ts";
+import { fs, path } from "./deps.ts";
 import { buildFeed, buildPage, buildTagPage } from "./build.ts";
 import { createConfig, SiteConfig } from "./config.ts";
 import {
@@ -145,7 +145,7 @@ async function buildFeedFile(
 }
 
 function getStaticFiles(
-  entries: Array<WalkEntry>,
+  entries: Array<fs.WalkEntry>,
   inputPath: string,
   outputPath: string,
 ): OutputFile[] {
@@ -200,7 +200,7 @@ async function writeFiles(
           path.relative(outputPath, file.filePath)
         }`,
       );
-      await ensureDir(path.dirname(file.filePath));
+      await fs.ensureDir(path.dirname(file.filePath));
       await Deno.writeTextFile(file.filePath, file.fileContent);
     }
   }
@@ -221,8 +221,8 @@ async function copyFiles(
         path.relative(outputPath, file.filePath)
       }`,
     );
-    await ensureDir(path.dirname(file.filePath));
-    await Deno.copyFile(file.inputPath, file.filePath);
+    await fs.ensureDir(path.dirname(file.filePath));
+    await fs.copy(file.inputPath, file.filePath);
   }
 }
 
@@ -315,7 +315,7 @@ async function main() {
     }
   }
 
-  await emptyDir(outputPath);
+  await fs.emptyDir(outputPath);
 
   if (contentPages.length > 0) {
     const feedViewPath = path.join(Deno.cwd(), viewsPath, "feed.xml.eta");
@@ -326,7 +326,7 @@ async function main() {
       siteConf,
     );
     if (feedFile && feedFile.fileContent) {
-      await ensureDir(path.dirname(feedFile.filePath));
+      await fs.ensureDir(path.dirname(feedFile.filePath));
       await Deno.writeTextFile(feedFile.filePath, feedFile.fileContent);
     }
   }
