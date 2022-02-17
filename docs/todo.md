@@ -16,9 +16,10 @@ private: true
 - [x] automatically run init from main script if req files missing
 - [x] check for head.eta in views path and append if exists
 - [x] simplify css, the reset stuff is not needed
+- [x] dirs that contain only nested dirs and no markdown files aren't indexed
+- [ ] 404 page
 - [ ] add og image
 - [ ] add favicon
-- [ ] dirs that contain only nested dirs and no markdown files aren't indexed
 - [ ] use streams to open and write markdown files
 - [ ] sanitize markdown output
 
