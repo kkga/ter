@@ -22,6 +22,7 @@ import { init, requiredAssets, requiredViews } from "./init.ts";
 
 interface OutputFile {
   inputPath: string;
+  name: string;
   filePath: string;
   fileContent?: string;
 }
@@ -74,6 +75,7 @@ async function buildContentFiles(
       files.push({
         inputPath: page.path,
         filePath,
+        name: page.slug,
         fileContent: html,
       });
     }
@@ -111,6 +113,7 @@ async function buildTagFiles(
       files.push({
         inputPath: "",
         filePath,
+        name: tag.name,
         fileContent: html,
       });
     }
@@ -135,6 +138,7 @@ async function buildFeedFile(
     return {
       inputPath: "",
       filePath: outputPath,
+      name: siteConf.title ?? "",
       fileContent: xml,
     };
   }
@@ -156,6 +160,7 @@ function getStaticFiles(
     );
     files.push({
       inputPath: entry.path,
+      name: entry.name,
       filePath,
     });
   }
@@ -191,7 +196,7 @@ async function writeFiles(
   for (const file of files) {
     if (file.fileContent) {
       console.log(
-        `  ${path.basename(path.dirname(file.filePath))}\t-> ${
+        `  ${file.inputPath || file.name}\t-> ${
           path.relative(outputPath, file.filePath)
         }`,
       );
@@ -247,6 +252,7 @@ async function main() {
 
   const START = performance.now();
 
+  console.log("%c\nScanning input dir...", "font-weight: bold");
   const contentEntries = await getContentEntries(inputPath);
   const staticEntries = await getStaticEntries(
     inputPath,
@@ -257,6 +263,7 @@ async function main() {
 
   let contentPages: Page[] = [];
 
+  console.log("%c\nGenerating pages...", "font-weight: bold");
   for await (const entry of contentEntries) {
     const page = await generatePage(entry, inputPath).catch(
       (reason) => {
@@ -281,6 +288,7 @@ async function main() {
   const tagViewPath = path.join(Deno.cwd(), viewsPath, "tag-page.eta");
   const headInclude = await getHeadInclude(viewsPath) ?? "";
 
+  console.log("%c\nRendering pages...", "font-weight: bold");
   const contentFiles = await buildContentFiles(
     contentPages,
     outputPath,
@@ -323,17 +331,18 @@ async function main() {
     }
   }
 
-  await writeFiles(tagFiles, outputPath, "tag pages");
-  await writeFiles(contentFiles, outputPath, "content Pages");
+  await writeFiles(tagFiles, outputPath, "tag index pages");
+  await writeFiles(contentFiles, outputPath, "content pages");
   await copyFiles(staticFiles, inputPath, outputPath, "static files");
   await copyFiles(assetFiles, assetsPath, outputPath, "site assets");
 
   const END = performance.now();
   const BUILD_SECS = (END - START) / 1000;
+  const totalFiles = contentFiles.length + tagFiles.length;
 
   console.log("%c\nResult:", "font-weight: bold");
   console.log(`\
-  Built\t\t${Array.isArray(contentFiles) && contentFiles.length} pages
+  Built\t\t${totalFiles} pages
   Copied\t${staticFiles.length} static files
   Copied\t${assetFiles.length} site assets
   In\t\t${BUILD_SECS} seconds`);

@@ -158,18 +158,19 @@ export async function generatePage(
     };
   } else if (entry.isFile && entry.name === INDEX_FILENAME) {
     const relPath = path.relative(inputPath, path.dirname(entry.path)) || ".";
-    const slug = relPath === "." ? "." : slugify(entry.name);
+    const name = path.basename(path.dirname(entry.path));
+    const slug = relPath === "." ? "." : slugify(name);
     const isIndex = true;
     const content = decoder.decode(await Deno.readFile(entry.path));
     const { attributes, body } = frontMatter(content);
     const { html, links, headings } = render(body, relPath, isIndex);
     const title = attr.getTitleFromAttrs(attributes) ||
-      attr.getTitleFromHeadings(headings) || entry.name;
+      attr.getTitleFromHeadings(headings) || name;
     const description = attr.getDescriptionFromAttrs(attributes) || "";
     const tags = attr.getTagsFromAttrs(attributes);
 
     return {
-      name: entry.name,
+      name,
       path: relPath,
       attributes,
       body,
