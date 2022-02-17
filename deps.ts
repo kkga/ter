@@ -1,16 +1,11 @@
-export {
-  emptyDir,
-  ensureDir,
-  expandGlob,
-  walk,
-} from "https://deno.land/std@0.125.0/fs/mod.ts";
-export type { WalkEntry } from "https://deno.land/std@0.125.0/fs/mod.ts";
-export * as path from "https://deno.land/std@0.125.0/path/mod.ts";
+export * as fs from "https://deno.land/std@0.126.0/fs/mod.ts";
+export type { WalkEntry } from "https://deno.land/std@0.126.0/fs/mod.ts";
+export * as path from "https://deno.land/std@0.126.0/path/mod.ts";
 export {
   parse as yamlParse,
   stringify as yamlStringify,
-} from "https://deno.land/std@0.125.0/encoding/yaml.ts";
-export { writableStreamFromWriter } from "https://deno.land/std@0.125.0/streams/mod.ts";
+} from "https://deno.land/std@0.126.0/encoding/yaml.ts";
+export { writableStreamFromWriter } from "https://deno.land/std@0.126.0/streams/mod.ts";
 
 export { default as frontMatter } from "https://esm.sh/front-matter";
 export { default as slugify } from "https://esm.sh/slugify";
