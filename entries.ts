@@ -1,4 +1,10 @@
-import { expandGlob, path, walk, WalkEntry } from "./deps.ts";
+import {
+  expandGlob,
+  path,
+  walk,
+  WalkEntry,
+  withoutTrailingSlash,
+} from "./deps.ts";
 
 const RE_HIDDEN_OR_UNDERSCORED = /^\.|^_|\/\.|\/\_/;
 
@@ -87,12 +93,18 @@ export async function getContentEntries(
 
   const filePaths = fileEntries.map((file) => file.path);
 
-  // TODO: filter dirs that aren't included in filePaths (i.e. empty)
+  // filter dirs that are already in fileEntries as "index.md"
   dirEntries = dirEntries.filter((dir) => {
     return !filePaths.includes(path.join(dir.path, "index.md"));
   });
 
-  console.log(fileEntries);
+  // filter dirs that don't have any fileEntries
+  dirEntries = dirEntries.filter((dir) => {
+    const commonPaths = fileEntries.map((file) =>
+      withoutTrailingSlash(path.common([dir.path, file.path]))
+    );
+    return commonPaths.includes(withoutTrailingSlash(dir.path));
+  });
 
   const entries = [...fileEntries, ...dirEntries];
 
