@@ -10,5 +10,5 @@ For example, if there is a `_drafts` folder in the content directory, it will be
 skipped during site generation.
 
 In addition, it’s also possible to ignore individual markdown files by setting
-either `private: true` or `draft: true` in the
+either `unlisted: true` or `draft: true` in the
 [YAML frontmatter](frontmatter.md).

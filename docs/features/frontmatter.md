@@ -35,7 +35,7 @@ Some properties are utilized when building a site.
 | `tags`        | used for [tags](./tags.md)                                                     |
 | `pinned`      | if set to `true`, page is listed at the top of [index lists](./index-pages.md) |
 | `draft`       | if set to `true`, file is [ignored](./ignored-files.md) during site generation |
-| `private`     | same as `draft`                                                                |
+| `unlisted`    | same as `draft`                                                                |
 
 ## Other properties
 

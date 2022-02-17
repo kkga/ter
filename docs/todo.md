@@ -1,5 +1,5 @@
 ---
-private: true
+unlisted: true
 ---
 
 ### TODO
