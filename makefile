@@ -2,8 +2,8 @@ MAKEFLAGS := -j 4 --silent --always-make
 DENO := deno run --allow-net --allow-env --allow-read=./ --allow-write=./ --unstable
 INPUTDIR = docs
 OUTPUTDIR = _site
-ASSETSDIR = .ter/assets
-VIEWSDIR = .ter/views
+ASSETSDIR = assets
+VIEWSDIR = views
 
 build-test:
 	$(DENO) main.ts test-10000
@@ -12,12 +12,12 @@ clean:
 	rm -rf $(OUTPUTDIR)
 
 build:
-	mkdir -p $(ASSETSDIR)
-	cp assets/* $(ASSETSDIR)
+	mkdir -p .ter/$(ASSETSDIR)
+	cp $(ASSETSDIR)/* .ter/$(ASSETSDIR)
 	$(DENO) main.ts $(INPUTDIR) $(OUTPUTDIR)
 
 watch:
-	$(DENO) --watch=$(INPUTDIR),$(ASSETSDIR),$(VIEWSDIR) main.ts $(INPUTDIR) $(OUTPUTDIR)
+	$(DENO) --watch=$(INPUTDIR),$(ASSETSDIR),$(VIEWSDIR) --no-clear-screen main.ts $(INPUTDIR) $(OUTPUTDIR)
 
 serve:
 	$(DENO) https://deno.land/std/http/file_server.ts $(OUTPUTDIR) --port 8080

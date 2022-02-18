@@ -1,0 +1,44 @@
+<header class="header">
+  <nav class="breadcrumbs" aria-label="breadcrumb">
+    <ol class="breadcrumbs">
+      <% if (it.breadcrumbs?.length > 0) { %>
+        <% it.breadcrumbs.forEach((crumb, index) => { %>
+          <li class="breadcrumbs-item
+          <%_= crumb.isTag ? ' breadcrumbs-item--tag' : '' %>
+          <%_= crumb.current ? ' breadcrumbs-item--current' : '' %>">
+            <% if (crumb.url !== "") { %>
+            <a href="<%= crumb.url %>"><%= crumb.slug %></a>
+            <% } else { %>
+            <%= crumb.slug %>
+            <% } %>
+          </li>
+        <% }) %>
+      <% } %>
+    </ol>
+  </nav>
+
+  <div class="header-meta">
+    <% if (it.page?.description) { %>
+    <div><%= it.page.description %></div>
+    <% } %>
+
+    <div>
+      <% if (it.page?.date && it.page?.readableDate) { %>
+      <time datetime="<%= it.page.date %>"><%= it.page.readableDate %></time>
+      <% } %>
+
+      <% if (it.page?.tags?.length > 0 ) { %>
+        <ul class="header-meta-tags">
+          <% it.page.tags.forEach((tag) => { %>
+          <li class="header-meta-tag">
+            <a href="<%= `/tag/${tag}` %>">
+              <%_= `${tag}` _%>
+            </a>
+          </li>
+          <% }) %>
+        </ul>
+      <% } %>
+    </div>
+  </div>
+
+</header>

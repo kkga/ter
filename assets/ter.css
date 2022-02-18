@@ -8,9 +8,8 @@ ROOT -------------------------------------------------------------------------
 
 :root {
   --font-sans: "Inter", sans-serif;
-  --font-mono: ui-monospace, "input", "input mono", "cascadia code",
-    sfmono-regular, menlo, monaco, consolas, "liberation mono", "courier new",
-    monospace;
+  --font-mono: ui-monospace, sfmono-regular, menlo, monaco, consolas,
+    "liberation mono", "courier new", monospace;
 
   /* Light theme */
   --color-text-body: #1c1917;
@@ -154,12 +153,13 @@ body > main {
 }
 
 main > article {
-  margin: 0;
+  margin-bottom: 3rem;
 }
 
 main > nav {
-  margin: 0;
-  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 /*
@@ -303,7 +303,7 @@ ol ol {
 }
 
 /*
-HEADER ------------------------------------------------------------------------
+HEADER/BREADCRUMBS -------------------------------------------------------------------
 */
 
 body > header {
@@ -327,10 +327,6 @@ body > header time {
   color: var(--color-text-tertiary);
 }
 
-/*
-BREADCRUMBS -------------------------------------------------------------------
-*/
-
 .breadcrumbs {
   margin: 0;
   padding: 0;
@@ -342,9 +338,13 @@ BREADCRUMBS -------------------------------------------------------------------
   margin: 0;
 }
 
-.breadcrumbs-item:not(:last-child)::after {
+.breadcrumbs-item:not(:first-child)::before {
   content: "/";
   color: var(--color-text-tertiary);
+}
+
+.breadcrumbs-item--tag:not(:first-child)::before {
+  content: "|";
 }
 
 .breadcrumbs-item a {
@@ -352,15 +352,44 @@ BREADCRUMBS -------------------------------------------------------------------
   color: var(--color-text-secondary);
 }
 
+@media only screen and (min-width: 32em) {
+  .header-meta {
+    text-align: right;
+  }
+}
+
+.header-meta-time {
+  display: block;
+}
+
+.header-meta-tags {
+  display: flex;
+  gap: 1ch;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.header-meta-tag a {
+  text-decoration: none;
+  color: currentcolor;
+  margin: 0;
+}
+
+.header-meta-tag a::before {
+  content: "#";
+  color: var(--color-text-tertiary);
+}
+
 /*
-INDEX LIST --------------------------------------------------------------------
+INDEX/TAG LIST -----------------------------------------------------------------
 */
 
-.linklist {
+.list {
   line-height: var(--line-height-spaced);
 }
 
-.linklist-heading {
+.list-heading {
   color: var(--color-text-secondary);
   margin: 0;
   line-height: 2;
@@ -372,19 +401,32 @@ INDEX LIST --------------------------------------------------------------------
   align-items: baseline;
 }
 
-.linklist-heading::after {
+.list-heading a {
+  color: inherit;
+}
+
+.list-heading::after {
   flex: 1;
   content: "";
   border-top: 1px solid var(--color-bg-secondary);
 }
 
-.linklist-list {
+.list-pages {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.linklist-item a {
+.list-tags {
+  display: flex;
+  column-gap: 1ch;
+  flex-flow: row wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list-page a {
   text-decoration: none;
   display: flex;
   gap: 1ch;
@@ -393,35 +435,46 @@ INDEX LIST --------------------------------------------------------------------
   color: currentcolor;
 }
 
-.linklist-item--index {
+.list-tag a {
+  text-decoration: none;
+  color: currentcolor;
+}
+
+.list-tag a::before {
+  content: "#";
+  color: var(--color-text-tertiary);
+}
+
+.list-page--index {
   font-weight: var(--font-weight-m);
 }
 
-.linklist-name {
+.list-page-name {
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.linklist-name::before {
+.list-page-name::before {
   content: "◇ ";
 }
 
-.linklist-item--index .linklist-name::before {
+.list-page--index .list-page-name::before {
   content: "❖ ";
 }
 
-.linklist-item--index .linklist-name::after {
+.list-page--index .list-page-name::after {
   content: "";
 }
 
-.linklist-item--pinned .linklist-name::after {
+.list-page--pinned .list-page-name::after {
   content: "★";
 }
 
-.linklist-description {
+.list-page-description {
   max-width: 100%;
+  margin-right: 0.25em;
   flex: 1;
   text-align: right;
   font-weight: normal;
@@ -432,11 +485,7 @@ INDEX LIST --------------------------------------------------------------------
   color: var(--color-text-secondary);
 }
 
-.linklist-item--index .linklist-description {
-  text-align: left;
-}
-
-.linklist-time {
+.list-page-time {
   font-size: var(--font-size-s);
   margin-left: auto;
   margin-right: 0.25em;

@@ -10,16 +10,16 @@ full-fledged static site builder.
 
 If any of the following sounds relevant, Ter might be for you.
 
-## Goals
+### Goals
 
 - The filesystem is the navigation and organization method;
-- Creating a new page (or category) should be as simple as creating a file (or
+- Creating a new page (or section) should be as simple as creating a file (or
   directory);
 - No bundled JavaScript -- it's just a bunch of hyperlinked documents, after
   all;
 - Work out of the box, simplicity > customization.
 
-## Use cases
+### Use cases
 
 - A published [personal wiki](https://en.wikipedia.org/wiki/Personal_wiki);
 - A collection of [Zettelkasten](./zettelkasten.md) notes;

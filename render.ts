@@ -1,16 +1,9 @@
 import {
-  dirname,
   hljs,
-  isAbsolute,
-  join,
-  joinURL,
   marked,
-  normalizeURL,
-  parseURL,
+  path,
+  ufo,
   // sanitizeHtml,
-  withLeadingSlash,
-  withoutLeadingSlash,
-  withoutTrailingSlash,
 } from "./deps.ts";
 import { Heading } from "./page.ts";
 
@@ -100,7 +93,7 @@ export function render(
   };
 
   renderer.link = function (href: string, title: string, text: string) {
-    const parsed = parseURL(href);
+    const parsed = ufo.parseURL(href);
     let url: string;
 
     if (
@@ -108,38 +101,40 @@ export function render(
       typeof parsed.pathname === "string" &&
         parsed.pathname.startsWith("mailto")
     ) {
-      url = normalizeURL(
+      url = ufo.normalizeURL(
         `${parsed.protocol}//${
-          joinURL(parsed.host, parsed.pathname)
+          ufo.joinURL(parsed.host, parsed.pathname)
         }${parsed.search}${parsed.hash}`,
       );
       return `<a href="${url}" rel="external noopener noreferrer" ${
         title ? "title=${title}" : ""
       }">${text}</a>`;
     } else {
-      const cleanPathname = parsed.pathname === "" ? "" : withoutTrailingSlash(
-        parsed.pathname.replace(/\.md$/i, ""),
-      );
+      const cleanPathname = parsed.pathname === ""
+        ? ""
+        : ufo.withoutTrailingSlash(
+          parsed.pathname.replace(/\.md$/i, ""),
+        );
 
-      if (isAbsolute(href)) {
+      if (path.isAbsolute(href)) {
         url = cleanPathname + parsed.hash;
-        internalLinks.add(withoutLeadingSlash(cleanPathname));
+        internalLinks.add(ufo.withoutLeadingSlash(cleanPathname));
       } else {
         let resolved: string;
 
         if (cleanPathname === "") {
           resolved = "";
         } else if (isIndex) {
-          resolved = withoutTrailingSlash(
-            join(dirname(currentPath + "/index"), cleanPathname)
+          resolved = ufo.withoutTrailingSlash(
+            path.join(path.dirname(currentPath + "/index"), cleanPathname)
               .replace(
                 /\/index$/i,
                 "",
               ),
           );
         } else {
-          resolved = withoutTrailingSlash(
-            join(dirname(currentPath), cleanPathname).replace(
+          resolved = ufo.withoutTrailingSlash(
+            path.join(path.dirname(currentPath), cleanPathname).replace(
               /\/index$/i,
               "",
             ),
@@ -148,10 +143,12 @@ export function render(
 
         url = resolved === ""
           ? resolved + parsed.hash
-          : withLeadingSlash(resolved) + parsed.hash;
+          : ufo.withLeadingSlash(resolved) + parsed.hash;
 
         if (resolved !== "") {
-          internalLinks.add(withoutLeadingSlash(withoutLeadingSlash(resolved)));
+          internalLinks.add(
+            ufo.withoutLeadingSlash(ufo.withoutLeadingSlash(resolved)),
+          );
         }
       }
 

@@ -1,4 +1,6 @@
-import { basename, dirname, expandGlob, WalkEntry } from "./deps.ts";
+import { fs, path, ufo } from "./deps.ts";
+
+const RE_HIDDEN_OR_UNDERSCORED = /^\.|^_|\/\.|\/\_/;
 
 const hasIgnoredPrefix = (path: string): boolean => {
   const pathChunks = path.split("/");
@@ -11,14 +13,14 @@ const hasIgnoredPrefix = (path: string): boolean => {
 };
 
 export async function getAssetEntries(
-  path: string,
+  assetPath: string,
 ) {
-  const entries: Array<WalkEntry> = [];
+  const entries: Array<fs.WalkEntry> = [];
   const glob = "**/*";
 
   for await (
-    const entry of expandGlob(glob, {
-      root: path,
+    const entry of fs.expandGlob(glob, {
+      root: assetPath,
       includeDirs: false,
       caseInsensitive: true,
     })
@@ -30,11 +32,11 @@ export async function getAssetEntries(
 }
 
 export async function getStaticEntries(
-  path: string,
+  staticPath: string,
   outputPath: string,
   extensions?: Array<string>,
-): Promise<Array<WalkEntry>> {
-  const entries: Array<WalkEntry> = [];
+): Promise<Array<fs.WalkEntry>> {
+  const entries: Array<fs.WalkEntry> = [];
   let glob = "**/*";
 
   if (extensions && extensions.length > 0) {
@@ -42,8 +44,8 @@ export async function getStaticEntries(
   }
 
   for await (
-    const entry of expandGlob(glob, {
-      root: path,
+    const entry of fs.expandGlob(glob, {
+      root: staticPath,
       includeDirs: false,
       caseInsensitive: true,
       exclude: [outputPath],
@@ -59,36 +61,45 @@ export async function getStaticEntries(
 }
 
 export async function getContentEntries(
-  path: string,
-): Promise<Array<WalkEntry>> {
-  const fileEntries: Array<WalkEntry> = [];
+  contentPath: string,
+): Promise<Array<fs.WalkEntry>> {
+  const fileEntries: Array<fs.WalkEntry> = [];
+  let dirEntries: Array<fs.WalkEntry> = [];
 
   for await (
-    const entry of expandGlob("**/*.md", {
-      root: path,
-      caseInsensitive: true,
+    const entry of fs.walk(contentPath, {
+      includeDirs: false,
+      skip: [RE_HIDDEN_OR_UNDERSCORED],
+      exts: ["md"],
     })
   ) {
-    if (!hasIgnoredPrefix(entry.path)) {
-      fileEntries.push(entry);
-    }
+    fileEntries.push(entry);
   }
 
-  const dirEntries: Array<WalkEntry> = [];
-  const indexDirs: Set<string> = new Set();
-  for (const entry of fileEntries) {
-    const dirPath = dirname(entry.path);
-    indexDirs.add(dirPath);
+  for await (
+    const entry of fs.walk(contentPath, {
+      includeDirs: true,
+      includeFiles: false,
+      skip: [RE_HIDDEN_OR_UNDERSCORED],
+    })
+  ) {
+    dirEntries.push(entry);
   }
-  for (const dir of indexDirs) {
-    dirEntries.push({
-      path: dir,
-      name: basename(dir),
-      isFile: false,
-      isDirectory: true,
-      isSymlink: false,
-    });
-  }
+
+  const filePaths = fileEntries.map((file) => file.path);
+
+  // filter out dirs that are already in fileEntries as "index.md"
+  dirEntries = dirEntries.filter((dir) => {
+    return !filePaths.includes(path.join(dir.path, "index.md"));
+  });
+
+  // filter out dirs that don't have any fileEntries
+  dirEntries = dirEntries.filter((dir) => {
+    const commonPaths = fileEntries.map((file) =>
+      ufo.withoutTrailingSlash(path.common([dir.path, file.path]))
+    );
+    return commonPaths.includes(ufo.withoutTrailingSlash(dir.path));
+  });
 
   const entries = [...fileEntries, ...dirEntries];
 

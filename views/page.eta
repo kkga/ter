@@ -1,21 +1,38 @@
 <% layout('./base') %>
 
-<%if (it.body) { %>
+<%if (it.page?.content) { %>
 <article>
-  <%~ it.body %>
+  <%~ it.page?.content %>
 </article>
 <% } %>
 
-<% if (it.indexLinks?.length > 0) { %>
-<%~ includeFile('./link-list', {
-  links: it.indexLinks,
-  title: "Index"
-}) %>
-<% } %>
+<nav>
+  <% if (it.indexLinks?.length > 0) { %>
+  <%~ includeFile('./pagelist', {
+    links: it.indexLinks,
+    title: "Index"
+  }) %>
+  <% } %>
 
-<% if (it.backLinks?.length > 0) { %>
-<%~ includeFile('./link-list', {
-  links: it.backLinks,
-  title: "Backlinks"
-}) %>
-<% } %>
+  <% if (it.backLinks?.length > 0) { %>
+  <%~ includeFile('./pagelist', {
+    links: it.backLinks,
+    title: "Backlinks"
+  }) %>
+  <% } %>
+
+  <% it.taggedIndexLinks && Object.keys(it.taggedIndexLinks).forEach((tag) => { %>
+  <%~ includeFile('./pagelist', {
+    links: it.taggedIndexLinks[tag],
+    title: `Tagged #${tag}`,
+    rootUrl: `/tag/${tag}`
+  }) %>
+  <% }) %>
+
+  <% if (it.childTags?.length > 0) { %>
+  <%~ includeFile('./taglist', {
+    tags: it.childTags,
+    title: "Tag index"
+  }) %>
+  <% } %>
+</nav>

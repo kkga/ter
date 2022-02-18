@@ -1,81 +1,37 @@
-import {
-  basename,
-  dirname,
-  emptyDir,
-  ensureDir,
-  join,
-  relative,
-  WalkEntry,
-} from "./deps.ts";
-import { buildFeed, buildPage } from "./build.ts";
+import { fs, path } from "./deps.ts";
+import { buildFeed, buildPage, buildTagPage } from "./build.ts";
 import { createConfig, SiteConfig } from "./config.ts";
-import { generatePage, isDeadLink, Page } from "./page.ts";
+import {
+  generatePage,
+  getAllTags,
+  getBacklinkPages,
+  getChildPages,
+  getChildTags,
+  getPagesByTag,
+  isDeadLink,
+  Page,
+  TagPage,
+} from "./page.ts";
 import {
   getAssetEntries,
   getContentEntries,
   getStaticEntries,
 } from "./entries.ts";
-import { hasKey } from "./attr.ts";
+import { getTagsFromAttrs, hasKey } from "./attr.ts";
 import { init, requiredAssets, requiredViews } from "./init.ts";
 
 interface OutputFile {
   inputPath: string;
+  name: string;
   filePath: string;
   fileContent?: string;
-}
-
-function getBacklinkPages(
-  allPages: Array<Page>,
-  current: Page,
-): Array<Page> {
-  const pages: Array<Page> = [];
-
-  for (const outPage of allPages) {
-    if (outPage.links?.includes(current.path)) {
-      pages.push(outPage);
-    }
-  }
-
-  return pages;
-}
-
-function getChildPages(
-  allPages: Array<Page>,
-  current: Page,
-): Array<Page> {
-  const pages = allPages.filter((p) => {
-    return current.path !== p.path && current.path === dirname(p.path);
-  });
-
-  return pages;
-}
-
-async function generatePages(
-  entries: Array<WalkEntry>,
-  inputPath: string,
-  ignoredKeys: Array<string>,
-): Promise<Page[]> {
-  let pages: Array<Page> = [];
-
-  for (const entry of entries) {
-    const page = await generatePage(entry, inputPath, entries).catch(
-      (reason) => {
-        console.log(`Can't generate page ${entry}: ${reason}`);
-      },
-    );
-    page && pages.push(page);
-  }
-
-  pages = pages.filter((page) => !hasKey(page.attributes, ignoredKeys));
-
-  return pages;
 }
 
 async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
   try {
     const decoder = new TextDecoder("utf-8");
-    const path = join(Deno.cwd(), viewsPath, "head.eta");
-    return decoder.decode(await Deno.readFile(path));
+    const headPath = path.join(Deno.cwd(), viewsPath, "head.eta");
+    return decoder.decode(await Deno.readFile(headPath));
   } catch {
     return undefined;
   }
@@ -91,18 +47,26 @@ async function buildContentFiles(
   const files: Array<OutputFile> = [];
 
   for (const page of pages) {
-    const filePath = join(
+    const filePath = path.join(
       outputPath,
-      dirname(page.path),
+      path.dirname(page.path),
       page.slug,
       "index.html",
     );
+
+    const tags = getTagsFromAttrs(page.attributes);
+    const pagesByTag: { [tag: string]: Array<Page> } = {};
+    tags.forEach((tag) => {
+      pagesByTag[tag] = getPagesByTag(pages, tag);
+    });
 
     const html = await buildPage(
       page,
       headInclude,
       page.isIndex ? getChildPages(pages, page) : [],
       getBacklinkPages(pages, page),
+      pagesByTag,
+      getChildTags(pages, page),
       pageViewPath,
       siteConf,
     );
@@ -111,6 +75,45 @@ async function buildContentFiles(
       files.push({
         inputPath: page.path,
         filePath,
+        name: page.slug,
+        fileContent: html,
+      });
+    }
+  }
+
+  return files;
+}
+
+async function buildTagFiles(
+  tagPages: Array<TagPage>,
+  outputPath: string,
+  tagViewPath: string,
+  headInclude: string,
+  siteConf: SiteConfig,
+): Promise<OutputFile[]> {
+  const files: Array<OutputFile> = [];
+
+  for (const tag of tagPages) {
+    const filePath = path.join(
+      outputPath,
+      "tag",
+      tag.name,
+      "index.html",
+    );
+
+    const html = await buildTagPage(
+      tag.name,
+      tag.pages,
+      tagViewPath,
+      headInclude,
+      siteConf,
+    );
+
+    if (typeof html === "string") {
+      files.push({
+        inputPath: "",
+        filePath,
+        name: tag.name,
         fileContent: html,
       });
     }
@@ -135,27 +138,29 @@ async function buildFeedFile(
     return {
       inputPath: "",
       filePath: outputPath,
+      name: siteConf.title ?? "",
       fileContent: xml,
     };
   }
 }
 
 function getStaticFiles(
-  entries: Array<WalkEntry>,
+  entries: Array<fs.WalkEntry>,
   inputPath: string,
   outputPath: string,
 ): OutputFile[] {
   const files: Array<OutputFile> = [];
 
   for (const entry of entries) {
-    const relPath = relative(inputPath, entry.path);
-    const filePath = join(
+    const relPath = path.relative(inputPath, entry.path);
+    const filePath = path.join(
       outputPath,
-      dirname(relPath),
-      basename(relPath),
+      path.dirname(relPath),
+      path.basename(relPath),
     );
     files.push({
       inputPath: entry.path,
+      name: entry.name,
       filePath,
     });
   }
@@ -170,26 +175,72 @@ async function checkRequiredFiles(
   requiredAssets: Array<string>,
 ): Promise<boolean> {
   for (const file of requiredViews) {
-    const path = join(Deno.cwd(), viewsPath, file);
-    await Deno.stat(path).catch(() => Promise.reject(path));
+    const filepath = path.join(Deno.cwd(), viewsPath, file);
+    await Deno.stat(filepath).catch(() => Promise.reject(path));
   }
   for (const file of requiredAssets) {
-    const path = join(Deno.cwd(), assetsPath, file);
-    await Deno.stat(path).catch(() => Promise.reject(path));
+    const filepath = path.join(Deno.cwd(), assetsPath, file);
+    await Deno.stat(filepath).catch(() => Promise.reject(path));
   }
   return Promise.resolve(true);
 }
 
+async function writeFiles(
+  files: OutputFile[],
+  outputPath: string,
+  description: string,
+) {
+  files.length > 0 &&
+    console.log(`%c\nWriting ${description}:`, "font-weight: bold");
+
+  for (const file of files) {
+    if (file.fileContent) {
+      console.log(
+        `  ${file.inputPath || file.name}\t-> ${
+          path.relative(outputPath, file.filePath)
+        }`,
+      );
+      await fs.ensureDir(path.dirname(file.filePath));
+      await Deno.writeTextFile(file.filePath, file.fileContent);
+    }
+  }
+}
+
+async function copyFiles(
+  files: OutputFile[],
+  inputPath: string,
+  outputPath: string,
+  description: string,
+) {
+  files.length > 0 &&
+    console.log(`%c\nCopying ${description}:`, "font-weight: bold");
+
+  for (const file of files) {
+    console.log(
+      `  ${path.relative(inputPath, file.inputPath)}\t-> ${
+        path.relative(outputPath, file.filePath)
+      }`,
+    );
+    await fs.ensureDir(path.dirname(file.filePath));
+    await fs.copy(file.inputPath, file.filePath);
+  }
+}
+
 async function main() {
-  const config = await createConfig(Deno.args);
-  const { inputPath, outputPath, viewsPath, assetsPath, ignoreKeys } = config;
-  const deadLinks: [string, string][] = [];
-  const { site: siteConf } = config;
+  const {
+    inputPath,
+    outputPath,
+    viewsPath,
+    assetsPath,
+    ignoreKeys,
+    staticExts,
+    site: siteConf,
+  } = await createConfig(Deno.args);
 
   await checkRequiredFiles(viewsPath, assetsPath, requiredViews, requiredAssets)
     .catch(async (err) => {
       console.error(
-        `%cMissing required file: ${relative(Deno.cwd(), err)}`,
+        `%cMissing required file: ${path.relative(Deno.cwd(), err)}`,
         "color: red",
       );
       if (confirm("Initialize default views and assets?")) {
@@ -201,107 +252,105 @@ async function main() {
 
   const START = performance.now();
 
+  console.log("%c\nScanning input dir...", "font-weight: bold");
   const contentEntries = await getContentEntries(inputPath);
   const staticEntries = await getStaticEntries(
     inputPath,
-    config.outputPath,
-    config.staticExts,
+    outputPath,
+    staticExts,
   );
   const assetEntries = await getAssetEntries(assetsPath);
 
-  const pages = await generatePages(contentEntries, inputPath, ignoreKeys);
-  const pageViewPath = join(Deno.cwd(), viewsPath, "page.eta");
+  let contentPages: Page[] = [];
+
+  console.log("%c\nRendering markdown files...", "font-weight: bold");
+  for await (const entry of contentEntries) {
+    const page = await generatePage(entry, inputPath).catch(
+      (reason) => {
+        console.log(`Can't generate page ${entry.path}: ${reason}`);
+      },
+    );
+    page && contentPages.push(page);
+  }
+
+  contentPages = contentPages.filter((page) =>
+    !hasKey(page.attributes, ignoreKeys)
+  );
+
+  const tagPages: TagPage[] = [];
+
+  for (const tag of getAllTags(contentPages)) {
+    const pagesWithTag = getPagesByTag(contentPages, tag);
+    tagPages.push({ name: tag, pages: pagesWithTag });
+  }
+
+  const pageViewPath = path.join(Deno.cwd(), viewsPath, "page.eta");
+  const tagViewPath = path.join(Deno.cwd(), viewsPath, "page.eta");
   const headInclude = await getHeadInclude(viewsPath) ?? "";
-  const htmlFiles = await buildContentFiles(
-    pages,
+
+  console.log("%c\nBuilding html files...", "font-weight: bold");
+  const contentFiles = await buildContentFiles(
+    contentPages,
     outputPath,
     pageViewPath,
+    headInclude,
+    siteConf,
+  );
+  const tagFiles = await buildTagFiles(
+    tagPages,
+    outputPath,
+    tagViewPath,
     headInclude,
     siteConf,
   );
   const staticFiles = getStaticFiles(staticEntries, inputPath, outputPath);
   const assetFiles = getStaticFiles(assetEntries, assetsPath, outputPath);
 
-  for (const page of pages) {
+  const deadLinks: [string, string][] = [];
+  for (const page of contentPages) {
     if (page.links) {
       page.links.forEach((link) =>
-        isDeadLink(pages, link) && deadLinks.push([page.path, link])
+        isDeadLink(contentPages, link) && deadLinks.push([page.path, link])
       );
     }
   }
 
-  await emptyDir(outputPath);
+  await fs.emptyDir(outputPath);
 
-  if (pages.length > 0) {
-    const feedViewPath = join(Deno.cwd(), viewsPath, "feed.xml.eta");
+  if (contentPages.length > 0) {
+    const feedViewPath = path.join(Deno.cwd(), viewsPath, "feed.xml.eta");
     const feedFile = await buildFeedFile(
-      pages,
+      contentPages,
       feedViewPath,
-      join(config.outputPath, "feed.xml"),
+      path.join(outputPath, "feed.xml"),
       siteConf,
     );
     if (feedFile && feedFile.fileContent) {
-      await ensureDir(dirname(feedFile.filePath));
+      await fs.ensureDir(path.dirname(feedFile.filePath));
       await Deno.writeTextFile(feedFile.filePath, feedFile.fileContent);
     }
   }
 
-  if (htmlFiles.length > 0) {
-    console.log("%c\nWriting content pages:", "font-weight: bold");
-
-    for (const file of htmlFiles) {
-      if (file.fileContent) {
-        console.log(
-          `  ${file.inputPath}\t-> ${relative(outputPath, file.filePath)}`,
-        );
-        await ensureDir(dirname(file.filePath));
-        await Deno.writeTextFile(file.filePath, file.fileContent);
-      }
-    }
-  }
-
-  if (staticFiles.length > 0) {
-    console.log("%c\nCopying static files:", "font-weight: bold");
-
-    for (const file of staticFiles) {
-      console.log(
-        `  ${relative(inputPath, file.inputPath)}\t-> ${
-          relative(outputPath, file.filePath)
-        }`,
-      );
-      await ensureDir(dirname(file.filePath));
-      await Deno.copyFile(file.inputPath, file.filePath);
-    }
-  }
-
-  if (assetFiles.length > 0) {
-    console.log("%c\nCopying site assets:", "font-weight: bold");
-
-    for (const file of assetFiles) {
-      console.log(
-        `  ${relative(assetsPath, file.inputPath)}\t-> ${
-          relative(outputPath, file.filePath)
-        }`,
-      );
-      await ensureDir(dirname(file.filePath));
-      await Deno.copyFile(file.inputPath, file.filePath);
-    }
-  }
+  await writeFiles(tagFiles, outputPath, "tag index pages");
+  await writeFiles(contentFiles, outputPath, "content pages");
+  await copyFiles(staticFiles, inputPath, outputPath, "static files");
+  await copyFiles(assetFiles, assetsPath, outputPath, "site assets");
 
   const END = performance.now();
   const BUILD_SECS = (END - START) / 1000;
+  const totalFiles = contentFiles.length + tagFiles.length;
 
   console.log("%c\nResult:", "font-weight: bold");
   console.log(`\
-  Built ${Array.isArray(htmlFiles) && htmlFiles.length} pages
-  Copied ${staticFiles.length} static files
-  Copied ${assetFiles.length} site assets
-  In ${BUILD_SECS} seconds`);
+  Built\t\t${totalFiles} pages
+  Copied\t${staticFiles.length} static files
+  Copied\t${assetFiles.length} site assets
+  In\t\t${BUILD_SECS} seconds`);
 
   if (deadLinks.length > 0) {
-    console.log("\nFound dead links:");
+    console.log("%c\nFound dead links:", "font-weight: bold; color: red");
     deadLinks.forEach(([path, link]) => {
-      console.log(`  [${path}]\tlinks to [${link}] (dead)`);
+      console.log(`  ${path}:\tlinks to %c<${link}>`, "color:red");
     });
   }
 }

@@ -1,10 +1,9 @@
 import {
-  dirname,
   etaCompile,
   etaConfigure,
   etaRenderFile,
   etaTemplates,
-  join,
+  path,
 } from "./deps.ts";
 import { Page } from "./page.ts";
 import { SiteConfig } from "./config.ts";
@@ -18,6 +17,7 @@ interface Breadcrumb {
   slug: string;
   url: string;
   current: boolean;
+  isTag?: boolean;
 }
 
 interface IndexItem {
@@ -44,7 +44,7 @@ function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
     const isPinned = hasKey(p.attributes, ["pinned"]);
     const readableDate = p.date ? toReadableDate(p.date) : null;
     items.push({
-      url: join("/", dirname(p.path), p.slug),
+      url: path.join("/", path.dirname(p.path), p.slug),
       title: p.title,
       description: p.description,
       date: p.date ? p.date : null,
@@ -72,13 +72,13 @@ function generateBreadcrumbs(
   currentPage: Page,
   homeSlug?: string,
 ): Array<Breadcrumb> {
-  const dir: string = dirname(currentPage.path);
+  const dir: string = path.dirname(currentPage.path);
   const chunks = dir.split("/").filter((path) => path !== ".");
   const { slug } = currentPage;
 
   let breadcrumbs: Array<Breadcrumb> = chunks.map((chunk, index) => {
     const slug = chunk;
-    const url = join("/", ...chunks.slice(0, index + 1));
+    const url = path.join("/", ...chunks.slice(0, index + 1));
     return {
       slug,
       url,
@@ -113,28 +113,72 @@ export async function buildPage(
   headInclude: string,
   childPages: Array<Page>,
   backLinkedPages: Array<Page>,
+  taggedPages: { [tag: string]: Array<Page> },
+  childTags: Array<string>,
   viewPath: string,
   siteConf: SiteConfig,
 ): Promise<string | void> {
-  const { title, description, date, html: body } = page;
+  const { title, description, tags, date, html: content } = page;
+  const readableDate = date ? toReadableDate(date) : null;
   const breadcrumbs = generateBreadcrumbs(page, siteConf.rootName);
   const backlinkIndexItems = generateIndexItems(backLinkedPages);
   const childIndexItems = generateIndexItems(childPages);
-  const readableDate = date ? toReadableDate(date) : null;
+
+  const tagLists: { [tag: string]: Array<IndexItem> } = {};
+  for (const tag of Object.keys(taggedPages)) {
+    const tagIndex = generateIndexItems(
+      taggedPages[tag].filter((taggedPage) => taggedPage !== page),
+    );
+    if (tagIndex.length !== 0) {
+      tagLists[tag] = tagIndex;
+    }
+  }
 
   etaTemplates.define("head", etaCompile(headInclude));
 
   return await etaRenderFile(viewPath, {
+    page: {
+      title,
+      description,
+      content,
+      date: date,
+      tags,
+      readableDate: readableDate,
+    },
     breadcrumbs,
-    date,
-    readableDate,
-    title,
-    description,
-    body,
     indexLinks: childIndexItems,
     backLinks: backlinkIndexItems,
+    taggedIndexLinks: tagLists,
+    childTags,
     site: siteConf,
   });
+}
+
+export async function buildTagPage(
+  name: string,
+  pages: Array<Page>,
+  tagViewPath: string,
+  headInclude: string,
+  siteConf: SiteConfig,
+): Promise<string | void> {
+  etaTemplates.define("head", etaCompile(headInclude));
+  const indexItems = generateIndexItems(pages);
+  const breadcrumbs: Array<Breadcrumb> = [
+    { slug: "index", url: "/", current: false },
+    { slug: `#${name}`, url: "", current: true, isTag: true },
+  ];
+
+  const result = await etaRenderFile(tagViewPath, {
+    page: {
+      title: `#${name}`,
+      description: `Pages tagged #${name}`,
+    },
+    name,
+    breadcrumbs,
+    indexLinks: indexItems,
+    site: siteConf,
+  });
+  return result;
 }
 
 export async function buildFeed(

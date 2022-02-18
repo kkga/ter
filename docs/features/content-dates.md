@@ -4,14 +4,14 @@ description: Using custom dates in markdown files
 
 # Content dates
 
-Ter tries to replicate the content file system on a generated site. And with
+Ter tries to replicate the content file system on the generated site. And with
 that philosophy, the dates displayed on pages and in the
-[index lists](index-pages.md) indicate when file was last modified.
+[index lists](index-pages.md) default to file creation date.
 
-It's possible to override the date for individual pages by setting the `date`
-key in the [YAML frontmatter](frontmatter.md) to any date string that can be
-[parsed by JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse),
-for example:
+To use a custom date, set the `date` key in the
+[YAML frontmatter](frontmatter.md) in `YYYY-MM-DD` format.
+
+### Date example
 
 ```
 ---

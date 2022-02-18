@@ -1,0 +1,41 @@
+<div class="list">
+  <% if (it.title) { %>
+  <h3 class="list-heading">
+    <% if (it.rootUrl) { %>
+    <a href="<%= it.rootUrl %>">
+      <%= it.title %>
+    </a>
+    <% } else { %>
+    <%= it.title %>
+    <% } %>
+  </h3>
+  <% } %>
+
+  <ul class="list-pages">
+    <% it.links.forEach(({
+      url,
+      title,
+      description,
+      date,
+      readableDate,
+      isIndexPage,
+      pinned
+    }) => { %>
+    <li class="list-page
+      <%_= isIndexPage ? ' list-page--index' : '' %>
+      <%_= pinned ? ' list-page--pinned' : '' %>">
+      <a href="<%= url %>">
+        <span class="list-page-name"><%= title %></span>
+        <% if (description && description !== "") { %>
+        <span class="list-page-description"><%= description %></span>
+        <% } %>
+        <% if (date && readableDate) { %>
+        <time class="list-page-time" datetime="<%= date %>">
+          <%= readableDate %>
+        </time>
+        <% } %>
+      </a>
+    </li>
+    <% }) %>
+  </ul>
+</div>
