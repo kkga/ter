@@ -176,11 +176,11 @@ async function checkRequiredFiles(
 ): Promise<boolean> {
   for (const file of requiredViews) {
     const filepath = path.join(Deno.cwd(), viewsPath, file);
-    await Deno.stat(filepath).catch(() => Promise.reject(path));
+    await Deno.stat(filepath).catch(() => Promise.reject(filepath));
   }
   for (const file of requiredAssets) {
     const filepath = path.join(Deno.cwd(), assetsPath, file);
-    await Deno.stat(filepath).catch(() => Promise.reject(path));
+    await Deno.stat(filepath).catch(() => Promise.reject(filepath));
   }
   return Promise.resolve(true);
 }
