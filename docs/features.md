@@ -47,10 +47,10 @@ Backlinks section at the bottom.
 ## Frontmatter
 
 Ter extracts [YAML frontmatter](https://jekyllrb.com/docs/front-matter/)
-delimited by `—` from markdown files. Here’s an example:
+delimited by `---` from markdown files. Here’s an example:
 
 ```
-—
+---
 title: My page
 description: Here’s my description
 date: 2022-01-29
@@ -58,7 +58,7 @@ tags:
   - myTag
   - otherTag
 property: value
-—
+---
 
 ## My content
 ```
