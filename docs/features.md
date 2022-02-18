@@ -2,7 +2,7 @@
 pinned: true
 ---
 
-# Features 
+# Features
 
 ## Index pages
 
@@ -27,10 +27,10 @@ content.
 
 Items in the index are sorted in the following order:
 
-1. files with `pinned: true` in the [frontmatter](#frontmatter) are listed
-   at the top and get an ★ symbol;
+1. files with `pinned: true` in the [frontmatter](features#frontmatter) are
+   listed at the top and get an ★ symbol;
 2. directories (child index pages);
-3. rest of markdown files, sorted by [date](#content-dates).
+3. rest of markdown files, sorted by [date](features#content-dates).
 
 ### Markdown in index files
 
@@ -72,15 +72,15 @@ property: value
 
 Some properties are utilized when building a site.
 
-| Property | Description |
-| -—— | ——— |
-| `title`       | used for page title, see [titles](titles.md) |
-| `description` | used for page description |
-| `date`        | used for date, if exists |
-| `tags`        | used for [tags](./tags.md)                                                     |
-| `pinned`      | if set to `true`, page is listed at the top of [index lists](./index-pages.md) |
-| `draft`       | if set to `true`, file is [ignored](./ignored-files.md) during site generation |
-| `unlisted`    | same as `draft`                                                                |
+| Property      | Description                                                                 |
+| ------------- | --------------------------------------------------------------------------- |
+| `title`       | used for page title, see [titles](#titles)                                  |
+| `description` | used for page description                                                   |
+| `date`        | used for date, if exists                                                    |
+| `tags`        | used for [tags](#tags)                                                      |
+| `pinned`      | if set to `true`, page is listed at the top of [index lists](#index-pages)  |
+| `draft`       | if set to `true`, file is [ignored](#ignoring-files) during site generation |
+| `unlisted`    | same as `draft`                                                             |
 
 ### Other properties
 
@@ -104,8 +104,8 @@ Ter tries to replicate the content file system on the generated site. And with
 that philosophy, the dates displayed on pages and in the
 [index lists](#index-pages) default to file creation date.
 
-To use a custom date, set the `date` key in the
-[YAML frontmatter](#frontmatter) in `YYYY-MM-DD` format.
+To use a custom date, set the `date` key in the [YAML frontmatter](#frontmatter)
+in `YYYY-MM-DD` format.
 
 ### Date example
 
