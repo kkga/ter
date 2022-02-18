@@ -38,41 +38,42 @@ async function initializeFile(filePath: string, url: URL) {
 export async function init() {
   const config = await createConfig(Deno.args);
 
+  console.log("%c\nInitializing site config...", "font-weight: bold");
   try {
     await Deno.stat(path.join(Deno.cwd(), config.siteConfigPath));
-    console.log("File exists, skipping\t", config.siteConfigPath);
+    console.log(`  File exists, skipping:\t${config.siteConfigPath}`);
   } catch {
     const yaml = yamlStringify(config.site as Record<string, unknown>);
     await fs.ensureDir(path.dirname(config.siteConfigPath));
     await Deno.writeTextFile(config.siteConfigPath, yaml);
-    console.log("Initialized\t", config.siteConfigPath);
+    console.log(`  ${config.siteConfigPath}`);
   }
 
+  console.log("%c\nInitializing views and assets...", "font-weight: bold");
   for await (const view of requiredViews) {
     const viewPath = path.join(config.viewsPath, view);
     try {
       await Deno.stat(viewPath);
-      console.log("File exists, skipping\t", viewPath);
+      console.log(`  File exists, skipping:\t${viewPath}`);
     } catch {
       const url = new URL(
         path.join(MOD_URL, path.basename(config.viewsPath), view),
       );
       await initializeFile(path.join(config.viewsPath, view), url);
-      console.log("Initialized\t", viewPath);
+      console.log(`  Initialized:\t${viewPath}`);
     }
   }
-
   for await (const asset of requiredAssets) {
     const assetPath = path.join(config.assetsPath, asset);
     try {
       await Deno.stat(assetPath);
-      console.log("File exists, skipping\t", assetPath);
+      console.log("  File exists, skipping:\t", assetPath);
     } catch {
       const url = new URL(
         path.join(MOD_URL, path.basename(config.assetsPath), asset),
       );
       await initializeFile(path.join(config.assetsPath, asset), url);
-      console.log("Initialized\t", assetPath);
+      console.log(`  Initialized:\t${assetPath}`);
     }
   }
 }
