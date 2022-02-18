@@ -206,11 +206,11 @@ Inline code inside table cells should still be distinguishable.
 
 Small images should be shown at their actual size.
 
-![](./img-small.jpg)
+![](img/img-small.jpg)
 
 Large images should always scale down and fit in the content container.
 
 <figure>
-  <img src="img-large.jpg">
+  <img src="img/img-large.jpg">
   <figcaption>This a figcaption</figcaption>
 </figure>
