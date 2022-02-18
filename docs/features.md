@@ -7,9 +7,8 @@ pinned: true
 ## Index pages
 
 Ter recursively recreates the source file system on the rendered site and each
-directory gets an index file listing its content.
-
-For example, if the source looks like this:
+directory gets an index file listing its content. For example, if the source
+looks like this:
 
 ```
 content
@@ -42,17 +41,13 @@ individual pages from the index.
 ## Backlinks
 
 Ter adheres to the [Zettelksten](/zettelkasten.md) method and tracks connections
-between pages.
-
-All internal references to the current page are listed in the Backlinks section
-at the bottom.
+between pages. All internal references to the current page are listed in the
+Backlinks section at the bottom.
 
 ## Frontmatter
 
 Ter extracts [YAML frontmatter](https://jekyllrb.com/docs/front-matter/)
-delimited by `—` from markdown files.
-
-Here’s an example:
+delimited by `—` from markdown files. Here’s an example:
 
 ```
 —
@@ -89,14 +84,12 @@ All other properties are ignored but can be used in
 
 ## Ignoring files
 
-Any files and folders that start with an `_` or `.` (hidden) are ignored.
-
-For example, if there is a `_drafts` folder in the content directory, it will be
+Any files and folders that start with an `_` or `.` (hidden) are ignored. For
+example, if there is a `_drafts` folder in the content directory, it will be
 skipped during site generation.
 
-In addition, it’s also possible to ignore individual markdown files by setting
-either `unlisted: true` or `draft: true` in the
-[YAML frontmatter](#frontmatter).
+In addition, it’s possible to ignore individual markdown files by setting either
+`unlisted: true` or `draft: true` in the [YAML frontmatter](#frontmatter).
 
 ## Content dates
 
