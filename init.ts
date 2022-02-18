@@ -52,13 +52,13 @@ export async function init() {
     const viewPath = path.join(config.viewsPath, view);
     try {
       await Deno.stat(viewPath);
-      console.log("File exists, skipping\t", path);
+      console.log("File exists, skipping\t", viewPath);
     } catch {
       const url = new URL(
         path.join(MOD_URL, path.basename(config.viewsPath), view),
       );
       await initializeFile(path.join(config.viewsPath, view), url);
-      console.log("Initialized\t", path);
+      console.log("Initialized\t", viewPath);
     }
   }
 
@@ -66,13 +66,13 @@ export async function init() {
     const assetPath = path.join(config.assetsPath, asset);
     try {
       await Deno.stat(assetPath);
-      console.log("File exists, skipping\t", path);
+      console.log("File exists, skipping\t", assetPath);
     } catch {
       const url = new URL(
         path.join(MOD_URL, path.basename(config.assetsPath), asset),
       );
       await initializeFile(path.join(config.assetsPath, asset), url);
-      console.log("Initialized\t", path);
+      console.log("Initialized\t", assetPath);
     }
   }
 }
