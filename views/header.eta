@@ -22,23 +22,21 @@
     <div><%= it.page.description %></div>
     <% } %>
 
-    <div>
-      <% if (it.page?.date && it.page?.readableDate) { %>
-      <time datetime="<%= it.page.date %>"><%= it.page.readableDate %></time>
-      <% } %>
+    <% if (it.page?.date && it.page?.readableDate) { %>
+    <time datetime="<%= it.page.date %>"><%= it.page.readableDate %></time>
+    <% } %>
 
-      <% if (it.page?.tags?.length > 0 ) { %>
-        <ul class="header-meta-tags">
-          <% it.page.tags.forEach((tag) => { %>
-          <li class="header-meta-tag">
-            <a href="<%= `/tag/${tag}` %>">
-              <%_= `${tag}` _%>
-            </a>
-          </li>
-          <% }) %>
-        </ul>
-      <% } %>
-    </div>
+    <% if (it.page?.tags?.length > 0 ) { %>
+      <ul class="header-meta-tags">
+        <% it.page.tags.forEach((tag) => { %>
+        <li class="header-meta-tag">
+          <a href="<%= `/tag/${tag}` %>">
+            <%_= `${tag}` _%>
+          </a>
+        </li>
+        <% }) %>
+      </ul>
+    <% } %>
   </div>
 
 </header>

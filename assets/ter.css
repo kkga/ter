@@ -352,9 +352,14 @@ body > header time {
   color: var(--color-text-secondary);
 }
 
+.header-meta {
+  display: flex;
+  flex-direction: column;
+}
+
 @media only screen and (min-width: 32em) {
   .header-meta {
-    text-align: right;
+    align-items: flex-end;
   }
 }
 
