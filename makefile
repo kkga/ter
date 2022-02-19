@@ -12,8 +12,6 @@ clean:
 	rm -rf $(OUTPUTDIR)
 
 build:
-	mkdir -p .ter/$(ASSETSDIR)
-	cp $(ASSETSDIR)/* .ter/$(ASSETSDIR)
 	$(DENO) main.ts $(INPUTDIR) $(OUTPUTDIR)
 
 watch:
