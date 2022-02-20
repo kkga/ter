@@ -10,8 +10,6 @@ export { default as frontMatter } from "https://esm.sh/front-matter";
 export { default as slugify } from "https://esm.sh/slugify";
 export { marked } from "https://esm.sh/marked";
 export { default as hljs } from "https://cdn.skypack.dev/highlight.js";
-// export { default as sanitizeHtml } from "https://esm.sh/sanitize-html@2.6.1";
-// export { escape as htmlEscape } from "https://esm.sh/he@1.2.0";
 export * as ufo from "https://unpkg.com/ufo/dist/index.mjs";
 export {
   compile as etaCompile,
