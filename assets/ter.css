@@ -37,6 +37,7 @@ ROOT -------------------------------------------------------------------------
   --font-size-l: 1.5rem;
   --font-size-xl: 2rem;
   --font-weight-m: 500;
+  --font-weight-b: 700;
   --line-height-base: 1.5;
   --line-height-spaced: 1.75;
   --line-height-tight: 1.375;
@@ -390,10 +391,6 @@ body > header time {
 INDEX/TAG LIST -----------------------------------------------------------------
 */
 
-/*.list {
-  line-height: var(--line-height-spaced);
-}
-*/
 .list-heading {
   color: var(--color-text-secondary);
   margin: 0;
@@ -432,6 +429,8 @@ INDEX/TAG LIST -----------------------------------------------------------------
 }
 
 .list-page a {
+  line-height: var(--line-height-spaced);
+  font-size: var(--font-size-s);
   text-decoration: none;
   display: flex;
   gap: 1ch;
@@ -450,15 +449,17 @@ INDEX/TAG LIST -----------------------------------------------------------------
   color: var(--color-text-tertiary);
 }
 
-.list-page--index {
-  font-weight: var(--font-weight-m);
-}
-
 .list-page-name {
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-weight: var(--font-weight-m);
+  margin-right: 1ch;
+}
+
+.list-page--index .list-page-name {
+  font-weight: var(--font-weight-b);
 }
 
 .list-page-name::before {
@@ -479,21 +480,18 @@ INDEX/TAG LIST -----------------------------------------------------------------
 
 .list-page-description {
   max-width: 100%;
-  margin-right: 0.25em;
+  margin-right: 0.125em;
   flex: 1;
   text-align: right;
-  font-weight: normal;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: var(--font-size-s);
-  color: var(--color-text-secondary);
+  color: var(--color-text-tertiary);
 }
 
 .list-page-time {
-  font-size: var(--font-size-s);
   margin-left: auto;
-  margin-right: 0.25em;
+  margin-right: 0.125em;
   white-space: nowrap;
   color: var(--color-text-tertiary);
 }
