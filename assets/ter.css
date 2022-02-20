@@ -390,10 +390,10 @@ body > header time {
 INDEX/TAG LIST -----------------------------------------------------------------
 */
 
-.list {
+/*.list {
   line-height: var(--line-height-spaced);
 }
-
+*/
 .list-heading {
   color: var(--color-text-secondary);
   margin: 0;
