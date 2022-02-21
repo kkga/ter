@@ -65,7 +65,9 @@ export function getAllTags(pages: Array<Page>): Array<string> {
   const tags: Set<string> = new Set();
 
   pages.forEach((page) => {
-    attr.getTagsFromAttrs(page.attributes).forEach((tag) => tags.add(tag));
+    attr.getTagsFromAttrs(page.attributes).forEach((tag: string) =>
+      tags.add(tag)
+    );
   });
 
   return [...tags];
@@ -112,7 +114,9 @@ export function getChildTags(
   allPages.forEach((page) => {
     const relPath = path.relative(current.path, page.path);
     if (!relPath.startsWith("..") && relPath !== "") {
-      attr.getTagsFromAttrs(page.attributes).forEach((tag) => tags.add(tag));
+      attr.getTagsFromAttrs(page.attributes).forEach((tag: string) =>
+        tags.add(tag)
+      );
     }
   });
 
@@ -138,7 +142,7 @@ export async function generatePage(
     const { html, links, headings } = render(body, relPath, isIndex);
     const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
     const title = attr.getTitleFromAttrs(attributes) ||
-      attr.getTitleFromHeadings(headings) || entry.name;
+      attr.getTitleFromHeadings(headings) || path.basename(relPath);
     const description = attr.getDescriptionFromAttrs(attributes) || "";
     const tags = attr.getTagsFromAttrs(attributes);
 
