@@ -100,7 +100,7 @@ async function main() {
   );
   const assetFiles = files.getStaticFiles(assetEntries, assetsPath, outputPath);
 
-  const deadLinks: [URL, URL][] = [];
+  const deadLinks: [from: URL, to: URL][] = [];
   for (const page of contentPages) {
     if (page.links) {
       page.links.forEach((link: URL) =>
