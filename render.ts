@@ -11,6 +11,10 @@ export function render(
 ): { html: string; links: Array<URL>; headings: Array<Heading> } {
   const internalUrls: Set<URL> = new Set();
   const headings: Array<Heading> = [];
+
+  // TODO: use path prefix from site config url to properly
+  // handle cases when site is published in a sub directory on domain
+  //
   // const pathPrefix = baseUrl.pathname;
 
   renderer.heading = function (
@@ -26,7 +30,6 @@ export function render(
 
   renderer.link = function (href: string, title: string, text: string) {
     const parsed = ufo.parseURL(href);
-    console.log(parsed);
 
     if (
       parsed.protocol !== undefined ||
