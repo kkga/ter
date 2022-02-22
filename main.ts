@@ -1,31 +1,10 @@
 import { fs, path } from "./deps.ts";
-import { buildFeed, buildPage, buildTagPage } from "./build.ts";
-import { createConfig, SiteConfig } from "./config.ts";
-import {
-  generatePage,
-  getAllTags,
-  getBacklinkPages,
-  getChildPages,
-  getChildTags,
-  getPagesByTag,
-  isDeadLink,
-  Page,
-  TagPage,
-} from "./page.ts";
-import {
-  getAssetEntries,
-  getContentEntries,
-  getStaticEntries,
-} from "./entries.ts";
-import { getTagsFromAttrs, hasKey } from "./attr.ts";
-import { init, requiredAssets, requiredViews } from "./init.ts";
-
-interface OutputFile {
-  inputPath: string;
-  name: string;
-  filePath: string;
-  fileContent?: string;
-}
+import { createConfig } from "./config.ts";
+import * as entries from "./entries.ts";
+import * as pages from "./pages.ts";
+import * as data from "./data.ts";
+import * as files from "./files.ts";
+import { checkRequiredFiles, init } from "./init.ts";
 
 async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
   try {
@@ -34,195 +13,6 @@ async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
     return decoder.decode(await Deno.readFile(headPath));
   } catch {
     return undefined;
-  }
-}
-
-async function buildContentFiles(
-  pages: Array<Page>,
-  outputPath: string,
-  pageViewPath: string,
-  headInclude: string,
-  siteConf: SiteConfig,
-): Promise<OutputFile[]> {
-  const files: Array<OutputFile> = [];
-
-  for (const page of pages) {
-    const filePath = path.join(
-      outputPath,
-      path.dirname(page.path),
-      page.slug,
-      "index.html",
-    );
-
-    const tags = getTagsFromAttrs(page.attributes);
-    const pagesByTag: { [tag: string]: Array<Page> } = {};
-    tags.forEach((tag) => {
-      pagesByTag[tag] = getPagesByTag(pages, tag);
-    });
-
-    const html = await buildPage(
-      page,
-      headInclude,
-      page.isIndex ? getChildPages(pages, page) : [],
-      getBacklinkPages(pages, page),
-      pagesByTag,
-      getChildTags(pages, page),
-      pageViewPath,
-      siteConf,
-    );
-
-    if (typeof html === "string") {
-      files.push({
-        inputPath: page.path,
-        filePath,
-        name: page.slug,
-        fileContent: html,
-      });
-    }
-  }
-
-  return files;
-}
-
-async function buildTagFiles(
-  tagPages: Array<TagPage>,
-  outputPath: string,
-  tagViewPath: string,
-  headInclude: string,
-  siteConf: SiteConfig,
-): Promise<OutputFile[]> {
-  const files: Array<OutputFile> = [];
-
-  for (const tag of tagPages) {
-    const filePath = path.join(
-      outputPath,
-      "tag",
-      tag.name,
-      "index.html",
-    );
-
-    const html = await buildTagPage(
-      tag.name,
-      tag.pages,
-      tagViewPath,
-      headInclude,
-      siteConf,
-    );
-
-    if (typeof html === "string") {
-      files.push({
-        inputPath: "",
-        filePath,
-        name: tag.name,
-        fileContent: html,
-      });
-    }
-  }
-
-  return files;
-}
-
-async function buildFeedFile(
-  pages: Array<Page>,
-  feedViewPath: string,
-  outputPath: string,
-  siteConf: SiteConfig,
-): Promise<OutputFile | undefined> {
-  const xml = await buildFeed(
-    pages,
-    feedViewPath,
-    siteConf,
-  );
-
-  if (typeof xml === "string") {
-    return {
-      inputPath: "",
-      filePath: outputPath,
-      name: siteConf.title ?? "",
-      fileContent: xml,
-    };
-  }
-}
-
-function getStaticFiles(
-  entries: Array<fs.WalkEntry>,
-  inputPath: string,
-  outputPath: string,
-): OutputFile[] {
-  const files: Array<OutputFile> = [];
-
-  for (const entry of entries) {
-    const relPath = path.relative(inputPath, entry.path);
-    const filePath = path.join(
-      outputPath,
-      path.dirname(relPath),
-      path.basename(relPath),
-    );
-    files.push({
-      inputPath: entry.path,
-      name: entry.name,
-      filePath,
-    });
-  }
-
-  return files;
-}
-
-async function checkRequiredFiles(
-  viewsPath: string,
-  assetsPath: string,
-  requiredViews: Array<string>,
-  requiredAssets: Array<string>,
-): Promise<boolean> {
-  for (const file of requiredViews) {
-    const filepath = path.join(Deno.cwd(), viewsPath, file);
-    await Deno.stat(filepath).catch(() => Promise.reject(filepath));
-  }
-  for (const file of requiredAssets) {
-    const filepath = path.join(Deno.cwd(), assetsPath, file);
-    await Deno.stat(filepath).catch(() => Promise.reject(filepath));
-  }
-  return Promise.resolve(true);
-}
-
-async function writeFiles(
-  files: OutputFile[],
-  outputPath: string,
-  description: string,
-) {
-  files.length > 0 &&
-    console.log(`%c\nWriting ${description}:`, "font-weight: bold");
-
-  for (const file of files) {
-    if (file.fileContent) {
-      console.log(
-        `  ${file.inputPath || file.name}\t-> ${
-          path.relative(outputPath, file.filePath)
-        }`,
-      );
-      await fs.ensureDir(path.dirname(file.filePath));
-      await Deno.writeTextFile(file.filePath, file.fileContent);
-    }
-  }
-}
-
-async function copyFiles(
-  files: OutputFile[],
-  inputPath: string,
-  outputPath: string,
-  description: string,
-) {
-  files.length > 0 &&
-    console.log(`%c\nCopying ${description}:`, "font-weight: bold");
-
-  for (const file of files) {
-    console.log(
-      `  ${path.relative(inputPath, file.inputPath)}\t-> ${
-        path.relative(outputPath, file.filePath)
-      }`,
-    );
-    await fs.ensureDir(path.dirname(file.filePath));
-    await fs.copy(file.inputPath, file.filePath);
   }
 }
 
@@ -237,8 +27,8 @@ async function main() {
     site: siteConf,
   } = await createConfig(Deno.args);
 
-  await checkRequiredFiles(viewsPath, assetsPath, requiredViews, requiredAssets)
-    .catch(async (err) => {
+  await checkRequiredFiles(viewsPath, assetsPath)
+    .catch(async (err: string) => {
       console.error(
         `%cMissing required file: ${path.relative(Deno.cwd(), err)}`,
         "color: red",
@@ -253,20 +43,20 @@ async function main() {
   const START = performance.now();
 
   console.log("%c\nScanning input dir...", "font-weight: bold");
-  const contentEntries = await getContentEntries(inputPath);
-  const staticEntries = await getStaticEntries(
+  const contentEntries = await entries.getContentEntries(inputPath);
+  const staticEntries = await entries.getStaticEntries(
     inputPath,
     outputPath,
     staticExts,
   );
-  const assetEntries = await getAssetEntries(assetsPath);
+  const assetEntries = await entries.getAssetEntries(assetsPath);
 
-  let contentPages: Page[] = [];
+  let contentPages: pages.Page[] = [];
 
   console.log("%c\nRendering markdown files...", "font-weight: bold");
   for await (const entry of contentEntries) {
-    const page = await generatePage(entry, inputPath).catch(
-      (reason) => {
+    const page = await pages.generatePage(entry, inputPath, siteConf).catch(
+      (reason: string) => {
         console.log(`Can't generate page ${entry.path}: ${reason}`);
       },
     );
@@ -274,13 +64,13 @@ async function main() {
   }
 
   contentPages = contentPages.filter((page) =>
-    !hasKey(page.attributes, ignoreKeys)
+    !data.hasKey(page.data, ignoreKeys)
   );
 
-  const tagPages: TagPage[] = [];
+  const tagPages: pages.TagPage[] = [];
 
-  for (const tag of getAllTags(contentPages)) {
-    const pagesWithTag = getPagesByTag(contentPages, tag);
+  for (const tag of pages.getAllTags(contentPages)) {
+    const pagesWithTag = pages.getPagesByTag(contentPages, tag);
     tagPages.push({ name: tag, pages: pagesWithTag });
   }
 
@@ -289,28 +79,32 @@ async function main() {
   const headInclude = await getHeadInclude(viewsPath) ?? "";
 
   console.log("%c\nBuilding html files...", "font-weight: bold");
-  const contentFiles = await buildContentFiles(
+  const contentFiles = await files.buildContentFiles(
     contentPages,
     outputPath,
     pageViewPath,
     headInclude,
     siteConf,
   );
-  const tagFiles = await buildTagFiles(
+  const tagFiles = await files.buildTagFiles(
     tagPages,
     outputPath,
     tagViewPath,
     headInclude,
     siteConf,
   );
-  const staticFiles = getStaticFiles(staticEntries, inputPath, outputPath);
-  const assetFiles = getStaticFiles(assetEntries, assetsPath, outputPath);
+  const staticFiles = files.getStaticFiles(
+    staticEntries,
+    inputPath,
+    outputPath,
+  );
+  const assetFiles = files.getStaticFiles(assetEntries, assetsPath, outputPath);
 
-  const deadLinks: [string, string][] = [];
+  const deadLinks: [URL, URL][] = [];
   for (const page of contentPages) {
     if (page.links) {
-      page.links.forEach((link) =>
-        isDeadLink(contentPages, link) && deadLinks.push([page.path, link])
+      page.links.forEach((link: URL) =>
+        pages.isDeadLink(contentPages, link) && deadLinks.push([page.url, link])
       );
     }
   }
@@ -319,7 +113,7 @@ async function main() {
 
   if (contentPages.length > 0) {
     const feedViewPath = path.join(Deno.cwd(), viewsPath, "feed.xml.eta");
-    const feedFile = await buildFeedFile(
+    const feedFile = await files.buildFeedFile(
       contentPages,
       feedViewPath,
       path.join(outputPath, "feed.xml"),
@@ -331,10 +125,10 @@ async function main() {
     }
   }
 
-  await writeFiles(tagFiles, outputPath, "tag index pages");
-  await writeFiles(contentFiles, outputPath, "content pages");
-  await copyFiles(staticFiles, inputPath, outputPath, "static files");
-  await copyFiles(assetFiles, assetsPath, outputPath, "site assets");
+  await files.writeFiles(tagFiles, "tag index pages");
+  await files.writeFiles(contentFiles, "content pages");
+  await files.copyFiles(staticFiles, "static files");
+  await files.copyFiles(assetFiles, "site assets");
 
   const END = performance.now();
   const BUILD_SECS = (END - START) / 1000;
@@ -349,8 +143,11 @@ async function main() {
 
   if (deadLinks.length > 0) {
     console.log("%c\nFound dead links:", "font-weight: bold; color: red");
-    deadLinks.forEach(([path, link]) => {
-      console.log(`  ${path}:\tlinks to %c<${link}>`, "color:red");
+    deadLinks.forEach(([pageUrl, linkUrl]) => {
+      console.log(
+        `  ${pageUrl.pathname}\tlinks to %c${linkUrl.pathname}`,
+        "color:red",
+      );
     });
   }
 }

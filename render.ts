@@ -1,5 +1,5 @@
 import { hljs, marked, path, ufo } from "./deps.ts";
-import { Heading } from "./page.ts";
+import { Heading } from "./pages.ts";
 
 const renderer = new marked.Renderer();
 
@@ -7,8 +7,9 @@ export function render(
   text: string,
   currentPath: string,
   isIndex: boolean,
-): { html: string; links: Array<string>; headings: Array<Heading> } {
-  const internalLinks: Set<string> = new Set();
+  baseUrl: URL,
+): { html: string; links: Array<URL>; headings: Array<Heading> } {
+  const internalLinks: Set<URL> = new Set();
   const headings: Array<Heading> = [];
 
   renderer.heading = function (
@@ -48,7 +49,9 @@ export function render(
 
       if (path.isAbsolute(href)) {
         url = cleanPathname + parsed.hash;
-        internalLinks.add(ufo.withoutLeadingSlash(cleanPathname));
+        internalLinks.add(
+          new URL(ufo.withoutLeadingSlash(cleanPathname), baseUrl),
+        );
       } else {
         let resolved: string;
 
@@ -77,7 +80,7 @@ export function render(
 
         if (resolved !== "") {
           internalLinks.add(
-            ufo.withoutLeadingSlash(ufo.withoutLeadingSlash(resolved)),
+            new URL(ufo.withoutLeadingSlash(resolved), baseUrl),
           );
         }
       }

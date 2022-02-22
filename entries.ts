@@ -1,5 +1,6 @@
 import { fs, path, ufo } from "./deps.ts";
 
+export const INDEX_FILENAME = "index.md";
 const RE_HIDDEN_OR_UNDERSCORED = /^\.|^_|\/\.|\/\_/;
 
 const hasIgnoredPrefix = (path: string): boolean => {
@@ -14,7 +15,7 @@ const hasIgnoredPrefix = (path: string): boolean => {
 
 export async function getAssetEntries(
   assetPath: string,
-) {
+): Promise<Array<fs.WalkEntry>> {
   const entries: Array<fs.WalkEntry> = [];
   const glob = "**/*";
 
@@ -90,7 +91,7 @@ export async function getContentEntries(
 
   // filter out dirs that are already in fileEntries as "index.md"
   dirEntries = dirEntries.filter((dir) => {
-    return !filePaths.includes(path.join(dir.path, "index.md"));
+    return !filePaths.includes(path.join(dir.path, INDEX_FILENAME));
   });
 
   // filter out dirs that don't have any fileEntries

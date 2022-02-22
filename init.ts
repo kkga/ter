@@ -3,7 +3,7 @@ import { createConfig } from "./config.ts";
 
 const MOD_URL = "https://deno.land/x/ter";
 
-export const requiredViews = [
+const requiredViews = [
   "base.eta",
   "feed.xml.eta",
   "header.eta",
@@ -11,7 +11,8 @@ export const requiredViews = [
   "pagelist.eta",
   "taglist.eta",
 ];
-export const requiredAssets = [
+
+const requiredAssets = [
   "ter.css",
   "hljs.css",
 ];
@@ -43,7 +44,9 @@ export async function init() {
     await Deno.stat(path.join(Deno.cwd(), config.siteConfigPath));
     console.log(`  File exists, skipping:\t${config.siteConfigPath}`);
   } catch {
-    const yaml = yamlStringify(config.site as Record<string, unknown>);
+    const yaml = yamlStringify(
+      config.site as unknown as Record<string, unknown>,
+    );
     await fs.ensureDir(path.dirname(config.siteConfigPath));
     await Deno.writeTextFile(config.siteConfigPath, yaml);
     console.log(`  ${config.siteConfigPath}`);
@@ -76,4 +79,19 @@ export async function init() {
       console.log(`  Initialized:\t${assetPath}`);
     }
   }
+}
+
+export async function checkRequiredFiles(
+  viewsPath: string,
+  assetsPath: string,
+): Promise<boolean> {
+  for (const file of requiredViews) {
+    const filepath = path.join(Deno.cwd(), viewsPath, file);
+    await Deno.stat(filepath).catch(() => Promise.reject(filepath));
+  }
+  for (const file of requiredAssets) {
+    const filepath = path.join(Deno.cwd(), assetsPath, file);
+    await Deno.stat(filepath).catch(() => Promise.reject(filepath));
+  }
+  return Promise.resolve(true);
 }

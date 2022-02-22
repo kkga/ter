@@ -1,15 +1,9 @@
-import {
-  etaCompile,
-  etaConfigure,
-  etaRenderFile,
-  etaTemplates,
-  path,
-} from "./deps.ts";
-import { Page } from "./page.ts";
+import { eta, path } from "./deps.ts";
+import { Page } from "./pages.ts";
 import { SiteConfig } from "./config.ts";
-import { hasKey } from "./attr.ts";
+import { hasKey } from "./data.ts";
 
-etaConfigure({
+eta.configure({
   autotrim: true,
 });
 
@@ -41,10 +35,10 @@ function generateIndexItems(pages: Array<Page>): Array<IndexItem> {
   const items: Array<IndexItem> = [];
 
   for (const p of pages) {
-    const isPinned = hasKey(p.attributes, ["pinned"]);
+    const isPinned = hasKey(p.data, ["pinned"]);
     const readableDate = p.date ? toReadableDate(p.date) : null;
     items.push({
-      url: path.join("/", path.dirname(p.path), p.slug),
+      url: p.url.pathname,
       title: p.title,
       description: p.description,
       date: p.date ? p.date : null,
@@ -72,13 +66,13 @@ function generateBreadcrumbs(
   currentPage: Page,
   homeSlug?: string,
 ): Array<Breadcrumb> {
-  const dir: string = path.dirname(currentPage.path);
-  const chunks = dir.split("/").filter((path) => path !== ".");
-  const { slug } = currentPage;
+  const dir = path.dirname(currentPage.url.pathname);
+  const chunks: string[] = dir.split("/").filter((ch: string) => !!ch);
+  const slug = path.basename(currentPage.url.pathname);
 
-  let breadcrumbs: Array<Breadcrumb> = chunks.map((chunk, index) => {
+  let breadcrumbs: Array<Breadcrumb> = chunks.map((chunk, i) => {
     const slug = chunk;
-    const url = path.join("/", ...chunks.slice(0, index + 1));
+    const url = path.join("/", ...chunks.slice(0, i + 1));
     return {
       slug,
       url,
@@ -86,17 +80,10 @@ function generateBreadcrumbs(
     };
   });
 
-  if (homeSlug && homeSlug !== "") {
-    breadcrumbs = [
-      { slug: homeSlug, url: "/", current: false },
-      ...breadcrumbs,
-    ];
-  } else {
-    breadcrumbs = [
-      { slug: "index", url: "/", current: false },
-      ...breadcrumbs,
-    ];
-  }
+  breadcrumbs = [
+    { slug: homeSlug ?? "index", url: "/", current: false },
+    ...breadcrumbs,
+  ];
 
   if (slug !== "") {
     breadcrumbs = [
@@ -134,9 +121,9 @@ export async function buildPage(
     }
   }
 
-  etaTemplates.define("head", etaCompile(headInclude));
+  eta.templates.define("head", eta.compile(headInclude));
 
-  return await etaRenderFile(viewPath, {
+  return await eta.renderFile(viewPath, {
     page: {
       title,
       description,
@@ -161,14 +148,14 @@ export async function buildTagPage(
   headInclude: string,
   siteConf: SiteConfig,
 ): Promise<string | void> {
-  etaTemplates.define("head", etaCompile(headInclude));
+  eta.templates.define("head", eta.compile(headInclude));
   const indexItems = generateIndexItems(pages);
   const breadcrumbs: Array<Breadcrumb> = [
     { slug: "index", url: "/", current: false },
     { slug: `#${name}`, url: "", current: true, isTag: true },
   ];
 
-  const result = await etaRenderFile(tagViewPath, {
+  const result = await eta.renderFile(tagViewPath, {
     page: {
       title: `#${name}`,
       description: `Pages tagged #${name}`,
@@ -186,7 +173,7 @@ export async function buildFeed(
   viewPath: string,
   siteConf: SiteConfig,
 ): Promise<string | void> {
-  const result = await etaRenderFile(viewPath, {
+  const result = await eta.renderFile(viewPath, {
     pages,
     site: siteConf,
   });

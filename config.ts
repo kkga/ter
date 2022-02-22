@@ -1,11 +1,11 @@
 import { path, yamlParse } from "./deps.ts";
 
 export interface SiteConfig {
-  title?: string;
-  description?: string;
-  rootName?: string;
-  url?: string;
-  author?: { name?: string; email?: string; url?: string };
+  title: string;
+  description: string;
+  rootName: string;
+  url: URL;
+  author: { name: string; email: string; url: string };
 }
 
 interface TerConfig {
@@ -23,7 +23,7 @@ const defaultSiteConfig: SiteConfig = {
   title: "Your Blog Name",
   rootName: "index",
   description: "I am writing about my experiences as a naval navel-gazer",
-  url: "https://example.com/",
+  url: new URL("https://example.com/"),
   author: {
     name: "Your Name Here",
     email: "youremailaddress@example.com",
@@ -81,7 +81,7 @@ export async function createConfig(
       conf.site.description = siteConf.description;
     }
     if (typeof siteConf.url === "string") {
-      conf.site.url = siteConf.url;
+      conf.site.url = new URL(siteConf.url);
     }
     if (typeof siteConf.author?.name === "string") {
       conf.site.author = { ...conf.site.author, name: siteConf.author.name };

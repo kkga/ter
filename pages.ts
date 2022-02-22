@@ -1,8 +1,8 @@
-import { frontMatter, fs, path, slugify } from "./deps.ts";
+import { fm, fs, path, slugify } from "./deps.ts";
 import { render } from "./render.ts";
-import * as attr from "./attr.ts";
-
-const INDEX_FILENAME = "index.md";
+import * as data from "./data.ts";
+import { SiteConfig } from "./config.ts";
+import { INDEX_FILENAME } from "./entries.ts";
 
 const decoder = new TextDecoder("utf-8");
 
@@ -13,19 +13,17 @@ export interface Heading {
 }
 
 export interface Page {
-  isIndex: boolean;
-  path: string;
-  name: string;
+  url: URL;
   title: string;
-  slug: string;
-  date?: Date | null;
+  data: data.PageData;
+  links: Array<URL>;
+  isIndex: boolean;
   description?: string;
-  attributes?: unknown;
-  tags?: Array<string>;
-  headings?: Array<Heading>;
+  date?: Date | null;
   body?: string;
   html?: string;
-  links?: Array<string>;
+  tags?: Array<string>;
+  headings?: Array<Heading>;
 }
 
 export interface TagPage {
@@ -33,9 +31,9 @@ export interface TagPage {
   pages: Array<Page>;
 }
 
-export function isDeadLink(allPages: Array<Page>, path: string): boolean {
+export function isDeadLink(allPages: Array<Page>, linkUrl: URL): boolean {
   for (const page of allPages) {
-    if (page.path === path) {
+    if (page.url.pathname === linkUrl.pathname) {
       return false;
     } else {
       continue;
@@ -44,7 +42,19 @@ export function isDeadLink(allPages: Array<Page>, path: string): boolean {
   return true;
 }
 
-async function getGitLastCommitDate(path: string): Promise<Date | undefined> {
+const getTitleFromHeadings = (headings: Array<Heading>): string | undefined => {
+  for (const h of headings) {
+    if (h.level === 1) {
+      return h.text;
+    }
+  }
+};
+
+const getTitleFromFilename = (filePath: string): string => {
+  return path.basename(filePath).replace(path.extname(filePath), "");
+};
+
+async function getLastCommitDate(path: string): Promise<Date | undefined> {
   const opts: Deno.RunOptions = {
     cmd: ["git", "log", "-1", "--format=%as", "--", path],
     stdout: "piped",
@@ -52,7 +62,6 @@ async function getGitLastCommitDate(path: string): Promise<Date | undefined> {
   };
 
   const process = Deno.run(opts);
-  const decoder = new TextDecoder();
   const { success } = await process.status();
 
   if (success) {
@@ -65,33 +74,34 @@ export function getAllTags(pages: Array<Page>): Array<string> {
   const tags: Set<string> = new Set();
 
   pages.forEach((page) => {
-    attr.getTagsFromAttrs(page.attributes).forEach((tag: string) =>
-      tags.add(tag)
-    );
+    data.getTags(page.data).forEach((tag: string) => tags.add(tag));
   });
 
   return [...tags];
 }
 
 export function getPagesByTag(allPages: Array<Page>, tag: string): Array<Page> {
-  return allPages.filter((page) =>
-    attr.getTagsFromAttrs(page.attributes).includes(tag)
-  );
+  return allPages.filter((page) => data.getTags(page.data).includes(tag));
 }
 
 export function getBacklinkPages(
   allPages: Array<Page>,
   current: Page,
 ): Array<Page> {
-  const pages: Array<Page> = [];
+  const pages: Set<Page> = new Set();
 
   for (const outPage of allPages) {
-    if (outPage.links?.includes(current.path)) {
-      pages.push(outPage);
+    for (const url of outPage.links) {
+      if (
+        outPage.url.pathname !== current.url.pathname &&
+        url.pathname === current.url.pathname
+      ) {
+        pages.add(outPage);
+      }
     }
   }
 
-  return pages;
+  return [...pages];
 }
 
 export function getChildPages(
@@ -99,7 +109,8 @@ export function getChildPages(
   current: Page,
 ): Array<Page> {
   const pages = allPages.filter((p) =>
-    current.path !== p.path && current.path === path.dirname(p.path)
+    current.url.pathname !== p.url.pathname &&
+    current.url.pathname === path.dirname(p.url.pathname)
   );
 
   return pages;
@@ -112,11 +123,8 @@ export function getChildTags(
   const tags: Set<string> = new Set();
 
   allPages.forEach((page) => {
-    const relPath = path.relative(current.path, page.path);
-    if (!relPath.startsWith("..") && relPath !== "") {
-      attr.getTagsFromAttrs(page.attributes).forEach((tag: string) =>
-        tags.add(tag)
-      );
+    if (page.url.pathname.startsWith(current.url.pathname)) {
+      page.tags?.forEach((tag) => tags.add(tag));
     }
   });
 
@@ -126,36 +134,32 @@ export function getChildTags(
 export async function generatePage(
   entry: fs.WalkEntry,
   inputPath: string,
+  site: SiteConfig,
 ): Promise<Page> {
   if (entry.isFile && entry.name !== INDEX_FILENAME) {
-    const relPath = path.relative(inputPath, entry.path).replace(
-      path.extname(entry.path),
-      "",
-    );
+    const relPath = path.relative(inputPath, entry.path);
     const isIndex = false;
     const content = decoder.decode(await Deno.readFile(entry.path));
-    const { attributes, body } = frontMatter(content);
-
-    const date = attr.getDateFromAttrs(attributes) ||
-      await getGitLastCommitDate(entry.path);
-
-    const { html, links, headings } = render(body, relPath, isIndex);
+    const parsed = fm(content);
+    const pageData = parsed.attributes as data.PageData;
+    const body = parsed.body;
+    const date = data.getDate(pageData) || await getLastCommitDate(entry.path);
+    const { html, links, headings } = render(body, relPath, isIndex, site.url);
     const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
-    const title = attr.getTitleFromAttrs(attributes) ||
-      attr.getTitleFromHeadings(headings) || path.basename(relPath);
-    const description = attr.getDescriptionFromAttrs(attributes) || "";
-    const tags = attr.getTagsFromAttrs(attributes);
+    const title = data.getTitle(pageData) ||
+      getTitleFromHeadings(headings) || getTitleFromFilename(relPath);
+    const description = data.getDescription(pageData) || "";
+    const tags = data.getTags(pageData);
+    const url = new URL(path.join(path.dirname(relPath), slug), site.url);
 
     return {
-      name: entry.name,
-      path: relPath,
-      attributes,
+      data: pageData,
+      url,
       body,
       html,
       links,
       headings,
       title,
-      slug,
       description,
       tags,
       date,
@@ -167,23 +171,24 @@ export async function generatePage(
     const slug = relPath === "." ? "." : slugify(name);
     const isIndex = true;
     const content = decoder.decode(await Deno.readFile(entry.path));
-    const { attributes, body } = frontMatter(content);
-    const { html, links, headings } = render(body, relPath, isIndex);
-    const title = attr.getTitleFromAttrs(attributes) ||
-      attr.getTitleFromHeadings(headings) || name;
-    const description = attr.getDescriptionFromAttrs(attributes) || "";
-    const tags = attr.getTagsFromAttrs(attributes);
+    const parsed = fm(content);
+    const pageData = parsed.attributes as data.PageData;
+    const body = parsed.body;
+    const { html, links, headings } = render(body, relPath, isIndex, site.url);
+    const title = data.getTitle(pageData) || getTitleFromHeadings(headings) ||
+      name;
+    const description = data.getDescription(pageData) || "";
+    const tags = data.getTags(pageData);
+    const url = new URL(path.join(path.dirname(relPath), slug), site.url);
 
     return {
-      name,
-      path: relPath,
-      attributes,
+      data: pageData,
+      url,
       body,
       html,
       links,
       headings,
       title,
-      slug,
       description,
       tags,
       isIndex,
@@ -192,13 +197,14 @@ export async function generatePage(
     const relPath = path.relative(inputPath, entry.path) || ".";
     const slug = relPath === "." ? "." : slugify(entry.name);
     const isIndex = true;
+    const url = new URL(path.join(path.dirname(relPath), slug), site.url);
 
     return {
-      name: entry.name,
-      path: relPath,
       title: entry.name,
-      slug,
+      data: {},
+      url,
       isIndex,
+      links: [],
     };
   } else {
     return Promise.reject();
