@@ -9,8 +9,9 @@ export function render(
   isIndex: boolean,
   baseUrl: URL,
 ): { html: string; links: Array<URL>; headings: Array<Heading> } {
-  const internalLinks: Set<URL> = new Set();
+  const internalUrls: Set<URL> = new Set();
   const headings: Array<Heading> = [];
+  // const pathPrefix = baseUrl.pathname;
 
   renderer.heading = function (
     text: string,
@@ -25,19 +26,19 @@ export function render(
 
   renderer.link = function (href: string, title: string, text: string) {
     const parsed = ufo.parseURL(href);
-    let url: string;
+    console.log(parsed);
 
     if (
       parsed.protocol !== undefined ||
       typeof parsed.pathname === "string" &&
         parsed.pathname.startsWith("mailto")
     ) {
-      url = ufo.normalizeURL(
+      const externalHref = ufo.normalizeURL(
         `${parsed.protocol}//${
           ufo.joinURL(parsed.host, parsed.pathname)
         }${parsed.search}${parsed.hash}`,
       );
-      return `<a href="${url}" rel="external noopener noreferrer" ${
+      return `<a href="${externalHref}" rel="external noopener noreferrer" ${
         title ? "title=${title}" : ""
       }">${text}</a>`;
     } else {
@@ -46,12 +47,11 @@ export function render(
         : ufo.withoutTrailingSlash(
           parsed.pathname.replace(/\.md$/i, ""),
         );
+      let internalHref: string;
 
       if (path.isAbsolute(href)) {
-        url = cleanPathname + parsed.hash;
-        internalLinks.add(
-          new URL(ufo.withoutLeadingSlash(cleanPathname), baseUrl),
-        );
+        internalHref = cleanPathname + parsed.hash;
+        internalUrls.add(new URL(internalHref, baseUrl));
       } else {
         let resolved: string;
 
@@ -74,18 +74,20 @@ export function render(
           );
         }
 
-        url = resolved === ""
+        internalHref = resolved === ""
           ? resolved + parsed.hash
           : ufo.withLeadingSlash(resolved) + parsed.hash;
 
         if (resolved !== "") {
-          internalLinks.add(
-            new URL(ufo.withoutLeadingSlash(resolved), baseUrl),
+          internalUrls.add(
+            new URL(ufo.withoutLeadingSlash(internalHref), baseUrl),
           );
         }
       }
 
-      return `<a href="${url}" ${title ? "title=${title}" : ""}">${text}</a>`;
+      return `<a href="${internalHref}" ${
+        title ? "title=${title}" : ""
+      }">${text}</a>`;
     }
   };
 
@@ -96,7 +98,6 @@ export function render(
       return hljs.highlight(code, { language }).value;
     },
     langPrefix: "hljs language-",
-    baseUrl: "/",
     pedantic: false,
     gfm: true,
     breaks: false,
@@ -108,5 +109,5 @@ export function render(
 
   const html = marked(text);
 
-  return { html, links: Array.from(internalLinks), headings };
+  return { html, links: Array.from(internalUrls), headings };
 }
