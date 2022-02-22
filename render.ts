@@ -36,23 +36,21 @@ export function render(
       typeof parsed.pathname === "string" &&
         parsed.pathname.startsWith("mailto")
     ) {
-      const externalHref = ufo.normalizeURL(
-        `${parsed.protocol}//${
-          ufo.joinURL(parsed.host, parsed.pathname)
-        }${parsed.search}${parsed.hash}`,
-      );
-      return `<a href="${externalHref}" rel="external noopener noreferrer" ${
+      const url = new URL(parsed.pathname, parsed.protocol + parsed.host);
+      url.hash = parsed.hash;
+      url.search = parsed.search;
+      return `<a href="${url.href}" rel="external noopener noreferrer" ${
         title ? "title=${title}" : ""
-      }">${text}</a>`;
+      }>${text}</a>`;
     } else {
       const cleanPathname = parsed.pathname === ""
         ? ""
         : ufo.withoutTrailingSlash(
-          parsed.pathname.replace(/\.md$/i, ""),
+          parsed.pathname.replace(path.extname(parsed.pathname), ""),
         );
       let internalHref: string;
 
-      if (path.isAbsolute(href)) {
+      if (path.isAbsolute(cleanPathname)) {
         internalHref = cleanPathname + parsed.hash;
         internalUrls.add(new URL(internalHref, baseUrl));
       } else {
@@ -60,21 +58,11 @@ export function render(
 
         if (cleanPathname === "") {
           resolved = "";
-        } else if (isIndex) {
-          resolved = ufo.withoutTrailingSlash(
-            path.join(path.dirname(currentPath + "/index"), cleanPathname)
-              .replace(
-                /\/index$/i,
-                "",
-              ),
-          );
         } else {
-          resolved = ufo.withoutTrailingSlash(
-            path.join(path.dirname(currentPath), cleanPathname).replace(
-              /\/index$/i,
-              "",
-            ),
-          );
+          const joined = isIndex
+            ? path.join(path.dirname(currentPath + "/index"), cleanPathname)
+            : path.join(path.dirname(currentPath), cleanPathname);
+          resolved = ufo.withoutTrailingSlash(joined.replace(/\/index$/i, ""));
         }
 
         internalHref = resolved === ""
@@ -90,13 +78,13 @@ export function render(
 
       return `<a href="${internalHref}" ${
         title ? "title=${title}" : ""
-      }">${text}</a>`;
+      }>${text}</a>`;
     }
   };
 
   marked.use({
     renderer,
-    highlight: function (code, lang) {
+    highlight: (code: string, lang: string) => {
       const language = hljs.getLanguage(lang) ? lang : "plaintext";
       return hljs.highlight(code, { language }).value;
     },
