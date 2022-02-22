@@ -1,4 +1,4 @@
-import { path, yamlParse } from "./deps.ts";
+import { path, ufo, yamlParse } from "./deps.ts";
 
 export interface SiteConfig {
   title: string;
@@ -81,7 +81,10 @@ export async function createConfig(
       conf.site.description = siteConf.description;
     }
     if (typeof siteConf.url === "string") {
-      conf.site.url = new URL(siteConf.url);
+      conf.site.url = new URL(
+        ufo.withoutTrailingSlash(ufo.normalizeURL(siteConf.url)),
+      );
+      console.log(conf.site.url);
     }
     if (typeof siteConf.author?.name === "string") {
       conf.site.author = { ...conf.site.author, name: siteConf.author.name };
