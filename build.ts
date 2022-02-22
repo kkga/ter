@@ -80,10 +80,12 @@ function generateBreadcrumbs(
     };
   });
 
-  breadcrumbs = [
-    { slug: homeSlug ?? "index", url: "/", current: false },
-    ...breadcrumbs,
-  ];
+  if (currentPage.url.pathname !== "/") {
+    breadcrumbs = [
+      { slug: homeSlug ?? "index", url: "/", current: false },
+      ...breadcrumbs,
+    ];
+  }
 
   if (slug !== "") {
     breadcrumbs = [
