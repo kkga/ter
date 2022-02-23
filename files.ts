@@ -17,18 +17,22 @@ export interface OutputFile {
   fileContent?: string;
 }
 
+interface BuildOpts {
+  outputPath: string;
+  viewPath: string;
+  head: string;
+  conf: SiteConfig;
+}
+
 export async function buildContentFiles(
   pages: Array<Page>,
-  outputPath: string,
-  pageViewPath: string,
-  headInclude: string,
-  siteConf: SiteConfig,
+  opts: BuildOpts,
 ): Promise<OutputFile[]> {
   const files: Array<OutputFile> = [];
 
   for (const page of pages) {
     const filePath = path.join(
-      outputPath,
+      opts.outputPath,
       page.url.pathname,
       "index.html",
     );
@@ -41,13 +45,13 @@ export async function buildContentFiles(
 
     const html = await buildPage(
       page,
-      headInclude,
+      opts.head,
       page.isIndex ? getChildPages(pages, page) : [],
       getBacklinkPages(pages, page),
       pagesByTag,
       page.isIndex ? getChildTags(pages, page) : [],
-      pageViewPath,
-      siteConf,
+      opts.viewPath,
+      opts.conf,
     );
 
     if (typeof html === "string") {
@@ -63,16 +67,13 @@ export async function buildContentFiles(
 
 export async function buildTagFiles(
   tagPages: Array<TagPage>,
-  outputPath: string,
-  tagViewPath: string,
-  headInclude: string,
-  siteConf: SiteConfig,
+  opts: BuildOpts,
 ): Promise<OutputFile[]> {
   const files: Array<OutputFile> = [];
 
   for (const tag of tagPages) {
     const filePath = path.join(
-      outputPath,
+      opts.outputPath,
       "tag",
       tag.name,
       "index.html",
@@ -81,9 +82,9 @@ export async function buildTagFiles(
     const html = await buildTagPage(
       tag.name,
       tag.pages,
-      tagViewPath,
-      headInclude,
-      siteConf,
+      opts.viewPath,
+      opts.head,
+      opts.conf,
     );
 
     if (typeof html === "string") {

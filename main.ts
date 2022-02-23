@@ -81,17 +81,21 @@ async function main() {
   console.log("%c\nBuilding html files...", "font-weight: bold");
   const contentFiles = await files.buildContentFiles(
     contentPages,
-    outputPath,
-    pageViewPath,
-    headInclude,
-    siteConf,
+    {
+      outputPath: outputPath,
+      viewPath: pageViewPath,
+      head: headInclude,
+      conf: siteConf,
+    },
   );
   const tagFiles = await files.buildTagFiles(
     tagPages,
-    outputPath,
-    tagViewPath,
-    headInclude,
-    siteConf,
+    {
+      outputPath: outputPath,
+      viewPath: tagViewPath,
+      head: headInclude,
+      conf: siteConf,
+    },
   );
   const staticFiles = files.getStaticFiles(
     staticEntries,
