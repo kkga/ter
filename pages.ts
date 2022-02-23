@@ -14,6 +14,7 @@ export interface Heading {
 
 export interface Page {
   url: URL;
+  path?: string;
   title: string;
   data: data.PageData;
   links: Array<URL>;
@@ -154,6 +155,7 @@ export async function generatePage(
 
     return {
       data: pageData,
+      path: relPath,
       url,
       body,
       html,

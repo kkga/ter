@@ -1,10 +1,10 @@
 import { fs, path } from "./deps.ts";
 import { createConfig } from "./config.ts";
+import { checkRequiredFiles, init } from "./init.ts";
 import * as entries from "./entries.ts";
 import * as pages from "./pages.ts";
 import * as data from "./data.ts";
 import * as files from "./files.ts";
-import { checkRequiredFiles, init } from "./init.ts";
 
 async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
   try {
@@ -60,6 +60,7 @@ async function main() {
         console.log(`Can't generate page ${entry.path}: ${reason}`);
       },
     );
+    console.log(page);
     page && contentPages.push(page);
   }
 

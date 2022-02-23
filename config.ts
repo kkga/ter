@@ -82,9 +82,8 @@ export async function createConfig(
     }
     if (typeof siteConf.url === "string") {
       conf.site.url = new URL(
-        ufo.withoutTrailingSlash(ufo.normalizeURL(siteConf.url)),
+        ufo.withTrailingSlash(ufo.normalizeURL(siteConf.url)),
       );
-      console.log(conf.site.url);
     }
     if (typeof siteConf.author?.name === "string") {
       conf.site.author = { ...conf.site.author, name: siteConf.author.name };
