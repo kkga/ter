@@ -22,11 +22,8 @@
     <div><%= it.page.description %></div>
     <% } %>
 
-    <% if (it.page?.date && it.page?.readableDate) { %>
-    <time datetime="<%= it.page.date %>"><%= it.page.readableDate %></time>
-    <% } %>
-
-    <% if (it.page?.tags?.length > 0 ) { %>
+    <div class="header-meta-row">
+      <% if (it.page?.tags?.length > 0 ) { %>
       <ul class="header-meta-tags">
         <% it.page.tags.forEach((tag) => { %>
         <li class="header-meta-tag">
@@ -36,7 +33,12 @@
         </li>
         <% }) %>
       </ul>
-    <% } %>
+      <% } %>
+
+      <% if (it.page?.date && it.page?.readableDate) { %>
+      <time datetime="<%= it.page.date %>"><%= it.page.readableDate %></time>
+      <% } %>
+    </div>
   </div>
 
 </header>

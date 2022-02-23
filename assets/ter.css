@@ -217,6 +217,9 @@ kbd,
 samp {
   font-family: var(--font-mono);
   background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-xs);
+  padding: 0 0.125em;
+  font-size: 0.95em;
 }
 
 pre {
@@ -232,6 +235,9 @@ pre code {
   color: inherit;
   border-radius: inherit;
   background-color: inherit;
+  padding: 0;
+  border: inherit;
+  font-size: inherit;
 }
 
 figure {
@@ -356,6 +362,16 @@ body > header time {
 .header-meta {
   display: flex;
   flex-direction: column;
+}
+
+.header-meta-row {
+  display: flex;
+}
+
+.header-meta-row > *:not(:first-child)::before {
+  content: "·";
+  margin: 0 0.75ch;
+  color: var(--color-text-tertiary);
 }
 
 @media only screen and (min-width: 32em) {
