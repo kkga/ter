@@ -10,8 +10,7 @@
     <meta name="description" content="<%= it.page?.description ? it.page.description : it.site.description %>">
     <link rel="stylesheet" href="/ter.css">
     <link rel="stylesheet" href="/hljs.css">
-    <link rel="icon" href="/favicon.svg">
-    <link rel="alternate" href="/feed.xml" type="application/atom+xml" title="<%= it.site.title %>">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="<%= it.page?.title ? it.page.title : it.site.title %>">
     <meta name="twitter:description" content="<%= it.page?.description? it.page.description : it.site.description %>">
