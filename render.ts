@@ -3,6 +3,68 @@ import { Heading } from "./pages.ts";
 
 const renderer = new marked.Renderer();
 
+function createExternalLink(
+  href: string,
+  title: string,
+  text: string,
+): string {
+  return (
+    `<a href="${href}" rel="external noopener noreferrer" "title=${title}">${text}</a>`
+  );
+}
+
+function createInternalLink(
+  title: string,
+  text: string,
+  parsed: ufo.ParsedURL,
+  baseUrl: URL,
+  internalUrls: Set<URL>,
+  currentPath: string,
+  isIndex: boolean,
+): string {
+  const cleanPathname = parsed.pathname === "" ? "" : ufo.withoutTrailingSlash(
+    parsed.pathname.replace(path.extname(parsed.pathname), ""),
+  );
+  let internalHref: string;
+
+  if (path.isAbsolute(cleanPathname)) {
+    internalHref = cleanPathname + parsed.hash;
+    internalUrls.add(new URL(internalHref, baseUrl));
+  } else {
+    let resolved: string;
+
+    if (cleanPathname === "") {
+      resolved = "";
+    } else {
+      const joined = isIndex
+        ? path.join(path.dirname(currentPath + "/index"), cleanPathname)
+        : path.join(path.dirname(currentPath), cleanPathname);
+      resolved = ufo.withoutTrailingSlash(joined.replace(/\/index$/i, ""));
+    }
+
+    internalHref = resolved === ""
+      ? resolved + parsed.hash
+      : ufo.withLeadingSlash(resolved) + parsed.hash;
+
+    if (resolved !== "") {
+      internalUrls.add(
+        new URL(ufo.withoutLeadingSlash(internalHref), baseUrl),
+      );
+    }
+  }
+
+  // TODO
+  // const prefixedHref = path.isAbsolute(internalHref)
+  //   ? ufo.joinURL(pathPrefix, internalHref)
+  //   : internalHref;
+
+  // console.log(prefixedHref);
+
+  return (
+    `<a href="${internalHref}" "title=${title}">${text}</a>`
+  );
+}
+
 export function render(
   text: string,
   currentPath: string,
@@ -14,81 +76,46 @@ export function render(
 
   // TODO: use path prefix from site config url to properly
   // handle cases when site is published in a sub directory on domain
-  //
   // const pathPrefix = baseUrl.pathname;
 
-  renderer.heading = function (
+  renderer.link = (href: string, title: string, text: string) => {
+    const parsed = ufo.parseURL(href);
+    if (
+      parsed.protocol !== undefined || parsed.pathname.startsWith("mailto")
+    ) {
+      return createExternalLink(href, title, text);
+    } else {
+      return createInternalLink(
+        title,
+        text,
+        parsed,
+        baseUrl,
+        internalUrls,
+        currentPath,
+        isIndex,
+      );
+    }
+  };
+
+  renderer.heading = (
     text: string,
     level: 1 | 2 | 3 | 4 | 5 | 6,
     raw: string,
     slugger: marked.Slugger,
-  ): string {
+  ): string => {
     const slug = slugger.slug(raw);
     headings.push({ text, level, slug });
     return `<h${level} id="${slug}">${text}<a href="#${slug}"></a></h${level}>`;
   };
 
-  renderer.link = function (href: string, title: string, text: string) {
-    const parsed = ufo.parseURL(href);
-
-    if (
-      parsed.protocol !== undefined ||
-      typeof parsed.pathname === "string" &&
-        parsed.pathname.startsWith("mailto")
-    ) {
-      const url = new URL(parsed.pathname, parsed.protocol + parsed.host);
-      url.hash = parsed.hash;
-      url.search = parsed.search;
-      return `<a href="${url.href}" rel="external noopener noreferrer" ${
-        title ? "title=${title}" : ""
-      }>${text}</a>`;
-    } else {
-      const cleanPathname = parsed.pathname === ""
-        ? ""
-        : ufo.withoutTrailingSlash(
-          parsed.pathname.replace(path.extname(parsed.pathname), ""),
-        );
-      let internalHref: string;
-
-      if (path.isAbsolute(cleanPathname)) {
-        internalHref = cleanPathname + parsed.hash;
-        internalUrls.add(new URL(internalHref, baseUrl));
-      } else {
-        let resolved: string;
-
-        if (cleanPathname === "") {
-          resolved = "";
-        } else {
-          const joined = isIndex
-            ? path.join(path.dirname(currentPath + "/index"), cleanPathname)
-            : path.join(path.dirname(currentPath), cleanPathname);
-          resolved = ufo.withoutTrailingSlash(joined.replace(/\/index$/i, ""));
-        }
-
-        internalHref = resolved === ""
-          ? resolved + parsed.hash
-          : ufo.withLeadingSlash(resolved) + parsed.hash;
-
-        if (resolved !== "") {
-          internalUrls.add(
-            new URL(ufo.withoutLeadingSlash(internalHref), baseUrl),
-          );
-        }
-      }
-
-      return `<a href="${internalHref}" ${
-        title ? "title=${title}" : ""
-      }>${text}</a>`;
-    }
+  renderer.code = (code: string, lang: string): string => {
+    const language = hljs.getLanguage(lang) ? lang : "plaintext";
+    const html = hljs.highlight(code, { language }).value;
+    return `<div class="hljs language-${language}"><pre>${html}</pre></div>`;
   };
 
   marked.use({
     renderer,
-    highlight: (code: string, lang: string) => {
-      const language = hljs.getLanguage(lang) ? lang : "plaintext";
-      return hljs.highlight(code, { language }).value;
-    },
-    langPrefix: "hljs language-",
     pedantic: false,
     gfm: true,
     breaks: false,
