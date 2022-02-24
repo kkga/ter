@@ -30,7 +30,7 @@ ROOT -------------------------------------------------------------------------
   --color-dark-bg-secondary: #292524;
 
   /* Scales */
-  --width-body: 72ch;
+  --width-body: 48rem;
   --font-size-base: 16px;
   --font-size-s: 0.875rem;
   --font-size-xs: 0.75rem;
@@ -227,7 +227,7 @@ pre {
   line-height: var(--line-height-tight);
   border-radius: var(--radius-md);
   background-color: var(--color-bg-secondary);
-  padding: 0.75rem;
+  padding: 0.75em;
   overflow: auto;
 }
 
@@ -245,14 +245,14 @@ figure {
 }
 
 figcaption {
-  margin-top: 0.5rem;
+  margin-top: 0.5em;
   text-align: center;
   font-size: var(--font-size-s);
   color: var(--color-text-secondary);
 }
 
 details {
-  padding: 0.5rem 0.75rem;
+  padding: 0.5em 0.75em;
   background: var(--color-bg-secondary);
   border-radius: var(--radius-xs);
   font-size: var(--font-size-s);
@@ -287,7 +287,7 @@ table {
 td,
 th {
   text-align: left;
-  padding: 0.25rem 0.5rem;
+  padding: 0.25em 0.5em;
 }
 
 th,
@@ -298,7 +298,7 @@ tr {
 
 table caption {
   font-weight: var(--font-weight-m);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.5em;
 }
 
 ul ul,
@@ -318,7 +318,7 @@ body > header {
   flex-direction: column;
   align-items: baseline;
   justify-content: space-between;
-  gap: 1ch;
+  gap: 0.5em;
   font-size: var(--font-size-s);
   line-height: var(--line-height-tight);
   color: var(--color-text-tertiary);
@@ -370,7 +370,7 @@ body > header time {
 
 .header-meta-row > *:not(:first-child)::before {
   content: "·";
-  margin: 0 0.75ch;
+  margin: 0 0.5em;
   color: var(--color-text-tertiary);
 }
 
@@ -386,7 +386,7 @@ body > header time {
 
 .header-meta-tags {
   display: flex;
-  gap: 1ch;
+  gap: 0.5em;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -415,7 +415,7 @@ INDEX/TAG LIST -----------------------------------------------------------------
   letter-spacing: 0;
   font-weight: var(--font-weight-m);
   display: flex;
-  gap: 0.5ch;
+  gap: 0.5em;
   align-items: baseline;
 }
 
@@ -437,7 +437,7 @@ INDEX/TAG LIST -----------------------------------------------------------------
 
 .list-tags {
   display: flex;
-  column-gap: 1ch;
+  column-gap: 0.5em;
   flex-flow: row wrap;
   margin: 0;
   padding: 0;
@@ -449,7 +449,7 @@ INDEX/TAG LIST -----------------------------------------------------------------
   font-size: var(--font-size-s);
   text-decoration: none;
   display: flex;
-  gap: 1ch;
+  gap: 0.5em;
   align-items: baseline;
   margin: 0;
   color: currentcolor;
@@ -473,7 +473,7 @@ INDEX/TAG LIST -----------------------------------------------------------------
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: var(--font-weight-m);
-  margin-right: 1ch;
+  margin-right: 0.5em;
 }
 
 .list-page--index .list-page-name {
