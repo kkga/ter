@@ -43,28 +43,25 @@ async function main() {
   const START = performance.now();
 
   console.log("%c\nScanning input dir...", "font-weight: bold");
-  const contentEntries = await entries.getContentEntries(inputPath);
-  const staticEntries = await entries.getStaticEntries(
-    inputPath,
-    outputPath,
-    staticExts,
-  );
-  const assetEntries = await entries.getAssetEntries(assetsPath);
+  const [contentEntries, staticEntries, assetEntries] = await Promise.all([
+    entries.getContentEntries(inputPath),
+    entries.getStaticEntries(inputPath, outputPath, staticExts),
+    entries.getAssetEntries(assetsPath),
+  ]);
 
-  let contentPages: pages.Page[] = [];
+  const unfilteredPages: pages.Page[] = [];
 
   console.log("%c\nRendering markdown files...", "font-weight: bold");
-  for await (const entry of contentEntries) {
+  for (const entry of contentEntries) {
     const page = await pages.generatePage(entry, inputPath, siteConf).catch(
       (reason: string) => {
         console.log(`Can't generate page ${entry.path}: ${reason}`);
       },
     );
-    console.log(page);
-    page && contentPages.push(page);
+    page && unfilteredPages.push(page);
   }
 
-  contentPages = contentPages.filter((page) =>
+  const contentPages = unfilteredPages.filter((page) =>
     !data.hasKey(page.data, ignoreKeys)
   );
 
@@ -80,30 +77,25 @@ async function main() {
   const headInclude = await getHeadInclude(viewsPath) ?? "";
 
   console.log("%c\nBuilding html files...", "font-weight: bold");
-  const contentFiles = await files.buildContentFiles(
-    contentPages,
-    {
-      outputPath: outputPath,
-      viewPath: pageViewPath,
-      head: headInclude,
-      conf: siteConf,
-    },
+
+  const [contentFiles, tagFiles, staticFiles, assetFiles] = await Promise.all(
+    [
+      files.buildContentFiles(contentPages, {
+        outputPath: outputPath,
+        viewPath: pageViewPath,
+        head: headInclude,
+        conf: siteConf,
+      }),
+      files.buildTagFiles(tagPages, {
+        outputPath: outputPath,
+        viewPath: tagViewPath,
+        head: headInclude,
+        conf: siteConf,
+      }),
+      files.getStaticFiles(staticEntries, inputPath, outputPath),
+      files.getStaticFiles(assetEntries, assetsPath, outputPath),
+    ],
   );
-  const tagFiles = await files.buildTagFiles(
-    tagPages,
-    {
-      outputPath: outputPath,
-      viewPath: tagViewPath,
-      head: headInclude,
-      conf: siteConf,
-    },
-  );
-  const staticFiles = files.getStaticFiles(
-    staticEntries,
-    inputPath,
-    outputPath,
-  );
-  const assetFiles = files.getStaticFiles(assetEntries, assetsPath, outputPath);
 
   const deadLinks: [from: URL, to: URL][] = [];
   for (const page of contentPages) {
