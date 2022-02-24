@@ -1,0 +1,29 @@
+name: Publish on GitHub Pages
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+
+      - name: Setup Deno environment
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Build site
+        run: |
+          deno run -A --unstable main.ts docs _site
+
+      - name: Deploy
+        uses: crazy-max/ghaction-github-pages@v2.0.1
+        with:
+          build_dir: _site
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,77 +1,7 @@
-import {
-  hljs,
-  marked,
-  path,
-  ufo,
-  // sanitizeHtml,
-} from "./deps.ts";
+import { hljs, marked, path, ufo } from "./deps.ts";
 import { Heading } from "./page.ts";
 
 const renderer = new marked.Renderer();
-
-// const allowedTags = sanitizeHtml.defaults.allowedTags.concat([
-//   "img",
-//   "video",
-//   "svg",
-//   "path",
-//   "iframe",
-// ]);
-
-// const _sanitize = (html: string) => {
-//   return sanitizeHtml(html, {
-//     allowedTags,
-//     allowedAttributes: {
-//       ...sanitizeHtml.defaults.allowedAttributes,
-//       img: ["src", "alt", "height", "width", "align"],
-//       video: [
-//         "src",
-//         "alt",
-//         "height",
-//         "width",
-//         "autoplay",
-//         "muted",
-//         "loop",
-//         "playsinline",
-//       ],
-//       a: ["id", "aria-hidden", "href", "tabindex", "rel"],
-//       svg: ["viewbox", "width", "height", "aria-hidden"],
-//       path: ["fill-rule", "d"],
-//       h1: ["id"],
-//       h2: ["id"],
-//       h3: ["id"],
-//       h4: ["id"],
-//       h5: ["id"],
-//       h6: ["id"],
-//       iframe: ["src", "width", "height"], // Only used when iframe tags are allowed in the first place.
-//     },
-//     allowedClasses: {
-//       div: ["hljs"],
-//       span: [
-//         "token",
-//         "keyword",
-//         "operator",
-//         "number",
-//         "boolean",
-//         "function",
-//         "string",
-//         "comment",
-//         "class-name",
-//         "regex",
-//         "regex-delimiter",
-//         "tag",
-//         "attr-name",
-//         "punctuation",
-//         "script-punctuation",
-//         "script",
-//         "plain-text",
-//         "property",
-//       ],
-//       a: ["anchor"],
-//       svg: ["octicon", "octicon-link"],
-//     },
-//     allowProtocolRelative: false,
-//   });
-// };
 
 export function render(
   text: string,
@@ -175,6 +105,5 @@ export function render(
 
   const html = marked(text);
 
-  // return [sanitize(html), links, headings];
   return { html, links: Array.from(internalLinks), headings };
 }

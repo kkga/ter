@@ -1,5 +1,5 @@
 MAKEFLAGS := -j 4 --silent --always-make
-DENO := deno run --allow-net --allow-env --allow-read=./ --allow-write=./ --unstable
+DENO := deno run --allow-run --allow-net --allow-env --allow-read=./ --allow-write=./ --unstable
 INPUTDIR = docs
 OUTPUTDIR = _site
 ASSETSDIR = assets
@@ -12,8 +12,6 @@ clean:
 	rm -rf $(OUTPUTDIR)
 
 build:
-	mkdir -p .ter/$(ASSETSDIR)
-	cp $(ASSETSDIR)/* .ter/$(ASSETSDIR)
 	$(DENO) main.ts $(INPUTDIR) $(OUTPUTDIR)
 
 watch:

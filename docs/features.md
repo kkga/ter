@@ -2,14 +2,13 @@
 pinned: true
 ---
 
-# Features 
+# Features
 
 ## Index pages
 
 Ter recursively recreates the source file system on the rendered site and each
-directory gets an index file listing its content.
-
-For example, if the source looks like this:
+directory gets an index file listing its content. For example, if the source
+looks like this:
 
 ```
 content
@@ -27,10 +26,10 @@ content.
 
 Items in the index are sorted in the following order:
 
-1. files with `pinned: true` in the [frontmatter](#frontmatter) are listed
-   at the top and get an ★ symbol;
+1. files with `pinned: true` in the [frontmatter](features#frontmatter) are
+   listed at the top and get an ★ symbol;
 2. directories (child index pages);
-3. rest of markdown files, sorted by [date](#content-dates).
+3. rest of markdown files, sorted by [date](features#content-dates).
 
 ### Markdown in index files
 
@@ -42,20 +41,16 @@ individual pages from the index.
 ## Backlinks
 
 Ter adheres to the [Zettelksten](/zettelkasten.md) method and tracks connections
-between pages.
-
-All internal references to the current page are listed in the Backlinks section
-at the bottom.
+between pages. All internal references to the current page are listed in the
+Backlinks section at the bottom.
 
 ## Frontmatter
 
 Ter extracts [YAML frontmatter](https://jekyllrb.com/docs/front-matter/)
-delimited by `—` from markdown files.
-
-Here’s an example:
+delimited by `---` from markdown files. Here’s an example:
 
 ```
-—
+---
 title: My page
 description: Here’s my description
 date: 2022-01-29
@@ -63,7 +58,7 @@ tags:
   - myTag
   - otherTag
 property: value
-—
+---
 
 ## My content
 ```
@@ -72,15 +67,15 @@ property: value
 
 Some properties are utilized when building a site.
 
-| Property | Description |
-| -—— | ——— |
-| `title`       | used for page title, see [titles](titles.md) |
-| `description` | used for page description |
-| `date`        | used for date, if exists |
-| `tags`        | used for [tags](./tags.md)                                                     |
-| `pinned`      | if set to `true`, page is listed at the top of [index lists](./index-pages.md) |
-| `draft`       | if set to `true`, file is [ignored](./ignored-files.md) during site generation |
-| `unlisted`    | same as `draft`                                                                |
+| Property      | Description                                                                 |
+| ------------- | --------------------------------------------------------------------------- |
+| `title`       | used for page title, see [titles](#titles)                                  |
+| `description` | used for page description                                                   |
+| `date`        | used for date, if exists                                                    |
+| `tags`        | used for [tags](#tags)                                                      |
+| `pinned`      | if set to `true`, page is listed at the top of [index lists](#index-pages)  |
+| `draft`       | if set to `true`, file is [ignored](#ignoring-files) during site generation |
+| `unlisted`    | same as `draft`                                                             |
 
 ### Other properties
 
@@ -89,14 +84,12 @@ All other properties are ignored but can be used in
 
 ## Ignoring files
 
-Any files and folders that start with an `_` or `.` (hidden) are ignored.
-
-For example, if there is a `_drafts` folder in the content directory, it will be
+Any files and folders that start with an `_` or `.` (hidden) are ignored. For
+example, if there is a `_drafts` folder in the content directory, it will be
 skipped during site generation.
 
-In addition, it’s also possible to ignore individual markdown files by setting
-either `unlisted: true` or `draft: true` in the
-[YAML frontmatter](#frontmatter).
+In addition, it’s possible to ignore individual markdown files by setting either
+`unlisted: true` or `draft: true` in the [YAML frontmatter](#frontmatter).
 
 ## Content dates
 
@@ -104,8 +97,8 @@ Ter tries to replicate the content file system on the generated site. And with
 that philosophy, the dates displayed on pages and in the
 [index lists](#index-pages) default to file creation date.
 
-To use a custom date, set the `date` key in the
-[YAML frontmatter](#frontmatter) in `YYYY-MM-DD` format.
+To use a custom date, set the `date` key in the [YAML frontmatter](#frontmatter)
+in `YYYY-MM-DD` format.
 
 ### Date example
 

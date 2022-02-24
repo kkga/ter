@@ -44,11 +44,30 @@ export function isDeadLink(allPages: Array<Page>, path: string): boolean {
   return true;
 }
 
+async function getGitLastCommitDate(path: string): Promise<Date | undefined> {
+  const opts: Deno.RunOptions = {
+    cmd: ["git", "log", "-1", "--format=%as", "--", path],
+    stdout: "piped",
+    stderr: "piped",
+  };
+
+  const process = Deno.run(opts);
+  const decoder = new TextDecoder();
+  const { success } = await process.status();
+
+  if (success) {
+    const timestamp = Date.parse(decoder.decode(await process.output()));
+    if (!isNaN(timestamp)) return new Date(timestamp);
+  }
+}
+
 export function getAllTags(pages: Array<Page>): Array<string> {
   const tags: Set<string> = new Set();
 
   pages.forEach((page) => {
-    attr.getTagsFromAttrs(page.attributes).forEach((tag) => tags.add(tag));
+    attr.getTagsFromAttrs(page.attributes).forEach((tag: string) =>
+      tags.add(tag)
+    );
   });
 
   return [...tags];
@@ -95,26 +114,14 @@ export function getChildTags(
   allPages.forEach((page) => {
     const relPath = path.relative(current.path, page.path);
     if (!relPath.startsWith("..") && relPath !== "") {
-      attr.getTagsFromAttrs(page.attributes).forEach((tag) => tags.add(tag));
+      attr.getTagsFromAttrs(page.attributes).forEach((tag: string) =>
+        tags.add(tag)
+      );
     }
   });
 
   return [...tags];
 }
-
-// const findIndexEntry = (
-//   allEntries: Array<WalkEntry>,
-//   current: WalkEntry,
-// ): WalkEntry | undefined => {
-//   for (const entry of allEntries) {
-//     if (
-//       entry.isFile && entry.name === "index.md" &&
-//       path.dirname(entry.path) === current.path
-//     ) {
-//       return entry;
-//     }
-//   }
-// };
 
 export async function generatePage(
   entry: fs.WalkEntry,
@@ -129,15 +136,13 @@ export async function generatePage(
     const content = decoder.decode(await Deno.readFile(entry.path));
     const { attributes, body } = frontMatter(content);
 
-    const file = await Deno.open(entry.path);
     const date = attr.getDateFromAttrs(attributes) ||
-      await Deno.fstat(file.rid).then((file) => file.birthtime);
-    file.close();
+      await getGitLastCommitDate(entry.path);
 
     const { html, links, headings } = render(body, relPath, isIndex);
     const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
     const title = attr.getTitleFromAttrs(attributes) ||
-      attr.getTitleFromHeadings(headings) || entry.name;
+      attr.getTitleFromHeadings(headings) || path.basename(relPath);
     const description = attr.getDescriptionFromAttrs(attributes) || "";
     const tags = attr.getTagsFromAttrs(attributes);
 
