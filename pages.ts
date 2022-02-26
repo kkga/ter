@@ -27,6 +27,10 @@ export interface Page {
   headings?: Array<Heading>;
 }
 
+// export interface IndexPage {
+
+// }
+
 export interface TagPage {
   name: string;
   pages: Array<Page>;
@@ -55,7 +59,7 @@ const getTitleFromFilename = (filePath: string): string => {
   return path.basename(filePath).replace(path.extname(filePath), "");
 };
 
-async function getLastCommitDate(path: string): Promise<Date | undefined> {
+async function _getLastCommitDate(path: string): Promise<Date | undefined> {
   const opts: Deno.RunOptions = {
     cmd: ["git", "log", "-1", "--format=%as", "--", path],
     stdout: "piped",
@@ -144,7 +148,7 @@ export async function generatePage(
     const parsed = fm(content);
     const pageData = parsed.attributes as data.PageData;
     const body = parsed.body;
-    const date = data.getDate(pageData) || await getLastCommitDate(entry.path);
+    const date = data.getDate(pageData);
     const { html, links, headings } = render(body, relPath, isIndex, site.url);
     const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
     const title = data.getTitle(pageData) ||
