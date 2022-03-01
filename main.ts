@@ -17,7 +17,7 @@ async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
   }
 }
 
-export async function generateSite(config: TerConfig) {
+export async function generateSite(config: TerConfig, includeRefresh: boolean) {
   const {
     inputPath,
     outputPath,
@@ -85,12 +85,14 @@ export async function generateSite(config: TerConfig) {
         outputPath: outputPath,
         viewPath: pageViewPath,
         head: headInclude,
+        includeRefresh,
         conf: siteConf,
       }),
       files.buildTagFiles(tagPages, {
         outputPath: outputPath,
         viewPath: tagViewPath,
         head: headInclude,
+        includeRefresh,
         conf: siteConf,
       }),
       files.getStaticFiles(staticEntries, inputPath, outputPath),
@@ -165,13 +167,13 @@ async function main(args: string[]) {
   }
 
   const config = await createConfig(flags);
-  await generateSite(config);
+  await generateSite(config, flags.serve);
 
   if (flags.serve === true) {
     serve({
       port: flags.port,
       runner: generateSite,
-      config: config,
+      config,
     });
   } else {
     Deno.exit();

@@ -1,7 +1,7 @@
 import { fs, path, writableStreamFromWriter, yamlStringify } from "./deps.ts";
 import { TerConfig } from "./config.ts";
 
-const MOD_URL = "https://deno.land/x/ter";
+const MOD_URL = new URL("https://deno.land/x/ter");
 
 const requiredViews = [
   "base.eta",
@@ -10,6 +10,7 @@ const requiredViews = [
   "page.eta",
   "pagelist.eta",
   "taglist.eta",
+  "refresh.eta",
 ];
 
 const requiredAssets = [
@@ -58,7 +59,7 @@ export async function init(config: TerConfig) {
       console.log(`  File exists, skipping:\t${viewPath}`);
     } catch {
       const url = new URL(
-        path.join(MOD_URL, path.basename(config.viewsPath), view),
+        path.join(MOD_URL.href, path.basename(config.viewsPath), view),
       );
       await initializeFile(path.join(config.viewsPath, view), url);
       console.log(`  Initialized:\t${viewPath}`);
@@ -71,7 +72,7 @@ export async function init(config: TerConfig) {
       console.log("  File exists, skipping:\t", assetPath);
     } catch {
       const url = new URL(
-        path.join(MOD_URL, path.basename(config.assetsPath), asset),
+        path.join(MOD_URL.href, path.basename(config.assetsPath), asset),
       );
       await initializeFile(path.join(config.assetsPath, asset), url);
       console.log(`  Initialized:\t${assetPath}`);

@@ -97,9 +97,11 @@ function generateBreadcrumbs(
   return breadcrumbs;
 }
 
+// TODO: extract into opts interface
 export async function buildPage(
   page: Page,
   headInclude: string,
+  includeRefresh: boolean,
   childPages: Array<Page>,
   backLinkedPages: Array<Page>,
   taggedPages: { [tag: string]: Array<Page> },
@@ -140,14 +142,17 @@ export async function buildPage(
     taggedIndexLinks: tagLists,
     childTags,
     site: siteConf,
+    includeRefresh,
   });
 }
 
+// TODO: extract into opts interface
 export async function buildTagPage(
   name: string,
   pages: Array<Page>,
   tagViewPath: string,
   headInclude: string,
+  includeRefresh: boolean,
   siteConf: SiteConfig,
 ): Promise<string | void> {
   eta.templates.define("head", eta.compile(headInclude));
@@ -166,6 +171,7 @@ export async function buildTagPage(
     breadcrumbs,
     indexLinks: indexItems,
     site: siteConf,
+    includeRefresh,
   });
   return result;
 }

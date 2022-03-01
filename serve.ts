@@ -3,7 +3,7 @@ import { TerConfig } from "./config.ts";
 
 interface WatchOpts {
   config: TerConfig;
-  runner: (config: TerConfig) => Promise<void>;
+  runner: (config: TerConfig, includeRefresh: true) => Promise<void>;
 }
 
 interface ServeOpts extends WatchOpts {
@@ -25,7 +25,7 @@ async function watch(opts: WatchOpts) {
 
     console.log("[changes detected]\n---");
     // TODO: add quiet param for build func
-    await opts.runner(opts.config);
+    await opts.runner(opts.config, true);
 
     console.log("---\nRefreshing...");
     sockets.forEach((socket) => {

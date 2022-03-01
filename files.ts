@@ -22,6 +22,7 @@ interface BuildOpts {
   viewPath: string;
   head: string;
   conf: SiteConfig;
+  includeRefresh: boolean;
 }
 
 export async function buildContentFiles(
@@ -46,6 +47,7 @@ export async function buildContentFiles(
     const html = await buildPage(
       page,
       opts.head,
+      opts.includeRefresh,
       page.isIndex ? getChildPages(pages, page) : [],
       getBacklinkPages(pages, page),
       pagesByTag,
@@ -84,6 +86,7 @@ export async function buildTagFiles(
       tag.pages,
       opts.viewPath,
       opts.head,
+      opts.includeRefresh,
       opts.conf,
     );
 
