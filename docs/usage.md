@@ -12,14 +12,14 @@ Once the `deno` command is available to run in your terminal, follow along.
 
 ## Command line usage
 
-Running Ter with the `--help` shows a short usage reference.
+Run Ter with the `--help` flag to see usage reference.
 
 ```
 deno run https://deno.land/x/ter/main.ts --help
 ```
 
 ```
-Ter -- tiny wiki-style site builder.\n
+Ter -- tiny wiki-style site builder.
 
 USAGE:
   ter [options]
@@ -28,7 +28,7 @@ OPTIONS:
   --input     Source directory (default: ./)
   --output    Output directory (default: ./_site)
   --serve     Serve locally and watch for changes (default: false)
-  --port      Serve port (default: 8080)`);
+  --port      Serve port (default: 8080)
 ```
 
 ## Initial setup and build
@@ -52,8 +52,8 @@ Once the initialization is done, Ter will carry on building the site.
 
 ## Changing input and output paths
 
-The build script takes 2 optional arguments: `input` (default: `.`) and `output`
-(default: `_site`).
+The build script takes 2 optional arguments: `--input` (default: `.`) and
+`--output` (default: `_site`).
 
 By default, it recursively searches for all `*.md` files in the current
 directory and outputs the generated site into the `_site` directory.
@@ -65,9 +65,14 @@ name for the output directory, adjust accordingy, for example:
 deno run -A --unstable https://deno.land/x/ter/main.ts --input content --output _dist
 ```
 
-## Local server with with live refresh
+## Local server with live refresh
 
-TODO
+Passing `--serve` flag will start a local server. Ter will automatically rebuild
+the site and refresh the browser on any file changes.
+
+```
+deno run -A --unstable https://deno.land/x/ter/main.ts --serve
+```
 
 ## Next steps
 
