@@ -12,6 +12,8 @@ interface ServeOpts extends WatchOpts {
 
 const sockets: Set<WebSocket> = new Set();
 
+let servePath: string;
+
 async function watch(opts: WatchOpts) {
   // TODO: watch for source ts changes in dev
   const watcher = Deno.watchFs(opts.config.inputPath);
@@ -55,13 +57,12 @@ async function requestHandler(request: Request) {
 
   let file;
   try {
-    // TODO: use config path
-    file = await Deno.open("_site/" + filepath, { read: true });
+    file = await Deno.open(path.join(servePath, filepath), { read: true });
     const stat = await file.stat();
 
     if (stat.isDirectory) {
       file.close();
-      const filePath = path.join("_site/", filepath, "index.html");
+      const filePath = path.join(servePath, filepath, "index.html");
       file = await Deno.open(filePath, { read: true });
     }
   } catch {
@@ -73,6 +74,7 @@ async function requestHandler(request: Request) {
 }
 
 export function serve(opts: ServeOpts) {
+  servePath = opts.config.outputPath;
   watch(opts);
   httpServe(requestHandler, { port: opts.port });
   console.log(`---\nServing site on http://localhost:${opts.port}/`);
