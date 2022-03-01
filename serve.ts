@@ -1,43 +1,79 @@
-import { path } from "./deps.ts";
-import { serve } from "https://deno.land/std/http/server.ts";
-import { refresh } from "https://deno.land/x/refresh/mod.ts";
-import { readableStreamFromReader } from "https://deno.land/std/streams/mod.ts";
+import { path, readableStreamFromReader, serve as httpServe } from "./deps.ts";
+import { TerConfig } from "./config.ts";
 
-const middleware = refresh();
+interface WatchOpts {
+  config: TerConfig;
+  runner: (config: TerConfig) => Promise<void>;
+}
 
-async function handler(request: Request) {
-  const response = middleware(request);
+interface ServeOpts extends WatchOpts {
+  port: number;
+}
+
+const sockets: Set<WebSocket> = new Set();
+
+async function watch(opts: WatchOpts) {
+  // TODO: watch for source ts changes in dev
+  const watcher = Deno.watchFs(opts.config.inputPath);
+
+  for await (const event of watcher) {
+    if (["any", "access"].includes(event.kind)) {
+      continue;
+    }
+
+    console.log("[changes detected]\n---");
+    // TODO: add quiet param for build func
+    await opts.runner(opts.config);
+
+    console.log("---\nRefreshing...");
+    sockets.forEach((socket) => {
+      socket.send("refresh");
+    });
+  }
+}
+
+function refreshMiddleware(req: Request): Response | null {
+  if (req.url.endsWith("/refresh")) {
+    const { response, socket } = Deno.upgradeWebSocket(req);
+
+    sockets.add(socket);
+    socket.onclose = () => {
+      sockets.delete(socket);
+    };
+
+    return response;
+  }
+  return null;
+}
+
+async function requestHandler(request: Request) {
+  const response = refreshMiddleware(request);
   if (response) return response;
 
-  // Use the request pathname as filepath
   const url = new URL(request.url);
   const filepath = decodeURIComponent(url.pathname);
 
-  // Try opening the file
   let file;
   try {
+    // TODO: use config path
     file = await Deno.open("_site/" + filepath, { read: true });
     const stat = await file.stat();
 
-    // If File instance is a directory, lookup for an index.html
     if (stat.isDirectory) {
       file.close();
       const filePath = path.join("_site/", filepath, "index.html");
       file = await Deno.open(filePath, { read: true });
     }
   } catch {
-    // If the file cannot be opened, return a "404 Not Found" response
     return new Response("404 Not Found", { status: 404 });
   }
 
-  // Build a readable stream so the file doesn't have to be fully loaded into
-  // memory while we send it
   const readableStream = readableStreamFromReader(file);
-
-  // Build and send the response
   return new Response(readableStream);
 }
 
-serve(handler, { port: 8080 });
-
-console.log("File server running on http://localhost:8080/");
+export function serve(opts: ServeOpts) {
+  watch(opts);
+  httpServe(requestHandler, { port: opts.port });
+  console.log(`---\nServing site on http://localhost:${opts.port}/`);
+}

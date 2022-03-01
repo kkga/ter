@@ -1,5 +1,5 @@
 import { fs, path, writableStreamFromWriter, yamlStringify } from "./deps.ts";
-import { createConfig } from "./config.ts";
+import { TerConfig } from "./config.ts";
 
 const MOD_URL = "https://deno.land/x/ter";
 
@@ -36,10 +36,8 @@ async function initializeFile(filePath: string, url: URL) {
   }
 }
 
-export async function init() {
-  const config = await createConfig(Deno.args);
-
-  console.log("%c\nInitializing site config:", "font-weight: bold");
+export async function init(config: TerConfig) {
+  console.log("%cInitializing site config:", "font-weight: bold");
   try {
     await Deno.stat(path.join(Deno.cwd(), config.siteConfigPath));
     console.log(`  File exists, skipping:\t${config.siteConfigPath}`);
@@ -52,7 +50,7 @@ export async function init() {
     console.log(`  ${config.siteConfigPath}`);
   }
 
-  console.log("%c\nInitializing views and assets:", "font-weight: bold");
+  console.log("%cInitializing views and assets:", "font-weight: bold");
   for await (const view of requiredViews) {
     const viewPath = path.join(config.viewsPath, view);
     try {

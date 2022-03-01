@@ -1,6 +1,7 @@
-import { fs, path } from "./deps.ts";
-import { createConfig } from "./config.ts";
+import { flagsParse, fs, path } from "./deps.ts";
+import { createConfig, TerConfig } from "./config.ts";
 import { checkRequiredFiles, init } from "./init.ts";
+import { serve } from "./serve.ts";
 import * as entries from "./entries.ts";
 import * as pages from "./pages.ts";
 import * as data from "./data.ts";
@@ -16,7 +17,7 @@ async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
   }
 }
 
-async function main() {
+export async function generateSite(config: TerConfig) {
   const {
     inputPath,
     outputPath,
@@ -25,7 +26,7 @@ async function main() {
     ignoreKeys,
     staticExts,
     site: siteConf,
-  } = await createConfig(Deno.args);
+  } = config;
 
   await checkRequiredFiles(viewsPath, assetsPath)
     .catch(async (err: string) => {
@@ -34,7 +35,7 @@ async function main() {
         "color: red",
       );
       if (confirm("Initialize default views and assets?")) {
-        await init();
+        await init(config);
       } else {
         Deno.exit(1);
       }
@@ -42,7 +43,7 @@ async function main() {
 
   const START = performance.now();
 
-  console.log("%c\nScanning input dir...", "font-weight: bold");
+  console.log("%cScanning input dir...", "font-weight: bold");
   const [contentEntries, staticEntries, assetEntries] = await Promise.all([
     entries.getContentEntries(inputPath),
     entries.getStaticEntries(inputPath, outputPath, staticExts),
@@ -51,7 +52,7 @@ async function main() {
 
   const unfilteredPages: pages.Page[] = [];
 
-  console.log("%c\nRendering markdown files...", "font-weight: bold");
+  console.log("%cRendering markdown...", "font-weight: bold");
   for (const entry of contentEntries) {
     const page = await pages.generatePage(entry, inputPath, siteConf).catch(
       (reason: string) => {
@@ -76,7 +77,7 @@ async function main() {
   const tagViewPath = path.join(Deno.cwd(), viewsPath, "page.eta");
   const headInclude = await getHeadInclude(viewsPath) ?? "";
 
-  console.log("%c\nBuilding html files...", "font-weight: bold");
+  console.log("%cBuilding html files...", "font-weight: bold");
 
   const [contentFiles, tagFiles, staticFiles, assetFiles] = await Promise.all(
     [
@@ -128,18 +129,17 @@ async function main() {
   await files.copyFiles(assetFiles, "site assets");
 
   const END = performance.now();
-  const BUILD_SECS = (END - START) / 1000;
+  const BUILD_SECS = (END - START);
   const totalFiles = contentFiles.length + tagFiles.length;
 
-  console.log("%c\nResult:", "font-weight: bold");
+  console.log("%cResult:", "font-weight: bold");
   console.log(`\
   Built\t\t${totalFiles} pages
-  Copied\t${staticFiles.length} static files
-  Copied\t${assetFiles.length} site assets
-  In\t\t${BUILD_SECS} seconds`);
+  Copied\t${staticFiles.length} static files and ${assetEntries.length} site assets
+  In\t\t${Math.floor(BUILD_SECS)}ms`);
 
   if (deadLinks.length > 0) {
-    console.log("%c\nFound dead links:", "font-weight: bold; color: red");
+    console.log("%cFound dead links:", "font-weight: bold; color: red");
     deadLinks.forEach(([pageUrl, linkUrl]) => {
       console.log(
         `  ${pageUrl.pathname}\tlinks to %c${linkUrl.pathname}`,
@@ -149,4 +149,30 @@ async function main() {
   }
 }
 
-await main();
+async function main(args: string[]) {
+  const flags = flagsParse(args, {
+    boolean: ["serve"],
+    string: ["input", "output", "port"],
+    default: {
+      input: ".",
+      output: "_site",
+      serve: false,
+      port: 8080,
+    },
+  });
+
+  const config = await createConfig(flags);
+  await generateSite(config);
+
+  if (flags.serve === true) {
+    serve({
+      port: flags.port,
+      runner: generateSite,
+      config: config,
+    });
+  } else {
+    Deno.exit();
+  }
+}
+
+main(Deno.args);

@@ -148,7 +148,7 @@ export async function writeFiles(
   description: string,
 ) {
   files.length > 0 &&
-    console.log(`%c\nWriting ${description}:`, "font-weight: bold");
+    console.log(`%cWriting ${description}:`, "font-weight: bold");
 
   for (const file of files) {
     if (file.fileContent) {
@@ -164,7 +164,7 @@ export async function copyFiles(
   description: string,
 ) {
   files.length > 0 &&
-    console.log(`%c\nCopying ${description}:`, "font-weight: bold");
+    console.log(`%cCopying ${description}:`, "font-weight: bold");
 
   for (const file of files) {
     if (file.inputPath) {

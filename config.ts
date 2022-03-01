@@ -1,4 +1,4 @@
-import { path, ufo, yamlParse } from "./deps.ts";
+import { Args, path, ufo, yamlParse } from "./deps.ts";
 
 export interface SiteConfig {
   title: string;
@@ -8,7 +8,7 @@ export interface SiteConfig {
   author: { name: string; email: string; url: string };
 }
 
-interface TerConfig {
+export interface TerConfig {
   inputPath: string;
   outputPath: string;
   assetsPath: string;
@@ -57,16 +57,14 @@ async function parseSiteConfig(path: string): Promise<SiteConfig | undefined> {
     const decoder = new TextDecoder("utf-8");
     const data = decoder.decode(await Deno.readFile(path));
     const conf = yamlParse(data) as SiteConfig;
-    console.log(`Found configuration: ${path}`);
+    // console.log(`Found configuration: ${path}`);
     return conf;
   } catch {
     console.log("Configuration file not found: using defaults");
   }
 }
 
-export async function createConfig(
-  args?: Array<string>,
-): Promise<TerConfig> {
+export async function createConfig(args: Args): Promise<TerConfig> {
   const conf = defaultConfig;
   const siteConf = await parseSiteConfig(conf.siteConfigPath);
 
@@ -96,15 +94,15 @@ export async function createConfig(
     }
   }
 
-  if (args && args[0]) {
-    const inputPath = Deno.args[0];
+  if (args.input !== "") {
+    const inputPath = args.input;
     conf.inputPath = path.isAbsolute(inputPath)
       ? inputPath
       : path.join(Deno.cwd(), inputPath);
   }
 
-  if (args && args[1]) {
-    const outputPath = Deno.args[1];
+  if (args.output !== "") {
+    const outputPath = args.output;
     conf.outputPath = path.isAbsolute(outputPath)
       ? outputPath
       : path.join(Deno.cwd(), outputPath);
