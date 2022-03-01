@@ -123,10 +123,8 @@ export async function generateSite(config: TerConfig) {
     }
   }
 
-  await files.writeFiles(tagFiles, "tag index pages");
-  await files.writeFiles(contentFiles, "content pages");
-  await files.copyFiles(staticFiles, "static files");
-  await files.copyFiles(assetFiles, "site assets");
+  await files.writeFiles([...tagFiles, ...contentFiles], "html files");
+  await files.copyFiles([...staticFiles, ...assetFiles], "static files");
 
   const END = performance.now();
   const BUILD_SECS = (END - START);
