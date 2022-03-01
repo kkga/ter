@@ -149,7 +149,7 @@ export async function generateSite(config: TerConfig) {
 
 async function main(args: string[]) {
   const flags = flagsParse(args, {
-    boolean: ["serve"],
+    boolean: ["serve, help"],
     string: ["input", "output", "port"],
     default: {
       input: ".",
@@ -158,6 +158,11 @@ async function main(args: string[]) {
       port: 8080,
     },
   });
+
+  if (flags.help) {
+    printHelp();
+    Deno.exit();
+  }
 
   const config = await createConfig(flags);
   await generateSite(config);
@@ -171,6 +176,17 @@ async function main(args: string[]) {
   } else {
     Deno.exit();
   }
+}
+
+function printHelp() {
+  console.log(`Ter -- tiny wiki-style site builder.\n
+USAGE:
+  ter [options]\n
+OPTIONS:
+  --input\t\tSource directory (default: ./)
+  --output\t\tOutput directory (default: ./_site)
+  --serve\t\tServe locally and watch for changes (default: false)
+  --port\t\tServe port (default: 8080)`);
 }
 
 main(Deno.args);
