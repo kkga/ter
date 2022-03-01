@@ -8,8 +8,28 @@ pinned: true
 Ter is built with [Deno](https://deno.land/), so you'll need to have it
 installed.
 
-Once the `deno` command is available to run in your terminal, proceed to the
-initial setup.
+Once the `deno` command is available to run in your terminal, follow along.
+
+## Command line usage
+
+Running Ter with the `--help` shows a short usage reference.
+
+```
+deno run https://deno.land/x/ter/main.ts --help
+```
+
+```
+Ter -- tiny wiki-style site builder.\n
+
+USAGE:
+  ter [options]
+
+OPTIONS:
+  --input     Source directory (default: ./)
+  --output    Output directory (default: ./_site)
+  --serve     Serve locally and watch for changes (default: false)
+  --port      Serve port (default: 8080)`);
+```
 
 ## Initial setup and build
 
@@ -23,28 +43,31 @@ deno run -A --unstable https://deno.land/x/ter/main.ts
 Ter will check for required views and assets. If it can't find any, it will
 prompt to fetch required files and create default site configuration:
 
-- `.ter/config.yml` -- site [configuration](configuration.md) file;
-- `.ter/views`, which contains the [templates](customize.md#templates) for
-  rendering the site;
-- `.ter/assets`, which contains CSS [stylesheets](customize.md#styles) for the
-  site and code syntax.
+- `.ter/config.yml`: site [configuration](configuration.md) file;
+- `.ter/views`: [templates](customize.md#templates) for rendering the site;
+- `.ter/assets`: [stylesheets](customize.md#styles) for the site and code
+  syntax.
 
 Once the initialization is done, Ter will carry on building the site.
 
-## Build arguments
+## Changing input and output paths
 
 The build script takes 2 optional arguments: `input` (default: `.`) and `output`
 (default: `_site`).
 
-By default, it will recursively search for all `*.md` files in the current
-directory and output the generated site into the `_site` directory.
+By default, it recursively searches for all `*.md` files in the current
+directory and outputs the generated site into the `_site` directory.
 
 If your markdown content is in some other directory, or you want a different
 name for the output directory, adjust accordingy, for example:
 
 ```
-deno run -A --unstable https://deno.land/x/ter/main.ts content _dist
+deno run -A --unstable https://deno.land/x/ter/main.ts --input content --output _dist
 ```
+
+## Local server with with live refresh
+
+TODO
 
 ## Next steps
 
