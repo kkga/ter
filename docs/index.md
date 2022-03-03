@@ -3,8 +3,8 @@
 Welcome to Ter demo site! Ter is a tiny wiki engine with
 [Zettelkasten](zettelkasten.md) flavor. It takes a folder of markdown files and
 replicates its structure into a static site with automatically
-[indexed](features#index-pages) directories,
-[backlinks](features#backlinks) and [breadcrumbs](features#breadcrumbs).
+[indexed](features#index-pages) directories, [backlinks](features#backlinks) and
+[breadcrumbs](features#breadcrumbs).
 
 ### Some quick links
 

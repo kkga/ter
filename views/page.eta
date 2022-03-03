@@ -14,6 +14,13 @@
   }) %>
   <% } %>
 
+  <% if (it.childTags?.length > 0) { %>
+  <%~ includeFile('./taglist', {
+    tags: it.childTags,
+    title: "Tag index"
+  }) %>
+  <% } %>
+
   <% if (it.backLinks?.length > 0) { %>
   <%~ includeFile('./pagelist', {
     links: it.backLinks,
@@ -28,11 +35,4 @@
     rootUrl: `/tag/${tag}`
   }) %>
   <% }) %>
-
-  <% if (it.childTags?.length > 0) { %>
-  <%~ includeFile('./taglist', {
-    tags: it.childTags,
-    title: "Tag index"
-  }) %>
-  <% } %>
 </nav>

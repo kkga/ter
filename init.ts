@@ -1,17 +1,19 @@
 import { fs, path, writableStreamFromWriter, yamlStringify } from "./deps.ts";
-import { createConfig } from "./config.ts";
+import { TerConfig } from "./config.ts";
 
-const MOD_URL = "https://deno.land/x/ter";
+const MOD_URL = new URL("https://deno.land/x/ter");
 
-export const requiredViews = [
+const requiredViews = [
   "base.eta",
   "feed.xml.eta",
   "header.eta",
   "page.eta",
   "pagelist.eta",
   "taglist.eta",
+  "refresh.eta",
 ];
-export const requiredAssets = [
+
+const requiredAssets = [
   "ter.css",
   "hljs.css",
 ];
@@ -35,21 +37,21 @@ async function initializeFile(filePath: string, url: URL) {
   }
 }
 
-export async function init() {
-  const config = await createConfig(Deno.args);
-
-  console.log("%c\nInitializing site config:", "font-weight: bold");
+export async function init(config: TerConfig) {
+  console.log("%cInitializing site config:", "font-weight: bold");
   try {
     await Deno.stat(path.join(Deno.cwd(), config.siteConfigPath));
     console.log(`  File exists, skipping:\t${config.siteConfigPath}`);
   } catch {
-    const yaml = yamlStringify(config.site as Record<string, unknown>);
+    const yaml = yamlStringify(
+      config.site as unknown as Record<string, unknown>,
+    );
     await fs.ensureDir(path.dirname(config.siteConfigPath));
     await Deno.writeTextFile(config.siteConfigPath, yaml);
     console.log(`  ${config.siteConfigPath}`);
   }
 
-  console.log("%c\nInitializing views and assets:", "font-weight: bold");
+  console.log("%cInitializing views and assets:", "font-weight: bold");
   for await (const view of requiredViews) {
     const viewPath = path.join(config.viewsPath, view);
     try {
@@ -57,7 +59,7 @@ export async function init() {
       console.log(`  File exists, skipping:\t${viewPath}`);
     } catch {
       const url = new URL(
-        path.join(MOD_URL, path.basename(config.viewsPath), view),
+        path.join(MOD_URL.href, path.basename(config.viewsPath), view),
       );
       await initializeFile(path.join(config.viewsPath, view), url);
       console.log(`  Initialized:\t${viewPath}`);
@@ -70,10 +72,25 @@ export async function init() {
       console.log("  File exists, skipping:\t", assetPath);
     } catch {
       const url = new URL(
-        path.join(MOD_URL, path.basename(config.assetsPath), asset),
+        path.join(MOD_URL.href, path.basename(config.assetsPath), asset),
       );
       await initializeFile(path.join(config.assetsPath, asset), url);
       console.log(`  Initialized:\t${assetPath}`);
     }
   }
+}
+
+export async function checkRequiredFiles(
+  viewsPath: string,
+  assetsPath: string,
+): Promise<boolean> {
+  for (const file of requiredViews) {
+    const filepath = path.join(Deno.cwd(), viewsPath, file);
+    await Deno.stat(filepath).catch(() => Promise.reject(filepath));
+  }
+  for (const file of requiredAssets) {
+    const filepath = path.join(Deno.cwd(), assetsPath, file);
+    await Deno.stat(filepath).catch(() => Promise.reject(filepath));
+  }
+  return Promise.resolve(true);
 }
