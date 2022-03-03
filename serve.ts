@@ -1,5 +1,6 @@
 import { path, readableStreamFromReader, serve as httpServe } from "./deps.ts";
 import { TerConfig } from "./config.ts";
+import { RE_HIDDEN_OR_UNDERSCORED } from "./entries.ts";
 
 interface WatchOpts {
   config: TerConfig;
@@ -18,13 +19,24 @@ async function watch(opts: WatchOpts) {
   // TODO: watch for source ts changes in dev
   const watcher = Deno.watchFs(opts.config.inputPath);
 
+  eventLoop:
   for await (const event of watcher) {
     if (["any", "access"].includes(event.kind)) {
       continue;
     }
 
-    console.log("[changes detected]\n---");
-    // TODO: add quiet param for build func
+    for (const eventPath of event.paths) {
+      if (
+        // TODO: find a better way to filter events as this implementation
+        // doesn't refresh on changes to ter views/css
+        eventPath.match(RE_HIDDEN_OR_UNDERSCORED) ||
+        !path.relative(opts.config.outputPath, eventPath).startsWith("..")
+      ) {
+        continue eventLoop;
+      }
+    }
+
+    console.log(`[changes detected] ${event.kind}: ${event.paths}\n---`);
     await opts.runner(opts.config, true);
 
     console.log("---\nRefreshing...");

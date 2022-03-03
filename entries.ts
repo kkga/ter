@@ -1,7 +1,7 @@
 import { fs, path, ufo } from "./deps.ts";
 
 export const INDEX_FILENAME = "index.md";
-const RE_HIDDEN_OR_UNDERSCORED = /^\.|^_|\/\.|\/\_/;
+export const RE_HIDDEN_OR_UNDERSCORED = /^\.|^_|\/\.|\/\_/;
 
 const hasIgnoredPrefix = (path: string): boolean => {
   const pathChunks = path.split("/");
