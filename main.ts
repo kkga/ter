@@ -125,8 +125,16 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
     }
   }
 
-  await files.writeFiles([...tagFiles, ...contentFiles], "html files");
-  await files.copyFiles([...staticFiles, ...assetFiles], "static files");
+  await files.writeFiles(
+    [...tagFiles, ...contentFiles],
+    "html files",
+    config.quiet,
+  );
+  await files.copyFiles(
+    [...staticFiles, ...assetFiles],
+    "static files",
+    config.quiet,
+  );
 
   const END = performance.now();
   const BUILD_SECS = (END - START);
@@ -151,13 +159,14 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
 
 async function main(args: string[]) {
   const flags = flagsParse(args, {
-    boolean: ["serve, help"],
+    boolean: ["serve, help", "quiet"],
     string: ["input", "output", "port"],
     default: {
       input: ".",
       output: "_site",
       serve: false,
       port: 8080,
+      quiet: false,
     },
   });
 
@@ -188,7 +197,8 @@ OPTIONS:
   --input\t\tSource directory (default: ./)
   --output\t\tOutput directory (default: ./_site)
   --serve\t\tServe locally and watch for changes (default: false)
-  --port\t\tServe port (default: 8080)`);
+  --port\t\tServe port (default: 8080)
+  --quiet\t\tDon't list filenames (default: false)`);
 }
 
 main(Deno.args);

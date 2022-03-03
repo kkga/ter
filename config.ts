@@ -17,6 +17,7 @@ export interface TerConfig {
   ignoreKeys: Array<string>;
   staticExts: Array<string>;
   site: SiteConfig;
+  quiet: boolean;
 }
 
 const defaultSiteConfig: SiteConfig = {
@@ -50,6 +51,7 @@ const defaultConfig: TerConfig = {
     "mp4",
   ],
   site: defaultSiteConfig,
+  quiet: false,
 };
 
 async function parseSiteConfig(path: string): Promise<SiteConfig | undefined> {
@@ -107,6 +109,8 @@ export async function createConfig(args: Args): Promise<TerConfig> {
       ? outputPath
       : path.join(Deno.cwd(), outputPath);
   }
+
+  conf.quiet = args.quiet;
 
   return conf;
 }
