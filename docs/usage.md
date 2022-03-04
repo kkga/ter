@@ -29,6 +29,7 @@ OPTIONS:
   --output    Output directory (default: ./_site)
   --serve     Serve locally and watch for changes (default: false)
   --port      Serve port (default: 8080)
+  --quiet     Don't list filenames (default: false)
 ```
 
 ## Initial setup and build
