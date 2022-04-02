@@ -40,7 +40,7 @@ individual pages from the index.
 
 ## Backlinks
 
-Ter adheres to the [Zettelksten](/zettelkasten.md) method and tracks connections
+Ter adheres to the [Zettelksten](zettelkasten.md) method and tracks connections
 between pages. All internal references to the current page are listed in the
 Backlinks section at the bottom.
 
@@ -80,7 +80,7 @@ Some properties are utilized when building a site.
 ### Other properties
 
 All other properties are ignored but can be used in
-[templates](/customize.md#templates).
+[templates](customize.md#templates).
 
 ## Ignoring files
 

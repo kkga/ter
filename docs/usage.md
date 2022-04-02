@@ -77,5 +77,5 @@ deno run -A --unstable https://deno.land/x/ter/main.ts --serve
 
 ## Next steps
 
-If you want to publish the site, see the [Deploy](/deploy.md) page. If you're
-looking to customize the output, see the docs on [Customization](/customize).
+If you want to publish the site, see the [Deploy](deploy.md) page. If you're
+looking to customize the output, see the docs on [Customization](customize.md).
