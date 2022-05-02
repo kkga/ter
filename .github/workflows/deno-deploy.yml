@@ -25,6 +25,9 @@ jobs:
       - name: Clone repository
         uses: actions/checkout@v2
 
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1.1.0
+
       - name: Build site
         run: deno run main.ts --input docs
 
