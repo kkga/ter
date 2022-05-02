@@ -1,9 +1,6 @@
-# Ter
+A tiny wiki-style site builder with Zettelkasten flavor. In development.
 
-<strong>Note: this is PRE-ALPHA software that is not ready for use.</strong>
-
-A tiny wiki-style site builder with Zettelkasten flavor.
+- Doc-food: https://ter.kkga.me/
+- Deno deploy version: https://ter.deno.dev/
 
 Built with [Deno](https://deno.land/).
-
-Doc-food: https://ter.kkga.me (early WIP)
