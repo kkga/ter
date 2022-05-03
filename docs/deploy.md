@@ -36,7 +36,7 @@ _dist
 
 ## Deno Deploy (via GitHub Actions)
 
-1. Create a new project on [Deno Deploy](https://deno.com/deploy).\n Select
+1. Create a new project on [Deno Deploy](https://deno.com/deploy). Select
    "Deploy from GitHub", link the repository, and use the production branch. For
    deployment mode, select “GitHub Actions”, because we want to use GitHub
    Actions to first build the site then deploy it to Deno Deploy.
