@@ -5,7 +5,7 @@ pinned: true
 
 # Deploy
 
-Learn how to publish the output on the web.
+Learn how to publish your site.
 
 ## Vercel
 
@@ -13,13 +13,13 @@ To deploy on [Vercel](https://vercel.com), use the following build and output
 configuration:
 
 ```sh
-# Build Command:
+# build command
 deno run -A --unstable https://deno.land/x/ter/main.ts
 
-# Output Directory:
+# output directory
 _site
 
-# Install Command:
+# install command
 curl -fsSL https://deno.land/x/install/install.sh | DENO_INSTALL=/usr/local sh
 ```
 
@@ -27,10 +27,10 @@ If you're using non-default input and output folders, update the build command
 and output directory accordingly, e.g.:
 
 ```sh
-# Build Command:
+# build command
 deno run -A --unstable https://deno.land/x/ter/main.ts --input content --output _dist
 
-# Output Directory:
+# output directory
 _dist
 ```
 
@@ -40,8 +40,8 @@ _dist
    "Deploy from GitHub", link the repository, and use the production branch. For
    deployment mode, select “GitHub Actions”, because we want to use GitHub
    Actions to first build the site then deploy it to Deno Deploy.
-2. Add a `.github/workflows/deno-deploy.yml` file in site source directory and
-   commit it:
+2. Add a `.github/workflows/deno-deploy.yml` file in site source directory, make
+   changes according to your setup and commit it:
 
 ```yaml
 name: Deploy to Deno Deploy
