@@ -1,7 +1,7 @@
 {
   "tasks": {
-    "dev": "deno run -A --unstable main.ts --serve --input docs",
-    "build": "deno run -A --unstable main.ts --serve --input docs",
+    "build": "deno run -A --unstable main.ts --input docs",
+    "serve": "deno run -A --unstable main.ts --input docs --serve",
     "clean": "rm -rf _site"
   }
 }
