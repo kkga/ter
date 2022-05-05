@@ -78,6 +78,7 @@ async function requestHandler(request: Request) {
       file = await Deno.open(filePath, { read: true });
     }
   } catch {
+    // TODO: serve the 404.html
     return new Response("404 Not Found", { status: 404 });
   }
 
