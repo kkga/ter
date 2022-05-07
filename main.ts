@@ -4,7 +4,7 @@ import { checkRequiredFiles, init } from "./init.ts";
 import { serve } from "./serve.ts";
 import * as entries from "./entries.ts";
 import * as pages from "./pages.ts";
-import * as data from "./data.ts";
+import * as attrs from "./attributes.ts";
 import * as files from "./files.ts";
 
 async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
@@ -63,7 +63,7 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
   }
 
   const contentPages = unfilteredPages.filter((page) =>
-    !data.hasKey(page.data, ignoreKeys)
+    !attrs.hasKey(page.attrs, ignoreKeys)
   );
 
   const tagPages: pages.TagPage[] = [];

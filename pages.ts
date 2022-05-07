@@ -1,6 +1,6 @@
 import { fm, fs, path, slugify } from "./deps.ts";
 import { render } from "./render.ts";
-import * as data from "./data.ts";
+import * as attrs from "./attributes.ts";
 import { SiteConfig } from "./config.ts";
 import { INDEX_FILENAME } from "./entries.ts";
 
@@ -16,7 +16,7 @@ export interface Page {
   url: URL;
   path?: string;
   title: string;
-  data: data.PageData;
+  attrs: attrs.PageAttributes;
   links: Array<URL>;
   isIndex: boolean;
   description?: string;
@@ -26,10 +26,6 @@ export interface Page {
   tags?: Array<string>;
   headings?: Array<Heading>;
 }
-
-// export interface IndexPage {
-
-// }
 
 export interface TagPage {
   name: string;
@@ -79,14 +75,14 @@ export function getAllTags(pages: Array<Page>): Array<string> {
   const tags: Set<string> = new Set();
 
   pages.forEach((page) => {
-    data.getTags(page.data).forEach((tag: string) => tags.add(tag));
+    attrs.getTags(page.attrs).forEach((tag: string) => tags.add(tag));
   });
 
   return [...tags];
 }
 
 export function getPagesByTag(allPages: Array<Page>, tag: string): Array<Page> {
-  return allPages.filter((page) => data.getTags(page.data).includes(tag));
+  return allPages.filter((page) => attrs.getTags(page.attrs).includes(tag));
 }
 
 export function getBacklinkPages(
@@ -146,19 +142,19 @@ export async function generatePage(
     const isIndex = false;
     const content = decoder.decode(await Deno.readFile(entry.path));
     const parsed = fm(content);
-    const pageData = parsed.attributes as data.PageData;
+    const pageAttrs = parsed.attributes as attrs.PageAttributes;
     const body = parsed.body;
-    const date = data.getDate(pageData);
+    const date = attrs.getDate(pageAttrs);
     const { html, links, headings } = render(body, relPath, isIndex, site.url);
     const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
-    const title = data.getTitle(pageData) ||
+    const title = attrs.getTitle(pageAttrs) ||
       getTitleFromHeadings(headings) || getTitleFromFilename(relPath);
-    const description = data.getDescription(pageData) || "";
-    const tags = data.getTags(pageData);
+    const description = attrs.getDescription(pageAttrs) || "";
+    const tags = attrs.getTags(pageAttrs);
     const url = new URL(path.join(path.dirname(relPath), slug), site.url);
 
     return {
-      data: pageData,
+      attrs: pageAttrs,
       path: relPath,
       url,
       body,
@@ -178,17 +174,17 @@ export async function generatePage(
     const isIndex = true;
     const content = decoder.decode(await Deno.readFile(entry.path));
     const parsed = fm(content);
-    const pageData = parsed.attributes as data.PageData;
+    const pageAttrs = parsed.attributes as attrs.PageAttributes;
     const body = parsed.body;
     const { html, links, headings } = render(body, relPath, isIndex, site.url);
-    const title = data.getTitle(pageData) || getTitleFromHeadings(headings) ||
+    const title = attrs.getTitle(pageAttrs) || getTitleFromHeadings(headings) ||
       name;
-    const description = data.getDescription(pageData) || "";
-    const tags = data.getTags(pageData);
+    const description = attrs.getDescription(pageAttrs) || "";
+    const tags = attrs.getTags(pageAttrs);
     const url = new URL(path.join(path.dirname(relPath), slug), site.url);
 
     return {
-      data: pageData,
+      attrs: pageAttrs,
       url,
       body,
       html,
@@ -207,7 +203,7 @@ export async function generatePage(
 
     return {
       title: entry.name,
-      data: {},
+      attrs: {},
       url,
       isIndex,
       links: [],

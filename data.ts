@@ -1,36 +1,36 @@
-export type PageData = Record<string, unknown>;
+export type PageAttributes = Record<string, unknown>;
 
-export const getTitle = (data: PageData): string | undefined => {
-  if (typeof data.title === "string") {
-    return data.title;
-  }
-};
-
-export const hasKey = (data: PageData, keys: Array<string>): boolean => {
-  for (const key of Object.keys(data)) {
-    const keyTyped = key as keyof typeof data;
-    if (keys.includes(keyTyped) && data[keyTyped] === true) {
+export const hasKey = (attrs: PageAttributes, keys: Array<string>): boolean => {
+  for (const key of Object.keys(attrs)) {
+    const keyTyped = key as keyof typeof attrs;
+    if (keys.includes(keyTyped) && attrs[keyTyped] === true) {
       return true;
     }
   }
   return false;
 };
 
-export const getDescription = (data: PageData): string | undefined => {
-  if (typeof data.description === "string") {
-    return data.description;
+export const getTitle = (attrs: PageAttributes): string | undefined => {
+  if (typeof attrs.title === "string") {
+    return attrs.title;
   }
 };
 
-export const getTags = (data: PageData): Array<string> => {
-  if (Array.isArray(data.tags)) {
-    return data.tags;
+export const getDescription = (attrs: PageAttributes): string | undefined => {
+  if (typeof attrs.description === "string") {
+    return attrs.description;
+  }
+};
+
+export const getTags = (attrs: PageAttributes): Array<string> => {
+  if (Array.isArray(attrs.tags)) {
+    return attrs.tags;
   }
   return [];
 };
 
-export const getDate = (data: PageData): Date | undefined => {
-  if (data.date instanceof Date) {
-    return data.date;
+export const getDate = (attrs: PageAttributes): Date | undefined => {
+  if (attrs.date instanceof Date) {
+    return attrs.date;
   }
 };

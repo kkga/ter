@@ -38,7 +38,7 @@ export async function buildContentFiles(
       "index.html",
     );
 
-    const tags = getTags(page.data);
+    const tags = getTags(page.attrs);
     const pagesByTag: { [tag: string]: Array<Page> } = {};
     tags.forEach((tag: string) => {
       pagesByTag[tag] = getPagesByTag(pages, tag);
@@ -48,7 +48,7 @@ export async function buildContentFiles(
       headInclude: opts.head,
       includeRefresh: opts.includeRefresh,
       childPages: page.isIndex ? getChildPages(pages, page) : [],
-      backLinkedPages: getBacklinkPages(pages, page),
+      backlinkPages: getBacklinkPages(pages, page),
       taggedPages: pagesByTag,
       childTags: page.isIndex ? getChildTags(pages, page) : [],
       viewPath: opts.viewPath,
