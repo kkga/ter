@@ -6,10 +6,30 @@
 </article>
 <% } %>
 
+<% if (it.indexLayout === "log") { %>
+  <% if (it.childPages?.length > 0) { %>
+    <% it.childPages.forEach((page) => { %>
+
+    <article>
+      <h2><a href="<%= page.url %>"><%~ page.title %></a></h2>
+
+      <div class="article-meta">
+        <% if (page?.date && page?.readableDate) { %>
+        <time datetime="<%= page.date %>"><%= page.readableDate %></time>
+        <% } %>
+      </div>
+
+      <%~ page.html %>
+    </article>
+
+    <% }) %>
+  <% } %>
+<% } %>
+
 <nav>
-  <% if (it.indexLinks?.length > 0) { %>
+  <% if (it.childPages?.length > 0) { %>
   <%~ includeFile('./pagelist', {
-    links: it.indexLinks,
+    links: it.childPages,
     title: "Index"
   }) %>
   <% } %>
@@ -21,9 +41,9 @@
   }) %>
   <% } %>
 
-  <% if (it.backLinks?.length > 0) { %>
+  <% if (it.backlinkPages?.length > 0) { %>
   <%~ includeFile('./pagelist', {
-    links: it.backLinks,
+    links: it.backlinkPages,
     title: "Backlinks"
   }) %>
   <% } %>
