@@ -44,17 +44,16 @@ export async function buildContentFiles(
       pagesByTag[tag] = getPagesByTag(pages, tag);
     });
 
-    const html = await buildPage(
-      page,
-      opts.head,
-      opts.includeRefresh,
-      page.isIndex ? getChildPages(pages, page) : [],
-      getBacklinkPages(pages, page),
-      pagesByTag,
-      page.isIndex ? getChildTags(pages, page) : [],
-      opts.viewPath,
-      opts.conf,
-    );
+    const html = await buildPage(page, {
+      headInclude: opts.head,
+      includeRefresh: opts.includeRefresh,
+      childPages: page.isIndex ? getChildPages(pages, page) : [],
+      backLinkedPages: getBacklinkPages(pages, page),
+      taggedPages: pagesByTag,
+      childTags: page.isIndex ? getChildTags(pages, page) : [],
+      viewPath: opts.viewPath,
+      siteConf: opts.conf,
+    });
 
     if (typeof html === "string") {
       files.push({
@@ -81,14 +80,13 @@ export async function buildTagFiles(
       "index.html",
     );
 
-    const html = await buildTagPage(
-      tag.name,
-      tag.pages,
-      opts.viewPath,
-      opts.head,
-      opts.includeRefresh,
-      opts.conf,
-    );
+    const html = await buildTagPage(tag.name, {
+      taggedPages: tag.pages,
+      viewPath: opts.viewPath,
+      headInclude: opts.head,
+      includeRefresh: opts.includeRefresh,
+      siteConf: opts.conf,
+    });
 
     if (typeof html === "string") {
       files.push({

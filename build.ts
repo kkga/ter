@@ -24,6 +24,25 @@ interface IndexItem {
   readableDate: string | null;
 }
 
+interface PageOpts {
+  headInclude: string;
+  includeRefresh: boolean;
+  childPages: Array<Page>;
+  backLinkedPages: Array<Page>;
+  taggedPages: { [tag: string]: Array<Page> };
+  childTags: Array<string>;
+  viewPath: string;
+  siteConf: SiteConfig;
+}
+
+interface TagPageOpts {
+  headInclude: string;
+  includeRefresh: boolean;
+  taggedPages: Array<Page>;
+  viewPath: string;
+  siteConf: SiteConfig;
+}
+
 const toReadableDate = (date: Date) =>
   new Date(date).toLocaleDateString("en-us", {
     year: "numeric",
@@ -97,37 +116,29 @@ function generateBreadcrumbs(
   return breadcrumbs;
 }
 
-// TODO: extract into opts interface
 export async function buildPage(
   page: Page,
-  headInclude: string,
-  includeRefresh: boolean,
-  childPages: Array<Page>,
-  backLinkedPages: Array<Page>,
-  taggedPages: { [tag: string]: Array<Page> },
-  childTags: Array<string>,
-  viewPath: string,
-  siteConf: SiteConfig,
+  opts: PageOpts,
 ): Promise<string | void> {
   const { title, description, tags, date, html: content } = page;
   const readableDate = date ? toReadableDate(date) : null;
-  const breadcrumbs = generateBreadcrumbs(page, siteConf.rootName);
-  const backlinkIndexItems = generateIndexItems(backLinkedPages);
-  const childIndexItems = generateIndexItems(childPages);
+  const breadcrumbs = generateBreadcrumbs(page, opts.siteConf.rootName);
+  const backlinkIndexItems = generateIndexItems(opts.backLinkedPages);
+  const childIndexItems = generateIndexItems(opts.childPages);
 
   const tagLists: { [tag: string]: Array<IndexItem> } = {};
-  for (const tag of Object.keys(taggedPages)) {
+  for (const tag of Object.keys(opts.taggedPages)) {
     const tagIndex = generateIndexItems(
-      taggedPages[tag].filter((taggedPage) => taggedPage !== page),
+      opts.taggedPages[tag].filter((taggedPage) => taggedPage !== page),
     );
     if (tagIndex.length !== 0) {
       tagLists[tag] = tagIndex;
     }
   }
 
-  eta.templates.define("head", eta.compile(headInclude));
+  eta.templates.define("head", eta.compile(opts.headInclude));
 
-  return await eta.renderFile(viewPath, {
+  return await eta.renderFile(opts.viewPath, {
     page: {
       title,
       description,
@@ -140,38 +151,33 @@ export async function buildPage(
     indexLinks: childIndexItems,
     backLinks: backlinkIndexItems,
     taggedIndexLinks: tagLists,
-    childTags,
-    site: siteConf,
-    includeRefresh,
+    childTags: opts.childTags,
+    site: opts.siteConf,
+    includeRefresh: opts.includeRefresh,
   });
 }
 
-// TODO: extract into opts interface
 export async function buildTagPage(
-  name: string,
-  pages: Array<Page>,
-  tagViewPath: string,
-  headInclude: string,
-  includeRefresh: boolean,
-  siteConf: SiteConfig,
+  tagName: string,
+  opts: TagPageOpts,
 ): Promise<string | void> {
-  eta.templates.define("head", eta.compile(headInclude));
-  const indexItems = generateIndexItems(pages);
+  eta.templates.define("head", eta.compile(opts.headInclude));
+  const indexItems = generateIndexItems(opts.taggedPages);
   const breadcrumbs: Array<Breadcrumb> = [
     { slug: "index", url: "/", current: false },
-    { slug: `#${name}`, url: "", current: true, isTag: true },
+    { slug: `#${tagName}`, url: "", current: true, isTag: true },
   ];
 
-  const result = await eta.renderFile(tagViewPath, {
+  const result = await eta.renderFile(opts.viewPath, {
     page: {
-      title: `#${name}`,
-      description: `Pages tagged #${name}`,
+      title: `#${tagName}`,
+      description: `Pages tagged #${tagName}`,
     },
-    name,
+    tagName,
     breadcrumbs,
     indexLinks: indexItems,
-    site: siteConf,
-    includeRefresh,
+    site: opts.siteConf,
+    includeRefresh: opts.includeRefresh,
   });
   return result;
 }
