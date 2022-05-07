@@ -95,7 +95,8 @@ h1 {
   line-height: var(--line-height-head);
 }
 
-h1:first-child {
+h1:first-child,
+h2:first-child {
   margin-top: 0;
 }
 
@@ -201,16 +202,6 @@ video {
 
 article > img {
   margin: 1.5rem 0;
-}
-
-article :is(h1, h2, h3, h4, h5, h6):first-child {
-  margin: 0;
-}
-
-.article-meta {
-  font-size: var(--font-size-s);
-  line-height: var(--line-height-tight);
-  color: var(--color-text-tertiary);
 }
 
 blockquote {
@@ -368,46 +359,37 @@ body > header time {
   color: var(--color-text-secondary);
 }
 
-.header-meta {
-  display: flex;
-  flex-direction: column;
-}
-
-.header-meta-row {
-  display: flex;
-}
-
-.header-meta-row > *:not(:first-child)::before {
-  content: "·";
-  margin: 0 0.5em;
+.metadata {
+  font-size: var(--font-size-s);
+  line-height: var(--line-height-tight);
   color: var(--color-text-tertiary);
 }
 
-@media only screen and (min-width: 32em) {
-  .header-meta {
-    align-items: flex-end;
-  }
+.metadata-time:not(.metadata-time:empty) + .metadata-tags::before {
+  content: "·";
+  margin: 0 0.25em;
+  color: var(--color-text-tertiary);
 }
 
-.header-meta-time {
-  display: block;
+.metadata-time {
+  display: inline-block;
 }
 
-.header-meta-tags {
-  display: flex;
+.metadata-tags {
+  display: inline-flex;
   gap: 0.5em;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.header-meta-tag a {
+.metadata-tags-tag a {
   text-decoration: none;
   color: currentcolor;
   margin: 0;
 }
 
-.header-meta-tag a::before {
+.metadata-tags-tag a::before {
   content: "#";
   color: var(--color-text-tertiary);
 }
@@ -492,15 +474,12 @@ INDEX/TAG LIST -----------------------------------------------------------------
 .list-page-name::before {
   content: "◇ ";
 }
-
 .list-page--index .list-page-name::before {
   content: "❖ ";
 }
-
 .list-page--index .list-page-name::after {
   content: "";
 }
-
 .list-page--pinned .list-page-name::after {
   content: "★";
 }

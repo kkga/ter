@@ -5,12 +5,11 @@ const MOD_URL = new URL("https://deno.land/x/ter");
 
 const requiredViews = [
   "base.eta",
-  "feed.xml.eta",
-  "header.eta",
   "page.eta",
   "pagelist.eta",
   "taglist.eta",
   "refresh.eta",
+  "feed.xml.eta",
 ];
 
 const requiredAssets = [

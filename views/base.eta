@@ -26,7 +26,47 @@
     <%~ includeFile('refresh') %>
     <% } %>
 
-    <%~ includeFile('header', { breadcrumbs: it.breadcrumbs, page: it.page }) %>
+    <header class="header">
+      <nav class="breadcrumbs" aria-label="breadcrumb">
+        <ol class="breadcrumbs">
+          <% it.breadcrumbs.forEach((crumb, index) => { %>
+            <li class="breadcrumbs-item
+            <%_= crumb.isTag ? ' breadcrumbs-item--tag' : '' %>
+            <%_= crumb.current ? ' breadcrumbs-item--current' : '' %>">
+              <% if (crumb.url !== "") { %>
+              <a href="<%= crumb.url %>"><%= crumb.slug %></a>
+              <% } else { %>
+              <%= crumb.slug %>
+              <% } %>
+            </li>
+          <% }) %>
+        </ol>
+      </nav>
+
+      <div class="metadata">
+        <% if (it.page?.description) { %>
+        <div><%= it.page.description %></div>
+        <% } %>
+
+        <div>
+          <% if (it.page?.date && it.page?.readableDate) { %>
+          <time class="metadata-time" datetime="<%= it.page.date %>"><%= it.page.readableDate %></time>
+          <% } %>
+
+          <% if (it.page?.tags?.length > 0 ) { %>
+          <ul class="metadata-tags">
+            <% it.page.tags.forEach((tag) => { %>
+            <li class="metadata-tags-tag">
+              <a href="<%= `/tag/${tag}` %>">
+                <%_= `${tag}` _%>
+              </a>
+            </li>
+            <% }) %>
+          </ul>
+          <% } %>
+        </div>
+      </div>
+    </header>
 
     <main>
       <%~ it.body %>

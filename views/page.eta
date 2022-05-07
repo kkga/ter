@@ -7,23 +7,39 @@
 <% } %>
 
 <% if (it.indexLayout === "log") { %>
-  <% if (it.childPages?.length > 0) { %>
-    <% it.childPages.forEach((page) => { %>
+  <% it.childPages.forEach((page) => { %>
 
-    <article>
-      <h2><a href="<%= page.url %>"><%~ page.title %></a></h2>
+  <article>
+    <h2><a href="<%= page.url %>"><%~ page.title %></a></h2>
 
-      <div class="article-meta">
-        <% if (page?.date && page?.readableDate) { %>
-        <time datetime="<%= page.date %>"><%= page.readableDate %></time>
+    <div class="metadata">
+      <% if (page?.description) { %>
+      <div><%= page.description %></div>
+      <% } %>
+
+      <div>
+        <% if (page.date && page.readableDate) { %>
+        <time class="metadata-time" datetime="<%= page.date %>"><%= page.readableDate %></time>
+        <% } %>
+
+        <% if (page?.tags?.length > 0 ) { %>
+        <ul class="metadata-tags">
+          <% page.tags.forEach((tag) => { %>
+          <li class="metadata-tags-tag">
+            <a href="<%= `/tag/${tag}` %>">
+              <%_= `${tag}` _%>
+            </a>
+          </li>
+          <% }) %>
+        </ul>
         <% } %>
       </div>
+    </div>
 
-      <%~ page.html %>
-    </article>
+    <%~ page.html %>
+  </article>
 
-    <% }) %>
-  <% } %>
+  <% }) %>
 <% } %>
 
 <nav>
