@@ -1,5 +1,4 @@
 ---
-title: Test folder
 description: Content for testing purposes
 ---
 
