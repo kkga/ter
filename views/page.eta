@@ -1,34 +1,33 @@
 <% layout('./base') %>
 
-<%if (it.page?.content) { %>
+<%if (it.page?.html) { %>
 <article>
-  <%~ it.page?.content %>
+  <%~ it.page.html %>
 </article>
 <% } %>
 
 <% if (it.indexLayout === "log") { %>
-  <% it.childPages.forEach((page) => { %>
-
+  <% it.childPages.forEach((page) => {
+    const {title, description, date, tags, html, url} = page;
+  %>
   <article>
-    <h2><a href="<%= page.url %>"><%~ page.title %></a></h2>
+    <h2><a href="<%= url.pathname %>"><%~ title %></a></h2>
 
     <div class="metadata">
-      <% if (page?.description) { %>
-      <div><%= page.description %></div>
+      <% if (description) { %>
+      <div><%= description %></div>
       <% } %>
 
       <div>
-        <% if (page.date && page.readableDate) { %>
-        <time class="metadata-time" datetime="<%= page.date %>"><%= page.readableDate %></time>
+        <% if (date) { %>
+        <time class="metadata-time" datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
         <% } %>
 
-        <% if (page?.tags?.length > 0 ) { %>
+        <% if (tags && tags.length > 0 ) { %>
         <ul class="metadata-tags">
-          <% page.tags.forEach((tag) => { %>
+          <% tags.forEach((tag) => { %>
           <li class="metadata-tags-tag">
-            <a href="<%= `/tag/${tag}` %>">
-              <%_= `${tag}` _%>
-            </a>
+            <a href="<%= `/tag/${tag}` %>"><%~ tag %></a>
           </li>
           <% }) %>
         </ul>
@@ -36,7 +35,7 @@
       </div>
     </div>
 
-    <%~ page.html %>
+    <%~ html %>
   </article>
 
   <% }) %>
@@ -45,7 +44,7 @@
 <nav>
   <% if (it.childPages?.length > 0) { %>
   <%~ includeFile('./pagelist', {
-    links: it.childPages,
+    pages: it.childPages,
     title: "Index"
   }) %>
   <% } %>
@@ -59,14 +58,14 @@
 
   <% if (it.backlinkPages?.length > 0) { %>
   <%~ includeFile('./pagelist', {
-    links: it.backlinkPages,
+    pages: it.backlinkPages,
     title: "Backlinks"
   }) %>
   <% } %>
 
   <% it.taggedIndexLinks && Object.keys(it.taggedIndexLinks).forEach((tag) => { %>
   <%~ includeFile('./pagelist', {
-    links: it.taggedIndexLinks[tag],
+    pages: it.taggedIndexLinks[tag],
     title: `Tagged #${tag}`,
     rootUrl: `/tag/${tag}`
   }) %>

@@ -44,18 +44,20 @@
       </nav>
 
       <div class="metadata">
-        <% if (it.page?.description) { %>
-        <div><%= it.page.description %></div>
+        <% const { description, date, tags } = it.page %>
+
+        <% if (description) { %>
+        <div><%= description %></div>
         <% } %>
 
         <div>
-          <% if (it.page?.date && it.page?.readableDate) { %>
-          <time class="metadata-time" datetime="<%= it.page.date %>"><%= it.page.readableDate %></time>
+          <% if (date) { %>
+          <time class="metadata-time" datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
           <% } %>
 
-          <% if (it.page?.tags?.length > 0 ) { %>
+          <% if (tags?.length > 0 ) { %>
           <ul class="metadata-tags">
-            <% it.page.tags.forEach((tag) => { %>
+            <% tags.forEach((tag) => { %>
             <li class="metadata-tags-tag">
               <a href="<%= `/tag/${tag}` %>">
                 <%_= `${tag}` _%>
@@ -72,8 +74,6 @@
       <%~ it.body %>
     </main>
 
-    <footer>
-      Made with <a href="https://github.com/kkga/ter">Ter</a>.
-    </footer>
+    <footer>Made with <a href="https://github.com/kkga/ter">Ter</a>.</footer>
   </body>
 </html>
