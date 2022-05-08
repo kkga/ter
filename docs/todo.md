@@ -2,7 +2,15 @@
 unlisted: true
 ---
 
-### TODO
+## log layout
+
+- [x] add `log: true` option in frontmatter
+- [x] render page content inline if log true is set
+- [ ] simplify styles for metadata in header and inline articles
+- [ ] pass the same data structure to page view for both page content and index
+      links
+
+## misc
 
 - [x] differentiate internal and external links
 - [x] resolve relative paths in content
@@ -23,11 +31,9 @@ unlisted: true
 - [ ] use streams to open and write markdown files
 - [ ] sanitize markdown output
 
-### MISC
-
 - [x] stress-test with
       https://github.com/Zettelkasten-Method/10000-markdown-files
 
-### MAYBE
+## maybe
 
 - [[wiki-style]] links?
