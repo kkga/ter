@@ -182,8 +182,6 @@ async function main(args: string[]) {
       runner: generateSite,
       config,
     });
-  } else {
-    Deno.exit();
   }
 }
 
