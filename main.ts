@@ -43,7 +43,7 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
 
   const START = performance.now();
 
-  console.log("%cScanning input dir...", "font-weight: bold");
+  console.log(`scan\t${inputPath}`);
   const [contentEntries, staticEntries, assetEntries] = await Promise.all([
     entries.getContentEntries(inputPath),
     entries.getStaticEntries(inputPath, outputPath, staticExts),
@@ -52,11 +52,12 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
 
   const unfilteredPages: pages.Page[] = [];
 
-  console.log("%cRendering markdown...", "font-weight: bold");
   for (const entry of contentEntries) {
+    config.quiet ||
+      console.log(`render\t${path.relative(inputPath, entry.path)}`);
     const page = await pages.generatePage(entry, inputPath, siteConf).catch(
       (reason: string) => {
-        console.log(`Can't generate page ${entry.path}: ${reason}`);
+        console.log(`Can't render page ${entry.path}: ${reason}`);
       },
     );
     page && unfilteredPages.push(page);
@@ -76,8 +77,6 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
   const pageViewPath = path.join(Deno.cwd(), viewsPath, "page.eta");
   const tagViewPath = path.join(Deno.cwd(), viewsPath, "page.eta");
   const headInclude = await getHeadInclude(viewsPath) ?? "";
-
-  console.log("%cBuilding html files...", "font-weight: bold");
 
   const [contentFiles, tagFiles, staticFiles, assetFiles] = await Promise.all(
     [
@@ -127,12 +126,10 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
 
   await files.writeFiles(
     [...tagFiles, ...contentFiles],
-    "html files",
     config.quiet,
   );
   await files.copyFiles(
     [...staticFiles, ...assetFiles],
-    "static files",
     config.quiet,
   );
 
@@ -140,21 +137,22 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
   const BUILD_SECS = (END - START);
   const totalFiles = contentFiles.length + tagFiles.length;
 
-  console.log("%cResult:", "font-weight: bold");
-  console.log(`\
-  Built\t\t${totalFiles} pages
-  Copied\t${staticFiles.length} static files and ${assetEntries.length} site assets
-  In\t\t${Math.floor(BUILD_SECS)}ms`);
-
   if (deadLinks.length > 0) {
-    console.log("%cFound dead links:", "font-weight: bold; color: red");
+    console.log("---");
+    console.log("%cDead links:", "font-weight: bold; color: red");
     deadLinks.forEach(([pageUrl, linkUrl]) => {
       console.log(
-        `  ${pageUrl.pathname}\tlinks to %c${linkUrl.pathname}`,
+        `${pageUrl.pathname} -> %c${linkUrl.pathname}`,
         "color:red",
       );
     });
   }
+
+  console.log("---");
+  console.log(`${totalFiles} pages`);
+  console.log(`${staticFiles.length} static files`);
+  console.log(`${assetEntries.length} site assets`);
+  console.log(`Done in ${Math.floor(BUILD_SECS)}ms`);
 }
 
 async function main(args: string[]) {

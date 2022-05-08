@@ -146,15 +146,12 @@ export function getStaticFiles(
 
 export async function writeFiles(
   files: OutputFile[],
-  description: string,
   quiet = false,
 ) {
-  files.length > 0 &&
-    console.log(`%cWriting ${description}...`, "font-weight: bold");
-
   for (const file of files) {
     if (file.fileContent) {
-      !quiet && console.log(`  ${path.relative(Deno.cwd(), file.filePath)}`);
+      quiet ||
+        console.log(`write\t${path.relative(Deno.cwd(), file.filePath)}`);
       await fs.ensureDir(path.dirname(file.filePath));
       await Deno.writeTextFile(file.filePath, file.fileContent);
     }
@@ -163,15 +160,12 @@ export async function writeFiles(
 
 export async function copyFiles(
   files: OutputFile[],
-  description: string,
   quiet = false,
 ) {
-  files.length > 0 &&
-    console.log(`%cCopying ${description}...`, "font-weight: bold");
-
   for (const file of files) {
     if (file.inputPath) {
-      !quiet && console.log(`  ${path.relative(Deno.cwd(), file.filePath)}`);
+      quiet ||
+        console.log(`copy\t${path.relative(Deno.cwd(), file.filePath)}`);
       await fs.ensureDir(path.dirname(file.filePath));
       await fs.copy(file.inputPath, file.filePath);
     }
