@@ -89,6 +89,6 @@ async function requestHandler(request: Request) {
 export function serve(opts: ServeOpts) {
   servePath = opts.config.outputPath;
   watch(opts);
+  console.log(`---`);
   httpServe(requestHandler, { port: opts.port });
-  console.log(`---\nServing site on http://localhost:${opts.port}/`);
 }
