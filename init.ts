@@ -5,9 +5,7 @@ const MOD_URL = new URL("https://deno.land/x/ter");
 
 const requiredViews = [
   "base.eta",
-  "page.eta",
-  "pagelist.eta",
-  "taglist.eta",
+  "indexlist.eta",
   "refresh.eta",
   "feed.xml.eta",
 ];

@@ -1,5 +1,5 @@
-<div class="indexlist">
-  <h3 class="indexlist-heading">
+<div>
+  <h3 class="metadata-key">
     <% if (it.rootUrl) { %>
       <a href="<%= it.rootUrl %>"><%= it.title %></a>
     <% } else { %>
@@ -7,8 +7,29 @@
     <% } %>
   </h3>
 
+  <% if (it.type === "tags") { %>
+  <ul class="indexlist-tags">
+    <% it.items.forEach((tag) => { %>
+    <li class="indexlist-tag">
+      <a href="<%= `/tag/${tag}` %>">
+        <%_= `${tag}` _%>
+      </a>
+    </li>
+    <% }) %>
+  </ul>
+  <% } else if (it.type === "headings") { %>
+  <ul class="indexlist-headings">
+    <% it.items.forEach((heading) => { %>
+    <li class="indexlist-heading">
+      <a href="./<%= heading.slug %>">
+        <%_= `${heading.text}` _%>
+      </a>
+    </li>
+    <% }) %>
+  </ul>
+  <% } else if (it.type === "pages") { %>
   <ul class="indexlist-pages">
-    <% it.pages.forEach((page) => {
+    <% it.items.forEach((page) => {
       const {pinned, isIndex, url, description, title, date } = page; %>
 
     <li class="indexlist-page
@@ -17,9 +38,10 @@
 
       <a href="<%= url.pathname %>">
         <span class="indexlist-page-name"><%= title %></span>
-        <% if (description) { %>
+  <!--        <% if (description) { %>
         <span class="indexlist-page-description"><%= description %></span>
         <% } %>
+  -->
         <% if (date) { %>
         <time class="indexlist-page-time" datetime="<%= date %>">
           <%= date.toLocaleDateString() %>
@@ -31,4 +53,5 @@
 
     <% }) %>
   </ul>
+  <% } %>
 </div>

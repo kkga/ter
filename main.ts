@@ -74,8 +74,8 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
     tagPages.push({ name: tag, pages: pagesWithTag });
   }
 
-  const pageViewPath = path.join(Deno.cwd(), viewsPath, "page.eta");
-  const tagViewPath = path.join(Deno.cwd(), viewsPath, "page.eta");
+  const pageViewPath = path.join(Deno.cwd(), viewsPath, "base.eta");
+  const tagViewPath = path.join(Deno.cwd(), viewsPath, "base.eta");
   const headInclude = await getHeadInclude(viewsPath) ?? "";
 
   const [contentFiles, tagFiles, staticFiles, assetFiles] = await Promise.all(

@@ -1,6 +1,6 @@
 <% layout('./base') %>
 
-<%if (it.page?.html) { %>
+<% if (it.page?.html) { %>
 <article>
   <%~ it.page.html %>
 </article>
@@ -40,34 +40,3 @@
 
   <% }) %>
 <% } %>
-
-<nav>
-  <% if (it.childPages?.length > 0) { %>
-  <%~ includeFile('./pagelist', {
-    pages: it.childPages,
-    title: "Index"
-  }) %>
-  <% } %>
-
-  <% if (it.childTags?.length > 0) { %>
-  <%~ includeFile('./taglist', {
-    tags: it.childTags,
-    title: "Tag index"
-  }) %>
-  <% } %>
-
-  <% if (it.backlinkPages?.length > 0) { %>
-  <%~ includeFile('./pagelist', {
-    pages: it.backlinkPages,
-    title: "Backlinks"
-  }) %>
-  <% } %>
-
-  <% it.taggedIndexLinks && Object.keys(it.taggedIndexLinks).forEach((tag) => { %>
-  <%~ includeFile('./pagelist', {
-    pages: it.taggedIndexLinks[tag],
-    title: `Tagged #${tag}`,
-    rootUrl: `/tag/${tag}`
-  }) %>
-  <% }) %>
-</nav>

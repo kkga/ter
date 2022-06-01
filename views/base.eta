@@ -1,35 +1,86 @@
 <!DOCTYPE html>
+<%
+const {
+  breadcrumbs, childPages, childTags, backlinkPages, taggedIndexLinks,
+  indexLayout, page, site, includeRefresh
+} = it;
+
+const { title, description, date, tags, headings, html } = page;
+%>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-      <%_ if (it.page?.title !== it.site.title) { %><%_= it.page?.title %> - <% } %>
-      <%_= it.site.title _%>
-    </title>
-    <meta name="description" content="<%= it.page?.description ? it.page.description : it.site.description %>">
+    <title><%= title !== site.title ? `${title} · ${site.title}` : site.title %></title>
+    <meta name="description" content="<%= description ?? site.description %>">
     <link rel="stylesheet" href="/ter.css">
     <link rel="stylesheet" href="/hljs.css">
     <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="<%= it.page?.title ? it.page.title : it.site.title %>">
-    <meta name="twitter:description" content="<%= it.page?.description? it.page.description : it.site.description %>">
+    <meta name="twitter:title" content="<%= title ?? site.title %>">
+    <meta name="twitter:description" content="<%= description ?? site.description %>">
     <meta property="og:type" content="article">
-    <meta property="og:title" content="<%= it.page?.title? it.page.title : it.site.title %>">
-    <meta property="og:description" content="<%= it.page?.description ? it.page.description : it.site.description %>">
-    <meta property="og:url" content="<%= it.site.url %>">
+    <meta property="og:title" content="<%= title ?? site.title %>">
+    <meta property="og:description" content="<%= description ?? site.description %>">
+    <meta property="og:url" content="<%= site.url %>">
     <%~ include("head") %>
   </head>
 
   <body>
-    <% if (it.includeRefresh) { %>
+
+    <% if (includeRefresh) { %>
     <%~ includeFile('refresh') %>
     <% } %>
 
-    <header class="header">
-      <nav class="breadcrumbs" aria-label="breadcrumb">
+
+    <main>
+      <% if (html) { %>
+      <article>
+        <%~ html %>
+      </article>
+      <% } %>
+
+      <% if (indexLayout === "log") { %>
+        <% childPages.forEach((page) => {
+          const {title, description, date, tags, html, url} = page;
+        %>
+        <article>
+          <h2><a href="<%= url.pathname %>"><%~ title %></a></h2>
+
+          <div class="metadata">
+            <% if (description) { %>
+            <div><%= description %></div>
+            <% } %>
+
+            <div>
+              <% if (date) { %>
+              <time class="metadata-time" datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
+              <% } %>
+
+              <% if (tags && tags.length > 0 ) { %>
+              <ul class="metadata-tags">
+                <% tags.forEach((tag) => { %>
+                <li class="metadata-tags-tag">
+                  <a href="<%= `/tag/${tag}` %>"><%~ tag %></a>
+                </li>
+                <% }) %>
+              </ul>
+              <% } %>
+            </div>
+          </div>
+
+          <%~ html %>
+        </article>
+
+        <% }) %>
+      <% } %>
+    </main>
+
+    <aside>
+      <% if (breadcrumbs) { %>
+      <nav aria-label="breadcrumbs">
         <ol class="breadcrumbs">
-          <% it.breadcrumbs.forEach((crumb, index) => { %>
+          <% breadcrumbs.forEach((crumb) => { %>
             <li class="breadcrumbs-item
             <%_= crumb.isTag ? ' breadcrumbs-item--tag' : '' %>
             <%_= crumb.current ? ' breadcrumbs-item--current' : '' %>">
@@ -42,38 +93,68 @@
           <% }) %>
         </ol>
       </nav>
+      <% } %>
 
+
+      <% if (description) { %>
       <div class="metadata">
-        <% const { description, date, tags } = it.page %>
-
-        <% if (description) { %>
+        <div class="metadata-key">Description</div>
         <div><%= description %></div>
-        <% } %>
-
-        <div>
-          <% if (date) { %>
-          <time class="metadata-time" datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
-          <% } %>
-
-          <% if (tags?.length > 0 ) { %>
-          <ul class="metadata-tags">
-            <% tags.forEach((tag) => { %>
-            <li class="metadata-tags-tag">
-              <a href="<%= `/tag/${tag}` %>">
-                <%_= `${tag}` _%>
-              </a>
-            </li>
-            <% }) %>
-          </ul>
-          <% } %>
-        </div>
       </div>
-    </header>
+      <% } %>
 
-    <main>
-      <%~ it.body %>
-    </main>
+      <% if (date) { %>
+      <div class="metadata">
+        <div class="metadata-key">Date</div>
+        <time class="metadata-value" datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
+      </div>
+      <% } %>
 
-    <footer>Made with <a href="https://github.com/kkga/ter">Ter</a>.</footer>
-  </body>
+      <% if (headings?.length > 0) { %>
+      <%~ includeFile('./indexlist', {
+        type: "headings",
+        items: headings,
+        title: "Contents"
+      }) %>
+      <% } %>
+
+      <% if (childPages?.length > 0) { %>
+      <%~ includeFile('./indexlist', {
+        type: "pages",
+        items: childPages,
+        title: "Child pages"
+      }) %>
+      <% } %>
+
+      <% if (childTags?.length > 0) { %>
+      <%~ includeFile('./indexlist', {
+        type: "tags",
+        items: childTags,
+        title: "Child tags"
+      }) %>
+      <% } %>
+
+      <% if (backlinkPages?.length > 0) { %>
+      <%~ includeFile('./indexlist', {
+        type: "pages",
+        items: backlinkPages,
+        title: "Backlinks"
+      }) %>
+      <% } %>
+
+      <% taggedIndexLinks?.length > 0 && Object.keys(taggedIndexLinks).forEach((tag) => { %>
+      <%~ includeFile('./indexlist', {
+        type: "pages",
+        items: taggedIndexLinks[tag],
+        title: `Tagged #${tag}`,
+        rootUrl: `/tag/${tag}`
+      }) %>
+      <% }) %>
+
+    </aside>
+
+<!--    <footer>
+      Made with <a href="https://github.com/kkga/ter">Ter</a>.
+    </footer>
+-->  </body>
 </html>

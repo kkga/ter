@@ -31,6 +31,8 @@ ROOT -------------------------------------------------------------------------
 
   /* Scales */
   --width-body: 48rem;
+  --width-aside: 24rem;
+  --padding-paragraph: 40px;
   --font-size-base: 16px;
   --font-size-s: 0.875rem;
   --font-size-xs: 0.75rem;
@@ -126,12 +128,11 @@ TOP-LEVEL STUFF ------------------------------------------------------------
 body {
   box-sizing: border-box;
   display: grid;
-  grid-template-columns: 1fr min(var(--width-body), calc(100% - 2rem)) 1fr;
+  grid-template-columns: 2fr 1fr;
   grid-template-rows: auto 1fr auto;
-  grid-gap: 3rem 1rem;
+  grid-template-areas: "main header" "main aside";
   min-height: 100vh;
   margin: 0;
-  padding: 1rem 0;
   background: var(--color-bg-body);
   color: var(--color-text-body);
   font-family: var(--font-sans), system-ui, sans-serif;
@@ -147,20 +148,40 @@ footer {
   color: var(--color-text-tertiary);
 }
 
-body > header,
-body > footer,
-body > main {
-  grid-column: 2;
+body > header {
+  grid-area: header;
 }
 
-main > article {
-  margin-bottom: 3rem;
+main {
+  grid-area: main;
+  margin: 3rem auto;
+  max-width: var(--width-body);
+  width: 100%;
+  padding: 0 2rem;
+}
+body > footer {
+  display: none;
+  grid-area: footer;
+}
+body > aside {
+  grid-area: aside;
+  position: sticky;
+  top: 0;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-main > nav {
+body > aside nav {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+
+body > aside:not(:hover) * {
+  color: var(--color-dark-text-tertiary) !important;
+  transition: color 0.2s;
 }
 
 /*
@@ -178,14 +199,7 @@ a:visited {
 }
 
 a[href]:hover {
-  text-decoration: none;
-  color: var(--color-text-accent);
-  background-color: var(--color-bg-secondary);
-  border-radius: calc(1em * 0.25);
-  padding-left: calc(1em * 0.25);
-  padding-right: calc(1em * 0.25);
-  margin-left: calc(1em * -0.25);
-  margin-right: calc(1em * -0.25);
+  text-decoration: underline;
 }
 
 a[rel~="external"] {
@@ -202,6 +216,9 @@ video {
 
 article > img {
   margin: 1.5rem 0;
+}
+article > p {
+  padding-left: var(--padding-paragraph);
 }
 
 blockquote {
@@ -313,6 +330,13 @@ ol ol {
 HEADER/BREADCRUMBS -------------------------------------------------------------------
 */
 
+.divider {
+  height: 1px;
+  width: 100%;
+  background-color: var(--color-text-tertiary);
+  opacity: 0.1;
+}
+
 body > header {
   display: flex;
   flex-direction: column;
@@ -324,12 +348,12 @@ body > header {
   color: var(--color-text-tertiary);
 }
 
-@media only screen and (min-width: 32em) {
+/*@media only screen and (min-width: 32em) {
   body > header {
     flex-direction: row;
   }
 }
-
+*/
 body > header time {
   color: var(--color-text-tertiary);
 }
@@ -338,6 +362,13 @@ body > header time {
   margin: 0;
   padding: 0;
   list-style: none;
+  font-size: var(--font-size-xs);
+}
+
+.breadcrumbs::after {
+  flex: 1;
+  content: "";
+  border-top: 1px solid var(--color-bg-secondary);
 }
 
 .breadcrumbs-item {
@@ -395,26 +426,30 @@ body > header time {
 }
 
 /*
-INDEXLIST -----------------------------------------------------------------
+ASIDE -----------------------------------------------------------------
 */
 
-.indexlist-heading {
-  color: var(--color-text-secondary);
+aside {
+  font-size: var(--font-size-s);
+}
+
+.metadata-key {
+  color: var(--color-text-tertiary);
   margin: 0;
   line-height: 2;
   font-size: var(--font-size-xs);
   letter-spacing: 0;
-  font-weight: var(--font-weight-m);
+  font-weight: normal;
   display: flex;
   gap: 0.5em;
   align-items: baseline;
 }
 
-.indexlist-heading a {
+.metadata-key a {
   color: inherit;
 }
 
-.indexlist-heading::after {
+.metadata-key::after {
   flex: 1;
   content: "";
   border-top: 1px solid var(--color-bg-secondary);
@@ -471,14 +506,10 @@ INDEXLIST -----------------------------------------------------------------
   font-weight: var(--font-weight-b);
 }
 
-.indexlist-page-name::before {
-  content: "◇ ";
-}
-.indexlist-page--index .indexlist-page-name::before {
-  content: "❖ ";
-}
 .indexlist-page--index .indexlist-page-name::after {
-  content: "";
+  content: " / ..";
+  font-weight: var(--font-weight-m);
+  color: var(--color-text-tertiary);
 }
 .indexlist-page--pinned .indexlist-page-name::after {
   content: "★";
