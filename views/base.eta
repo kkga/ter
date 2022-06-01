@@ -111,50 +111,80 @@ const { title, description, date, tags, headings, html } = page;
       <% } %>
 
       <% if (headings?.length > 0) { %>
-      <%~ includeFile('./indexlist', {
-        type: "headings",
-        items: headings,
-        title: "Contents"
-      }) %>
+      <div class="metadata">
+        <div class="metadata-key">Contents</div>
+        <ul class="metadata-value">
+          <% headings.forEach((heading) => { %>
+          <li><a href="#<%= heading.slug %>"><%_= heading.text _%></a></li>
+          <% }) %>
+        </ul>
+      </div>
       <% } %>
 
       <% if (childPages?.length > 0) { %>
-      <%~ includeFile('./indexlist', {
-        type: "pages",
-        items: childPages,
-        title: "Child pages"
-      }) %>
+      <div class="metadata">
+        <div class="metadata-key">Child pages</div>
+        <ul class="metadata-value">
+          <% childPages.forEach((page) => {
+            const {pinned, isIndex, url, description, title, date } = page; %>
+          <li>
+            <a href="<%= url.pathname %>"><%= title %></a>
+            <% if (date) { %>
+              <time datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
+            <% } %>
+          </li>
+          <% }) %>
+      </div>
       <% } %>
 
       <% if (childTags?.length > 0) { %>
-      <%~ includeFile('./indexlist', {
-        type: "tags",
-        items: childTags,
-        title: "Child tags"
-      }) %>
+      <div class="metadata">
+        <div class="metadata-key">Child tags</div>
+        <ul class="metadata-value">
+          <% childTags.forEach((tag) => { %>
+          <li><a href="<%= `/tag/${tag}` %>"><%_= tag _%></a></li>
+          <% }) %>
+        </ul>
+      </div>
       <% } %>
 
       <% if (backlinkPages?.length > 0) { %>
-      <%~ includeFile('./indexlist', {
-        type: "pages",
-        items: backlinkPages,
-        title: "Backlinks"
-      }) %>
+      <div class="metadata">
+        <div class="metadata-key">Backlinks</div>
+        <ul class="metadata-value">
+          <% backlinkPages.forEach((page) => {
+            const {pinned, isIndex, url, description, title, date } = page; %>
+          <li>
+            <a href="<%= url.pathname %>"><%= title %></a>
+            <% if (date) { %>
+              <time datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
+            <% } %>
+          </li>
+          <% }) %>
+        </ul>
+      </div>
       <% } %>
 
       <% taggedIndexLinks?.length > 0 && Object.keys(taggedIndexLinks).forEach((tag) => { %>
-      <%~ includeFile('./indexlist', {
-        type: "pages",
-        items: taggedIndexLinks[tag],
-        title: `Tagged #${tag}`,
-        rootUrl: `/tag/${tag}`
-      }) %>
+      <div class="metadata">
+        <div class="metadata-key"><a href=<%= `/tag/${tag}` %>><%= `Tagged ${tag}` %></a></div>
+        <ul class="metadata-value">
+          <% taggedIndexLinks[tag].forEach((page) => {
+            const {isIndex, url, title, date } = page; %>
+          <li>
+            <a href="<%= url.pathname %>"><%= title %></a>
+            <% if (date) { %>
+              <time datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
+            <% } %>
+          </li>
+          <% }) %>
+        </ul>
+      </div>
       <% }) %>
 
     </aside>
-
-<!--    <footer>
+<!--<footer>
       Made with <a href="https://github.com/kkga/ter">Ter</a>.
-    </footer>
--->  </body>
+    </footer> -->
+  </body>
 </html>
