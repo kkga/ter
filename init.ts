@@ -2,18 +2,8 @@ import { fs, path, writableStreamFromWriter, yamlStringify } from "./deps.ts";
 import { TerConfig } from "./config.ts";
 
 const MOD_URL = new URL("https://deno.land/x/ter");
-
-const requiredViews = [
-  "base.eta",
-  "indexlist.eta",
-  "refresh.eta",
-  "feed.xml.eta",
-];
-
-const requiredAssets = [
-  "ter.css",
-  "hljs.css",
-];
+const requiredViews = ["base.eta", "refresh.eta", "feed.xml.eta"];
+const requiredAssets = ["ter.css", "hljs.css"];
 
 async function initializeFile(filePath: string, url: URL) {
   const fileResponse = await fetch(url).catch((err) => {
