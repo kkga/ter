@@ -106,7 +106,7 @@ export async function buildPage(
     breadcrumbs,
     childPages,
     backlinkPages,
-    taggedIndexLinks: taggedPages,
+    pagesByTag: taggedPages,
     childTags: opts.childTags,
     site: opts.siteConf,
     includeRefresh: opts.includeRefresh,
@@ -118,7 +118,6 @@ export async function buildTagPage(
   opts: TagPageOpts,
 ): Promise<string | void> {
   eta.templates.define("head", eta.compile(opts.headInclude));
-  const indexItems = sortPages(opts.taggedPages);
   const breadcrumbs: Array<Breadcrumb> = [
     { slug: "index", url: "/", current: false },
     { slug: `#${tagName}`, url: "", current: true, isTag: true },
@@ -131,7 +130,7 @@ export async function buildTagPage(
     },
     tagName,
     breadcrumbs,
-    indexLinks: indexItems,
+    childPages: sortPages(opts.taggedPages),
     site: opts.siteConf,
     includeRefresh: opts.includeRefresh,
   });

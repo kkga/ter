@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <%
 const {
-  breadcrumbs, childPages, childTags, backlinkPages, taggedIndexLinks,
+  breadcrumbs, childPages, childTags, backlinkPages, pagesByTag,
   toc, indexLayout, page, site, includeRefresh
 } = it;
+console.log(pagesByTag)
 
 const { title, description, date, tags, headings, html } = page;
 const filteredHeadings = headings && headings.filter(h => h.level >= 2 && h.level <= 5)
@@ -203,11 +204,11 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
       </section>
       <% } %>
 
-      <% taggedIndexLinks?.length > 0 && Object.keys(taggedIndexLinks).forEach((tag) => { %>
+      <% pagesByTag && Object.keys(pagesByTag).forEach((tag) => { %>
       <section>
-        <h6><a href=<%= `/tag/${tag}` %>><%= `Tagged ${tag}` %></a></h6>
+        <h6><a href=<%= `/tag/${tag}` %>><%= `Also tagged #${tag}` %></a></h6>
         <ul>
-          <% taggedIndexLinks[tag].forEach((page) => {
+          <% pagesByTag[tag].forEach((page) => {
             const {isIndex, url, title, date } = page; %>
           <li>
             <a href="<%= url.pathname %>"><%= title %></a>
