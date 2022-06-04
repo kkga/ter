@@ -1,5 +1,6 @@
 ---
 pinned: true
+toc: true
 ---
 
 # Features
@@ -69,11 +70,12 @@ Some properties are utilized when building a site.
 
 | Property      | Description                                                                 |
 | ------------- | --------------------------------------------------------------------------- |
-| `title`       | used for page title, see [titles](#titles)                                  |
+| `title`       | used for [page title](#titles)                                              |
 | `description` | used for page description                                                   |
-| `date`        | used for date, if exists                                                    |
+| `date`        | used for [date](#dates)                                                     |
 | `tags`        | used for [tags](#tags)                                                      |
 | `pinned`      | if set to `true`, page is listed at the top of [index lists](#index-pages)  |
+| `toc`         | if set to `true`, page renders table of contents at the top                 |
 | `draft`       | if set to `true`, file is [ignored](#ignoring-files) during site generation |
 | `unlisted`    | same as `draft`                                                             |
 
@@ -91,7 +93,7 @@ skipped during site generation.
 In addition, it’s possible to ignore individual markdown files by setting either
 `unlisted: true` or `draft: true` in the [YAML frontmatter](#frontmatter).
 
-## Content dates
+## Dates
 
 Ter tries to replicate the content file system on the generated site. And with
 that philosophy, the dates displayed on pages and in the
@@ -118,6 +120,6 @@ TODO
 
 TODO
 
-## Page titles
+## Titles
 
 TODO

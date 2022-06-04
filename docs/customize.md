@@ -5,9 +5,8 @@ description: Customize templates and styles
 # Customize
 
 Ter should work out of the box with zero configuration needed to get a decent
-output.
-
-However, it's possible to customize various aspects of the rendered website.
+output. However, it's possible to customize various aspects of the rendered
+website.
 
 ## Styles
 
@@ -25,10 +24,8 @@ highlight.js-compatible theme file.
 
 ## Templates
 
-Ter uses [Eta](https://eta.js.org/) templates to build pages.
-
-It’s possible to customize the output by changing the default view files in
-`.ter/views/`.
+Ter uses [Eta](https://eta.js.org/) templates to build pages. It’s possible to
+customize the output by changing the default view files in `.ter/views/`.
 
 ### Custom \<head\> template
 
