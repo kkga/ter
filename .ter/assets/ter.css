@@ -132,7 +132,7 @@ body {
   flex-flow: column nowrap;
   gap: 2rem;
   margin: 0;
-  padding: 2rem;
+  padding: 1rem;
   background: var(--color-bg-body);
   color: var(--color-text-body);
   font-family: var(--font-sans), system-ui, sans-serif;
@@ -295,7 +295,8 @@ ol ol {
 HEADER/BREADCRUMBS -------------------------------------------------------------------
 */
 
-body > header {
+body > header,
+article > header {
   display: flex;
   flex-direction: column;
   align-items: baseline;
@@ -306,13 +307,13 @@ body > header {
   color: var(--color-text-tertiary);
 }
 
-body > header :is(ol, ul) {
+:is(body > header, article > header) :is(ol, ul) {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-body > header :is(ol, ul) li {
+:is(body > header, article > header) :is(ol, ul) li {
   display: inline-block;
   margin: 0;
 }
@@ -321,7 +322,11 @@ body > header :is(ol, ul) li a {
   color: var(--color-text-secondary) !important;
 }
 
-body > header :is(ol, ul) li:not(:first-child)::before {
+article > header :is(ol, ul) li a {
+  color: var(--color-text-tertiary) !important;
+}
+
+body > header ol li:not(:first-child)::before {
   content: "/";
   color: var(--color-text-tertiary);
 }
@@ -344,7 +349,7 @@ aside section h6 {
   font-weight: var(--font-weight-m);
   letter-spacing: 0;
   display: flex;
-  gap: 0.5em;
+  gap: 4px;
   align-items: baseline;
 }
 
@@ -358,15 +363,28 @@ aside section h6::after {
   border-top: 1px solid var(--color-bg-secondary);
 }
 
-aside time {
-  color: var(--color-text-tertiary);
-  font-size: var(--font-size-xs);
-}
-
 aside section :is(ul, ol) {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+aside section :is(ul, ol) li {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+aside section :is(ul, ol) li a + span {
+  display: block;
+  flex: 1;
+  border-bottom: 1px dashed var(--color-bg-secondary);
+}
+
+aside time {
+  margin-left: auto;
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-xs);
 }
 
 /*
