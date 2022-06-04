@@ -120,7 +120,7 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
         childPages.forEach((page, index) => { const {title, description, date, tags, html, url} = page %>
       <article>
         <header>
-          <h6 style="margin:0"><a href="<%= url.pathname %>"><%~ title %></a></h6>
+          <h2><a href="<%= url.pathname %>"><%~ title %></a></h2>
           <% if (date || (tags && tags.length > 0)) { %>
           <div style="display: flex; gap: 0.5em">
             <time datetime="<%= date %>"><%= date.toLocaleDateString(undefined, dateOpts) %></time>

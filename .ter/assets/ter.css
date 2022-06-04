@@ -301,10 +301,18 @@ article > header {
   flex-direction: column;
   align-items: baseline;
   justify-content: space-between;
-  gap: 0.5em;
+  gap: 0.25em;
   font-size: var(--font-size-s);
   line-height: var(--line-height-tight);
   color: var(--color-text-tertiary);
+}
+
+body > header:not(:hover) :is(nav, div, a) {
+  color: var(--color-text-tertiary) !important;
+}
+
+article > header:not(:hover) :is(nav, div, li a) {
+  color: var(--color-text-tertiary) !important;
 }
 
 :is(body > header, article > header) :is(ol, ul) {
@@ -315,15 +323,14 @@ article > header {
 
 :is(body > header, article > header) :is(ol, ul) li {
   display: inline-block;
+}
+
+article > header :is(h1, h2, h3, h4, h5, h6) {
   margin: 0;
-}
-
-body > header :is(ol, ul) li a {
-  color: var(--color-text-secondary) !important;
-}
-
-article > header :is(ol, ul) li a {
-  color: var(--color-text-tertiary) !important;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-head);
+  font-weight: var(--font-weight-b);
+  color: var(--color-text-body);
 }
 
 body > header ol li:not(:first-child)::before {
@@ -340,6 +347,10 @@ body > aside {
   display: flex;
   flex-flow: column nowrap;
   gap: 2rem;
+}
+
+body > aside > section:not(:hover) :is(nav, div, a) {
+  color: var(--color-text-tertiary) !important;
 }
 
 aside section h6 {
