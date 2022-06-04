@@ -4,7 +4,6 @@ const {
   breadcrumbs, childPages, childTags, backlinkPages, pagesByTag,
   toc, indexLayout, page, site, includeRefresh
 } = it;
-console.log(pagesByTag)
 
 const { title, description, date, tags, headings, html } = page;
 const filteredHeadings = headings && headings.filter(h => h.level >= 2 && h.level <= 5)
@@ -76,7 +75,9 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
       <% } %>
       <% if (date || (tags && tags.length > 0)) { %>
       <div style="display: flex; gap: 0.5em">
+        <% if (date) { %>
         <time datetime="<%= date %>"><%= date.toLocaleDateString(undefined, dateOpts) %></time>
+        <% } %>
         <% if (tags && tags.length > 0 ) { %>
         <% if (date && (tags && tags.length > 0)) { %>
         &middot;
