@@ -7,7 +7,7 @@ const {
 
 const { title, description, date, tags, headings, html } = page;
 const filteredHeadings = headings && headings.filter(h => h.level >= 2 && h.level <= 5)
-const dateOpts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
 %>
 <html lang="en">
   <head>
@@ -29,7 +29,33 @@ const dateOpts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeri
   </head>
 
   <body>
-    <% if (includeRefresh) { %> <%~ includeFile('refresh') %> <% } %>
+    <% if (includeRefresh) { %>
+    <script>
+      ((l) => {
+        let w, i;
+
+        function d(m) { console.info("[refresh] ", m); }
+        function r() { l.reload(); }
+
+        function s(f) {
+          w && w.close();
+          w = new WebSocket(`${l.origin.replace("http", "ws")}/refresh`);
+          w.addEventListener("open", f);
+          w.addEventListener("message", () => {
+            d("reloading...");
+            r();
+          });
+          w.addEventListener("close", () => {
+            d("connection lost - reconnecting...");
+            clearTimeout(i);
+            i = setTimeout(() => s(r), 1000);
+          });
+        }
+
+        s();
+      })(location);
+    </script>
+    <% } %>
 
     <header>
       <% if (breadcrumbs) { %>
@@ -47,13 +73,23 @@ const dateOpts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeri
         </ol>
       </nav>
       <% } %>
-
+      <% if (date || (tags && tags.length > 0)) { %>
+      <div style="display: flex; gap: 0.5em">
+        <time datetime="<%= date %>"><%= date.toLocaleDateString(undefined, dateOpts) %></time>
+        <% if (tags && tags.length > 0 ) { %>
+        <% if (date && (tags && tags.length > 0)) { %>
+        &middot;
+        <% } %>
+        <ul>
+          <% tags.forEach((tag) => { %>
+          <li><a href="<%= `/tag/${tag}` %>">#<%~ tag %></a></li>
+          <% }) %>
+        </ul>
+        <% } %>
+      </div>
+      <% } %>
       <% if (description) { %>
       <div><%= description %></div>
-      <% } %>
-
-      <% if (date) { %>
-      <time datetime="<%= date %>"><%= date.toLocaleDateString(undefined, dateOpts) %></time>
       <% } %>
     </header>
 
@@ -77,38 +113,42 @@ const dateOpts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeri
       <% if (html) { %>
       <article>
         <%~ html %>
-
       </article>
       <% } %>
 
       <% if (indexLayout === "log") {
-        childPages.forEach((page) => { const {title, description, date, tags, html, url} = page %>
+        childPages.forEach((page, index) => { const {title, description, date, tags, html, url} = page %>
       <article>
-        <h2><a href="<%= url.pathname %>"><%~ title %></a></h2>
-
-        <div>
-          <% if (description) { %>
-          <div><%= description %></div>
-          <% } %>
-
-          <div>
-            <% if (date) { %>
-            <time datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
-            <% } %>
-
+        <header>
+          <h6 style="margin:0"><a href="<%= url.pathname %>"><%~ title %></a></h6>
+          <% if (date || (tags && tags.length > 0)) { %>
+          <div style="display: flex; gap: 0.5em">
+            <time datetime="<%= date %>"><%= date.toLocaleDateString(undefined, dateOpts) %></time>
             <% if (tags && tags.length > 0 ) { %>
+            <% if (date && (tags && tags.length > 0)) { %>
+            &middot;
+            <% } %>
             <ul>
               <% tags.forEach((tag) => { %>
-              <li><a href="<%= `/tag/${tag}` %>"><%~ tag %></a></li>
+              <li><a href="<%= `/tag/${tag}` %>">#<%~ tag %></a></li>
               <% }) %>
             </ul>
             <% } %>
           </div>
-        </div>
-
+          <% } %>
+          <% if (description) { %>
+          <div><%= description %></div>
+          <% } %>
+        </header>
         <%~ html %>
       </article>
-        <% })} %>
+
+      <% if (index < childPages.length - 1) { %>
+      <hr />
+      <% } %>
+
+      <% }) %>
+      <% } %>
 
     </main>
 
@@ -125,8 +165,9 @@ const dateOpts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeri
             <a style="<%_= isIndex ? 'font-weight: var(--font-weight-b)' : '' %> " href="<%= url.pathname %>">
               <%= title %>
             </a>
-            <% if (isIndex) { %> / ..<% } %>
+            <% if (isIndex) { %>/ ..<% } %>
             <% if (pinned) { %> ☆<% } %>
+            <span></span>
             <% if (date) { %>
               <time datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
             <% } %>
@@ -153,6 +194,7 @@ const dateOpts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeri
             const {pinned, isIndex, url, description, title, date } = page; %>
           <li>
             <a href="<%= url.pathname %>"><%= title %></a>
+            <span></span>
             <% if (date) { %>
             <% } %>
           </li>
@@ -169,6 +211,7 @@ const dateOpts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeri
             const {isIndex, url, title, date } = page; %>
           <li>
             <a href="<%= url.pathname %>"><%= title %></a>
+            <span></span>
             <% if (date) { %>
               <time datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
             <% } %>
