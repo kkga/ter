@@ -157,7 +157,7 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
 
 async function main(args: string[]) {
   const flags = flagsParse(args, {
-    boolean: ["serve, help", "quiet"],
+    boolean: ["serve", "help", "quiet"],
     string: ["input", "output", "port"],
     default: {
       input: ".",

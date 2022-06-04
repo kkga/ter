@@ -13,25 +13,6 @@ const hasIgnoredPrefix = (path: string): boolean => {
   return false;
 };
 
-export async function getAssetEntries(
-  assetPath: string,
-): Promise<Array<fs.WalkEntry>> {
-  const entries: Array<fs.WalkEntry> = [];
-  const glob = "**/*";
-
-  for await (
-    const entry of fs.expandGlob(glob, {
-      root: assetPath,
-      includeDirs: false,
-      caseInsensitive: true,
-    })
-  ) {
-    entries.push(entry);
-  }
-
-  return entries;
-}
-
 export async function getStaticEntries(
   staticPath: string,
   outputPath: string,
@@ -55,6 +36,24 @@ export async function getStaticEntries(
     if (hasIgnoredPrefix(entry.path)) {
       continue;
     }
+    entries.push(entry);
+  }
+
+  return entries;
+}
+
+export async function getAssetEntries(
+  assetPath: string,
+): Promise<Array<fs.WalkEntry>> {
+  const entries: Array<fs.WalkEntry> = [];
+  // const glob = "**/*";
+
+  for await (
+    const entry of fs.walk(assetPath, {
+      includeDirs: false,
+      followSymlinks: true,
+    })
+  ) {
     entries.push(entry);
   }
 

@@ -2,10 +2,12 @@
 <%
 const {
   breadcrumbs, childPages, childTags, backlinkPages, taggedIndexLinks,
-  indexLayout, page, site, includeRefresh
+  toc, indexLayout, page, site, includeRefresh
 } = it;
 
 const { title, description, date, tags, headings, html } = page;
+const filteredHeadings = headings && headings.filter(h => h.level >= 2 && h.level <= 5)
+const dateOpts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 %>
 <html lang="en">
   <head>
@@ -27,63 +29,14 @@ const { title, description, date, tags, headings, html } = page;
   </head>
 
   <body>
+    <% if (includeRefresh) { %> <%~ includeFile('refresh') %> <% } %>
 
-    <% if (includeRefresh) { %>
-    <%~ includeFile('refresh') %>
-    <% } %>
-
-
-    <main>
-      <% if (html) { %>
-      <article>
-        <%~ html %>
-      </article>
-      <% } %>
-
-      <% if (indexLayout === "log") { %>
-        <% childPages.forEach((page) => {
-          const {title, description, date, tags, html, url} = page;
-        %>
-        <article>
-          <h2><a href="<%= url.pathname %>"><%~ title %></a></h2>
-
-          <div class="metadata">
-            <% if (description) { %>
-            <div><%= description %></div>
-            <% } %>
-
-            <div>
-              <% if (date) { %>
-              <time class="metadata-time" datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
-              <% } %>
-
-              <% if (tags && tags.length > 0 ) { %>
-              <ul class="metadata-tags">
-                <% tags.forEach((tag) => { %>
-                <li class="metadata-tags-tag">
-                  <a href="<%= `/tag/${tag}` %>"><%~ tag %></a>
-                </li>
-                <% }) %>
-              </ul>
-              <% } %>
-            </div>
-          </div>
-
-          <%~ html %>
-        </article>
-
-        <% }) %>
-      <% } %>
-    </main>
-
-    <aside>
+    <header>
       <% if (breadcrumbs) { %>
       <nav aria-label="breadcrumbs">
-        <ol class="breadcrumbs">
+        <ol>
           <% breadcrumbs.forEach((crumb) => { %>
-            <li class="breadcrumbs-item
-            <%_= crumb.isTag ? ' breadcrumbs-item--tag' : '' %>
-            <%_= crumb.current ? ' breadcrumbs-item--current' : '' %>">
+            <li>
               <% if (crumb.url !== "") { %>
               <a href="<%= crumb.url %>"><%= crumb.slug %></a>
               <% } else { %>
@@ -95,80 +48,123 @@ const { title, description, date, tags, headings, html } = page;
       </nav>
       <% } %>
 
-
       <% if (description) { %>
-      <div class="metadata">
-        <div class="metadata-key">Description</div>
-        <div><%= description %></div>
-      </div>
+      <div><%= description %></div>
       <% } %>
 
       <% if (date) { %>
-      <div class="metadata">
-        <div class="metadata-key">Date</div>
-        <time class="metadata-value" datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
-      </div>
+      <time datetime="<%= date %>"><%= date.toLocaleDateString(undefined, dateOpts) %></time>
       <% } %>
+    </header>
 
-      <% if (headings?.length > 0) { %>
-      <div class="metadata">
-        <div class="metadata-key">Contents</div>
-        <ul class="metadata-value">
-          <% headings.forEach((heading) => { %>
-          <li><a href="#<%= heading.slug %>"><%_= heading.text _%></a></li>
+    <main>
+      <% if (toc && filteredHeadings?.length > 0) { %>
+      <details style="margin-bottom: 2rem">
+        <summary>Contents</summary>
+        <ul style="list-style: none; padding: 0">
+          <% filteredHeadings.forEach((heading) => { %>
+          <li>
+            <% for (let lvl = 2; lvl < heading.level; lvl++) { %>
+            &nbsp;&nbsp;
+            <% } %>
+            <a href="#<%= heading.slug %>"><%_= heading.text _%></a>
+          </li>
           <% }) %>
         </ul>
-      </div>
+      </details>
       <% } %>
 
+      <% if (html) { %>
+      <article>
+        <%~ html %>
+
+      </article>
+      <% } %>
+
+      <% if (indexLayout === "log") {
+        childPages.forEach((page) => { const {title, description, date, tags, html, url} = page %>
+      <article>
+        <h2><a href="<%= url.pathname %>"><%~ title %></a></h2>
+
+        <div>
+          <% if (description) { %>
+          <div><%= description %></div>
+          <% } %>
+
+          <div>
+            <% if (date) { %>
+            <time datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
+            <% } %>
+
+            <% if (tags && tags.length > 0 ) { %>
+            <ul>
+              <% tags.forEach((tag) => { %>
+              <li><a href="<%= `/tag/${tag}` %>"><%~ tag %></a></li>
+              <% }) %>
+            </ul>
+            <% } %>
+          </div>
+        </div>
+
+        <%~ html %>
+      </article>
+        <% })} %>
+
+    </main>
+
+    <aside>
       <% if (childPages?.length > 0) { %>
-      <div class="metadata">
-        <div class="metadata-key">Child pages</div>
-        <ul class="metadata-value">
+      <section>
+        <h6>Child pages</h6>
+        <ul>
           <% childPages.forEach((page) => {
-            const {pinned, isIndex, url, description, title, date } = page; %>
+            const {isIndex, url, description, title, date } = page;
+            const pinned = page?.attrs?.pinned
+            %>
           <li>
-            <a href="<%= url.pathname %>"><%= title %></a>
+            <a style="<%_= isIndex ? 'font-weight: var(--font-weight-b)' : '' %> " href="<%= url.pathname %>">
+              <%= title %>
+            </a>
+            <% if (isIndex) { %> / ..<% } %>
+            <% if (pinned) { %> ☆<% } %>
             <% if (date) { %>
               <time datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
             <% } %>
           </li>
           <% }) %>
-      </div>
+        </ul>
+      </section>
       <% } %>
 
       <% if (childTags?.length > 0) { %>
-      <div class="metadata">
-        <div class="metadata-key">Child tags</div>
-        <ul class="metadata-value">
-          <% childTags.forEach((tag) => { %>
-          <li><a href="<%= `/tag/${tag}` %>"><%_= tag _%></a></li>
-          <% }) %>
+      <section>
+        <h6>Child tags</h6>
+        <ul>
+          <% childTags.forEach((tag) => { %> <li style="display:inline-block; margin-right: 0.5ch;"><a href="<%= `/tag/${tag}` %>">#<%_= tag _%></a></li><% }) %>
         </ul>
-      </div>
+      </section>
       <% } %>
 
       <% if (backlinkPages?.length > 0) { %>
-      <div class="metadata">
-        <div class="metadata-key">Backlinks</div>
-        <ul class="metadata-value">
+      <section>
+        <h6>Backlinks</h6>
+        <ul>
           <% backlinkPages.forEach((page) => {
             const {pinned, isIndex, url, description, title, date } = page; %>
           <li>
             <a href="<%= url.pathname %>"><%= title %></a>
             <% if (date) { %>
-              <time datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
             <% } %>
           </li>
           <% }) %>
         </ul>
-      </div>
+      </section>
       <% } %>
 
       <% taggedIndexLinks?.length > 0 && Object.keys(taggedIndexLinks).forEach((tag) => { %>
-      <div class="metadata">
-        <div class="metadata-key"><a href=<%= `/tag/${tag}` %>><%= `Tagged ${tag}` %></a></div>
-        <ul class="metadata-value">
+      <section>
+        <h6><a href=<%= `/tag/${tag}` %>><%= `Tagged ${tag}` %></a></h6>
+        <ul>
           <% taggedIndexLinks[tag].forEach((page) => {
             const {isIndex, url, title, date } = page; %>
           <li>
@@ -179,12 +175,11 @@ const { title, description, date, tags, headings, html } = page;
           </li>
           <% }) %>
         </ul>
-      </div>
+      </section>
       <% }) %>
-
     </aside>
-<!--<footer>
-      Made with <a href="https://github.com/kkga/ter">Ter</a>.
-    </footer> -->
+
+    <footer>Made with <a href="https://github.com/kkga/ter">Ter</a>.</footer>
+
   </body>
 </html>

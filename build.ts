@@ -85,6 +85,7 @@ export async function buildPage(
   const backlinkPages = sortPages(opts.backlinkPages);
   const childPages = sortPages(opts.childPages);
   const useLogLayout = hasKey(page.attrs, ["log"]) && page.attrs?.log === true;
+  const showToc = hasKey(page.attrs, ["toc"]) && page.attrs?.toc === true;
   const taggedPages: { [tag: string]: Array<Page> } = {};
 
   for (const tag of Object.keys(opts.taggedPages)) {
@@ -101,6 +102,7 @@ export async function buildPage(
   return await eta.renderFile(opts.viewPath, {
     page,
     indexLayout: useLogLayout ? "log" : "default",
+    toc: showToc,
     breadcrumbs,
     childPages,
     backlinkPages,

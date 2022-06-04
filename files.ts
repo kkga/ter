@@ -9,7 +9,7 @@ import {
   Page,
   TagPage,
 } from "./pages.ts";
-import { getTags } from "./data.ts";
+import { getTags } from "./attributes.ts";
 
 export interface OutputFile {
   inputPath?: string;
@@ -148,6 +148,7 @@ export async function writeFiles(
   files: OutputFile[],
   quiet = false,
 ) {
+  quiet && console.log(`writing files...`);
   for (const file of files) {
     if (file.fileContent) {
       quiet ||
@@ -162,6 +163,7 @@ export async function copyFiles(
   files: OutputFile[],
   quiet = false,
 ) {
+  quiet && console.log(`copying files...`);
   for (const file of files) {
     if (file.inputPath) {
       quiet ||
