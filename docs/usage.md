@@ -35,21 +35,16 @@ OPTIONS:
 ## Initial setup and build
 
 If you want to use an existing folder of markdown files, navigate to it.
-Otherwise, create a new directory, go inside, and run Ter for the first time:
+Otherwise, create a new directory, go inside, create some markdown files and run
+Ter for the first time:
 
 ```
 deno run -A --unstable https://deno.land/x/ter/main.ts
 ```
 
-Ter will check for required views and assets. If it can't find any, it will
-prompt to fetch required files and create default site configuration:
-
-- `.ter/config.yml`: site [configuration](configuration.md) file;
-- `.ter/views`: [templates](customize.md#templates) for rendering the site;
-- `.ter/assets`: [stylesheets](customize.md#styles) for the site and code
-  syntax.
-
-Once the initialization is done, Ter will carry on building the site.
+Before building, Ter checks for [configuration](configuration.md) file at
+`.ter/config.yml`. If it can't find any, it will initialize the default
+configuration which you can edit.
 
 ## Changing input and output paths
 
@@ -59,11 +54,11 @@ The build script takes 2 optional arguments: `--input` (default: `.`) and
 By default, it recursively searches for all `*.md` files in the current
 directory and outputs the generated site into the `_site` directory.
 
-If your markdown content is in some other directory, or you want a different
-name for the output directory, adjust accordingy, for example:
+If your markdown files are in some other directory, or you want a different name
+for the output directory, adjust accordingy, for example:
 
 ```
-deno run -A --unstable https://deno.land/x/ter/main.ts --input content --output _dist
+deno run -A --unstable https://deno.land/x/ter/main.ts --input pages --output _dist
 ```
 
 ## Local server with live refresh
