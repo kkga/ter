@@ -1,4 +1,5 @@
 {
+  "importMap": "./import_map.json",
   "tasks": {
     "build": "deno run -A --unstable main.ts --input docs",
     "serve": "deno run -A --unstable main.ts --input docs --serve",
