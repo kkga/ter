@@ -2,6 +2,18 @@
 description: Customize templates and styles
 ---
 
+### Note
+
+The following customization options are outdated as Ter currently automatically
+fetches its default template and styles from the Deno module URL.
+
+This is done to avoid having any extra files in the directory by default and to
+avoid potentially having outdated templates/styles. Simplicity > customization.
+
+I might add an option to use local assets in future.
+
+---
+
 # Customize
 
 Ter should work out of the box with zero configuration needed to get a decent

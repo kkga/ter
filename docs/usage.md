@@ -34,28 +34,26 @@ OPTIONS:
 
 ## Initial setup and build
 
-If you want to use an existing folder of markdown files, navigate to it.
-Otherwise, create a new directory, go inside, create some markdown files and run
-Ter for the first time:
+Run the following command inside a directory with markdown files.
 
 ```
 deno run -A --unstable https://deno.land/x/ter/main.ts
 ```
 
 Before building, Ter checks for [configuration](configuration.md) file at
-`.ter/config.yml`. If it can't find any, it will initialize the default
-configuration which you can edit.
+`.ter/config.yml`. If it doesn't exist, ter will initialize an example
+configuration file which you can edit.
 
 ## Changing input and output paths
 
-The build script takes 2 optional arguments: `--input` (default: `.`) and
-`--output` (default: `_site`).
+The takes 2 optional arguments: `--input` (default: `.`) and `--output`
+(default: `_site`).
 
 By default, it recursively searches for all `*.md` files in the current
 directory and outputs the generated site into the `_site` directory.
 
-If your markdown files are in some other directory, or you want a different name
-for the output directory, adjust accordingy, for example:
+If your markdown files are in some other directory, or if you want a different
+name for the output directory, adjust accordingy, for example:
 
 ```
 deno run -A --unstable https://deno.land/x/ter/main.ts --input pages --output _dist
