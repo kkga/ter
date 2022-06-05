@@ -221,7 +221,7 @@ USAGE:
 OPTIONS:
   --input\t\tSource directory (default: .)
   --output\t\tOutput directory (default: _site)
-  --config\t\Path to config file (default: .ter/config.yml)
+  --config\t\tPath to config file (default: .ter/config.yml)
   --serve\t\tServe locally and watch for changes (default: false)
   --port\t\tServe port (default: 8080)
   --quiet\t\tDon't list filenames (default: false)`);
