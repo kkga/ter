@@ -2,10 +2,10 @@ import { WalkEntry } from "deno/fs/mod.ts";
 import { basename, dirname, extname, join, relative } from "deno/path/mod.ts";
 import fm from "fm";
 import slugify from "slugify";
-import { render } from "/render.ts";
-import * as attrs from "/attributes.ts";
-import { SiteConfig } from "/config.ts";
-import { INDEX_FILENAME } from "/entries.ts";
+import { render } from "./render.ts";
+import * as attrs from "./attributes.ts";
+import { SiteConfig } from "./config.ts";
+import { INDEX_FILENAME } from "./entries.ts";
 
 const decoder = new TextDecoder("utf-8");
 

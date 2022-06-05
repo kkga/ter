@@ -2,12 +2,12 @@ import { parse } from "deno/flags/mod.ts";
 import { emptyDir, ensureDir } from "deno/fs/mod.ts";
 import { dirname, join, relative, toFileUrl } from "deno/path/mod.ts";
 import { withTrailingSlash } from "ufo";
-import * as entries from "/entries.ts";
-import * as pages from "/pages.ts";
-import * as attrs from "/attributes.ts";
-import * as files from "/files.ts";
-import { createConfig, TerConfig } from "/config.ts";
-import { serve } from "/serve.ts";
+import * as entries from "./entries.ts";
+import * as pages from "./pages.ts";
+import * as attrs from "./attributes.ts";
+import * as files from "./files.ts";
+import { createConfig, TerConfig } from "./config.ts";
+import { serve } from "./serve.ts";
 
 const MOD_URL = new URL("https://deno.land/x/ter/");
 

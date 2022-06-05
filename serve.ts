@@ -1,8 +1,8 @@
 import { join, relative } from "deno/path/mod.ts";
 import { readableStreamFromReader } from "deno/streams/mod.ts";
 import { serve as httpServe } from "deno/http/server.ts";
-import { TerConfig } from "/config.ts";
-import { RE_HIDDEN_OR_UNDERSCORED } from "/entries.ts";
+import { TerConfig } from "./config.ts";
+import { RE_HIDDEN_OR_UNDERSCORED } from "./entries.ts";
 
 interface WatchOpts {
   config: TerConfig;

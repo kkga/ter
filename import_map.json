@@ -1,6 +1,5 @@
 {
   "imports": {
-    "/": "./",
     "./": "./",
     "deno/": "https://deno.land/std@0.142.0/",
     "eta": "https://deno.land/x/eta/mod.ts",

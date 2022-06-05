@@ -8,7 +8,7 @@ import {
   withoutLeadingSlash,
   withoutTrailingSlash,
 } from "ufo";
-import { Heading } from "/pages.ts";
+import { Heading } from "./pages.ts";
 
 const renderer = new marked.Renderer();
 

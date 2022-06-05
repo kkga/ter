@@ -2,7 +2,7 @@ import { ensureDir } from "deno/fs/mod.ts";
 import { basename, dirname, join } from "deno/path/mod.ts";
 import { stringify } from "deno/encoding/yaml.ts";
 import { writableStreamFromWriter } from "deno/streams/mod.ts";
-import { TerConfig } from "/config.ts";
+import { TerConfig } from "./config.ts";
 
 const MOD_URL = new URL("https://deno.land/x/ter");
 const requiredViews = ["base.eta", "feed.xml.eta"];

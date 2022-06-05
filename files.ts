@@ -1,8 +1,8 @@
 import { copy, ensureDir, WalkEntry } from "deno/fs/mod.ts";
 import { basename, dirname, join, relative } from "deno/path/mod.ts";
-import { buildFeed, buildPage, buildTagPage } from "/build.ts";
-import { SiteConfig } from "/config.ts";
-import { getTags } from "/attributes.ts";
+import { buildFeed, buildPage, buildTagPage } from "./build.ts";
+import { SiteConfig } from "./config.ts";
+import { getTags } from "./attributes.ts";
 import {
   getBacklinkPages,
   getChildPages,
@@ -10,7 +10,7 @@ import {
   getPagesByTag,
   Page,
   TagPage,
-} from "/pages.ts";
+} from "./pages.ts";
 
 export interface OutputFile {
   inputPath?: string;

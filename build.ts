@@ -1,8 +1,8 @@
 import { basename, dirname, join } from "deno/path/mod.ts";
 import { compile, configure, render, templates } from "eta";
-import { Page } from "/pages.ts";
-import { SiteConfig } from "/config.ts";
-import { hasKey } from "/attributes.ts";
+import { Page } from "./pages.ts";
+import { SiteConfig } from "./config.ts";
+import { hasKey } from "./attributes.ts";
 
 configure({
   autotrim: true,
