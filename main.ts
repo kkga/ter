@@ -1,4 +1,4 @@
-import { flagsParse, fs, path } from "./deps.ts";
+import { flagsParse, fs, path, ufo } from "./deps.ts";
 import { createConfig, TerConfig } from "./config.ts";
 import { serve } from "./serve.ts";
 import * as entries from "./entries.ts";
@@ -6,8 +6,7 @@ import * as pages from "./pages.ts";
 import * as attrs from "./attributes.ts";
 import * as files from "./files.ts";
 
-// const MOD_URL = new URL("https://deno.land/x/ter");
-const MOD_URL = Deno.cwd();
+const MOD_URL = new URL("https://deno.land/x/ter/");
 
 async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
   try {
@@ -27,7 +26,7 @@ export async function getRemoteAsset(url: URL) {
   if (fileResponse.ok && fileResponse.body) {
     return await fileResponse.text();
   } else {
-    console.error(`Fetch response error`);
+    console.error(`Fetch response error: ${url}`);
     Deno.exit(1);
   }
 }
@@ -157,7 +156,7 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
 
 async function main(args: string[]) {
   const flags = flagsParse(args, {
-    boolean: ["serve", "help", "quiet"],
+    boolean: ["serve", "help", "quiet", "local"],
     string: ["config", "input", "output", "port"],
     default: {
       config: ".ter/config.yml",
@@ -166,6 +165,7 @@ async function main(args: string[]) {
       serve: false,
       port: 8080,
       quiet: false,
+      local: false,
     },
   });
 
@@ -174,19 +174,15 @@ async function main(args: string[]) {
     Deno.exit();
   }
 
+  const moduleUrl = ufo.withTrailingSlash(
+    flags.local ? path.toFileUrl(Deno.cwd()).toString() : MOD_URL.toString(),
+  );
+
   const [pageView, feedView, baseStyle, hljsStyle] = await Promise.all([
-    getRemoteAsset(
-      path.toFileUrl(path.join(MOD_URL.toString(), "views/base.eta")),
-    ),
-    getRemoteAsset(
-      path.toFileUrl(path.join(MOD_URL.toString(), "views/feed.xml.eta")),
-    ),
-    getRemoteAsset(
-      path.toFileUrl(path.join(MOD_URL.toString(), "assets/ter.css")),
-    ),
-    getRemoteAsset(
-      path.toFileUrl(path.join(MOD_URL.toString(), "assets/hljs.css")),
-    ),
+    getRemoteAsset(new URL("views/base.eta", moduleUrl)),
+    getRemoteAsset(new URL("views/feed.xml.eta", moduleUrl)),
+    getRemoteAsset(new URL("assets/ter.css", moduleUrl)),
+    getRemoteAsset(new URL("assets/hljs.css", moduleUrl)),
   ]);
 
   const config = await createConfig({
