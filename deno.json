@@ -2,7 +2,7 @@
   "tasks": {
     "build": "deno run -A --unstable main.ts --input docs",
     "serve": "deno run -A --unstable main.ts --input docs --serve",
-    "dev": "deno run -A --unstable --watch=assets/ter.css,views/base.eta main.ts --input docs --serve",
+    "dev": "deno run -A --unstable --watch=assets/ter.css,views/base.eta main.ts --input docs --serve --local",
     "clean": "rm -rf _site"
   }
 }
