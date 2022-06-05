@@ -61,7 +61,9 @@ const defaultConfig: TerConfig = {
 };
 
 async function checkSiteConfig(configPath: string): Promise<boolean> {
-  const filepath = path.join(Deno.cwd(), configPath);
+  const filepath = path.isAbsolute(configPath)
+    ? configPath
+    : path.join(Deno.cwd(), configPath);
   await Deno.stat(filepath).catch(() => Promise.reject(filepath));
   return Promise.resolve(true);
 }
@@ -97,7 +99,6 @@ interface CreateConfigOpts {
 
 export async function createConfig(opts: CreateConfigOpts): Promise<TerConfig> {
   const conf = defaultConfig;
-  console.log(opts);
 
   if (opts.configPath && opts.configPath != "") {
     conf.siteConfigPath = path.isAbsolute(opts.configPath)
