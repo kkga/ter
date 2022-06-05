@@ -1,7 +1,13 @@
-import { WalkEntry } from "deno/fs/mod.ts";
-import { basename, dirname, extname, join, relative } from "deno/path/mod.ts";
-import fm from "fm";
-import slugify from "slugify";
+import { WalkEntry } from "https://deno.land/std/fs/mod.ts";
+import {
+  basename,
+  dirname,
+  extname,
+  join,
+  relative,
+} from "https://deno.land/std/path/mod.ts";
+import fm from "https://esm.sh/front-matter";
+import slugify from "https://esm.sh/slugify";
 import { render } from "./render.ts";
 import * as attrs from "./attributes.ts";
 import { SiteConfig } from "./config.ts";

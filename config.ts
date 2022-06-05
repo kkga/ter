@@ -1,7 +1,7 @@
-import { parse, stringify } from "deno/encoding/yaml.ts";
-import { ensureDir } from "deno/fs/mod.ts";
-import { dirname, isAbsolute, join } from "deno/path/mod.ts";
-import { normalizeURL, withTrailingSlash } from "ufo";
+import { parse, stringify } from "https://deno.land/std/encoding/yaml.ts";
+import { ensureDir } from "https://deno.land/std/fs/mod.ts";
+import { dirname, isAbsolute, join } from "https://deno.land/std/path/mod.ts";
+import { normalizeURL, withTrailingSlash } from "https://esm.sh/ufo";
 
 export interface SiteConfig {
   title: string;

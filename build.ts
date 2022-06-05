@@ -1,5 +1,10 @@
-import { basename, dirname, join } from "deno/path/mod.ts";
-import { compile, configure, render, templates } from "eta";
+import { basename, dirname, join } from "https://deno.land/std/path/mod.ts";
+import {
+  compile,
+  configure,
+  render,
+  templates,
+} from "https://deno.land/x/eta/mod.ts";
 import { Page } from "./pages.ts";
 import { SiteConfig } from "./config.ts";
 import { hasKey } from "./attributes.ts";

@@ -1,6 +1,6 @@
-import { common, join } from "deno/path/mod.ts";
-import { expandGlob, walk, WalkEntry } from "deno/fs/mod.ts";
-import { withoutTrailingSlash } from "ufo";
+import { common, join } from "https://deno.land/std/path/mod.ts";
+import { expandGlob, walk, WalkEntry } from "https://deno.land/std/fs/mod.ts";
+import { withoutTrailingSlash } from "https://esm.sh/ufo";
 
 export const INDEX_FILENAME = "index.md";
 export const RE_HIDDEN_OR_UNDERSCORED = /^\.|^_|\/\.|\/\_/;

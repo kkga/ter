@@ -1,5 +1,10 @@
-import { copy, ensureDir, WalkEntry } from "deno/fs/mod.ts";
-import { basename, dirname, join, relative } from "deno/path/mod.ts";
+import { copy, ensureDir, WalkEntry } from "https://deno.land/std/fs/mod.ts";
+import {
+  basename,
+  dirname,
+  join,
+  relative,
+} from "https://deno.land/std/path/mod.ts";
 import { buildFeed, buildPage, buildTagPage } from "./build.ts";
 import { SiteConfig } from "./config.ts";
 import { getTags } from "./attributes.ts";

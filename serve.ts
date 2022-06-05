@@ -1,6 +1,6 @@
-import { join, relative } from "deno/path/mod.ts";
-import { readableStreamFromReader } from "deno/streams/mod.ts";
-import { serve as httpServe } from "deno/http/server.ts";
+import { join, relative } from "https://deno.land/std/path/mod.ts";
+import { readableStreamFromReader } from "https://deno.land/std/streams/mod.ts";
+import { serve as httpServe } from "https://deno.land/std/http/server.ts";
 import { TerConfig } from "./config.ts";
 import { RE_HIDDEN_OR_UNDERSCORED } from "./entries.ts";
 

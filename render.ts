@@ -1,13 +1,18 @@
-import { dirname, extname, isAbsolute, join } from "deno/path/mod.ts";
-import { HighlightJS } from "hljs";
-import { marked } from "marked";
+import {
+  dirname,
+  extname,
+  isAbsolute,
+  join,
+} from "https://deno.land/std/path/mod.ts";
+import { HighlightJS } from "https://cdn.skypack.dev/highlight.js";
+import { marked } from "https://esm.sh/marked";
 import {
   ParsedURL,
   parseURL,
   withLeadingSlash,
   withoutLeadingSlash,
   withoutTrailingSlash,
-} from "ufo";
+} from "https://esm.sh/ufo";
 import { Heading } from "./pages.ts";
 
 const renderer = new marked.Renderer();
