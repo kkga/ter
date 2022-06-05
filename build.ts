@@ -1,9 +1,10 @@
-import { eta, path } from "./deps.ts";
-import { Page } from "./pages.ts";
-import { SiteConfig } from "./config.ts";
-import { hasKey } from "./attributes.ts";
+import { basename, dirname, join } from "deno/path/mod.ts";
+import { compile, configure, render, templates } from "eta";
+import { Page } from "/pages.ts";
+import { SiteConfig } from "/config.ts";
+import { hasKey } from "/attributes.ts";
 
-eta.configure({
+configure({
   autotrim: true,
 });
 
@@ -48,13 +49,13 @@ function generateBreadcrumbs(
   currentPage: Page,
   homeSlug?: string,
 ): Array<Breadcrumb> {
-  const dir = path.dirname(currentPage.url.pathname);
+  const dir = dirname(currentPage.url.pathname);
   const chunks: string[] = dir.split("/").filter((ch: string) => !!ch);
-  const slug = path.basename(currentPage.url.pathname);
+  const slug = basename(currentPage.url.pathname);
 
   let breadcrumbs: Array<Breadcrumb> = chunks.map((chunk, i) => {
     const slug = chunk;
-    const url = path.join("/", ...chunks.slice(0, i + 1));
+    const url = join("/", ...chunks.slice(0, i + 1));
     return {
       slug,
       url,
@@ -99,9 +100,9 @@ export async function buildPage(
     }
   }
 
-  eta.templates.define("head", eta.compile(opts.headInclude));
+  templates.define("head", compile(opts.headInclude));
 
-  return await eta.render(opts.view, {
+  return await render(opts.view, {
     page,
     indexLayout: useLogLayout ? "log" : "default",
     toc: showToc,
@@ -120,13 +121,13 @@ export async function buildTagPage(
   tagName: string,
   opts: TagPageOpts,
 ): Promise<string | void> {
-  eta.templates.define("head", eta.compile(opts.headInclude));
+  templates.define("head", compile(opts.headInclude));
   const breadcrumbs: Array<Breadcrumb> = [
     { slug: "index", url: "/", current: false },
     { slug: `#${tagName}`, url: "", current: true, isTag: true },
   ];
 
-  const result = await eta.render(opts.view, {
+  const result = await render(opts.view, {
     page: {
       title: `#${tagName}`,
       description: `Pages tagged #${tagName}`,
@@ -146,7 +147,7 @@ export async function buildFeed(
   view: string,
   siteConf: SiteConfig,
 ): Promise<string | void> {
-  const result = await eta.render(view, {
+  const result = await render(view, {
     pages,
     site: siteConf,
   });

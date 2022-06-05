@@ -1,13 +1,11 @@
 /* Default stylesheet for Ter: https://github.com/kkga/ter */
 
-@import url("https://rsms.me/inter/inter.css");
-
 /*
 ROOT -------------------------------------------------------------------------
 */
 
 :root {
-  --font-sans: "Inter", sans-serif;
+  --font-sans: system-ui, sans-serif;
   --font-mono: ui-monospace, sfmono-regular, menlo, monaco, consolas,
     "liberation mono", "courier new", monospace;
 
@@ -49,12 +47,6 @@ ROOT -------------------------------------------------------------------------
   --leading-tight: -0.025em;
   --radius-xs: 4px;
   --radius-md: 6px;
-}
-
-@supports (font-variation-settings: normal) {
-  :root {
-    --font-sans: "Inter var", sans-serif;
-  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -135,7 +127,7 @@ body {
   padding: 1rem;
   background: var(--color-bg-body);
   color: var(--color-text-body);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--font-sans);
   font-feature-settings: "calt", "tnum", "ss02";
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);
@@ -407,3 +399,7 @@ body > footer {
   font-size: var(--font-size-xs);
   color: var(--color-text-tertiary);
 }
+
+/*
+END TER STYLESHEET -----------------------------------------------------------------
+*/

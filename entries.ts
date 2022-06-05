@@ -1,4 +1,6 @@
-import { fs, path, ufo } from "./deps.ts";
+import { common, join } from "deno/path/mod.ts";
+import { expandGlob, walk, WalkEntry } from "deno/fs/mod.ts";
+import { withoutTrailingSlash } from "ufo";
 
 export const INDEX_FILENAME = "index.md";
 export const RE_HIDDEN_OR_UNDERSCORED = /^\.|^_|\/\.|\/\_/;
@@ -17,8 +19,8 @@ export async function getStaticEntries(
   staticPath: string,
   outputPath: string,
   extensions?: Array<string>,
-): Promise<Array<fs.WalkEntry>> {
-  const entries: Array<fs.WalkEntry> = [];
+): Promise<Array<WalkEntry>> {
+  const entries: Array<WalkEntry> = [];
   let glob = "**/*";
 
   if (extensions && extensions.length > 0) {
@@ -26,7 +28,7 @@ export async function getStaticEntries(
   }
 
   for await (
-    const entry of fs.expandGlob(glob, {
+    const entry of expandGlob(glob, {
       root: staticPath,
       includeDirs: false,
       caseInsensitive: true,
@@ -44,12 +46,12 @@ export async function getStaticEntries(
 
 export async function getAssetEntries(
   assetPath: string,
-): Promise<Array<fs.WalkEntry>> {
-  const entries: Array<fs.WalkEntry> = [];
+): Promise<Array<WalkEntry>> {
+  const entries: Array<WalkEntry> = [];
   // const glob = "**/*";
 
   for await (
-    const entry of fs.walk(assetPath, {
+    const entry of walk(assetPath, {
       includeDirs: false,
       followSymlinks: true,
     })
@@ -62,12 +64,12 @@ export async function getAssetEntries(
 
 export async function getContentEntries(
   contentPath: string,
-): Promise<Array<fs.WalkEntry>> {
-  const fileEntries: Array<fs.WalkEntry> = [];
-  let dirEntries: Array<fs.WalkEntry> = [];
+): Promise<Array<WalkEntry>> {
+  const fileEntries: Array<WalkEntry> = [];
+  let dirEntries: Array<WalkEntry> = [];
 
   for await (
-    const entry of fs.walk(contentPath, {
+    const entry of walk(contentPath, {
       includeDirs: false,
       skip: [RE_HIDDEN_OR_UNDERSCORED],
       exts: ["md"],
@@ -77,7 +79,7 @@ export async function getContentEntries(
   }
 
   for await (
-    const entry of fs.walk(contentPath, {
+    const entry of walk(contentPath, {
       includeDirs: true,
       includeFiles: false,
       skip: [RE_HIDDEN_OR_UNDERSCORED],
@@ -90,15 +92,15 @@ export async function getContentEntries(
 
   // filter out dirs that are already in fileEntries as "index.md"
   dirEntries = dirEntries.filter((dir) => {
-    return !filePaths.includes(path.join(dir.path, INDEX_FILENAME));
+    return !filePaths.includes(join(dir.path, INDEX_FILENAME));
   });
 
   // filter out dirs that don't have any fileEntries
   dirEntries = dirEntries.filter((dir) => {
     const commonPaths = fileEntries.map((file) =>
-      ufo.withoutTrailingSlash(path.common([dir.path, file.path]))
+      withoutTrailingSlash(common([dir.path, file.path]))
     );
-    return commonPaths.includes(ufo.withoutTrailingSlash(dir.path));
+    return commonPaths.includes(withoutTrailingSlash(dir.path));
   });
 
   const entries = [...fileEntries, ...dirEntries];

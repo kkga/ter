@@ -1,17 +1,20 @@
-import { flagsParse, fs, path, ufo } from "./deps.ts";
-import { createConfig, TerConfig } from "./config.ts";
-import { serve } from "./serve.ts";
-import * as entries from "./entries.ts";
-import * as pages from "./pages.ts";
-import * as attrs from "./attributes.ts";
-import * as files from "./files.ts";
+import { parse } from "deno/flags/mod.ts";
+import { emptyDir, ensureDir } from "deno/fs/mod.ts";
+import { dirname, join, relative, toFileUrl } from "deno/path/mod.ts";
+import { withTrailingSlash } from "ufo";
+import * as entries from "/entries.ts";
+import * as pages from "/pages.ts";
+import * as attrs from "/attributes.ts";
+import * as files from "/files.ts";
+import { createConfig, TerConfig } from "/config.ts";
+import { serve } from "/serve.ts";
 
 const MOD_URL = new URL("https://deno.land/x/ter/");
 
 async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
   try {
     const decoder = new TextDecoder("utf-8");
-    const headPath = path.join(Deno.cwd(), viewsPath, "head.eta");
+    const headPath = join(Deno.cwd(), viewsPath, "head.eta");
     return decoder.decode(await Deno.readFile(headPath));
   } catch {
     return undefined;
@@ -56,7 +59,7 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
 
   for (const entry of contentEntries) {
     config.quiet ||
-      console.log(`render\t${path.relative(inputPath, entry.path)}`);
+      console.log(`render\t${relative(inputPath, entry.path)}`);
     const page = await pages.generatePage(entry, inputPath, siteConf).catch(
       (reason: string) => {
         console.log(`Can't render page ${entry.path}: ${reason}`);
@@ -109,17 +112,17 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
     }
   }
 
-  await fs.emptyDir(outputPath);
+  await emptyDir(outputPath);
 
   if (contentPages.length > 0) {
     const feedFile = await files.buildFeedFile(
       contentPages,
       feedView,
-      path.join(outputPath, "feed.xml"),
+      join(outputPath, "feed.xml"),
       siteConf,
     );
     if (feedFile && feedFile.fileContent) {
-      await fs.ensureDir(path.dirname(feedFile.filePath));
+      await ensureDir(dirname(feedFile.filePath));
       await Deno.writeTextFile(feedFile.filePath, feedFile.fileContent);
     }
   }
@@ -155,7 +158,7 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
 }
 
 async function main(args: string[]) {
-  const flags = flagsParse(args, {
+  const flags = parse(args, {
     boolean: ["serve", "help", "quiet", "local"],
     string: ["config", "input", "output", "port"],
     default: {
@@ -174,8 +177,8 @@ async function main(args: string[]) {
     Deno.exit();
   }
 
-  const moduleUrl = ufo.withTrailingSlash(
-    flags.local ? path.toFileUrl(Deno.cwd()).toString() : MOD_URL.toString(),
+  const moduleUrl = withTrailingSlash(
+    flags.local ? toFileUrl(Deno.cwd()).toString() : MOD_URL.toString(),
   );
 
   const [pageView, feedView, baseStyle, hljsStyle] = await Promise.all([

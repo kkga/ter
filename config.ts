@@ -1,4 +1,7 @@
-import { fs, path, ufo, yamlParse, yamlStringify } from "./deps.ts";
+import { parse, stringify } from "deno/encoding/yaml.ts";
+import { ensureDir } from "deno/fs/mod.ts";
+import { dirname, isAbsolute, join } from "deno/path/mod.ts";
+import { normalizeURL, withTrailingSlash } from "ufo";
 
 export interface SiteConfig {
   title: string;
@@ -61,18 +64,18 @@ const defaultConfig: TerConfig = {
 };
 
 async function checkSiteConfig(configPath: string): Promise<boolean> {
-  const filepath = path.isAbsolute(configPath)
+  const filepath = isAbsolute(configPath)
     ? configPath
-    : path.join(Deno.cwd(), configPath);
+    : join(Deno.cwd(), configPath);
   await Deno.stat(filepath).catch(() => Promise.reject(filepath));
   return Promise.resolve(true);
 }
 
 async function initSiteConfig(config: SiteConfig, configPath: string) {
-  const yaml = yamlStringify(
+  const yaml = stringify(
     config as unknown as Record<string, unknown>,
   );
-  await fs.ensureDir(path.dirname(configPath));
+  await ensureDir(dirname(configPath));
   await Deno.writeTextFile(configPath, yaml);
 }
 
@@ -80,7 +83,7 @@ async function parseSiteConfig(path: string): Promise<SiteConfig | undefined> {
   try {
     const decoder = new TextDecoder("utf-8");
     const data = decoder.decode(await Deno.readFile(path));
-    const conf = yamlParse(data) as SiteConfig;
+    const conf = parse(data) as SiteConfig;
     return conf;
   } catch {
     return undefined;
@@ -101,21 +104,21 @@ export async function createConfig(opts: CreateConfigOpts): Promise<TerConfig> {
   const conf = defaultConfig;
 
   if (opts.configPath && opts.configPath != "") {
-    conf.siteConfigPath = path.isAbsolute(opts.configPath)
+    conf.siteConfigPath = isAbsolute(opts.configPath)
       ? opts.configPath
-      : path.join(Deno.cwd(), opts.configPath);
+      : join(Deno.cwd(), opts.configPath);
   }
 
   if (opts.inputPath && opts.inputPath != "") {
-    conf.inputPath = path.isAbsolute(opts.inputPath)
+    conf.inputPath = isAbsolute(opts.inputPath)
       ? opts.inputPath
-      : path.join(Deno.cwd(), opts.inputPath);
+      : join(Deno.cwd(), opts.inputPath);
   }
 
   if (opts.outputPath && opts.outputPath != "") {
-    conf.outputPath = path.isAbsolute(opts.outputPath)
+    conf.outputPath = isAbsolute(opts.outputPath)
       ? opts.outputPath
-      : path.join(Deno.cwd(), opts.outputPath);
+      : join(Deno.cwd(), opts.outputPath);
   }
 
   conf.pageView = opts.pageView;
@@ -143,7 +146,7 @@ export async function createConfig(opts: CreateConfigOpts): Promise<TerConfig> {
       conf.site.description = siteConf.description;
     }
     if (typeof siteConf.url === "string") {
-      conf.site.url = ufo.withTrailingSlash(ufo.normalizeURL(siteConf.url));
+      conf.site.url = withTrailingSlash(normalizeURL(siteConf.url));
     }
     if (typeof siteConf.author?.name === "string") {
       conf.site.author = { ...conf.site.author, name: siteConf.author.name };

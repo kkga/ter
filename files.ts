@@ -1,6 +1,8 @@
-import { fs, path } from "./deps.ts";
-import { buildFeed, buildPage, buildTagPage } from "./build.ts";
-import { SiteConfig } from "./config.ts";
+import { copy, ensureDir, WalkEntry } from "deno/fs/mod.ts";
+import { basename, dirname, join, relative } from "deno/path/mod.ts";
+import { buildFeed, buildPage, buildTagPage } from "/build.ts";
+import { SiteConfig } from "/config.ts";
+import { getTags } from "/attributes.ts";
 import {
   getBacklinkPages,
   getChildPages,
@@ -8,8 +10,7 @@ import {
   getPagesByTag,
   Page,
   TagPage,
-} from "./pages.ts";
-import { getTags } from "./attributes.ts";
+} from "/pages.ts";
 
 export interface OutputFile {
   inputPath?: string;
@@ -33,7 +34,7 @@ export async function buildContentFiles(
   const files: Array<OutputFile> = [];
 
   for (const page of pages) {
-    const filePath = path.join(
+    const filePath = join(
       opts.outputPath,
       page.url.pathname,
       "index.html",
@@ -75,7 +76,7 @@ export async function buildTagFiles(
   const files: Array<OutputFile> = [];
 
   for (const tag of tagPages) {
-    const filePath = path.join(
+    const filePath = join(
       opts.outputPath,
       "tag",
       tag.name,
@@ -125,18 +126,18 @@ export async function buildFeedFile(
 }
 
 export function getStaticFiles(
-  entries: Array<fs.WalkEntry>,
+  entries: Array<WalkEntry>,
   inputPath: string,
   outputPath: string,
 ): OutputFile[] {
   const files: Array<OutputFile> = [];
 
   for (const entry of entries) {
-    const relPath = path.relative(inputPath, entry.path);
-    const filePath = path.join(
+    const relPath = relative(inputPath, entry.path);
+    const filePath = join(
       outputPath,
-      path.dirname(relPath),
-      path.basename(relPath),
+      dirname(relPath),
+      basename(relPath),
     );
     files.push({
       inputPath: entry.path,
@@ -155,8 +156,8 @@ export async function writeFiles(
   for (const file of files) {
     if (file.fileContent) {
       quiet ||
-        console.log(`write\t${path.relative(Deno.cwd(), file.filePath)}`);
-      await fs.ensureDir(path.dirname(file.filePath));
+        console.log(`write\t${relative(Deno.cwd(), file.filePath)}`);
+      await ensureDir(dirname(file.filePath));
       await Deno.writeTextFile(file.filePath, file.fileContent);
     }
   }
@@ -170,9 +171,9 @@ export async function copyFiles(
   for (const file of files) {
     if (file.inputPath) {
       quiet ||
-        console.log(`copy\t${path.relative(Deno.cwd(), file.filePath)}`);
-      await fs.ensureDir(path.dirname(file.filePath));
-      await fs.copy(file.inputPath, file.filePath);
+        console.log(`copy\t${relative(Deno.cwd(), file.filePath)}`);
+      await ensureDir(dirname(file.filePath));
+      await copy(file.inputPath, file.filePath);
     }
   }
 }

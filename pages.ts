@@ -1,8 +1,11 @@
-import { fm, fs, path, slugify } from "./deps.ts";
-import { render } from "./render.ts";
-import * as attrs from "./attributes.ts";
-import { SiteConfig } from "./config.ts";
-import { INDEX_FILENAME } from "./entries.ts";
+import { WalkEntry } from "deno/fs/mod.ts";
+import { basename, dirname, extname, join, relative } from "deno/path/mod.ts";
+import fm from "fm";
+import slugify from "slugify";
+import { render } from "/render.ts";
+import * as attrs from "/attributes.ts";
+import { SiteConfig } from "/config.ts";
+import { INDEX_FILENAME } from "/entries.ts";
 
 const decoder = new TextDecoder("utf-8");
 
@@ -52,7 +55,7 @@ const getTitleFromHeadings = (headings: Array<Heading>): string | undefined => {
 };
 
 const getTitleFromFilename = (filePath: string): string => {
-  return path.basename(filePath).replace(path.extname(filePath), "");
+  return basename(filePath).replace(extname(filePath), "");
 };
 
 async function _getLastCommitDate(path: string): Promise<Date | undefined> {
@@ -111,7 +114,7 @@ export function getChildPages(
 ): Array<Page> {
   const pages = allPages.filter((p) =>
     current.url.pathname !== p.url.pathname &&
-    current.url.pathname === path.dirname(p.url.pathname)
+    current.url.pathname === dirname(p.url.pathname)
   );
 
   return pages;
@@ -133,12 +136,12 @@ export function getChildTags(
 }
 
 export async function generatePage(
-  entry: fs.WalkEntry,
+  entry: WalkEntry,
   inputPath: string,
   site: SiteConfig,
 ): Promise<Page> {
   if (entry.isFile && entry.name !== INDEX_FILENAME) {
-    const relPath = path.relative(inputPath, entry.path);
+    const relPath = relative(inputPath, entry.path);
     const isIndex = false;
     const content = decoder.decode(await Deno.readFile(entry.path));
     const parsed = fm(content);
@@ -156,7 +159,7 @@ export async function generatePage(
       getTitleFromHeadings(headings) || getTitleFromFilename(relPath);
     const description = attrs.getDescription(pageAttrs) || "";
     const tags = attrs.getTags(pageAttrs);
-    const url = new URL(path.join(path.dirname(relPath), slug), site.url);
+    const url = new URL(join(dirname(relPath), slug), site.url);
 
     return {
       attrs: pageAttrs,
@@ -173,8 +176,8 @@ export async function generatePage(
       isIndex,
     };
   } else if (entry.isFile && entry.name === INDEX_FILENAME) {
-    const relPath = path.relative(inputPath, path.dirname(entry.path)) || ".";
-    const name = path.basename(path.dirname(entry.path));
+    const relPath = relative(inputPath, dirname(entry.path)) || ".";
+    const name = basename(dirname(entry.path));
     const slug = relPath === "." ? "." : slugify(name);
     const isIndex = true;
     const content = decoder.decode(await Deno.readFile(entry.path));
@@ -191,7 +194,7 @@ export async function generatePage(
       name;
     const description = attrs.getDescription(pageAttrs) || "";
     const tags = attrs.getTags(pageAttrs);
-    const url = new URL(path.join(path.dirname(relPath), slug), site.url);
+    const url = new URL(join(dirname(relPath), slug), site.url);
 
     return {
       attrs: pageAttrs,
@@ -206,10 +209,10 @@ export async function generatePage(
       isIndex,
     };
   } else if (entry.isDirectory) {
-    const relPath = path.relative(inputPath, entry.path) || ".";
+    const relPath = relative(inputPath, entry.path) || ".";
     const slug = relPath === "." ? "." : slugify(entry.name);
     const isIndex = true;
-    const url = new URL(path.join(path.dirname(relPath), slug), site.url);
+    const url = new URL(join(dirname(relPath), slug), site.url);
 
     return {
       title: entry.name,

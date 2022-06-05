@@ -1,5 +1,14 @@
-import { hljs, marked, path, ufo } from "./deps.ts";
-import { Heading } from "./pages.ts";
+import { dirname, extname, isAbsolute, join } from "deno/path/mod.ts";
+import { HighlightJS } from "hljs";
+import { marked } from "marked";
+import {
+  ParsedURL,
+  parseURL,
+  withLeadingSlash,
+  withoutLeadingSlash,
+  withoutTrailingSlash,
+} from "ufo";
+import { Heading } from "/pages.ts";
 
 const renderer = new marked.Renderer();
 
@@ -16,18 +25,18 @@ function createExternalLink(
 function createInternalLink(
   title: string,
   text: string,
-  parsed: ufo.ParsedURL,
+  parsed: ParsedURL,
   baseUrl: URL,
   internalUrls: Set<URL>,
   currentPath: string,
   isIndex: boolean,
 ): string {
-  const cleanPathname = parsed.pathname === "" ? "" : ufo.withoutTrailingSlash(
-    parsed.pathname.replace(path.extname(parsed.pathname), ""),
+  const cleanPathname = parsed.pathname === "" ? "" : withoutTrailingSlash(
+    parsed.pathname.replace(extname(parsed.pathname), ""),
   );
   let internalHref: string;
 
-  if (path.isAbsolute(cleanPathname)) {
+  if (isAbsolute(cleanPathname)) {
     internalHref = cleanPathname + parsed.hash;
     internalUrls.add(new URL(internalHref, baseUrl));
   } else {
@@ -37,25 +46,25 @@ function createInternalLink(
       resolved = "";
     } else {
       const joined = isIndex
-        ? path.join(path.dirname(currentPath + "/index"), cleanPathname)
-        : path.join(path.dirname(currentPath), cleanPathname);
-      resolved = ufo.withoutTrailingSlash(joined.replace(/\/index$/i, ""));
+        ? join(dirname(currentPath + "/index"), cleanPathname)
+        : join(dirname(currentPath), cleanPathname);
+      resolved = withoutTrailingSlash(joined.replace(/\/index$/i, ""));
     }
 
     internalHref = resolved === ""
       ? resolved + parsed.hash
-      : ufo.withLeadingSlash(resolved) + parsed.hash;
+      : withLeadingSlash(resolved) + parsed.hash;
 
     if (resolved !== "") {
       internalUrls.add(
-        new URL(ufo.withoutLeadingSlash(internalHref), baseUrl),
+        new URL(withoutLeadingSlash(internalHref), baseUrl),
       );
     }
   }
 
   // TODO
-  // const prefixedHref = path.isAbsolute(internalHref)
-  //   ? ufo.joinURL(pathPrefix, internalHref)
+  // const prefixedHref = isAbsolute(internalHref)
+  //   ? joinURL(pathPrefix, internalHref)
   //   : internalHref;
 
   // console.log(prefixedHref);
@@ -79,7 +88,7 @@ export function render(
   // const pathPrefix = baseUrl.pathname;
 
   renderer.link = (href: string, title: string, text: string) => {
-    const parsed = ufo.parseURL(href);
+    const parsed = parseURL(href);
     if (
       parsed.protocol !== undefined || parsed.pathname.startsWith("mailto")
     ) {
@@ -109,8 +118,8 @@ export function render(
   };
 
   renderer.code = (code: string, lang: string): string => {
-    const language = hljs.getLanguage(lang) ? lang : "plaintext";
-    const html = hljs.highlight(code, { language }).value;
+    const language = HighlightJS.getLanguage(lang) ? lang : "plaintext";
+    const html = HighlightJS.highlight(code, { language }).value;
     return `<div class="hljs language-${language}"><pre>${html}</pre></div>`;
   };
 

@@ -1,6 +1,8 @@
-import { path, readableStreamFromReader, serve as httpServe } from "./deps.ts";
-import { TerConfig } from "./config.ts";
-import { RE_HIDDEN_OR_UNDERSCORED } from "./entries.ts";
+import { join, relative } from "deno/path/mod.ts";
+import { readableStreamFromReader } from "deno/streams/mod.ts";
+import { serve as httpServe } from "deno/http/server.ts";
+import { TerConfig } from "/config.ts";
+import { RE_HIDDEN_OR_UNDERSCORED } from "/entries.ts";
 
 interface WatchOpts {
   config: TerConfig;
@@ -30,7 +32,7 @@ async function watch(opts: WatchOpts) {
         // TODO: find a better way to filter events as this implementation
         // doesn't refresh on changes to ter views/css
         eventPath.match(RE_HIDDEN_OR_UNDERSCORED) ||
-        !path.relative(opts.config.outputPath, eventPath).startsWith("..")
+        !relative(opts.config.outputPath, eventPath).startsWith("..")
       ) {
         continue eventLoop;
       }
@@ -69,12 +71,12 @@ async function requestHandler(request: Request) {
 
   let file;
   try {
-    file = await Deno.open(path.join(servePath, filepath), { read: true });
+    file = await Deno.open(join(servePath, filepath), { read: true });
     const stat = await file.stat();
 
     if (stat.isDirectory) {
       file.close();
-      const filePath = path.join(servePath, filepath, "index.html");
+      const filePath = join(servePath, filepath, "index.html");
       file = await Deno.open(filePath, { read: true });
     }
   } catch {
