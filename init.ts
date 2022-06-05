@@ -1,7 +1,7 @@
-import { ensureDir } from "deno/fs/mod.ts";
-import { basename, dirname, join } from "deno/path/mod.ts";
-import { stringify } from "deno/encoding/yaml.ts";
-import { writableStreamFromWriter } from "deno/streams/mod.ts";
+import { ensureDir } from "./deps.ts";
+import { basename, dirname, join } from "./deps.ts";
+import { yamlStringify } from "./deps.ts";
+import { writableStreamFromWriter } from "./deps.ts";
 import { TerConfig } from "./config.ts";
 
 const MOD_URL = new URL("https://deno.land/x/ter");
@@ -33,7 +33,7 @@ export async function init(config: TerConfig) {
     await Deno.stat(join(Deno.cwd(), config.siteConfigPath));
     console.log(`  File exists, skipping:\t${config.siteConfigPath}`);
   } catch {
-    const yaml = stringify(
+    const yaml = yamlStringify(
       config.site as unknown as Record<string, unknown>,
     );
     await ensureDir(dirname(config.siteConfigPath));

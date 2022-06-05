@@ -1,7 +1,7 @@
-import { parse, stringify } from "https://deno.land/std/encoding/yaml.ts";
-import { ensureDir } from "https://deno.land/std/fs/mod.ts";
-import { dirname, isAbsolute, join } from "https://deno.land/std/path/mod.ts";
-import { normalizeURL, withTrailingSlash } from "https://esm.sh/ufo";
+import { yamlParse, yamlStringify } from "./deps.ts";
+import { ensureDir } from "./deps.ts";
+import { dirname, isAbsolute, join } from "./deps.ts";
+import { normalizeURL, withTrailingSlash } from "./deps.ts";
 
 export interface SiteConfig {
   title: string;
@@ -72,7 +72,7 @@ async function checkSiteConfig(configPath: string): Promise<boolean> {
 }
 
 async function initSiteConfig(config: SiteConfig, configPath: string) {
-  const yaml = stringify(
+  const yaml = yamlStringify(
     config as unknown as Record<string, unknown>,
   );
   await ensureDir(dirname(configPath));
@@ -83,7 +83,7 @@ async function parseSiteConfig(path: string): Promise<SiteConfig | undefined> {
   try {
     const decoder = new TextDecoder("utf-8");
     const data = decoder.decode(await Deno.readFile(path));
-    const conf = parse(data) as SiteConfig;
+    const conf = yamlParse(data) as SiteConfig;
     return conf;
   } catch {
     return undefined;

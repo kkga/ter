@@ -1,18 +1,13 @@
-import {
-  dirname,
-  extname,
-  isAbsolute,
-  join,
-} from "https://deno.land/std/path/mod.ts";
-import { HighlightJS } from "https://cdn.skypack.dev/highlight.js";
-import { marked } from "https://esm.sh/marked";
+import { dirname, extname, isAbsolute, join } from "./deps.ts";
+import { hljs } from "./deps.ts";
+import { marked } from "./deps.ts";
 import {
   ParsedURL,
   parseURL,
   withLeadingSlash,
   withoutLeadingSlash,
   withoutTrailingSlash,
-} from "https://esm.sh/ufo";
+} from "./deps.ts";
 import { Heading } from "./pages.ts";
 
 const renderer = new marked.Renderer();
@@ -123,8 +118,8 @@ export function render(
   };
 
   renderer.code = (code: string, lang: string): string => {
-    const language = HighlightJS.getLanguage(lang) ? lang : "plaintext";
-    const html = HighlightJS.highlight(code, { language }).value;
+    const language = hljs.getLanguage(lang) ? lang : "plaintext";
+    const html = hljs.highlight(code, { language }).value;
     return `<div class="hljs language-${language}"><pre>${html}</pre></div>`;
   };
 

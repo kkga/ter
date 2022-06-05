@@ -1,12 +1,7 @@
-import { parse } from "https://deno.land/std/flags/mod.ts";
-import { emptyDir, ensureDir } from "https://deno.land/std/fs/mod.ts";
-import {
-  dirname,
-  join,
-  relative,
-  toFileUrl,
-} from "https://deno.land/std/path/mod.ts";
-import { withTrailingSlash } from "https://esm.sh/ufo";
+import { parse } from "./deps.ts";
+import { emptyDir, ensureDir } from "./deps.ts";
+import { dirname, join, relative, toFileUrl } from "./deps.ts";
+import { withTrailingSlash } from "./deps.ts";
 import * as entries from "./entries.ts";
 import * as pages from "./pages.ts";
 import * as attrs from "./attributes.ts";
