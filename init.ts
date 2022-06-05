@@ -6,7 +6,7 @@ const requiredViews = ["base.eta", "feed.xml.eta"];
 const requiredAssets = ["ter.css", "hljs.css"];
 
 async function initializeFile(filePath: string, url: URL) {
-  const fileResponse = await fetch(url).catch((err) => {
+  const fileResponse = await fetch(url.toString()).catch((err) => {
     console.log(`Can't fetch file: ${url}, Error: ${err}`);
     Deno.exit(1);
   });
@@ -65,19 +65,4 @@ export async function init(config: TerConfig) {
       console.log(`  Initialized:\t${assetPath}`);
     }
   }
-}
-
-export async function checkRequiredFiles(
-  viewsPath: string,
-  assetsPath: string,
-): Promise<boolean> {
-  for (const file of requiredViews) {
-    const filepath = path.join(Deno.cwd(), viewsPath, file);
-    await Deno.stat(filepath).catch(() => Promise.reject(filepath));
-  }
-  for (const file of requiredAssets) {
-    const filepath = path.join(Deno.cwd(), assetsPath, file);
-    await Deno.stat(filepath).catch(() => Promise.reject(filepath));
-  }
-  return Promise.resolve(true);
 }

@@ -1,11 +1,13 @@
 import { flagsParse, fs, path } from "./deps.ts";
 import { createConfig, TerConfig } from "./config.ts";
-import { checkRequiredFiles, init } from "./init.ts";
 import { serve } from "./serve.ts";
 import * as entries from "./entries.ts";
 import * as pages from "./pages.ts";
 import * as attrs from "./attributes.ts";
 import * as files from "./files.ts";
+
+// const MOD_URL = new URL("https://deno.land/x/ter");
+const MOD_URL = Deno.cwd();
 
 async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
   try {
@@ -17,37 +19,38 @@ async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
   }
 }
 
+export async function getRemoteAsset(url: URL) {
+  const fileResponse = await fetch(url.toString()).catch((err) => {
+    console.log(`Can't fetch file: ${url}, Error: ${err}`);
+    Deno.exit(1);
+  });
+  if (fileResponse.ok && fileResponse.body) {
+    return await fileResponse.text();
+  } else {
+    console.error(`Fetch response error`);
+    Deno.exit(1);
+  }
+}
+
 export async function generateSite(config: TerConfig, includeRefresh: boolean) {
   const {
     inputPath,
     outputPath,
+    pageView,
+    feedView,
+    style,
     viewsPath,
-    assetsPath,
     ignoreKeys,
     staticExts,
     site: siteConf,
   } = config;
 
-  await checkRequiredFiles(viewsPath, assetsPath)
-    .catch(async (err: string) => {
-      console.error(
-        `%cMissing required file: ${path.relative(Deno.cwd(), err)}`,
-        "color: red",
-      );
-      if (confirm("Initialize default views and assets?")) {
-        await init(config);
-      } else {
-        Deno.exit(1);
-      }
-    });
-
   const START = performance.now();
 
   console.log(`scan\t${inputPath}`);
-  const [contentEntries, staticEntries, assetEntries] = await Promise.all([
+  const [contentEntries, staticEntries] = await Promise.all([
     entries.getContentEntries(inputPath),
     entries.getStaticEntries(inputPath, outputPath, staticExts),
-    entries.getAssetEntries(assetsPath),
   ]);
 
   const unfilteredPages: pages.Page[] = [];
@@ -74,28 +77,27 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
     tagPages.push({ name: tag, pages: pagesWithTag });
   }
 
-  const pageViewPath = path.join(Deno.cwd(), viewsPath, "base.eta");
-  const tagViewPath = path.join(Deno.cwd(), viewsPath, "base.eta");
   const headInclude = await getHeadInclude(viewsPath) ?? "";
 
-  const [contentFiles, tagFiles, staticFiles, assetFiles] = await Promise.all(
+  const [contentFiles, tagFiles, staticFiles] = await Promise.all(
     [
       files.buildContentFiles(contentPages, {
         outputPath: outputPath,
-        viewPath: pageViewPath,
+        view: pageView,
         head: headInclude,
         includeRefresh,
         conf: siteConf,
+        style,
       }),
       files.buildTagFiles(tagPages, {
         outputPath: outputPath,
-        viewPath: tagViewPath,
+        view: pageView,
         head: headInclude,
         includeRefresh,
         conf: siteConf,
+        style,
       }),
       files.getStaticFiles(staticEntries, inputPath, outputPath),
-      files.getStaticFiles(assetEntries, assetsPath, outputPath),
     ],
   );
 
@@ -111,10 +113,9 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
   await fs.emptyDir(outputPath);
 
   if (contentPages.length > 0) {
-    const feedViewPath = path.join(Deno.cwd(), viewsPath, "feed.xml.eta");
     const feedFile = await files.buildFeedFile(
       contentPages,
-      feedViewPath,
+      feedView,
       path.join(outputPath, "feed.xml"),
       siteConf,
     );
@@ -129,7 +130,7 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
     config.quiet,
   );
   await files.copyFiles(
-    [...staticFiles, ...assetFiles],
+    [...staticFiles],
     config.quiet,
   );
 
@@ -151,15 +152,15 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
   console.log("---");
   console.log(`${totalFiles} pages`);
   console.log(`${staticFiles.length} static files`);
-  console.log(`${assetEntries.length} site assets`);
   console.log(`Done in ${Math.floor(BUILD_SECS)}ms`);
 }
 
 async function main(args: string[]) {
   const flags = flagsParse(args, {
     boolean: ["serve", "help", "quiet"],
-    string: ["input", "output", "port"],
+    string: ["config", "input", "output", "port"],
     default: {
+      config: ".ter/config.yml",
       input: ".",
       output: "_site",
       serve: false,
@@ -173,7 +174,31 @@ async function main(args: string[]) {
     Deno.exit();
   }
 
-  const config = await createConfig(flags);
+  const [pageView, feedView, baseStyle, hljsStyle] = await Promise.all([
+    getRemoteAsset(
+      path.toFileUrl(path.join(MOD_URL.toString(), "views/base.eta")),
+    ),
+    getRemoteAsset(
+      path.toFileUrl(path.join(MOD_URL.toString(), "views/feed.xml.eta")),
+    ),
+    getRemoteAsset(
+      path.toFileUrl(path.join(MOD_URL.toString(), "assets/ter.css")),
+    ),
+    getRemoteAsset(
+      path.toFileUrl(path.join(MOD_URL.toString(), "assets/hljs.css")),
+    ),
+  ]);
+
+  const config = await createConfig({
+    configPath: flags.config,
+    inputPath: flags.input,
+    outputPath: flags.output,
+    quiet: flags.quiet,
+    pageView: pageView,
+    feedView: feedView,
+    style: [baseStyle, hljsStyle].join("\n"),
+  });
+
   await generateSite(config, flags.serve);
 
   if (flags.serve === true) {
@@ -190,8 +215,9 @@ function printHelp() {
 USAGE:
   ter [options]\n
 OPTIONS:
-  --input\t\tSource directory (default: ./)
-  --output\t\tOutput directory (default: ./_site)
+  --input\t\tSource directory (default: .)
+  --output\t\tOutput directory (default: _site)
+  --config\t\Path to config file (default: .ter/config.yml)
   --serve\t\tServe locally and watch for changes (default: false)
   --port\t\tServe port (default: 8080)
   --quiet\t\tDon't list filenames (default: false)`);

@@ -21,16 +21,18 @@ interface PageOpts {
   backlinkPages: Array<Page>;
   taggedPages: { [tag: string]: Array<Page> };
   childTags: Array<string>;
-  viewPath: string;
+  view: string;
   siteConf: SiteConfig;
+  style: string;
 }
 
 interface TagPageOpts {
   headInclude: string;
   includeRefresh: boolean;
   taggedPages: Array<Page>;
-  viewPath: string;
+  view: string;
   siteConf: SiteConfig;
+  style: string;
 }
 
 const sortPages = (pages: Page[]): Page[] =>
@@ -99,7 +101,7 @@ export async function buildPage(
 
   eta.templates.define("head", eta.compile(opts.headInclude));
 
-  return await eta.renderFile(opts.viewPath, {
+  return await eta.render(opts.view, {
     page,
     indexLayout: useLogLayout ? "log" : "default",
     toc: showToc,
@@ -109,6 +111,7 @@ export async function buildPage(
     pagesByTag: taggedPages,
     childTags: opts.childTags,
     site: opts.siteConf,
+    style: opts.style,
     includeRefresh: opts.includeRefresh,
   });
 }
@@ -123,7 +126,7 @@ export async function buildTagPage(
     { slug: `#${tagName}`, url: "", current: true, isTag: true },
   ];
 
-  const result = await eta.renderFile(opts.viewPath, {
+  const result = await eta.render(opts.view, {
     page: {
       title: `#${tagName}`,
       description: `Pages tagged #${tagName}`,
@@ -132,6 +135,7 @@ export async function buildTagPage(
     breadcrumbs,
     childPages: sortPages(opts.taggedPages),
     site: opts.siteConf,
+    style: opts.style,
     includeRefresh: opts.includeRefresh,
   });
   return result;
@@ -139,10 +143,10 @@ export async function buildTagPage(
 
 export async function buildFeed(
   pages: Array<Page>,
-  viewPath: string,
+  view: string,
   siteConf: SiteConfig,
 ): Promise<string | void> {
-  const result = await eta.renderFile(viewPath, {
+  const result = await eta.render(view, {
     pages,
     site: siteConf,
   });

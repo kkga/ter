@@ -19,9 +19,10 @@ export interface OutputFile {
 
 interface BuildOpts {
   outputPath: string;
-  viewPath: string;
+  view: string;
   head: string;
   conf: SiteConfig;
+  style: string;
   includeRefresh: boolean;
 }
 
@@ -51,8 +52,9 @@ export async function buildContentFiles(
       backlinkPages: getBacklinkPages(pages, page),
       taggedPages: pagesByTag,
       childTags: page.isIndex ? getChildTags(pages, page) : [],
-      viewPath: opts.viewPath,
+      view: opts.view,
       siteConf: opts.conf,
+      style: opts.style,
     });
 
     if (typeof html === "string") {
@@ -82,10 +84,11 @@ export async function buildTagFiles(
 
     const html = await buildTagPage(tag.name, {
       taggedPages: tag.pages,
-      viewPath: opts.viewPath,
+      view: opts.view,
       headInclude: opts.head,
       includeRefresh: opts.includeRefresh,
       siteConf: opts.conf,
+      style: opts.style,
     });
 
     if (typeof html === "string") {
@@ -102,13 +105,13 @@ export async function buildTagFiles(
 
 export async function buildFeedFile(
   pages: Array<Page>,
-  feedViewPath: string,
+  view: string,
   outputPath: string,
   siteConf: SiteConfig,
 ): Promise<OutputFile | undefined> {
   const xml = await buildFeed(
     pages,
-    feedViewPath,
+    view,
     siteConf,
   );
 
