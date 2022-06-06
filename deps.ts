@@ -1,4 +1,4 @@
-export { parse as flagsParse } from "https://deno.land/std@0.142.0/flags/mod.ts";
+export { parse as parseFlags } from "https://deno.land/std@0.142.0/flags/mod.ts";
 
 export {
   copy,
@@ -21,8 +21,8 @@ export {
 } from "https://deno.land/std@0.142.0/path/mod.ts";
 
 export {
-  parse as yamlParse,
-  stringify as yamlStringify,
+  parse,
+  stringify,
 } from "https://deno.land/std@0.142.0/encoding/yaml.ts";
 
 export {

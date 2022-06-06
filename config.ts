@@ -1,4 +1,4 @@
-import { yamlParse, yamlStringify } from "./deps.ts";
+import { parse, stringify } from "./deps.ts";
 import { ensureDir } from "./deps.ts";
 import { dirname, isAbsolute, join } from "./deps.ts";
 import { normalizeURL, withTrailingSlash } from "./deps.ts";
@@ -72,7 +72,7 @@ async function checkSiteConfig(configPath: string): Promise<boolean> {
 }
 
 async function initSiteConfig(config: SiteConfig, configPath: string) {
-  const yaml = yamlStringify(
+  const yaml = stringify(
     config as unknown as Record<string, unknown>,
   );
   await ensureDir(dirname(configPath));
@@ -83,7 +83,7 @@ async function parseSiteConfig(path: string): Promise<SiteConfig | undefined> {
   try {
     const decoder = new TextDecoder("utf-8");
     const data = decoder.decode(await Deno.readFile(path));
-    const conf = yamlParse(data) as SiteConfig;
+    const conf = parse(data) as SiteConfig;
     return conf;
   } catch {
     return undefined;

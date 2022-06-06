@@ -1,4 +1,4 @@
-import { parse } from "./deps.ts";
+import { parseFlags } from "./deps.ts";
 import { emptyDir, ensureDir } from "./deps.ts";
 import { dirname, join, relative, toFileUrl } from "./deps.ts";
 import { withTrailingSlash } from "./deps.ts";
@@ -158,7 +158,7 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
 }
 
 async function main(args: string[]) {
-  const flags = parse(args, {
+  const flags = parseFlags(args, {
     boolean: ["serve", "help", "quiet", "local"],
     string: ["config", "input", "output", "port"],
     default: {
