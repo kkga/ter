@@ -68,9 +68,9 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
     page && unfilteredPages.push(page);
   }
 
-  const contentPages = unfilteredPages.filter((page) =>
-    !attrs.hasKey(page.attrs, ignoreKeys)
-  );
+  const contentPages = config.renderDrafts
+    ? unfilteredPages
+    : unfilteredPages.filter((page) => !attrs.hasKey(page.attrs, ignoreKeys));
 
   const tagPages: pages.TagPage[] = [];
 
@@ -159,7 +159,7 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
 
 async function main(args: string[]) {
   const flags = parseFlags(args, {
-    boolean: ["serve", "help", "quiet", "local"],
+    boolean: ["serve", "help", "quiet", "local", "drafts"],
     string: ["config", "input", "output", "port"],
     default: {
       config: ".ter/config.yml",
@@ -169,6 +169,7 @@ async function main(args: string[]) {
       port: 8080,
       quiet: false,
       local: false,
+      drafts: false,
     },
   });
 
@@ -193,6 +194,7 @@ async function main(args: string[]) {
     inputPath: flags.input,
     outputPath: flags.output,
     quiet: flags.quiet,
+    renderDrafts: flags.drafts,
     pageView: pageView,
     feedView: feedView,
     style: [baseStyle, hljsStyle].join("\n"),
@@ -219,7 +221,8 @@ OPTIONS:
   --config\t\tPath to config file (default: .ter/config.yml)
   --serve\t\tServe locally and watch for changes (default: false)
   --port\t\tServe port (default: 8080)
-  --quiet\t\tDon't list filenames (default: false)`);
+  --drafts\t\tRender pages marked as drafts (default: false)
+  --quiet\t\tDo not list generated files (default: false)`);
 }
 
 main(Deno.args);

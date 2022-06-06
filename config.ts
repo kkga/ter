@@ -20,10 +20,11 @@ export interface TerConfig {
   assetsPath: string;
   viewsPath: string;
   siteConfigPath: string;
-  ignoreKeys: Array<string>;
-  staticExts: Array<string>;
+  ignoreKeys: string[];
+  staticExts: string[];
   site: SiteConfig;
   quiet: boolean;
+  renderDrafts: boolean;
 }
 
 const defaultSiteConfig: SiteConfig = {
@@ -47,7 +48,7 @@ const defaultConfig: TerConfig = {
   feedView: "",
   style: "",
   siteConfigPath: ".ter/config.yml",
-  ignoreKeys: ["unlisted", "draft"],
+  ignoreKeys: ["draft"],
   staticExts: [
     "png",
     "jpg",
@@ -61,6 +62,7 @@ const defaultConfig: TerConfig = {
   ],
   site: defaultSiteConfig,
   quiet: false,
+  renderDrafts: false,
 };
 
 async function checkSiteConfig(configPath: string): Promise<boolean> {
@@ -98,6 +100,7 @@ interface CreateConfigOpts {
   feedView: string;
   style: string;
   quiet: boolean;
+  renderDrafts: boolean;
 }
 
 export async function createConfig(opts: CreateConfigOpts): Promise<TerConfig> {
@@ -125,6 +128,7 @@ export async function createConfig(opts: CreateConfigOpts): Promise<TerConfig> {
   conf.feedView = opts.feedView;
   conf.style = opts.style;
   conf.quiet = opts.quiet;
+  conf.renderDrafts = opts.renderDrafts;
 
   await checkSiteConfig(conf.siteConfigPath)
     .catch(async () => {
@@ -135,6 +139,7 @@ export async function createConfig(opts: CreateConfigOpts): Promise<TerConfig> {
     });
 
   const siteConf = await parseSiteConfig(conf.siteConfigPath);
+
   if (siteConf) {
     if (typeof siteConf.title === "string") {
       conf.site.title = siteConf.title;
