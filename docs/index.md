@@ -3,15 +3,14 @@
 Welcome to Ter demo site! Ter is a tiny wiki engine with
 [Zettelkasten](zettelkasten.md) flavor. It takes a folder of markdown files and
 replicates its structure into a static site with automatically
-[indexed](features#index-pages) directories, [backlinks](features#backlinks) and
-[breadcrumbs](features#breadcrumbs).
+[indexed](overview#index-pages) directories, [backlinks](overview#backlinks) and
+[breadcrumbs](overview#breadcrumbs).
 
 ### Some quick links
 
-- see [goals and use cases](goals-and-use-cases.md) for some thinking behind
-  Ter's approach
-- [features](features.md) for a full overview
-- [usage](usage.md) on how to get started
+- see [overview](overview.md) on how to get started
+- [goals](goals.md) for some thinking behind Ter's approach
+- [deploy](deploy.md) on how to publish a site
 - or feel free to just roam around
 
 ### Open source

@@ -3,7 +3,101 @@ pinned: true
 toc: true
 ---
 
-# Features
+# Overview
+
+Ter is built with [Deno](https://deno.land/), so you'll need to have it
+installed.
+
+Once the `deno` command is available to run in your terminal, follow along.
+
+## Building a site
+
+Run the following command inside a directory with markdown files.
+
+```
+deno run -A --unstable https://deno.land/x/ter/main.ts
+```
+
+This command will recursively search for all `*.md` files in the current
+directory and generate a site into the `_site` directory.
+
+## Changing input and output paths
+
+Ter takes 2 optional arguments:
+
+- `--input` (default: `.`)
+- `--output` (default: `_site`)
+
+If your markdown files are in some other directory, or if you want a different
+name for the output directory, adjust accordingy, for example:
+
+```
+deno run -A --unstable https://deno.land/x/ter/main.ts --input pages --output _dist
+```
+
+## Local server with live refresh
+
+Passing `--serve` flag will start a local server. Ter will automatically rebuild
+the site and refresh the browser on any file changes.
+
+```
+deno run -A --unstable https://deno.land/x/ter/main.ts --serve
+```
+
+## Deploy
+
+If you want to publish the site, see the [Deploy](deploy.md) page. If you're
+looking to customize the output, see the docs on [Customization](customize.md).
+
+## Site configuration
+
+Before building, Ter checks for configuration file at `.ter/config.yml`. If it
+doesn't exist, an example configuration file will be initialized before
+building.
+
+At the moment, the following configuration options are available:
+
+```yaml
+# Site title: used in HTML title tags and in feeds
+title: Ter
+
+# Site description: used in HTML description tags and in feeds
+description: A tiny wiki-style site builder with Zettelkasten flavor.
+
+# Root name: used for root breadcrumb label
+rootName: index
+
+# URL: used in feed
+url: https://ter.kkga.me/
+
+# Author name: used in feeds
+author:
+  name: Gadzhi Kharkharov
+  email: x@kkga.me
+  url: https://kkga.me
+```
+
+## Command line usage
+
+Run Ter with the `--help` flag to see usage reference.
+
+```
+deno run https://deno.land/x/ter/main.ts --help
+```
+
+```
+Ter -- tiny wiki-style site builder.
+
+USAGE:
+  ter [options]
+
+OPTIONS:
+  --input     Source directory (default: ./)
+  --output    Output directory (default: ./_site)
+  --serve     Serve locally and watch for changes (default: false)
+  --port      Serve port (default: 8080)
+  --quiet     Don't list filenames (default: false)
+```
 
 ## Index pages
 
@@ -27,10 +121,10 @@ content.
 
 Items in the index are sorted in the following order:
 
-1. files with `pinned: true` in the [frontmatter](features#frontmatter) are
-   listed at the top and get an ★ symbol;
+1. files with `pinned: true` in the [frontmatter](#frontmatter) are listed at
+   the top and get an ★ symbol;
 2. directories (child index pages);
-3. rest of markdown files, sorted by [date](features#content-dates).
+3. rest of markdown files, sorted by [date](#dates).
 
 ### Markdown in index files
 
@@ -110,6 +204,23 @@ date: 1995-12-31
 —
 
 # My page
+```
+
+## Dead internal links
+
+Ter automatically finds non-working internal links and lets you know about them
+after building a site. Here's an example output:
+
+```
+[...]
+---
+Dead links:
+/overview -> /non-existent-page-name
+/overview -> /some-dead-link
+---
+20 pages
+2 static files
+Done in 29ms
 ```
 
 ## Breadcrumbs
