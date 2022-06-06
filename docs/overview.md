@@ -21,7 +21,7 @@ deno run -A --unstable https://deno.land/x/ter/main.ts
 This command will recursively search for all `*.md` files in the current
 directory and generate a site into the `_site` directory.
 
-## Changing input and output paths
+### Changing input and output paths
 
 Ter takes 2 optional arguments:
 
@@ -35,7 +35,7 @@ name for the output directory, adjust accordingy, for example:
 deno run -A --unstable https://deno.land/x/ter/main.ts --input pages --output _dist
 ```
 
-## Local server with live refresh
+### Local server with live refresh
 
 Passing `--serve` flag will start a local server. Ter will automatically rebuild
 the site and refresh the browser on any file changes.
@@ -171,7 +171,6 @@ Some properties are utilized when building a site.
 | `pinned`      | if set to `true`, page is listed at the top of [index lists](#index-pages)  |
 | `toc`         | if set to `true`, page renders table of contents at the top                 |
 | `draft`       | if set to `true`, file is [ignored](#ignoring-files) during site generation |
-| `unlisted`    | same as `draft`                                                             |
 
 ### Other properties
 
@@ -184,8 +183,19 @@ Any files and folders that start with an `_` or `.` (hidden) are ignored. For
 example, if there is a `_drafts` folder in the content directory, it will be
 skipped during site generation.
 
-In addition, it’s possible to ignore individual markdown files by setting either
-`unlisted: true` or `draft: true` in the [YAML frontmatter](#frontmatter).
+### Draft pages
+
+In addition, any markdown file with `draft: true` in the
+[frontmatter](#frontmatter) will be ignored.
+
+### Rendering draft pages
+
+To render files with `draft: true`, pass `--drafts` flag to the main command.
+For example:
+
+```
+deno run -A --unstable https://deno.land/x/ter/main.ts --serve --drafts
+```
 
 ## Dates
 
