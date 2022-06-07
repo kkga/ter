@@ -1,14 +1,11 @@
 /* Default stylesheet for Ter: https://github.com/kkga/ter */
 
-/*
-ROOT -------------------------------------------------------------------------
-*/
+/* ROOT ------------------------------------------------------------------------- */
 
 :root {
-  --font-sans: system-ui, sans-serif;
-  --font-mono: ui-monospace, sfmono-regular, menlo, monaco, consolas,
-    "liberation mono", "courier new", monospace;
-
+  --font-sans: "Recursive", sans-serif;
+  --font-mono: "Recursive", monospace;
+*/
   /* Light theme */
   --color-text-body: #1c1917;
   --color-text-secondary: #57534e;
@@ -27,17 +24,17 @@ ROOT -------------------------------------------------------------------------
   --color-dark-bg-body: #1c1917;
   --color-dark-bg-secondary: #292524;
 
-  /* Scales */
-  --width-body: 48rem;
-  --width-aside: 24rem;
-  --padding-paragraph: 40px;
+  /* Font */
+  --font-casl-head: 1;
+  --font-casl-body: 0;
+  --font-mono-code: 1;
   --font-size-base: 16px;
   --font-size-s: 0.875rem;
   --font-size-xs: 0.75rem;
   --font-size-l: 1.5rem;
   --font-size-xl: 2rem;
   --font-weight-m: 500;
-  --font-weight-b: 700;
+  --font-weight-b: 800;
   --line-height-base: 1.5;
   --line-height-spaced: 1.75;
   --line-height-tight: 1.375;
@@ -45,6 +42,11 @@ ROOT -------------------------------------------------------------------------
   --line-height-subhead: 2rem;
   --leading-base: -0.009em;
   --leading-tight: -0.025em;
+
+  /* Scales */
+  --width-body: 48rem;
+  --width-aside: 24rem;
+  --padding-paragraph: 40px;
   --radius-xs: 4px;
   --radius-md: 6px;
 }
@@ -61,9 +63,7 @@ ROOT -------------------------------------------------------------------------
   }
 }
 
-/*
-TYPE  --------------------------------------------------------------------
-*/
+/* TYPE  -------------------------------------------------------------------- */
 
 h1,
 h2,
@@ -73,6 +73,8 @@ h5,
 h6 {
   font-size: var(--font-size-base);
   letter-spacing: var(--leading-tight);
+  font-variation-settings: "CASL" var(--font-casl-head);
+  font-weight: var(--font-weight-b);
   margin-top: 1.5em;
   margin-bottom: 0.75em;
 }
@@ -91,7 +93,6 @@ h1 {
 
 h2 {
   font-size: var(--font-size-l);
-  font-weight: var(--font-weight-m);
   line-height: var(--line-height-subhead);
 }
 
@@ -109,9 +110,7 @@ small {
   margin-top: 0;
 }
 
-/*
-BASE TAGS ---------------------------------------------------------------------
-*/
+/* BASE TAGS --------------------------------------------------------------------- */
 
 html {
   background-color: black;
@@ -128,7 +127,7 @@ body {
   background: var(--color-bg-body);
   color: var(--color-text-body);
   font-family: var(--font-sans);
-  font-feature-settings: "calt", "tnum", "ss02";
+  font-variation-settings: "CASL" var(--font-casl-body);
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);
   letter-spacing: var(--leading-base);
@@ -186,6 +185,7 @@ code,
 kbd,
 samp {
   font-family: var(--font-mono);
+  font-variation-settings: "MONO" var(--font-mono-code);
   background-color: var(--color-bg-secondary);
   border-radius: var(--radius-xs);
   padding: 0 0.125em;
@@ -193,6 +193,8 @@ samp {
 }
 
 pre {
+  font-family: var(--font-mono);
+  font-variation-settings: "MONO" var(--font-mono-code);
   font-size: var(--font-size-s);
   line-height: var(--line-height-tight);
   border-radius: var(--radius-md);
@@ -283,9 +285,7 @@ ol ol {
   padding-left: 1.5rem;
 }
 
-/*
-HEADER/BREADCRUMBS -------------------------------------------------------------------
-*/
+/* HEADER/BREADCRUMBS ------------------------------------------------------------------- */
 
 body > header,
 article > header {
@@ -330,9 +330,7 @@ body > header ol li:not(:first-child)::before {
   color: var(--color-text-tertiary);
 }
 
-/*
-ASIDE -----------------------------------------------------------------
-*/
+/* ASIDE ----------------------------------------------------------------- */
 
 body > aside {
   color: var(--color-text-tertiary);
@@ -390,9 +388,7 @@ aside time {
   font-size: var(--font-size-xs);
 }
 
-/*
-FOOTER -----------------------------------------------------------------
-*/
+/* FOOTER ----------------------------------------------------------------- */
 
 body > footer {
   margin-top: auto;
@@ -400,6 +396,4 @@ body > footer {
   color: var(--color-text-tertiary);
 }
 
-/*
-END TER STYLESHEET -----------------------------------------------------------------
-*/
+/* END TER STYLESHEET ----------------------------------------------------- */
