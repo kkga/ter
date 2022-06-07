@@ -36,11 +36,13 @@ highlight.js-compatible theme file.
 
 ## Templates
 
+### Page template
+
 Ter uses [Eta](https://eta.js.org/) templates to build pages. It’s possible to
 customize the output by changing the default view files in `.ter/views/`.
 
 ### Custom \<head\> template
 
 If a file at `.ter/views/head.eta` exists, its content will be injected at the
-bottom of HTML `<head>` tag of all built pages. This can be used for adding
-things like analytics integration.
+bottom of HTML `<head>` tag for all pages. This can be used for adding things
+like analytics integration.

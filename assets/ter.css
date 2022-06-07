@@ -31,6 +31,7 @@
   --font-size-base: 16px;
   --font-size-s: 0.875rem;
   --font-size-xs: 0.75rem;
+  --font-size-m: 1.25rem;
   --font-size-l: 1.5rem;
   --font-size-xl: 2rem;
   --font-weight-m: 500;
@@ -45,8 +46,6 @@
 
   /* Scales */
   --width-body: 48rem;
-  --width-aside: 24rem;
-  --padding-paragraph: 40px;
   --radius-xs: 4px;
   --radius-md: 6px;
 }
@@ -127,7 +126,7 @@ body {
   background: var(--color-bg-body);
   color: var(--color-text-body);
   font-family: var(--font-sans);
-  font-variation-settings: "CASL" var(--font-casl-body);
+  font-variation-settings: "CASL" var(--font-casl-body), "CRSV" 0.5;
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);
   letter-spacing: var(--leading-base);
@@ -142,7 +141,6 @@ body > :is(header, main, aside, footer) {
 a {
   color: var(--color-text-accent);
   text-decoration: none;
-  display: inline-block;
 }
 
 :is(h1, h2, h3, h4, h5, h6) a {
@@ -155,6 +153,7 @@ a:visited {
 
 a[href]:hover {
   text-decoration: underline;
+  font-variation-settings: 'CASL' 1, 'wght' 700;
 }
 
 a[rel~="external"] {
@@ -175,6 +174,8 @@ article > img {
 
 blockquote {
   color: var(--color-text-secondary);
+  font-size: var(--font-size-m);
+  font-variation-settings: 'CASL' var(--font-casl-head);
 }
 
 a img {

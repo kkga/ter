@@ -46,8 +46,9 @@ deno run -A --unstable https://deno.land/x/ter/main.ts --serve
 
 ## Deploy
 
-If you want to publish the site, see the [Deploy](deploy.md) page. If you're
-looking to customize the output, see the docs on [Customization](customize.md).
+See the [Deploy](deploy.md) page on how to publish your site.
+
+---
 
 ## Site configuration
 
@@ -86,17 +87,19 @@ deno run https://deno.land/x/ter/main.ts --help
 ```
 
 ```
-Ter -- tiny wiki-style site builder.
+Ter -- tiny wiki-style site builder
 
 USAGE:
   ter [options]
 
 OPTIONS:
-  --input     Source directory (default: ./)
-  --output    Output directory (default: ./_site)
+  --input     Source directory (default: .)
+  --output    Output directory (default: _site)
+  --config    Path to config file (default: .ter/config.yml)
   --serve     Serve locally and watch for changes (default: false)
   --port      Serve port (default: 8080)
-  --quiet     Don't list filenames (default: false)
+  --drafts    Render pages marked as drafts (default: false)
+  --quiet     Do not list generated files (default: false)
 ```
 
 ## Index pages
