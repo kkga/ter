@@ -169,8 +169,8 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
             <a style="<%_= isIndex ? 'font-weight: var(--font-weight-b)' : '' %> " href="<%= url.pathname %>">
               <%= title %>
             </a>
+            <% if (pinned) { %> * <% } %>
             <% if (isIndex) { %>/ ..<% } %>
-            <% if (pinned) { %> *<% } %>
             <span></span>
             <% if (date) { %>
               <time datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
