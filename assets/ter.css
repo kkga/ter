@@ -5,7 +5,7 @@
 :root {
   --font-sans: "Recursive", sans-serif;
   --font-mono: "Recursive", monospace;
-*/
+
   /* Light theme */
   --color-text-body: #1c1917;
   --color-text-secondary: #57534e;
@@ -72,7 +72,7 @@ h5,
 h6 {
   font-size: var(--font-size-base);
   letter-spacing: var(--leading-tight);
-  font-variation-settings: "CASL" var(--font-casl-head);
+  font-variation-settings: "CASL" var(--font-casl-head), "MONO" 0, "CRSV" 0.5;
   font-weight: var(--font-weight-b);
   margin-top: 1.5em;
   margin-bottom: 0.75em;
@@ -126,7 +126,7 @@ body {
   background: var(--color-bg-body);
   color: var(--color-text-body);
   font-family: var(--font-sans);
-  font-variation-settings: "CASL" var(--font-casl-body), "CRSV" 0.5;
+  font-variation-settings: "CASL" var(--font-casl-body), "MONO" 0, "CRSV" 0.5;
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);
   letter-spacing: var(--leading-base);
@@ -153,7 +153,7 @@ a:visited {
 
 a[href]:hover {
   text-decoration: underline;
-  font-variation-settings: 'CASL' 1, 'wght' 700;
+  font-variation-settings: "CASL" 1, "wght" 700, "MONO" 0, "CRSV" 0.5;
 }
 
 a[rel~="external"] {
@@ -175,7 +175,7 @@ article > img {
 blockquote {
   color: var(--color-text-secondary);
   font-size: var(--font-size-m);
-  font-variation-settings: 'CASL' var(--font-casl-head);
+  font-variation-settings: "CASL" 1, "wght" 500, "MONO" 0, "CRSV" 0.5;
 }
 
 a img {
@@ -186,7 +186,7 @@ code,
 kbd,
 samp {
   font-family: var(--font-mono);
-  font-variation-settings: "MONO" var(--font-mono-code);
+  font-variation-settings: "CRSV" 0.5, "CASL" 1, "MONO" 1;
   background-color: var(--color-bg-secondary);
   border-radius: var(--radius-xs);
   padding: 0 0.125em;
@@ -195,7 +195,7 @@ samp {
 
 pre {
   font-family: var(--font-mono);
-  font-variation-settings: "MONO" var(--font-mono-code);
+  font-variation-settings: "CRSV" 0.5, "CASL" 1, "MONO" 1;
   font-size: var(--font-size-s);
   line-height: var(--line-height-tight);
   border-radius: var(--radius-md);

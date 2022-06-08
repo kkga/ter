@@ -1,6 +1,6 @@
 import { ensureDir } from "./deps.ts";
 import { basename, dirname, join } from "./deps.ts";
-import { yamlStringify } from "./deps.ts";
+import { stringify } from "./deps.ts";
 import { writableStreamFromWriter } from "./deps.ts";
 import { TerConfig } from "./config.ts";
 
@@ -33,7 +33,7 @@ export async function init(config: TerConfig) {
     await Deno.stat(join(Deno.cwd(), config.siteConfigPath));
     console.log(`  File exists, skipping:\t${config.siteConfigPath}`);
   } catch {
-    const yaml = yamlStringify(
+    const yaml = stringify(
       config.site as unknown as Record<string, unknown>,
     );
     await ensureDir(dirname(config.siteConfigPath));
