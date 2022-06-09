@@ -82,7 +82,9 @@ h3,
 h4,
 h5,
 h6 {
-  margin-bottom: 0.25em;
+  margin-bottom: 0;
+  text-transform: uppercase;
+  font-weight: var(--font-weight-m);
 }
 
 h1 {
@@ -186,7 +188,7 @@ code,
 kbd,
 samp {
   font-family: var(--font-mono);
-  font-variation-settings: "CRSV" 0.5, "CASL" 1, "MONO" 1;
+  font-variation-settings: "CRSV" 0.5, "CASL" 0, "MONO" 1;
   background-color: var(--color-bg-secondary);
   border-radius: var(--radius-xs);
   padding: 0 0.125em;
@@ -195,13 +197,17 @@ samp {
 
 pre {
   font-family: var(--font-mono);
-  font-variation-settings: "CRSV" 0.5, "CASL" 1, "MONO" 1;
+  font-variation-settings: "CRSV" 0.5, "CASL" 0, "MONO" 1;
   font-size: var(--font-size-s);
   line-height: var(--line-height-tight);
-  border-radius: var(--radius-md);
+  border-left: 1px solid var(--color-text-tertiary);
+  /*  border-radius: var(--radius-md);
   background-color: var(--color-bg-secondary);
   padding: 0.75em;
+*/
   overflow: auto;
+  opacity: 0.75;
+  padding-left: 1rem;
 }
 
 pre code {
@@ -276,6 +282,12 @@ tr {
 table caption {
   font-weight: var(--font-weight-m);
   margin-bottom: 0.5em;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style-position: inside;
 }
 
 ul ul,
