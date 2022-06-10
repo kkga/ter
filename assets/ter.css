@@ -10,8 +10,8 @@
   --color-text-body: #1c1917;
   --color-text-secondary: #57534e;
   --color-text-tertiary: #78716c;
-  --color-text-accent: #0369a1;
-  --color-text-accent-alt: #4338ca;
+  --color-text-accent: #075985;
+  --color-text-accent-alt: #3730a3;
   --color-bg-body: #f5f5f4;
   --color-bg-secondary: #e7e5e4;
 
@@ -19,8 +19,8 @@
   --color-dark-text-body: #f5f5f4;
   --color-dark-text-secondary: #a8a29e;
   --color-dark-text-tertiary: #78716c;
-  --color-dark-text-accent: #0ea5e9;
-  --color-dark-text-accent-alt: #818cf8;
+  --color-dark-text-accent: #38bdf8;
+  --color-dark-text-accent-alt: #a5b4fc;
   --color-dark-bg-body: #1c1917;
   --color-dark-bg-secondary: #292524;
 
@@ -82,8 +82,7 @@ h3,
 h4,
 h5,
 h6 {
-  margin-bottom: 0;
-  font-weight: var(--font-weight-m);
+  font-weight: var(--font-weight-b);
 }
 
 h1 {
@@ -108,6 +107,13 @@ small {
 
 :is(h1, h2, h3, h4, h5, h6) + * {
   margin-top: 0;
+}
+
+i,
+em,
+.italic {
+  font-style: normal;
+  font-variation-settings: "slnt" -15;
 }
 
 /* BASE TAGS --------------------------------------------------------------------- */
@@ -158,9 +164,9 @@ a[href]:hover {
 }
 
 a[rel~="external"] {
-  color: currentcolor;
   text-decoration: underline;
-  text-decoration-color: var(--color-text-accent);
+  text-decoration-style: dashed;
+  text-decoration-color: var(--color-text-tertiary);
 }
 
 img,
@@ -187,11 +193,17 @@ code,
 kbd,
 samp {
   font-family: var(--font-mono);
-  font-variation-settings: "CRSV" 0.5, "CASL" 0, "MONO" 1;
-  background-color: var(--color-bg-secondary);
-  border-radius: var(--radius-xs);
-  padding: 0 0.125em;
-  font-size: 0.95em;
+  font-variation-settings: "CRSV" 0.5, "CASL" 1, "MONO" 1, "wght" 500;
+}
+
+:is(code, kbd, samp)::after {
+  content: "]";
+  color: var(--color-text-tertiary);
+}
+
+:is(code, kbd, samp)::before {
+  content: "[";
+  color: var(--color-text-tertiary);
 }
 
 pre {
@@ -200,10 +212,6 @@ pre {
   font-size: var(--font-size-s);
   line-height: var(--line-height-tight);
   border-left: 1px solid var(--color-text-tertiary);
-  /*  border-radius: var(--radius-md);
-  background-color: var(--color-bg-secondary);
-  padding: 0.75em;
-*/
   overflow: auto;
   opacity: 0.75;
   padding-left: 1rem;

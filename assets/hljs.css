@@ -1,6 +1,6 @@
 .hljs-comment {
-  opacity: 0.6;
-  font-style: italic;
+  opacity: 0.75;
+  font-variation-settings: "CRSV" 1, "CASL" 1, "MONO" 1, "slnt" -15;
 }
 .hljs-punctuation,
 .hljs-tag {
@@ -16,7 +16,7 @@
 .hljs-meta .hljs-keyword,
 .hljs-name,
 .hljs-selector-tag {
-  opacity: 0.75;
+  font-variation-settings: "CASL" 1, "MONO" 1, "wght" 700;
 }
 .hljs-deletion,
 .hljs-number,
