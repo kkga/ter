@@ -243,8 +243,7 @@ details {
 }
 
 details[open] {
-  color: var(--color-text-body);
-  border-bottom: 1px solid var(--color-bg-secondary);
+  color: var(--color-text-secondary);
   padding-bottom: 1rem;
 }
 
