@@ -101,14 +101,23 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
       <% if (toc && filteredHeadings?.length > 0) { %>
       <details style="margin-bottom: 2rem">
         <summary>Contents</summary>
-        <ul style="list-style: none; padding: 0">
-          <% filteredHeadings.forEach((heading) => { %>
-          <li>
-            <% for (let lvl = 2; lvl < heading.level; lvl++) { %>
-            &nbsp;&nbsp;
+        <ul>
+          <% filteredHeadings.forEach((h, i) => { %>
+            <% if (h.level === 2) { %>
+            <li>
+              <a href="#<%= h.slug %>"><%= h.text %></a>
+              <% if (filteredHeadings[i+1]?.level === 3) { %>
+                <ul>
+                <% for (let j = i+1; j < filteredHeadings.length; j++) { %>
+                  <% const subH = filteredHeadings[j] %>
+                  <% if (subH.level === 3) { %>
+                  <li><a href="#<%= subH?.slug %>"><%= subH.text %></a></li>
+                  <% } else { break } %>
+                <% } %>
+                </ul>
+              <% } %>
+            </li>
             <% } %>
-            <a href="#<%= heading.slug %>"><%_= heading.text _%></a>
-          </li>
           <% }) %>
         </ul>
       </details>
