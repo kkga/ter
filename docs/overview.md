@@ -12,8 +12,6 @@ Once the `deno` command is available to run in your terminal, follow along.
 
 ## Building a site
 
-Run the following command inside a directory with markdown files.
-
 ```
 deno run -A --unstable https://deno.land/x/ter/main.ts
 ```
@@ -212,9 +210,9 @@ in `YYYY-MM-DD` format.
 ### Date example
 
 ```
-—
+---
 date: 1995-12-31
-—
+---
 
 # My page
 ```
