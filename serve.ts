@@ -20,6 +20,7 @@ let servePath: string;
 async function watch(opts: WatchOpts) {
   // TODO: watch for source ts changes in dev
   const watcher = Deno.watchFs(opts.config.inputPath);
+  let timer = 0;
 
   eventLoop:
   for await (const event of watcher) {
@@ -38,12 +39,13 @@ async function watch(opts: WatchOpts) {
       }
     }
 
-    console.log(`[changes detected] ${event.kind}: ${event.paths}\n---`);
+    console.log(`---\n[${event.kind}]\t${event.paths}\n---`);
     await opts.runner(opts.config, true);
 
-    console.log("---\nRefreshing...");
     sockets.forEach((socket) => {
-      socket.send("refresh");
+      console.log(`---\nRefreshing...`);
+      clearTimeout(timer);
+      timer = setTimeout(() => socket.send("refresh"), 100);
     });
   }
 }
