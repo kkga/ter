@@ -35,11 +35,14 @@ _dist
 
 ## Deno Deploy (via GitHub Actions)
 
-### Create a new project on [Deno Deploy](https://deno.com/deploy)
+For [Deno Deploy](https://deno.com/deploy), we can use a GitHub Action to
+automatically build the site and then deploy it with Deno's
+[deployctl](https://github.com/denoland/deployctl/blob/main/action/README.md).
+
+### Create a new project on Deno Deploy
 
 Select "Deploy from GitHub", link the repository, and use the production branch.
-For deployment mode, select “GitHub Actions”, because we want to use GitHub
-Actions to first build the site then deploy it to Deno Deploy.
+For deployment mode, select “GitHub Actions”.
 
 ### Set up a GitHub Action
 
@@ -51,35 +54,37 @@ name: Deploy to Deno Deploy
 
 on:
   push:
-    branches: [ master ]
+    # Change if using a different production branch
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+    # ^ same here
+    branches: [ main ]
 
 jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     permissions:
-      id-token: write # Allows authentication with Deno Deploy.
-      contents: read # Allows cloning the repo.
+      id-token: write
+      contents: read
 
     steps:
       - name: Clone repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Deno
         uses: denoland/setup-deno@v1.1.0
 
       - name: Build site
-        run: deno run -A --unstable main.ts # Change if using non-default input/output directories
+        # Change if using non-default input/output directories
+        run: deno run -A --unstable main.ts
 
       - name: Deploy to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: my-ter-site # Replace with the project name on Deno Deploy
-          entrypoint: https://deno.land/std@0.131.0/http/file_server.ts
-          root: _site # Change if your output directory is different
+          # Replace with the project name on Deno Deploy
+          project: my-ter-site
+          entrypoint: https://deno.land/std/http/file_server.ts
+          # Change if using non-default output directory
+          root: _site
 ```
