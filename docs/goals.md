@@ -1,9 +1,8 @@
 ---
 description: See if Ter works for you
-pinned: true
 ---
 
-# Goals and use cases
+# Goals
 
 Ter tries to solve some specific use cases effortlessly, rather than being a
 full-fledged static site builder.

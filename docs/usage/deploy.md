@@ -1,7 +1,3 @@
----
-pinned: true
----
-
 # Deploy
 
 Learn how to publish your site.

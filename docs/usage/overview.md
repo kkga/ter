@@ -1,52 +1,8 @@
 ---
-pinned: true
 toc: true
 ---
 
 # Overview
-
-Ter is built with [Deno](https://deno.land/), so you'll need to have it
-installed.
-
-Once the `deno` command is available to run in your terminal, follow along.
-
-## Building a site
-
-```
-deno run -A --unstable https://deno.land/x/ter/main.ts
-```
-
-This command will recursively search for all `*.md` files in the current
-directory and generate a site into the `_site` directory.
-
-### Changing input and output paths
-
-Ter takes 2 optional arguments:
-
-- `--input` (default: `.`)
-- `--output` (default: `_site`)
-
-If your markdown files are in some other directory, or if you want a different
-name for the output directory, adjust accordingy, for example:
-
-```
-deno run -A --unstable https://deno.land/x/ter/main.ts --input pages --output _dist
-```
-
-### Local server with live refresh
-
-Passing `--serve` flag will start a local server. Ter will automatically rebuild
-the site and refresh the browser on any file changes.
-
-```
-deno run -A --unstable https://deno.land/x/ter/main.ts --serve
-```
-
-## Deploy
-
-See the [Deploy](deploy.md) page on how to publish your site.
-
----
 
 ## Site configuration
 
@@ -74,30 +30,6 @@ author:
   name: Gadzhi Kharkharov
   email: x@kkga.me
   url: https://kkga.me
-```
-
-## Command line usage
-
-Run Ter with the `--help` flag to see usage reference.
-
-```
-deno run https://deno.land/x/ter/main.ts --help
-```
-
-```
-Ter -- tiny wiki-style site builder
-
-USAGE:
-  ter [options]
-
-OPTIONS:
-  --input     Source directory (default: .)
-  --output    Output directory (default: _site)
-  --config    Path to config file (default: .ter/config.yml)
-  --serve     Serve locally and watch for changes (default: false)
-  --port      Serve port (default: 8080)
-  --drafts    Render pages marked as drafts (default: false)
-  --quiet     Do not list generated files (default: false)
 ```
 
 ## Index pages
@@ -136,7 +68,7 @@ individual pages from the index.
 
 ## Backlinks
 
-Ter adheres to the [Zettelksten](zettelkasten.md) method and tracks connections
+Ter adheres to the [Zettelksten](/zettelkasten.md) method and tracks connections
 between pages. All internal references to the current page are listed in the
 Backlinks section at the bottom.
 
