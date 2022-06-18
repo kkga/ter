@@ -10,54 +10,57 @@ import {
 } from "./deps.ts";
 import { Heading } from "./pages.ts";
 
-const renderer = new marked.Renderer();
-
-function createExternalLink(
-  href: string,
-  title: string,
-  text: string,
-): string {
-  return (
-    `<a href="${href}" rel="external noopener noreferrer" "title=${title}">${text}</a>`
-  );
+interface RenderOpts {
+  text: string;
+  currentPath: string;
+  isIndex: boolean;
+  baseUrl: URL;
 }
 
-function createInternalLink(
-  title: string,
-  text: string,
-  parsed: ParsedURL,
-  baseUrl: URL,
-  internalUrls: Set<URL>,
-  currentPath: string,
-  isIndex: boolean,
-): string {
-  const cleanPathname = parsed.pathname === "" ? "" : withoutTrailingSlash(
-    parsed.pathname.replace(extname(parsed.pathname), ""),
+interface InternalLinkOpts {
+  title: string;
+  text: string;
+  parsed: ParsedURL;
+  baseUrl: URL;
+  internalUrls: Set<URL>;
+  currentPath: string;
+  isIndex: boolean;
+}
+
+const renderer = new marked.Renderer();
+
+function createExternalLink(href: string, title: string, text: string): string {
+  return `<a href="${href}" rel="external noopener noreferrer" title="${title}">${text}</a>`;
+}
+
+function createInternalLink(opts: InternalLinkOpts): string {
+  const cleanPathname = opts.parsed.pathname === "" ? "" : withoutTrailingSlash(
+    opts.parsed.pathname.replace(extname(opts.parsed.pathname), ""),
   );
   let internalHref: string;
 
   if (isAbsolute(cleanPathname)) {
-    internalHref = cleanPathname + parsed.hash;
-    internalUrls.add(new URL(internalHref, baseUrl));
+    internalHref = cleanPathname + opts.parsed.hash;
+    opts.internalUrls.add(new URL(internalHref, opts.baseUrl));
   } else {
     let resolved: string;
 
     if (cleanPathname === "") {
       resolved = "";
     } else {
-      const joined = isIndex
-        ? join(dirname(currentPath + "/index"), cleanPathname)
-        : join(dirname(currentPath), cleanPathname);
+      const joined = opts.isIndex
+        ? join(dirname(opts.currentPath + "/index"), cleanPathname)
+        : join(dirname(opts.currentPath), cleanPathname);
       resolved = withoutTrailingSlash(joined.replace(/\/index$/i, ""));
     }
 
     internalHref = resolved === ""
-      ? resolved + parsed.hash
-      : withLeadingSlash(resolved) + parsed.hash;
+      ? resolved + opts.parsed.hash
+      : withLeadingSlash(resolved) + opts.parsed.hash;
 
     if (resolved !== "") {
-      internalUrls.add(
-        new URL(withoutLeadingSlash(internalHref), baseUrl),
+      opts.internalUrls.add(
+        new URL(withoutLeadingSlash(internalHref), opts.baseUrl),
       );
     }
   }
@@ -70,15 +73,12 @@ function createInternalLink(
   // console.log(prefixedHref);
 
   return (
-    `<a href="${internalHref}" "title=${title}">${text}</a>`
+    `<a href="${internalHref}" title="${opts.title}">${opts.text}</a>`
   );
 }
 
 export function render(
-  text: string,
-  currentPath: string,
-  isIndex: boolean,
-  baseUrl: URL,
+  { text, currentPath, isIndex, baseUrl }: RenderOpts,
 ): { html: string; links: Array<URL>; headings: Array<Heading> } {
   const internalUrls: Set<URL> = new Set();
   const headings: Array<Heading> = [];
@@ -94,7 +94,7 @@ export function render(
     ) {
       return createExternalLink(href, title, text);
     } else {
-      return createInternalLink(
+      return createInternalLink({
         title,
         text,
         parsed,
@@ -102,7 +102,7 @@ export function render(
         internalUrls,
         currentPath,
         isIndex,
-      );
+      });
     }
   };
 
@@ -128,7 +128,6 @@ export function render(
     pedantic: false,
     gfm: true,
     breaks: false,
-    sanitize: false,
     smartLists: true,
     smartypants: false,
     xhtml: false,
