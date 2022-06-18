@@ -1,4 +1,4 @@
-import { copy, ensureDir, WalkEntry } from "./deps.ts";
+import { copy, ensureDir, minify, MinifyOpts, WalkEntry } from "./deps.ts";
 import { basename, dirname, join, relative } from "./deps.ts";
 import { buildFeed, buildPage, buildTagPage } from "./build.ts";
 import { SiteConfig } from "./config.ts";
@@ -26,6 +26,14 @@ interface BuildOpts {
   style: string;
   includeRefresh: boolean;
 }
+
+const minifyOpts: MinifyOpts = {
+  collapseWhitespace: true,
+  collapseBooleanAttributes: true,
+  html5: true,
+  minifyCSS: true,
+  minifyJS: true,
+};
 
 export async function buildContentFiles(
   pages: Array<Page>,
@@ -59,9 +67,10 @@ export async function buildContentFiles(
     });
 
     if (typeof html === "string") {
+      const minified = await minify(html, minifyOpts);
       files.push({
         filePath,
-        fileContent: html,
+        fileContent: minified,
       });
     }
   }
@@ -93,10 +102,11 @@ export async function buildTagFiles(
     });
 
     if (typeof html === "string") {
+      const minified = await minify(html, minifyOpts);
       files.push({
         inputPath: "",
         filePath,
-        fileContent: html,
+        fileContent: minified,
       });
     }
   }

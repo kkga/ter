@@ -53,3 +53,6 @@ export { marked } from "https://esm.sh/marked@4.0.16";
 export { HighlightJS as hljs } from "https://cdn.skypack.dev/highlight.js";
 export { default as fm } from "https://esm.sh/front-matter@4.0.2";
 export { default as slugify } from "https://esm.sh/slugify@1.6.5";
+export { minify } from "https://esm.sh/html-minifier-terser@7.0.0-beta.0";
+export type { Options as MinifyOpts } from "https://esm.sh/html-minifier-terser@7.0.0-beta.0";
+// export { default as sanitizeHtml } from "https://esm.sh/sanitize-html@2.7.0"
