@@ -4,9 +4,7 @@ import { Page } from "./pages.ts";
 import { SiteConfig } from "./config.ts";
 import { hasKey } from "./attributes.ts";
 
-configure({
-  autotrim: true,
-});
+configure({ autotrim: true });
 
 interface Breadcrumb {
   slug: string;
