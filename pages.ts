@@ -148,12 +148,12 @@ export async function generatePage(
     const pageAttrs = parsed.attributes as attrs.PageAttributes;
     const body = parsed.body;
     const date = attrs.getDate(pageAttrs);
-    const { html, links, headings } = render(
-      body,
-      relPath,
+    const { html, links, headings } = render({
+      text: body,
+      currentPath: relPath,
       isIndex,
-      new URL(site.url),
-    );
+      baseUrl: new URL(site.url),
+    });
     const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
     const title = attrs.getTitle(pageAttrs) ||
       getTitleFromHeadings(headings) || getTitleFromFilename(relPath);
@@ -184,12 +184,12 @@ export async function generatePage(
     const parsed = fm(content);
     const pageAttrs = parsed.attributes as attrs.PageAttributes;
     const body = parsed.body;
-    const { html, links, headings } = render(
-      body,
-      relPath,
+    const { html, links, headings } = render({
+      text: body,
+      currentPath: relPath,
       isIndex,
-      new URL(site.url),
-    );
+      baseUrl: new URL(site.url),
+    });
     const title = attrs.getTitle(pageAttrs) || getTitleFromHeadings(headings) ||
       name;
     const description = attrs.getDescription(pageAttrs) || "";
