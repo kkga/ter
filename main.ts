@@ -2,12 +2,28 @@ import { parseFlags } from "./deps.ts";
 import { emptyDir, ensureDir } from "./deps.ts";
 import { dirname, join, relative, toFileUrl } from "./deps.ts";
 import { withTrailingSlash } from "./deps.ts";
+
 import * as entries from "./entries.ts";
-import * as pages from "./pages.ts";
-import * as attrs from "./attributes.ts";
-import * as files from "./files.ts";
+import {
+  generatePage,
+  getAllTags,
+  getPagesByTag,
+  isDeadLink,
+} from "./pages.ts";
+import type { Page, TagPage } from "./pages.ts";
+
+import {
+  buildContentFiles,
+  buildFeedFile,
+  buildTagFiles,
+  copyFiles,
+  getStaticFiles,
+  writeFiles,
+} from "./files.ts";
+
 import { createConfig, TerConfig } from "./config.ts";
 import { serve } from "./serve.ts";
+import { hasKey } from "./attributes.ts";
 
 const MOD_URL = new URL("https://deno.land/x/ter/");
 
@@ -21,7 +37,7 @@ async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
   }
 }
 
-export async function getRemoteAsset(url: URL) {
+async function getRemoteAsset(url: URL) {
   const fileResponse = await fetch(url.toString()).catch((err) => {
     console.log(`Can't fetch file: ${url}, Error: ${err}`);
     Deno.exit(1);
@@ -34,7 +50,7 @@ export async function getRemoteAsset(url: URL) {
   }
 }
 
-export async function generateSite(config: TerConfig, includeRefresh: boolean) {
+async function generateSite(config: TerConfig, includeRefresh: boolean) {
   const {
     inputPath,
     outputPath,
@@ -55,27 +71,27 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
     entries.getStaticEntries(inputPath, outputPath, staticExts),
   ]);
 
-  const unfilteredPages: pages.Page[] = [];
+  const pages: Page[] = [];
 
   for (const entry of contentEntries) {
     config.quiet ||
       console.log(`render\t${relative(inputPath, entry.path)}`);
-    const page = await pages.generatePage(entry, inputPath, siteConf).catch(
+    const page = await generatePage(entry, inputPath, siteConf).catch(
       (reason: string) => {
-        console.log(`Can't render page ${entry.path}: ${reason}`);
+        console.log(`Can not render ${entry.path}\n\t${reason}`);
       },
     );
-    page && unfilteredPages.push(page);
+    page && pages.push(page);
   }
 
-  const contentPages = config.renderDrafts
-    ? unfilteredPages
-    : unfilteredPages.filter((page) => !attrs.hasKey(page.attrs, ignoreKeys));
+  const filteredPages = config.renderDrafts
+    ? pages
+    : pages.filter((page) => !hasKey(page.attrs, ignoreKeys));
 
-  const tagPages: pages.TagPage[] = [];
+  const tagPages: TagPage[] = [];
 
-  for (const tag of pages.getAllTags(contentPages)) {
-    const pagesWithTag = pages.getPagesByTag(contentPages, tag);
+  for (const tag of getAllTags(filteredPages)) {
+    const pagesWithTag = getPagesByTag(filteredPages, tag);
     tagPages.push({ name: tag, pages: pagesWithTag });
   }
 
@@ -83,7 +99,7 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
 
   const [contentFiles, tagFiles, staticFiles] = await Promise.all(
     [
-      files.buildContentFiles(contentPages, {
+      buildContentFiles(filteredPages, {
         outputPath: outputPath,
         view: pageView,
         head: headInclude,
@@ -91,7 +107,7 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
         conf: siteConf,
         style,
       }),
-      files.buildTagFiles(tagPages, {
+      buildTagFiles(tagPages, {
         outputPath: outputPath,
         view: pageView,
         head: headInclude,
@@ -99,24 +115,24 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
         conf: siteConf,
         style,
       }),
-      files.getStaticFiles(staticEntries, inputPath, outputPath),
+      getStaticFiles(staticEntries, inputPath, outputPath),
     ],
   );
 
   const deadLinks: [from: URL, to: URL][] = [];
-  for (const page of contentPages) {
+  for (const page of filteredPages) {
     if (page.links) {
       page.links.forEach((link: URL) =>
-        pages.isDeadLink(contentPages, link) && deadLinks.push([page.url, link])
+        isDeadLink(filteredPages, link) && deadLinks.push([page.url, link])
       );
     }
   }
 
   await emptyDir(outputPath);
 
-  if (contentPages.length > 0) {
-    const feedFile = await files.buildFeedFile(
-      contentPages,
+  if (filteredPages.length > 0) {
+    const feedFile = await buildFeedFile(
+      filteredPages,
       feedView,
       join(outputPath, "feed.xml"),
       siteConf,
@@ -127,11 +143,11 @@ export async function generateSite(config: TerConfig, includeRefresh: boolean) {
     }
   }
 
-  await files.writeFiles(
+  await writeFiles(
     [...tagFiles, ...contentFiles],
     config.quiet,
   );
-  await files.copyFiles(
+  await copyFiles(
     [...staticFiles],
     config.quiet,
   );
