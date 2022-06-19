@@ -95,15 +95,16 @@ property: value
 
 Some properties are utilized when building a site.
 
-| Property      | Description                                                                 |
-| ------------- | --------------------------------------------------------------------------- |
-| `title`       | used for [page title](#titles)                                              |
-| `description` | used for page description                                                   |
-| `date`        | used for [date](#dates)                                                     |
-| `tags`        | used for [tags](#tags)                                                      |
-| `pinned`      | if set to `true`, page is listed at the top of [index lists](#index-pages)  |
-| `toc`         | if set to `true`, page renders table of contents at the top                 |
-| `draft`       | if set to `true`, file is [ignored](#ignoring-files) during site generation |
+| Property      | Description                                                                         |
+| ------------- | ----------------------------------------------------------------------------------- |
+| `title`       | used for [page title](#titles)                                                      |
+| `description` | used for page description                                                           |
+| `date`        | used for [date](#dates)                                                             |
+| `tags`        | used for [tags](#tags)                                                              |
+| `pinned`      | if set to `true`, page is listed at the top of [index lists](#index-pages)          |
+| `draft`       | if set to `true`, file is [ignored](#ignoring-files) during site generation         |
+| `toc`         | if set to `true`, page renders table of contents at the top                         |
+| `log`         | if set to `true` on an index page (`index.md`), all child pages are rendered inline |
 
 ### Other properties
 
