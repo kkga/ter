@@ -334,18 +334,25 @@ article > header:not(:hover) :is(nav, div, li a) {
   display: inline-block;
 }
 
+:is(body > header, article > header)
+  :not(nav)
+  :is(ol, ul)
+  li:not(:first-child) {
+  margin-left: 0.5em;
+}
+
+body > header nav ol li:not(:first-child)::before {
+  content: "/";
+  margin: 0 0.25em;
+  color: var(--color-text-tertiary);
+}
+
 article > header :is(h1, h2, h3, h4, h5, h6) {
   margin: 0;
   font-size: var(--font-size-base);
   line-height: var(--line-height-tight);
   font-weight: var(--font-weight-b);
   color: var(--color-text-body);
-}
-
-body > header ol li:not(:first-child)::before {
-  content: "/";
-  margin: 0 0.25em;
-  color: var(--color-text-tertiary);
 }
 
 /* ASIDE ----------------------------------------------------------------- */

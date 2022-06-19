@@ -194,7 +194,7 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
       <section>
         <h6>Child tags</h6>
         <ul>
-          <% childTags.forEach((tag) => { %> <li style="display:inline-block; margin-right: 0.5ch;"><a href="<%= `/tag/${tag}` %>">#<%_= tag _%></a></li><% }) %>
+          <% childTags.forEach((tag) => { %> <li style="display:inline-block; margin-right: 0.5em;"><a href="<%= `/tag/${tag}` %>">#<%_= tag _%></a></li><% }) %>
         </ul>
       </section>
       <% } %>
