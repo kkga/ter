@@ -160,13 +160,10 @@ a:visited {
 
 a[href]:hover {
   text-decoration: underline;
-  font-variation-settings: "CASL" 1, "wght" 700, "MONO" 0, "CRSV" 0.5;
 }
 
-a[rel~="external"] {
-  text-decoration: underline;
-  text-decoration-style: dashed;
-  text-decoration-color: var(--color-text-tertiary);
+a[rel~="external"]::after {
+  content: "↗";
 }
 
 img,
@@ -181,8 +178,8 @@ article > img {
 
 blockquote {
   color: var(--color-text-secondary);
-  font-size: var(--font-size-m);
-  font-variation-settings: "CASL" 1, "wght" 500, "MONO" 0, "CRSV" 0.5;
+  font-variation-settings: "CASL" 1, "slnt" -15, "wght" 400, "MONO" 0,
+    "CRSV" 0.5;
 }
 
 a img {
@@ -234,7 +231,8 @@ figcaption {
   margin-top: 0.5em;
   text-align: center;
   font-size: var(--font-size-s);
-  color: var(--color-text-secondary);
+  color: var(--color-text-tertiary);
+  font-variation-settings: "CRSV" 0.5, "slnt" -15, "CASL" 1, "MONO" 0;
 }
 
 details {
@@ -346,6 +344,7 @@ article > header :is(h1, h2, h3, h4, h5, h6) {
 
 body > header ol li:not(:first-child)::before {
   content: "/";
+  margin: 0 0.25em;
   color: var(--color-text-tertiary);
 }
 
