@@ -30,7 +30,9 @@ interface InternalLinkOpts {
 const renderer = new marked.Renderer();
 
 function createExternalLink(href: string, title: string, text: string): string {
-  return `<a href="${href}" rel="external noopener noreferrer" title="${title}">${text}</a>`;
+  return `<a href="${href}" rel="external noopener noreferrer" title="${
+    title || text
+  }">${text}</a>`;
 }
 
 function createInternalLink(opts: InternalLinkOpts): string {
@@ -73,7 +75,9 @@ function createInternalLink(opts: InternalLinkOpts): string {
   // console.log(prefixedHref);
 
   return (
-    `<a href="${internalHref}" title="${opts.title}">${opts.text}</a>`
+    `<a href="${internalHref}" title="${
+      opts.title || opts.text
+    }">${opts.text}</a>`
   );
 }
 
