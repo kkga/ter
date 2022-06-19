@@ -12,14 +12,20 @@ along.
 
 ## Quick start
 
-Navigate to a directory with some markdown files and run:
+Navigate to a directory with some markdown files and run Ter to build a site.
+
+This command will recursively search for all `*.md` files in the current
+directory and generate a site into the `_site` directory:
 
 ```
 deno run -A --unstable https://deno.land/x/ter/main.ts
 ```
 
-This will recursively search for all `*.md` files in the current directory and
-generate a site into the `_site` directory.
+To start a local server with live refresh, pass the `--serve` flag:
+
+```
+deno run -A --unstable https://deno.land/x/ter/main.ts --serve
+```
 
 ## Next steps
 
