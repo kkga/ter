@@ -23,7 +23,7 @@ export interface Page {
   links: Array<URL>;
   isIndex: boolean;
   description?: string;
-  date?: Date | null;
+  date?: Date | undefined;
   body?: string;
   html?: string;
   tags?: Array<string>;
@@ -34,29 +34,6 @@ export interface TagPage {
   name: string;
   pages: Array<Page>;
 }
-
-export function isDeadLink(allPages: Array<Page>, linkUrl: URL): boolean {
-  for (const page of allPages) {
-    if (page.url.pathname === linkUrl.pathname) {
-      return false;
-    } else {
-      continue;
-    }
-  }
-  return true;
-}
-
-const getTitleFromHeadings = (headings: Array<Heading>): string | undefined => {
-  for (const h of headings) {
-    if (h.level === 1) {
-      return h.text;
-    }
-  }
-};
-
-const getTitleFromFilename = (filePath: string): string => {
-  return basename(filePath).replace(extname(filePath), "");
-};
 
 async function _getLastCommitDate(path: string): Promise<Date | undefined> {
   const opts: Deno.RunOptions = {
@@ -73,6 +50,24 @@ async function _getLastCommitDate(path: string): Promise<Date | undefined> {
     if (!isNaN(timestamp)) return new Date(timestamp);
   }
 }
+
+export function isDeadLink(allPages: Array<Page>, linkUrl: URL): boolean {
+  for (const page of allPages) {
+    if (page.url.pathname === linkUrl.pathname) return false;
+    else continue;
+  }
+  return true;
+}
+
+const getTitleFromHeadings = (headings: Array<Heading>): string | undefined => {
+  for (const h of headings) {
+    if (h.level === 1) return h.text;
+  }
+};
+
+const getTitleFromFilename = (filePath: string): string => {
+  return basename(filePath).replace(extname(filePath), "");
+};
 
 export function getAllTags(pages: Array<Page>): Array<string> {
   const tags: Set<string> = new Set();
@@ -221,7 +216,5 @@ export async function generatePage(
       isIndex,
       links: [],
     };
-  } else {
-    return Promise.reject();
-  }
+  } else return Promise.reject();
 }

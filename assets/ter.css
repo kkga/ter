@@ -3,8 +3,8 @@
 /* ROOT ------------------------------------------------------------------------- */
 
 :root {
-  --font-sans: "Recursive", sans-serif;
-  --font-mono: "Recursive", monospace;
+  --font-sans: system-ui;
+  --font-mono: monospace;
 
   /* Light theme */
   --color-text-body: #1c1917;
@@ -25,9 +25,6 @@
   --color-dark-bg-secondary: #292524;
 
   /* Font */
-  --font-casl-head: 1;
-  --font-casl-body: 0;
-  --font-mono-code: 1;
   --font-size-base: 16px;
   --font-size-s: 0.875rem;
   --font-size-xs: 0.75rem;
@@ -36,6 +33,7 @@
   --font-size-xl: 2rem;
   --font-weight-m: 500;
   --font-weight-b: 800;
+  --font-weight-xb: 900;
   --line-height-base: 1.5;
   --line-height-spaced: 1.75;
   --line-height-tight: 1.375;
@@ -45,7 +43,7 @@
   --leading-tight: -0.025em;
 
   /* Scales */
-  --width-body: 48rem;
+  --width-body: 44rem;
   --radius-xs: 4px;
   --radius-md: 6px;
 }
@@ -72,22 +70,17 @@ h5,
 h6 {
   font-size: var(--font-size-base);
   letter-spacing: var(--leading-tight);
-  font-variation-settings: "CASL" var(--font-casl-head), "MONO" 0, "CRSV" 0.5;
   font-weight: var(--font-weight-b);
+  font-stretch: semi-expanded;
   margin-top: 1.5em;
   margin-bottom: 0.75em;
-}
-
-h3,
-h4,
-h5,
-h6 {
-  font-weight: var(--font-weight-b);
 }
 
 h1 {
   font-size: var(--font-size-xl);
   line-height: var(--line-height-head);
+  font-stretch: expanded;
+  font-weight: var(--font-weight-xb);
 }
 
 h2 {
@@ -109,13 +102,6 @@ small {
   margin-top: 0;
 }
 
-i,
-em,
-.italic {
-  font-style: normal;
-  font-variation-settings: "slnt" -15;
-}
-
 /* BASE TAGS --------------------------------------------------------------------- */
 
 html {
@@ -133,10 +119,8 @@ body {
   background: var(--color-bg-body);
   color: var(--color-text-body);
   font-family: var(--font-sans);
-  font-variation-settings: "CASL" var(--font-casl-body), "MONO" 0, "CRSV" 0.5;
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);
-  letter-spacing: var(--leading-base);
 }
 
 body > :is(header, main, aside, footer) {
@@ -178,22 +162,25 @@ article > img {
 
 blockquote {
   color: var(--color-text-secondary);
-  font-variation-settings: "CASL" 1, "slnt" -15, "wght" 400, "MONO" 0,
-    "CRSV" 0.5;
+  font-size: var(--font-size-l);
+  line-height: var(--line-height-tight);
+  font-stretch: semi-condensed;
 }
 
 a img {
   margin-bottom: 0;
 }
 
-code,
-kbd,
-samp {
+:is(code, kbd, samp):not(:only-child) {
   font-family: var(--font-mono);
-  font-variation-settings: "CRSV" 0.5, "MONO" 1;
+  font-size: 95%;
+  margin: 0 0.125em;
+  padding: 0 0.25em;
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-xs);
 }
 
-:is(code, kbd, samp)::after {
+/*:is(code, kbd, samp)::after {
   content: "]";
   color: var(--color-text-tertiary);
 }
@@ -202,15 +189,14 @@ samp {
   content: "[";
   color: var(--color-text-tertiary);
 }
-
+*/
 pre {
   font-family: var(--font-mono);
-  font-variation-settings: "CRSV" 0.5, "CASL" 0, "MONO" 1;
   font-size: var(--font-size-s);
-  line-height: var(--line-height-tight);
+  line-height: normal;
   border-left: 1px solid var(--color-text-tertiary);
   overflow: auto;
-  opacity: 0.75;
+  opacity: 0.8;
   padding: 1ch 1rem;
 }
 
@@ -232,7 +218,6 @@ figcaption {
   text-align: center;
   font-size: var(--font-size-s);
   color: var(--color-text-tertiary);
-  font-variation-settings: "CRSV" 0.5, "slnt" -15, "CASL" 1, "MONO" 0;
 }
 
 details {

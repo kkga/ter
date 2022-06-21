@@ -8,9 +8,7 @@ export const RE_HIDDEN_OR_UNDERSCORED = /^\.|^_|\/\.|\/\_/;
 const hasIgnoredPrefix = (path: string): boolean => {
   const pathChunks = path.split("/");
   for (const chunk of pathChunks) {
-    if (/^\./.test(chunk) || /^\_/.test(chunk)) {
-      return true;
-    }
+    if (/^\./.test(chunk) || /^\_/.test(chunk)) return true;
   }
   return false;
 };
@@ -35,9 +33,7 @@ export async function getStaticEntries(
       exclude: [outputPath],
     })
   ) {
-    if (hasIgnoredPrefix(entry.path)) {
-      continue;
-    }
+    if (hasIgnoredPrefix(entry.path)) continue;
     entries.push(entry);
   }
 
@@ -48,13 +44,9 @@ export async function getAssetEntries(
   assetPath: string,
 ): Promise<Array<WalkEntry>> {
   const entries: Array<WalkEntry> = [];
-  // const glob = "**/*";
 
   for await (
-    const entry of walk(assetPath, {
-      includeDirs: false,
-      followSymlinks: true,
-    })
+    const entry of walk(assetPath, { includeDirs: false, followSymlinks: true })
   ) {
     entries.push(entry);
   }
