@@ -36,6 +36,7 @@
   --font-size-l: 1.5rem;
   --font-size-xl: 2rem;
   --font-weight-m: 500;
+  --font-weight-sb: 600;
   --font-weight-b: 800;
   --font-weight-xb: 900;
   --line-height-base: 1.5;
@@ -179,13 +180,9 @@ a img {
   margin-bottom: 0;
 }
 
-:is(code, kbd, samp):not(:only-child) {
+:is(code, kbd, samp) {
   font-family: var(--font-mono);
-  font-size: 95%;
-  margin: 0 0.125em;
-  padding: 0 0.25em;
-  background-color: var(--color-bg-secondary);
-  border-radius: var(--radius-xs);
+  color: var(--color-text-secondary);
 }
 
 pre {

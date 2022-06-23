@@ -174,8 +174,12 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
             const pinned = page?.attrs?.pinned
             %>
           <li>
-            <a style="<%_= isIndex ? 'font-weight: var(--font-weight-b)' : '' %> " href="<%= url.pathname %>">
+            <a href="<%= url.pathname %>">
+              <% if (isIndex) { %>
+              <b><%= title %></b>
+              <% } else { %>
               <%= title %>
+              <% } %>
             </a>
             <% if (pinned) { %> * <% } %>
             <% if (isIndex) { %>/ ..<% } %>
