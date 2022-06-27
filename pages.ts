@@ -23,7 +23,7 @@ export interface Page {
   links: Array<URL>;
   isIndex: boolean;
   description?: string;
-  date?: Date | undefined;
+  date?: Date | null;
   body?: string;
   html?: string;
   tags?: Array<string>;
@@ -35,20 +35,10 @@ export interface TagPage {
   pages: Array<Page>;
 }
 
-async function _getLastCommitDate(path: string): Promise<Date | undefined> {
-  const opts: Deno.RunOptions = {
-    cmd: ["git", "log", "-1", "--format=%as", "--", path],
-    stdout: "piped",
-    stderr: "piped",
-  };
-
-  const process = Deno.run(opts);
-  const { success } = await process.status();
-
-  if (success) {
-    const timestamp = Date.parse(decoder.decode(await process.output()));
-    if (!isNaN(timestamp)) return new Date(timestamp);
-  }
+async function getMtime(path: string): Promise<Date | null> {
+  const info = await Deno.stat(path);
+  console.log(info.mtime);
+  return info.mtime;
 }
 
 export function isDeadLink(allPages: Array<Page>, linkUrl: URL): boolean {
@@ -142,7 +132,7 @@ export async function generatePage(
     const parsed = fm(content);
     const pageAttrs = parsed.attributes as attrs.PageAttributes;
     const body = parsed.body;
-    const date = attrs.getDate(pageAttrs);
+    const date = attrs.getDate(pageAttrs) || await getMtime(entry.path);
     const { html, links, headings } = render({
       text: body,
       currentPath: relPath,
@@ -217,4 +207,20 @@ export async function generatePage(
       links: [],
     };
   } else return Promise.reject();
+}
+
+async function _getLastCommitDate(path: string): Promise<Date | undefined> {
+  const opts: Deno.RunOptions = {
+    cmd: ["git", "log", "-1", "--format=%as", "--", path],
+    stdout: "piped",
+    stderr: "piped",
+  };
+
+  const process = Deno.run(opts);
+  const { success } = await process.status();
+
+  if (success) {
+    const timestamp = Date.parse(decoder.decode(await process.output()));
+    if (!isNaN(timestamp)) return new Date(timestamp);
+  }
 }
