@@ -36,9 +36,7 @@ export interface TagPage {
 }
 
 async function getMtime(path: string): Promise<Date | null> {
-  const info = await Deno.stat(path);
-  console.log(info.mtime);
-  return info.mtime;
+  return (await Deno.stat(path)).mtime;
 }
 
 export function isDeadLink(allPages: Array<Page>, linkUrl: URL): boolean {
