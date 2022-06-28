@@ -36,7 +36,9 @@ export interface TagPage {
 }
 
 async function getFiledate(path: string): Promise<Date | null> {
-  return (await Deno.stat(path)).mtime;
+  const date = (await Deno.stat(path)).mtime;
+  console.log(date);
+  return date;
 }
 
 export function isDeadLink(allPages: Array<Page>, linkUrl: URL): boolean {
