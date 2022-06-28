@@ -23,7 +23,7 @@ export interface Page {
   links: Array<URL>;
   isIndex: boolean;
   description?: string;
-  date?: Date | null;
+  date?: Date;
   body?: string;
   html?: string;
   tags?: Array<string>;
@@ -33,12 +33,6 @@ export interface Page {
 export interface TagPage {
   name: string;
   pages: Array<Page>;
-}
-
-async function getFiledate(path: string): Promise<Date | null> {
-  const date = (await Deno.stat(path)).mtime;
-  console.log(date);
-  return date;
 }
 
 export function isDeadLink(allPages: Array<Page>, linkUrl: URL): boolean {
@@ -132,7 +126,7 @@ export async function generatePage(
     const parsed = fm(content);
     const pageAttrs = parsed.attributes as attrs.PageAttributes;
     const body = parsed.body;
-    const date = attrs.getDate(pageAttrs) || await getFiledate(entry.path);
+    const date = attrs.getDate(pageAttrs);
     const { html, links, headings } = render({
       text: body,
       currentPath: relPath,
