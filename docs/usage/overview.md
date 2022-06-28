@@ -99,8 +99,8 @@ Some properties are utilized when building a site.
 | ------------- | ----------------------------------------------------------------------------------- |
 | `title`       | used for [page title](#titles)                                                      |
 | `description` | used for page description                                                           |
-| `date`        | used for [date](#dates)                                                             |
 | `tags`        | used for [tags](#tags)                                                              |
+| `date`        | date in YYYY-MM-DD format                                                           |
 | `pinned`      | if set to `true`, page is listed at the top of [index lists](#index-pages)          |
 | `draft`       | if set to `true`, file is [ignored](#ignoring-files) during site generation         |
 | `toc`         | if set to `true`, page renders table of contents at the top                         |
@@ -131,23 +131,19 @@ For example:
 deno run -A --unstable https://deno.land/x/ter/main.ts --serve --drafts
 ```
 
-## Dates
+## Tags
 
-Ter tries to replicate the content file system on the generated site. And with
-that philosophy, the dates displayed on pages and in the
-[index lists](#index-pages) default to file creation date.
-
-To use a custom date, set the `date` key in the [YAML frontmatter](#frontmatter)
-in `YYYY-MM-DD` format.
-
-### Date example
+### Tags example
 
 ```
 ---
-date: 1995-12-31
+title: My page
+tags:
+  - myTag
+  - otherTag
 ---
 
-# My page
+## My content
 ```
 
 ## Dead internal links
@@ -168,10 +164,6 @@ Done in 29ms
 ```
 
 ## Breadcrumbs
-
-TODO
-
-## Tags
 
 TODO
 
