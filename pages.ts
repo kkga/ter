@@ -35,8 +35,8 @@ export interface TagPage {
   pages: Array<Page>;
 }
 
-async function getBirthtime(path: string): Promise<Date | null> {
-  return (await Deno.stat(path)).birthtime;
+async function getFiledate(path: string): Promise<Date | null> {
+  return (await Deno.stat(path)).mtime;
 }
 
 export function isDeadLink(allPages: Array<Page>, linkUrl: URL): boolean {
@@ -130,7 +130,7 @@ export async function generatePage(
     const parsed = fm(content);
     const pageAttrs = parsed.attributes as attrs.PageAttributes;
     const body = parsed.body;
-    const date = attrs.getDate(pageAttrs) || await getBirthtime(entry.path);
+    const date = attrs.getDate(pageAttrs) || await getFiledate(entry.path);
     const { html, links, headings } = render({
       text: body,
       currentPath: relPath,
