@@ -18,7 +18,8 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Clone repository
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
@@ -26,7 +27,7 @@ jobs:
         uses: denoland/setup-deno@v1.1.0
 
       - name: Build site
-        run: deno run -A --unstable main.ts --input docs
+        run: deno task build
 
       - name: Deploy to Deno Deploy
         uses: denoland/deployctl@v1
