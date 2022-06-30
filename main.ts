@@ -198,11 +198,10 @@ async function main(args: string[]) {
     flags.local ? toFileUrl(Deno.cwd()).toString() : MOD_URL.toString(),
   );
 
-  const [pageView, feedView, baseStyle, hljsStyle] = await Promise.all([
+  const [pageView, feedView, baseStyle] = await Promise.all([
     getRemoteAsset(new URL("views/base.eta", moduleUrl)),
     getRemoteAsset(new URL("views/feed.xml.eta", moduleUrl)),
     getRemoteAsset(new URL("assets/ter.css", moduleUrl)),
-    getRemoteAsset(new URL("assets/hljs.css", moduleUrl)),
   ]);
 
   const config = await createConfig({
@@ -213,14 +212,14 @@ async function main(args: string[]) {
     renderDrafts: flags.drafts,
     pageView: pageView,
     feedView: feedView,
-    style: [baseStyle, hljsStyle].join("\n"),
+    style: baseStyle,
   });
 
   await generateSite(config, flags.serve);
 
   if (flags.serve === true) {
     serve({
-      port: flags.port,
+      port: Number(flags.port),
       runner: generateSite,
       config,
     });

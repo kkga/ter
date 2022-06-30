@@ -175,11 +175,7 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
             %>
           <li>
             <a href="<%= url.pathname %>">
-              <% if (isIndex) { %>
-              <b><%= title %></b>
-              <% } else { %>
               <%= title %>
-              <% } %>
             </a>
             <% if (pinned) { %> * <% } %>
             <% if (isIndex) { %>/ ..<% } %>

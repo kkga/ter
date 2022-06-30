@@ -6,7 +6,7 @@ import { TerConfig } from "./config.ts";
 
 const MOD_URL = new URL("https://deno.land/x/ter");
 const requiredViews = ["base.eta", "feed.xml.eta"];
-const requiredAssets = ["ter.css", "hljs.css"];
+const requiredAssets = ["ter.css"];
 
 async function initializeFile(filePath: string, url: URL) {
   const fileResponse = await fetch(url.toString()).catch((err) => {

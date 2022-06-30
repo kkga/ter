@@ -10,23 +10,75 @@
     "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
     "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
 
+  --mauve-l1: hsl(300, 20%, 99%);
+  --mauve-l2: hsl(300, 7.7%, 97.5%);
+  --mauve-l3: hsl(294, 5.5%, 95.3%);
+  --mauve-l4: hsl(289, 4.7%, 93.3%);
+  --mauve-l5: hsl(283, 4.4%, 91.3%);
+  --mauve-l6: hsl(278, 4.1%, 89.1%);
+  --mauve-l7: hsl(271, 3.9%, 86.3%);
+  --mauve-l8: hsl(255, 3.7%, 78.8%);
+  --mauve-l9: hsl(252, 4%, 57.3%);
+  --mauve-l10: hsl(253, 3.5%, 53.5%);
+  --mauve-l11: hsl(252, 4%, 44.8%);
+  --mauve-l12: hsl(260, 25%, 11%);
+  --mauve-d1: hsl(246, 6%, 9%);
+  --mauve-d2: hsl(240, 5.1%, 11.6%);
+  --mauve-d3: hsl(241, 5%, 14.3%);
+  --mauve-d4: hsl(242, 4.9%, 16.5%);
+  --mauve-d5: hsl(243, 4.9%, 18.8%);
+  --mauve-d6: hsl(244, 4.9%, 21.5%);
+  --mauve-d7: hsl(245, 4.9%, 25.4%);
+  --mauve-d8: hsl(247, 4.8%, 32.5%);
+  --mauve-d9: hsl(252, 4%, 45.2%);
+  --mauve-d10: hsl(247, 3.4%, 50.7%);
+  --mauve-d11: hsl(253, 4%, 63.7%);
+  --mauve-d12: hsl(256, 6%, 93.2%);
+
+  --brown-l1: hsl(30, 40%, 99.1%);
+  --brown-l2: hsl(30, 50%, 97.6%);
+  --brown-l3: hsl(30, 52.5%, 94.6%);
+  --brown-l4: hsl(30, 53%, 91.2%);
+  --brown-l5: hsl(29, 52.9%, 86.8%);
+  --brown-l6: hsl(29, 52.5%, 80.9%);
+  --brown-l7: hsl(29, 51.5%, 72.8%);
+  --brown-l8: hsl(28, 50%, 63.1%);
+  --brown-l9: hsl(28, 34%, 51%);
+  --brown-l10: hsl(27, 31.8%, 47.6%);
+  --brown-l11: hsl(25, 30%, 41%);
+  --brown-l12: hsl(20, 30%, 19%);
+  --brown-d1: hsl(22, 15%, 8.7%);
+  --brown-d2: hsl(20, 28.3%, 10.4%);
+  --brown-d3: hsl(20, 28%, 14%);
+  --brown-d4: hsl(21, 28.4%, 16.5%);
+  --brown-d5: hsl(22, 28.7%, 18.9%);
+  --brown-d6: hsl(23, 29%, 22.3%);
+  --brown-d7: hsl(25, 29.5%, 27.8%);
+  --brown-d8: hsl(27, 30.1%, 35.9%);
+  --brown-d9: hsl(28, 34%, 51%);
+  --brown-d10: hsl(28, 41.4%, 55.8%);
+  --brown-d11: hsl(28, 60%, 64.5%);
+  --brown-d12: hsl(30, 67%, 94%);
+
   /* Light theme */
-  --color-text-body: #1c1917;
-  --color-text-secondary: #57534e;
-  --color-text-tertiary: #78716c;
-  --color-text-accent: #075985;
-  --color-text-accent-alt: #3730a3;
-  --color-bg-body: #f5f5f4;
-  --color-bg-secondary: #e7e5e4;
+  --color-bg-body: var(--mauve-l1);
+  --color-bg-secondary: var(--mauve-l2);
+  --color-bg-highlight: var(--mauve-l3);
+  --color-text-body: var(--mauve-l12);
+  --color-text-secondary: var(--mauve-l11);
+  --color-text-tertiary: var(--mauve-l10);
+  --color-text-accent: var(--brown-l11);
+  --color-text-accent-dim: var(--brown-l7);
 
   /* Dark theme */
-  --color-dark-text-body: #f5f5f4;
-  --color-dark-text-secondary: #a8a29e;
-  --color-dark-text-tertiary: #78716c;
-  --color-dark-text-accent: #38bdf8;
-  --color-dark-text-accent-alt: #a5b4fc;
-  --color-dark-bg-body: #1c1917;
-  --color-dark-bg-secondary: #292524;
+  --color-dark-bg-body: var(--mauve-d1);
+  --color-dark-bg-secondary: var(--mauve-d2);
+  --color-dark-bg-highlight: var(--mauve-d3);
+  --color-dark-text-body: var(--mauve-d12);
+  --color-dark-text-secondary: var(--mauve-d11);
+  --color-dark-text-tertiary: var(--mauve-d10);
+  --color-dark-text-accent: var(--brown-d11);
+  --color-dark-text-accent-dim: var(--brown-d7);
 
   /* Font */
   --font-size-base: 16px;
@@ -60,9 +112,10 @@
     --color-text-secondary: var(--color-dark-text-secondary);
     --color-text-tertiary: var(--color-dark-text-tertiary);
     --color-text-accent: var(--color-dark-text-accent);
-    --color-text-accent-alt: var(--color-dark-text-accent-alt);
+    --color-text-accent-dim: var(--color-dark-text-accent-dim);
     --color-bg-body: var(--color-dark-bg-body);
     --color-bg-secondary: var(--color-dark-bg-secondary);
+    --color-bg-highlight: var(--color-dark-bg-highlight);
   }
 }
 
@@ -147,7 +200,7 @@ a {
 }
 
 a:visited {
-  color: var(--color-text-accent-alt);
+  color: var(--color-text-accent);
 }
 
 a[href]:hover {
@@ -183,16 +236,27 @@ a img {
 :is(code, kbd, samp) {
   font-family: var(--font-mono);
   color: var(--color-text-secondary);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-bg-highlight);
+  font-size: max(12px, 90%);
+  padding: 2px 3px;
+}
+
+table :is(code, kbd, samp) {
+  padding: 2px 3px;
+  background-color: transparent;
+  border: none;
+  font-size: inherit;
 }
 
 pre {
   font-family: var(--font-mono);
   font-size: var(--font-size-s);
   line-height: var(--line-height-xtight);
-  border-left: 1px solid var(--color-text-tertiary);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-bg-highlight);
   overflow: auto;
-  opacity: 0.8;
-  padding: 1ch 1rem;
+  padding: 1.5ch 2ch;
 }
 
 pre code {
@@ -239,7 +303,7 @@ dt {
 
 hr {
   border: 0;
-  border-bottom: 1px solid var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-bg-highlight);
   margin: 1.5rem auto;
 }
 
@@ -255,12 +319,11 @@ td,
 th {
   text-align: left;
   padding: 0.25em 0.5em;
-}
-
-th,
-tr {
   background: var(--color-bg-secondary);
   vertical-align: top;
+}
+th {
+  background: var(--color-bg-highlight);
 }
 
 table caption {
@@ -366,7 +429,7 @@ aside section h6 a {
 aside section h6::after {
   flex: 1;
   content: "";
-  border-top: 1px solid var(--color-bg-secondary);
+  border-top: 1px solid var(--color-bg-highlight);
 }
 
 aside section :is(ul, ol) {
@@ -384,7 +447,7 @@ aside section :is(ul, ol) li {
 aside section :is(ul, ol) li a + span {
   display: block;
   flex: 1;
-  border-bottom: 1px dashed var(--color-bg-secondary);
+  border-bottom: 1px dashed var(--color-bg-highlight);
 }
 
 aside time {
@@ -402,3 +465,72 @@ body > footer {
 }
 
 /* END TER STYLESHEET ----------------------------------------------------- */
+
+.hljs-comment {
+  color: var(--color-text-tertiary);
+}
+.hljs-punctuation,
+.hljs-tag {
+  color: currentcolor;
+}
+.hljs-tag .hljs-attr,
+.hljs-tag .hljs-name {
+  color: currentcolor;
+}
+.hljs-attribute,
+.hljs-doctag,
+.hljs-keyword,
+.hljs-meta .hljs-keyword,
+.hljs-name,
+.hljs-selector-tag {
+  font-weight: bold;
+}
+.hljs-deletion,
+.hljs-number,
+.hljs-quote,
+.hljs-selector-class,
+.hljs-selector-id,
+.hljs-string,
+.hljs-template-tag,
+.hljs-type {
+  color: var(--color-text-accent);
+}
+.hljs-section,
+.hljs-title {
+  color: currentcolor;
+}
+.hljs-link,
+.hljs-operator,
+.hljs-regexp,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-symbol,
+.hljs-template-variable,
+.hljs-variable,
+.hljs-function {
+  color: currentcolor;
+}
+.hljs-literal {
+  color: var(--color-text-accent);
+}
+.hljs-addition,
+.hljs-built_in,
+.hljs-bullet,
+.hljs-code {
+  color: currentcolor;
+}
+.hljs-meta {
+  color: currentcolor;
+}
+.hljs-meta .hljs-string {
+  color: currentcolor;
+}
+.hljs-subs {
+  font-weight: bold;
+}
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: bold;
+}
