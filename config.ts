@@ -11,7 +11,7 @@ export interface SiteConfig {
   author: { name: string; email: string; url: string };
 }
 
-export interface TerConfig {
+export interface BuildConfig {
   inputPath: string;
   outputPath: string;
   pageView: string;
@@ -39,7 +39,7 @@ const defaultSiteConfig: SiteConfig = {
   },
 };
 
-const defaultConfig: TerConfig = {
+const defaultConfig: BuildConfig = {
   inputPath: Deno.cwd(),
   outputPath: "_site",
   assetsPath: ".ter/assets",
@@ -103,7 +103,9 @@ interface CreateConfigOpts {
   renderDrafts: boolean;
 }
 
-export async function createConfig(opts: CreateConfigOpts): Promise<TerConfig> {
+export async function createConfig(
+  opts: CreateConfigOpts,
+): Promise<BuildConfig> {
   const conf = defaultConfig;
 
   if (opts.configPath && opts.configPath != "") {

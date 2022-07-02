@@ -121,6 +121,21 @@ export function render(
     return `<h${level} id="${slug}">${text}<a href="#${slug}"></a></h${level}>`;
   };
 
+  renderer.image = (href: string, title: string, text: string) => {
+    const parsed = parseURL(href);
+
+    if (isAbsolute(parsed.pathname)) {
+      return `<img src="${parsed.pathname}" alt="${text || ""}" title="${
+        title || ""
+      }"/>`;
+    } else {
+      const href = isIndex
+        ? join(dirname(currentPath + "/index"), parsed.pathname)
+        : join(dirname(currentPath), parsed.pathname);
+      return `<img src="${href}" alt="${text || ""}" title="${title || ""}"/>`;
+    }
+  };
+
   renderer.code = (code: string, lang: string): string => {
     const language = hljs.getLanguage(lang) ? lang : "plaintext";
     const html = hljs.highlight(code, { language }).value;

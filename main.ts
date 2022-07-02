@@ -1,6 +1,6 @@
 import { parseFlags } from "./deps.ts";
-import { emptyDir, ensureDir } from "./deps.ts";
-import { dirname, join, relative, toFileUrl } from "./deps.ts";
+import { emptyDir } from "./deps.ts";
+import { join, relative, toFileUrl } from "./deps.ts";
 import { withTrailingSlash } from "./deps.ts";
 
 import * as entries from "./entries.ts";
@@ -21,11 +21,14 @@ import {
   writeFiles,
 } from "./files.ts";
 
-import { createConfig, TerConfig } from "./config.ts";
+import { BuildConfig, createConfig } from "./config.ts";
 import { serve } from "./serve.ts";
 import { hasKey } from "./attributes.ts";
 
 const MOD_URL = new URL("https://deno.land/x/ter/");
+const BASE_VIEW_PATH = "views/base.eta";
+const BASE_STYLE_PATH = "assets/ter.css";
+const FEED_VIEW_PATH = "views/feed.xml.eta";
 
 async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
   try {
@@ -50,7 +53,7 @@ async function getRemoteAsset(url: URL) {
   }
 }
 
-async function generateSite(config: TerConfig, includeRefresh: boolean) {
+async function generateSite(config: BuildConfig, includeRefresh: boolean) {
   const {
     inputPath,
     outputPath,
@@ -71,90 +74,73 @@ async function generateSite(config: TerConfig, includeRefresh: boolean) {
     entries.getStaticEntries(inputPath, outputPath, staticExts),
   ]);
 
-  const pages: Page[] = [];
+  const headInclude = await getHeadInclude(viewsPath) ?? "";
 
+  const pages: Page[] = [];
   for (const entry of contentEntries) {
-    config.quiet ||
-      console.log(`render\t${relative(inputPath, entry.path)}`);
+    config.quiet || console.log(`render\t${relative(inputPath, entry.path)}`);
     const page = await generatePage(entry, inputPath, siteConf).catch(
       (reason: string) => {
         console.log(`Can not render ${entry.path}\n\t${reason}`);
       },
     );
-    page && pages.push(page);
+
+    if (config.renderDrafts) {
+      page && pages.push(page);
+    } else {
+      page && !hasKey(page.attrs, ignoreKeys) && pages.push(page);
+    }
   }
 
-  const filteredPages = config.renderDrafts
-    ? pages
-    : pages.filter((page) => !hasKey(page.attrs, ignoreKeys));
-
   const tagPages: TagPage[] = [];
-
-  for (const tag of getAllTags(filteredPages)) {
-    const pagesWithTag = getPagesByTag(filteredPages, tag);
+  for (const tag of getAllTags(pages)) {
+    const pagesWithTag = getPagesByTag(pages, tag);
     tagPages.push({ name: tag, pages: pagesWithTag });
   }
 
-  const headInclude = await getHeadInclude(viewsPath) ?? "";
+  const [contentFiles, tagFiles, staticFiles, feedFile] = await Promise.all([
+    buildContentFiles(pages, {
+      outputPath,
+      view: pageView,
+      head: headInclude,
+      includeRefresh,
+      conf: siteConf,
+      style,
+    }),
 
-  const [contentFiles, tagFiles, staticFiles] = await Promise.all(
-    [
-      buildContentFiles(filteredPages, {
-        outputPath: outputPath,
-        view: pageView,
-        head: headInclude,
-        includeRefresh,
-        conf: siteConf,
-        style,
-      }),
-      buildTagFiles(tagPages, {
-        outputPath: outputPath,
-        view: pageView,
-        head: headInclude,
-        includeRefresh,
-        conf: siteConf,
-        style,
-      }),
-      getStaticFiles(staticEntries, inputPath, outputPath),
-    ],
-  );
+    buildTagFiles(tagPages, {
+      outputPath,
+      view: pageView,
+      head: headInclude,
+      includeRefresh,
+      conf: siteConf,
+      style,
+    }),
 
-  const deadLinks: [from: URL, to: URL][] = [];
-  for (const page of filteredPages) {
-    if (page.links) {
-      page.links.forEach((link: URL) =>
-        isDeadLink(filteredPages, link) && deadLinks.push([page.url, link])
-      );
-    }
-  }
+    getStaticFiles(staticEntries, inputPath, outputPath),
+    buildFeedFile(pages, feedView, join(outputPath, "feed.xml"), siteConf),
+  ]);
 
   await emptyDir(outputPath);
+  await writeFiles([...contentFiles, ...tagFiles], config.quiet);
+  await copyFiles(staticFiles, config.quiet);
 
-  if (filteredPages.length > 0) {
-    const feedFile = await buildFeedFile(
-      filteredPages,
-      feedView,
-      join(outputPath, "feed.xml"),
-      siteConf,
-    );
-    if (feedFile && feedFile.fileContent) {
-      await ensureDir(dirname(feedFile.filePath));
-      await Deno.writeTextFile(feedFile.filePath, feedFile.fileContent);
-    }
+  if (feedFile && feedFile.fileContent) {
+    await Deno.writeTextFile(feedFile.filePath, feedFile.fileContent);
   }
-
-  await writeFiles(
-    [...tagFiles, ...contentFiles],
-    config.quiet,
-  );
-  await copyFiles(
-    [...staticFiles],
-    config.quiet,
-  );
 
   const END = performance.now();
   const BUILD_SECS = (END - START);
   const totalFiles = contentFiles.length + tagFiles.length;
+
+  const deadLinks: [from: URL, to: URL][] = [];
+  for (const page of pages) {
+    if (page.links) {
+      page.links.forEach((link: URL) =>
+        isDeadLink(pages, link) && deadLinks.push([page.url, link])
+      );
+    }
+  }
 
   if (deadLinks.length > 0) {
     console.log("---");
@@ -198,10 +184,10 @@ async function main(args: string[]) {
     flags.local ? toFileUrl(Deno.cwd()).toString() : MOD_URL.toString(),
   );
 
-  const [pageView, feedView, baseStyle] = await Promise.all([
-    getRemoteAsset(new URL("views/base.eta", moduleUrl)),
-    getRemoteAsset(new URL("views/feed.xml.eta", moduleUrl)),
-    getRemoteAsset(new URL("assets/ter.css", moduleUrl)),
+  const [pageView, baseStyle, feedView] = await Promise.all([
+    getRemoteAsset(new URL(BASE_VIEW_PATH, moduleUrl)),
+    getRemoteAsset(new URL(BASE_STYLE_PATH, moduleUrl)),
+    getRemoteAsset(new URL(FEED_VIEW_PATH, moduleUrl)),
   ]);
 
   const config = await createConfig({
