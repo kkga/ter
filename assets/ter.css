@@ -35,30 +35,33 @@
   --mauve-d11: hsl(253, 4%, 63.7%);
   --mauve-d12: hsl(256, 6%, 93.2%);
 
-  --brown-l1: hsl(30, 40%, 99.1%);
-  --brown-l2: hsl(30, 50%, 97.6%);
-  --brown-l3: hsl(30, 52.5%, 94.6%);
-  --brown-l4: hsl(30, 53%, 91.2%);
-  --brown-l5: hsl(29, 52.9%, 86.8%);
-  --brown-l6: hsl(29, 52.5%, 80.9%);
-  --brown-l7: hsl(29, 51.5%, 72.8%);
-  --brown-l8: hsl(28, 50%, 63.1%);
-  --brown-l9: hsl(28, 34%, 51%);
-  --brown-l10: hsl(27, 31.8%, 47.6%);
-  --brown-l11: hsl(25, 30%, 41%);
-  --brown-l12: hsl(20, 30%, 19%);
-  --brown-d1: hsl(22, 15%, 8.7%);
-  --brown-d2: hsl(20, 28.3%, 10.4%);
-  --brown-d3: hsl(20, 28%, 14%);
-  --brown-d4: hsl(21, 28.4%, 16.5%);
-  --brown-d5: hsl(22, 28.7%, 18.9%);
-  --brown-d6: hsl(23, 29%, 22.3%);
-  --brown-d7: hsl(25, 29.5%, 27.8%);
-  --brown-d8: hsl(27, 30.1%, 35.9%);
-  --brown-d9: hsl(28, 34%, 51%);
-  --brown-d10: hsl(28, 41.4%, 55.8%);
-  --brown-d11: hsl(28, 60%, 64.5%);
-  --brown-d12: hsl(30, 67%, 94%);
+  --indigo-l1: hsl(225, 60%, 99.4%);
+  --indigo-l2: hsl(223, 100%, 98.6%);
+  --indigo-l3: hsl(223, 98.4%, 97.1%);
+  --indigo-l4: hsl(223, 92.9%, 95%);
+  --indigo-l5: hsl(224, 87.1%, 92%);
+  --indigo-l6: hsl(224, 81.9%, 87.8%);
+  --indigo-l7: hsl(225, 77.4%, 82.1%);
+  --indigo-l8: hsl(226, 75.4%, 74.5%);
+  --indigo-l9: hsl(226, 70%, 55.5%);
+  --indigo-l10: hsl(226, 58.6%, 51.3%);
+  --indigo-l11: hsl(226, 55%, 45%);
+  --indigo-l12: hsl(226, 62%, 17%);
+  --indigo-d1: hsl(229, 24%, 10%);
+  --indigo-d2: hsl(230, 36.4%, 12.9%);
+  --indigo-d3: hsl(228, 43.3%, 17.5%);
+  --indigo-d4: hsl(227, 47.2%, 21%);
+  --indigo-d5: hsl(227, 50%, 24.1%);
+  --indigo-d6: hsl(226, 52.9%, 28.2%);
+  --indigo-d7: hsl(226, 56%, 34.5%);
+  --indigo-d8: hsl(226, 58.2%, 44.1%);
+  --indigo-d9: hsl(226, 70%, 55.5%);
+  --indigo-d10: hsl(227, 75.2%, 61.6%);
+  --indigo-d11: hsl(228, 100%, 75.9%);
+  --indigo-d12: hsl(226, 83%, 96.3%);
+
+  --violet-l11: hsl(250, 43%, 48%);
+  --violet-d11: hsl(250, 95%, 76.8%);
 
   /* Light theme */
   --color-bg-body: var(--mauve-l1);
@@ -67,8 +70,8 @@
   --color-text-body: var(--mauve-l12);
   --color-text-secondary: var(--mauve-l11);
   --color-text-tertiary: var(--mauve-l10);
-  --color-text-accent: var(--brown-l11);
-  --color-text-accent-dim: var(--brown-l7);
+  --color-text-accent: var(--indigo-l11);
+  --color-text-accent-alt: var(--violet-l11);
 
   /* Dark theme */
   --color-dark-bg-body: var(--mauve-d1);
@@ -77,8 +80,8 @@
   --color-dark-text-body: var(--mauve-d12);
   --color-dark-text-secondary: var(--mauve-d11);
   --color-dark-text-tertiary: var(--mauve-d10);
-  --color-dark-text-accent: var(--brown-d11);
-  --color-dark-text-accent-dim: var(--brown-d7);
+  --color-dark-text-accent: var(--indigo-d11);
+  --color-dark-text-accent-alt: var(--violet-d11);
 
   /* Font */
   --font-size-base: 16px;
@@ -112,7 +115,7 @@
     --color-text-secondary: var(--color-dark-text-secondary);
     --color-text-tertiary: var(--color-dark-text-tertiary);
     --color-text-accent: var(--color-dark-text-accent);
-    --color-text-accent-dim: var(--color-dark-text-accent-dim);
+    --color-text-accent-alt: var(--color-dark-text-accent-alt);
     --color-bg-body: var(--color-dark-bg-body);
     --color-bg-secondary: var(--color-dark-bg-secondary);
     --color-bg-highlight: var(--color-dark-bg-highlight);
@@ -223,7 +226,7 @@ article > img {
 
 blockquote {
   color: var(--color-text-secondary);
-  font-size: var(--font-size-l);
+  font-size: var(--font-size-m);
   line-height: var(--line-height-tight);
   font-stretch: semi-condensed;
   font-variation-settings: "wdth" 87.5;
@@ -235,7 +238,7 @@ a img {
 
 :is(code, kbd, samp) {
   font-family: var(--font-mono);
-  color: var(--color-text-secondary);
+  color: var(--color-text-accent-alt);
   background-color: var(--color-bg-secondary);
   border: 1px solid var(--color-bg-highlight);
   font-size: max(12px, 90%);
@@ -464,6 +467,10 @@ body > footer {
   color: var(--color-text-tertiary);
 }
 
+footer:not(:hover) a {
+  color: currentColor;
+}
+
 /* END TER STYLESHEET ----------------------------------------------------- */
 
 .hljs-comment {
@@ -493,7 +500,7 @@ body > footer {
 .hljs-string,
 .hljs-template-tag,
 .hljs-type {
-  color: var(--color-text-accent);
+  color: var(--color-text-accent-alt);
 }
 .hljs-section,
 .hljs-title {
@@ -511,7 +518,7 @@ body > footer {
   color: currentcolor;
 }
 .hljs-literal {
-  color: var(--color-text-accent);
+  color: var(--color-text-accent-alt);
 }
 .hljs-addition,
 .hljs-built_in,
