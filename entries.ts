@@ -1,6 +1,6 @@
-import { common, join } from "./deps.ts";
-import { expandGlob, walk, WalkEntry } from "./deps.ts";
-import { withoutTrailingSlash } from "./deps.ts";
+import { common, join } from "path/mod.ts";
+import { expandGlob, walk, WalkEntry } from "fs/mod.ts";
+import { withoutTrailingSlash } from "ufo";
 
 export const INDEX_FILENAME = "index.md";
 export const RE_HIDDEN_OR_UNDERSCORED = /^\.|^_|\/\.|\/\_/;

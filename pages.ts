@@ -1,7 +1,8 @@
-import { WalkEntry } from "./deps.ts";
-import { basename, dirname, extname, join, relative } from "./deps.ts";
-import { fm } from "./deps.ts";
-import { slugify } from "./deps.ts";
+import type { WalkEntry } from "fs/mod.ts";
+import { basename, dirname, extname, join, relative } from "path/mod.ts";
+import fm from "fm";
+import slugify from "slugify";
+
 import { render } from "./render.ts";
 import * as attrs from "./attributes.ts";
 import { SiteConfig } from "./config.ts";

@@ -1,12 +1,13 @@
-import { join, relative } from "./deps.ts";
-import { readableStreamFromReader } from "./deps.ts";
-import { serve as httpServe } from "./deps.ts";
-import { TerConfig } from "./config.ts";
+import { join, relative } from "path/mod.ts";
+import { readableStreamFromReader } from "streams/mod.ts";
+import { serve as httpServe } from "http/mod.ts";
+
+import { BuildConfig } from "./config.ts";
 import { RE_HIDDEN_OR_UNDERSCORED } from "./entries.ts";
 
 interface WatchOpts {
-  config: TerConfig;
-  runner: (config: TerConfig, includeRefresh: true) => Promise<void>;
+  config: BuildConfig;
+  runner: (config: BuildConfig, includeRefresh: true) => Promise<void>;
 }
 
 interface ServeOpts extends WatchOpts {

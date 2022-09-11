@@ -1,5 +1,6 @@
-import { basename, dirname, join } from "./deps.ts";
-import { compile, configure, render, templates } from "./deps.ts";
+import { basename, dirname, join } from "path/mod.ts";
+import { compile, configure, render, templates } from "eta";
+
 import { Page } from "./pages.ts";
 import { SiteConfig } from "./config.ts";
 import { hasKey } from "./attributes.ts";

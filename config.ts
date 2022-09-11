@@ -1,7 +1,7 @@
-import { parse, stringify } from "./deps.ts";
-import { ensureDir } from "./deps.ts";
-import { dirname, isAbsolute, join } from "./deps.ts";
-import { normalizeURL, withTrailingSlash } from "./deps.ts";
+import { parse, stringify } from "encoding/yaml.ts";
+import { ensureDir } from "fs/mod.ts";
+import { dirname, isAbsolute, join } from "path/mod.ts";
+import { normalizeURL, withTrailingSlash } from "ufo";
 
 export interface SiteConfig {
   title: string;

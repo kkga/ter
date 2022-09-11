@@ -1,13 +1,14 @@
-import { dirname, extname, isAbsolute, join } from "./deps.ts";
-import { hljs } from "./deps.ts";
-import { marked } from "./deps.ts";
+import { dirname, extname, isAbsolute, join } from "path/mod.ts";
+import { marked } from "marked";
+import Prism from "prism";
 import {
   ParsedURL,
   parseURL,
   withLeadingSlash,
   withoutLeadingSlash,
   withoutTrailingSlash,
-} from "./deps.ts";
+} from "ufo";
+
 import { Heading } from "./pages.ts";
 
 interface RenderOpts {
@@ -136,10 +137,19 @@ export function render(
     }
   };
 
-  renderer.code = (code: string, lang: string): string => {
-    const language = hljs.getLanguage(lang) ? lang : "plaintext";
-    const html = hljs.highlight(code, { language }).value;
-    return `<div class="hljs language-${language}"><pre>${html}</pre></div>`;
+  // renderer.code = (code: string, lang: string): string => {
+  //   const language = hljs.getLanguage(lang) ? lang : "plaintext";
+  //   const html = hljs.highlight(code, { language }).value;
+  //   return `<div class="hljs language-${language}"><pre>${html}</pre></div>`;
+  // };
+
+  renderer.code = (code: string, language?: string): string => {
+    const grammar = language ? Prism.languages[language] : undefined;
+    if (grammar === undefined) {
+      return `<pre><code>${code}</code></pre>`;
+    }
+    const html = Prism.highlight(code, grammar, language!);
+    return `<div class="highlight highlight-source-${language}"><pre>${html}</pre></div>`;
   };
 
   marked.use({

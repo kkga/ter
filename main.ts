@@ -1,7 +1,7 @@
-import { parseFlags } from "./deps.ts";
-import { emptyDir } from "./deps.ts";
-import { join, relative, toFileUrl } from "./deps.ts";
-import { withTrailingSlash } from "./deps.ts";
+import { parse } from "flags/mod.ts";
+import { emptyDir } from "fs/mod.ts";
+import { join, relative, toFileUrl } from "path/mod.ts";
+import { withTrailingSlash } from "ufo";
 
 import * as entries from "./entries.ts";
 import {
@@ -160,7 +160,7 @@ async function generateSite(config: BuildConfig, includeRefresh: boolean) {
 }
 
 async function main(args: string[]) {
-  const flags = parseFlags(args, {
+  const flags = parse(args, {
     boolean: ["serve", "help", "quiet", "local", "drafts"],
     string: ["config", "input", "output", "port"],
     default: {

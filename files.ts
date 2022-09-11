@@ -1,5 +1,7 @@
-import { copy, ensureDir, minify, MinifyOpts, WalkEntry } from "./deps.ts";
-import { basename, dirname, join, relative } from "./deps.ts";
+import { copy, ensureDir, WalkEntry } from "fs/mod.ts";
+import { minify, Options } from "minify";
+import { basename, dirname, join, relative } from "path/mod.ts";
+
 import { buildFeed, buildPage, buildTagPage } from "./build.ts";
 import { SiteConfig } from "./config.ts";
 import { getTags } from "./attributes.ts";
@@ -27,7 +29,7 @@ interface BuildOpts {
   includeRefresh: boolean;
 }
 
-const minifyOpts: MinifyOpts = {
+const minifyOpts: Options = {
   collapseWhitespace: true,
   collapseBooleanAttributes: true,
   html5: true,

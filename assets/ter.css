@@ -6,9 +6,9 @@
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
     "Helvetica Neue", Arial, sans-serif;
-  --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
-    "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
-    "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
+  --font-mono: ui-monospace, monospace, Menlo, Monaco, "Cascadia Mono",
+    "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace",
+    "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New";
 
   --mauve-l1: hsl(300, 20%, 99%);
   --mauve-l2: hsl(300, 7.7%, 97.5%);
@@ -65,23 +65,25 @@
 
   /* Light theme */
   --color-bg-body: var(--mauve-l1);
-  --color-bg-secondary: var(--mauve-l2);
-  --color-bg-highlight: var(--mauve-l3);
+  --color-bg-highlight: var(--mauve-l4);
+  --color-bg-secondary: var(--mauve-l3);
+  --color-bg-tertiary: var(--mauve-l2);
   --color-text-body: var(--mauve-l12);
   --color-text-secondary: var(--mauve-l11);
   --color-text-tertiary: var(--mauve-l10);
   --color-text-accent: var(--indigo-l11);
-  --color-text-accent-alt: var(--violet-l11);
+  --color-text-accent-dim: var(--indigo-l9);
 
   /* Dark theme */
   --color-dark-bg-body: var(--mauve-d1);
-  --color-dark-bg-secondary: var(--mauve-d2);
-  --color-dark-bg-highlight: var(--mauve-d3);
+  --color-dark-bg-highlight: var(--mauve-d4);
+  --color-dark-bg-secondary: var(--mauve-d3);
+  --color-dark-bg-tertiary: var(--mauve-d2);
   --color-dark-text-body: var(--mauve-d12);
   --color-dark-text-secondary: var(--mauve-d11);
   --color-dark-text-tertiary: var(--mauve-d10);
   --color-dark-text-accent: var(--indigo-d11);
-  --color-dark-text-accent-alt: var(--violet-d11);
+  --color-dark-text-accent-dim: var(--indigo-d9);
 
   /* Font */
   --font-size-base: 16px;
@@ -115,10 +117,11 @@
     --color-text-secondary: var(--color-dark-text-secondary);
     --color-text-tertiary: var(--color-dark-text-tertiary);
     --color-text-accent: var(--color-dark-text-accent);
-    --color-text-accent-alt: var(--color-dark-text-accent-alt);
+    --color-text-accent-dim: var(--color-dark-text-accent-dim);
     --color-bg-body: var(--color-dark-bg-body);
-    --color-bg-secondary: var(--color-dark-bg-secondary);
     --color-bg-highlight: var(--color-dark-bg-highlight);
+    --color-bg-secondary: var(--color-dark-bg-secondary);
+    --color-bg-tertiary: var(--color-dark-bg-tertiary);
   }
 }
 
@@ -133,8 +136,6 @@ h6 {
   font-size: var(--font-size-base);
   letter-spacing: var(--leading-tight);
   font-weight: var(--font-weight-b);
-  font-stretch: semi-expanded;
-  font-variation-settings: "wdth" 112.5;
   margin-top: 1.5em;
   margin-bottom: 0.75em;
 }
@@ -142,8 +143,6 @@ h6 {
 h1 {
   font-size: var(--font-size-xl);
   line-height: var(--line-height-head);
-  font-stretch: expanded;
-  font-variation-settings: "wdth" 125;
   font-weight: var(--font-weight-xb);
 }
 
@@ -208,10 +207,17 @@ a:visited {
 
 a[href]:hover {
   text-decoration: underline;
+  text-decoration-color: var(--color-text-accent-dim);
 }
 
-a[rel~="external"]::after {
-  content: "↗";
+a[rel~="external"] {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--color-text-accent-dim);
+}
+
+a[rel~="external"]:hover {
+  text-decoration-color: var(--color-text-accent-dim);
 }
 
 img,
@@ -236,11 +242,9 @@ a img {
   margin-bottom: 0;
 }
 
-:is(code, kbd, samp) {
+:not(pre) :is(code, kbd, samp) {
   font-family: var(--font-mono);
-  color: var(--color-text-accent-alt);
   background-color: var(--color-bg-secondary);
-  border: 1px solid var(--color-bg-highlight);
   font-size: max(12px, 90%);
   padding: 2px 3px;
 }
@@ -255,19 +259,18 @@ table :is(code, kbd, samp) {
 pre {
   font-family: var(--font-mono);
   font-size: var(--font-size-s);
-  line-height: var(--line-height-xtight);
-  background-color: var(--color-bg-secondary);
+  line-height: var(--line-height-tight);
+  background-color: var(--color-bg-tertiary);
   border: 1px solid var(--color-bg-highlight);
+  box-shadow: inset 0 0 0 1px var(--color-bg-body);
   overflow: auto;
   padding: 1.5ch 2ch;
 }
 
 pre code {
-  color: inherit;
-  border-radius: inherit;
+  color: var(--color-text-secondary);
   background-color: inherit;
   padding: 0;
-  border: inherit;
   font-size: inherit;
 }
 
@@ -306,7 +309,7 @@ dt {
 
 hr {
   border: 0;
-  border-bottom: 1px solid var(--color-bg-highlight);
+  border-bottom: 1px dashed var(--color-bg-highlight);
   margin: 1.5rem auto;
 }
 
@@ -314,6 +317,7 @@ table {
   width: 100%;
   font-size: var(--font-size-s);
   line-height: var(--line-height-tight);
+  border: 1px solid var(--color-bg-highlight);
   border-collapse: separate;
   border-spacing: 1px;
 }
@@ -322,11 +326,11 @@ td,
 th {
   text-align: left;
   padding: 0.25em 0.5em;
-  background: var(--color-bg-secondary);
+  background: var(--color-bg-tertiary);
   vertical-align: top;
 }
 th {
-  background: var(--color-bg-highlight);
+  background: var(--color-bg-secondary);
 }
 
 table caption {
@@ -472,72 +476,3 @@ footer:not(:hover) a {
 }
 
 /* END TER STYLESHEET ----------------------------------------------------- */
-
-.hljs-comment {
-  color: var(--color-text-tertiary);
-}
-.hljs-punctuation,
-.hljs-tag {
-  color: currentcolor;
-}
-.hljs-tag .hljs-attr,
-.hljs-tag .hljs-name {
-  color: currentcolor;
-}
-.hljs-attribute,
-.hljs-doctag,
-.hljs-keyword,
-.hljs-meta .hljs-keyword,
-.hljs-name,
-.hljs-selector-tag {
-  font-weight: bold;
-}
-.hljs-deletion,
-.hljs-number,
-.hljs-quote,
-.hljs-selector-class,
-.hljs-selector-id,
-.hljs-string,
-.hljs-template-tag,
-.hljs-type {
-  color: var(--color-text-accent-alt);
-}
-.hljs-section,
-.hljs-title {
-  color: currentcolor;
-}
-.hljs-link,
-.hljs-operator,
-.hljs-regexp,
-.hljs-selector-attr,
-.hljs-selector-pseudo,
-.hljs-symbol,
-.hljs-template-variable,
-.hljs-variable,
-.hljs-function {
-  color: currentcolor;
-}
-.hljs-literal {
-  color: var(--color-text-accent-alt);
-}
-.hljs-addition,
-.hljs-built_in,
-.hljs-bullet,
-.hljs-code {
-  color: currentcolor;
-}
-.hljs-meta {
-  color: currentcolor;
-}
-.hljs-meta .hljs-string {
-  color: currentcolor;
-}
-.hljs-subs {
-  font-weight: bold;
-}
-.hljs-emphasis {
-  font-style: italic;
-}
-.hljs-strong {
-  font-weight: bold;
-}

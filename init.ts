@@ -1,8 +1,9 @@
-import { ensureDir } from "./deps.ts";
-import { basename, dirname, join } from "./deps.ts";
-import { stringify } from "./deps.ts";
-import { writableStreamFromWriter } from "./deps.ts";
-import { TerConfig } from "./config.ts";
+import { ensureDir } from "fs/mod.ts";
+import { basename, dirname, join } from "path/mod.ts";
+import { writableStreamFromWriter } from "streams/mod.ts";
+import { stringify } from "encoding/yaml.ts";
+
+import { BuildConfig } from "./config.ts";
 
 const MOD_URL = new URL("https://deno.land/x/ter");
 const requiredViews = ["base.eta", "feed.xml.eta"];
@@ -27,7 +28,7 @@ async function initializeFile(filePath: string, url: URL) {
   }
 }
 
-export async function init(config: TerConfig) {
+export async function init(config: BuildConfig) {
   console.log("%cInitializing site config:", "font-weight: bold");
   try {
     await Deno.stat(join(Deno.cwd(), config.siteConfigPath));
