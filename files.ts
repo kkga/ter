@@ -1,5 +1,6 @@
 import { copy, ensureDir, WalkEntry } from "fs/mod.ts";
-import { minify, Options } from "minify";
+import { default as initMinify } from "minify-html/index.js";
+import { minify } from "minify-html/index.js";
 import { basename, dirname, join, relative } from "path/mod.ts";
 
 import { buildFeed, buildPage, buildTagPage } from "./build.ts";
@@ -29,12 +30,22 @@ interface BuildOpts {
   includeRefresh: boolean;
 }
 
-const minifyOpts: Options = {
-  collapseWhitespace: true,
-  collapseBooleanAttributes: true,
-  html5: true,
-  minifyCSS: true,
-  minifyJS: true,
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
+
+await initMinify();
+
+const minifyCfg = {
+  do_not_minify_doctype: false,
+  ensure_spec_compliant_unquoted_attribute_values: false,
+  keep_closing_tags: false,
+  keep_html_and_head_opening_tags: false,
+  keep_spaces_between_attributes: false,
+  keep_comments: false,
+  minify_css: false,
+  minify_js: false,
+  remove_bangs: false,
+  remove_processing_instructions: false,
 };
 
 export async function buildContentFiles(
@@ -69,7 +80,7 @@ export async function buildContentFiles(
     });
 
     if (typeof html === "string") {
-      const minified = await minify(html, minifyOpts);
+      const minified = decoder.decode(minify(encoder.encode(html), minifyCfg));
       files.push({
         filePath,
         fileContent: minified,
@@ -104,7 +115,7 @@ export async function buildTagFiles(
     });
 
     if (typeof html === "string") {
-      const minified = await minify(html, minifyOpts);
+      const minified = decoder.decode(minify(encoder.encode(html), minifyCfg));
       files.push({
         inputPath: "",
         filePath,

@@ -119,7 +119,7 @@ export function render(
   ): string => {
     const slug = slugger.slug(raw);
     headings.push({ text, level, slug });
-    return `<h${level} id="${slug}">${text}<a href="#${slug}"></a></h${level}>`;
+    return `<h${level} id="${slug}"><a href="#${slug}">${text}</a></h${level}>`;
   };
 
   renderer.image = (href: string, title: string, text: string) => {
@@ -136,12 +136,6 @@ export function render(
       return `<img src="${href}" alt="${text || ""}" title="${title || ""}"/>`;
     }
   };
-
-  // renderer.code = (code: string, lang: string): string => {
-  //   const language = hljs.getLanguage(lang) ? lang : "plaintext";
-  //   const html = hljs.highlight(code, { language }).value;
-  //   return `<div class="hljs language-${language}"><pre>${html}</pre></div>`;
-  // };
 
   renderer.code = (code: string, language?: string): string => {
     const grammar = language ? Prism.languages[language] : undefined;

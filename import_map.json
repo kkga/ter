@@ -7,7 +7,7 @@
     "fs/": "https://deno.land/std@0.155.0/fs/",
     "http/": "https://deno.land/std@0.155.0/http/",
     "marked": "https://esm.sh/marked",
-    "minify": "https://esm.sh/html-minifier-terser",
+    "minify-html/": "https://wilsonl.in/minify-html/deno/0.10.0/",
     "path/": "https://deno.land/std@0.155.0/path/",
     "prism": "https://esm.sh/prismjs",
     "slugify": "https://esm.sh/slugify",
