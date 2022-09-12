@@ -30,8 +30,12 @@ interface BuildOpts {
 const minifyOpts: MinifyOpts = {
   collapseWhitespace: true,
   collapseBooleanAttributes: true,
-  minifyCSS: false,
-  minifyJS: false,
+};
+
+const minifyStyleOpts: MinifyOpts = {
+  minifyCSS: true,
+  collapseWhitespace: true,
+  collapseBooleanAttributes: true,
 };
 
 export async function buildContentFiles(
@@ -39,6 +43,7 @@ export async function buildContentFiles(
   opts: BuildOpts,
 ): Promise<OutputFile[]> {
   const files: Array<OutputFile> = [];
+  const styleMinified = await minify(opts.style, minifyStyleOpts);
 
   for (const page of pages) {
     const filePath = join(
@@ -62,7 +67,7 @@ export async function buildContentFiles(
       childTags: page.isIndex ? getChildTags(pages, page) : [],
       view: opts.view,
       siteConf: opts.conf,
-      style: opts.style,
+      style: styleMinified,
     });
 
     if (typeof html === "string") {
@@ -82,6 +87,7 @@ export async function buildTagFiles(
   opts: BuildOpts,
 ): Promise<OutputFile[]> {
   const files: Array<OutputFile> = [];
+  const styleMinified = await minify(opts.style, minifyStyleOpts);
 
   for (const tag of tagPages) {
     const filePath = join(
@@ -97,7 +103,7 @@ export async function buildTagFiles(
       headInclude: opts.head,
       includeRefresh: opts.includeRefresh,
       siteConf: opts.conf,
-      style: opts.style,
+      style: styleMinified,
     });
 
     if (typeof html === "string") {
