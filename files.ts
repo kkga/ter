@@ -30,9 +30,8 @@ interface BuildOpts {
 const minifyOpts: MinifyOpts = {
   collapseWhitespace: true,
   collapseBooleanAttributes: true,
-  html5: true,
-  minifyCSS: true,
-  minifyJS: true,
+  minifyCSS: false,
+  minifyJS: false,
 };
 
 export async function buildContentFiles(
