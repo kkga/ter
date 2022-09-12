@@ -118,7 +118,7 @@ export function render(
   ): string => {
     const slug = slugger.slug(raw);
     headings.push({ text, level, slug });
-    return `<h${level} id="${slug}">${text}<a href="#${slug}"></a></h${level}>`;
+    return `<h${level} id="${slug}"><a href="#${slug}">${text}</a></h${level}>`;
   };
 
   renderer.image = (href: string, title: string, text: string) => {
