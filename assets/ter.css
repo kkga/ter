@@ -65,8 +65,8 @@
 
   /* Light theme */
   --color-bg-body: var(--mauve-l1);
-  --color-bg-secondary: var(--mauve-l2);
-  --color-bg-highlight: var(--mauve-l3);
+  --color-bg-container: var(--mauve-l3);
+  --color-bg-border: var(--mauve-l7);
   --color-text-body: var(--mauve-l12);
   --color-text-secondary: var(--mauve-l11);
   --color-text-tertiary: var(--mauve-l10);
@@ -75,8 +75,8 @@
 
   /* Dark theme */
   --color-dark-bg-body: var(--mauve-d1);
-  --color-dark-bg-secondary: var(--mauve-d2);
-  --color-dark-bg-highlight: var(--mauve-d3);
+  --color-dark-bg-container: var(--mauve-d3);
+  --color-dark-bg-border: var(--mauve-d7);
   --color-dark-text-body: var(--mauve-d12);
   --color-dark-text-secondary: var(--mauve-d11);
   --color-dark-text-tertiary: var(--mauve-d10);
@@ -117,8 +117,8 @@
     --color-text-accent: var(--color-dark-text-accent);
     --color-text-accent-alt: var(--color-dark-text-accent-alt);
     --color-bg-body: var(--color-dark-bg-body);
-    --color-bg-secondary: var(--color-dark-bg-secondary);
-    --color-bg-highlight: var(--color-dark-bg-highlight);
+    --color-bg-container: var(--color-dark-bg-container);
+    --color-bg-border: var(--color-dark-bg-border);
   }
 }
 
@@ -134,7 +134,7 @@ h6 {
   letter-spacing: var(--leading-tight);
   font-weight: var(--font-weight-b);
   margin-top: 1.5em;
-  margin-bottom: 0.75em;
+  margin-bottom: 0.5em;
 }
 
 h1 {
@@ -166,7 +166,7 @@ small {
 /* BASE TAGS --------------------------------------------------------------------- */
 
 html {
-  background-color: black;
+  background-color: var(--color-bg-body);
 }
 
 body {
@@ -174,10 +174,9 @@ body {
   min-height: 100vh;
   display: flex;
   flex-flow: column nowrap;
-  gap: 2rem;
+  gap: 3rem;
   margin: 0;
   padding: 1rem;
-  background: var(--color-bg-body);
   color: var(--color-text-body);
   font-family: var(--font-sans);
   font-size: var(--font-size-base);
@@ -190,30 +189,64 @@ body > :is(header, main, aside, footer) {
   width: 100%;
 }
 
+dt {
+  font-weight: var(--font-weight-m);
+}
+
+hr {
+  border: 0;
+  border-bottom: 1px solid var(--color-bg-border);
+  margin: 1.5rem auto;
+}
+
+/* link */
 a {
-  color: var(--color-text-accent);
-  text-decoration: none;
-}
-
-:is(h1, h2, h3, h4, h5, h6) a {
-  color: currentcolor !important;
-}
-
-a:visited {
-  color: var(--color-text-accent);
+  color: var(--color-text-body);
+  text-decoration: underline;
+  text-decoration-color: var(--color-text-tertiary);
 }
 
 a[href]:hover {
-  text-decoration: underline;
-  text-decoration-color: var(--color-text-accent-alt);
+  color: var(--color-text-accent);
+  text-decoration-color: inherit;
 }
 
 a[rel~="external"] {
-  text-decoration: underline;
-  text-decoration-style: dotted;
-  text-decoration-color: var(--color-text-accent-alt);
+  color: var(--color-text-accent);
+}
+/* /link */
+
+/* header anchor */
+:is(h2, h3, h4, h5, h6) {
+  position: relative;
 }
 
+:is(h2, h3, h4, h5, h6) a.anchor {
+  line-height: inherit;
+  opacity: 0;
+  color: var(--color-text-tertiary);
+  padding: 0 0.5em;
+  font-weight: 500;
+  line-height: inherit;
+  text-align: center;
+  text-decoration: none;
+}
+
+:is(h2, h3, h4, h5, h6) a.anchor::after {
+  content: "#";
+}
+
+:is(h2, h3, h4, h5, h6):hover a.anchor {
+  opacity: 1;
+}
+
+:is(h2, h3, h4, h5, h6) a.anchor:hover {
+  color: var(--color-text-accent);
+  text-decoration: none;
+}
+/* /header anchor */
+
+/* media */
 img,
 video {
   max-width: 100%;
@@ -235,43 +268,9 @@ blockquote {
 a img {
   margin-bottom: 0;
 }
+/* /media */
 
-:is(code, kbd, samp) {
-  font-family: var(--font-mono);
-  color: var(--color-text-accent-alt);
-  background-color: var(--color-bg-secondary);
-  border: 1px solid var(--color-bg-highlight);
-  font-size: max(12px, 90%);
-  padding: 2px 3px;
-}
-
-table :is(code, kbd, samp) {
-  padding: 2px 3px;
-  background-color: transparent;
-  border: none;
-  font-size: inherit;
-}
-
-pre {
-  font-family: var(--font-mono);
-  font-size: var(--font-size-s);
-  line-height: var(--line-height-tight);
-  background-color: var(--color-bg-secondary);
-  border: 1px solid var(--color-bg-highlight);
-  box-shadow: inset 0 0 0 1px var(--color-bg-body);
-  overflow: auto;
-  padding: 1.5ch 2ch;
-}
-
-pre code {
-  color: inherit;
-  border-radius: inherit;
-  background-color: inherit;
-  padding: 0;
-  border: inherit;
-  font-size: inherit;
-}
-
+/* figure */
 figure {
   margin: 1.5rem 0;
 }
@@ -282,7 +281,38 @@ figcaption {
   font-size: var(--font-size-s);
   color: var(--color-text-tertiary);
 }
+/* /figure */
 
+/* code */
+:not(pre) :is(code, kbd, samp) {
+  font-family: var(--font-mono);
+  background-color: var(--color-bg-container);
+  border-radius: 0.2em;
+  font-size: 0.9375em;
+  padding: 0 0.2em;
+}
+
+pre {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-s);
+  line-height: var(--line-height-tight);
+  background-color: var(--color-bg-container);
+  overflow: auto;
+  padding: 1.25ch;
+  border-radius: 0.2em;
+}
+
+pre code {
+  color: inherit;
+  border-radius: inherit;
+  background-color: inherit;
+  padding: 0;
+  border: inherit;
+  font-size: inherit;
+}
+/* /code */
+
+/* details */
 details {
   font-size: var(--font-size-s);
   color: var(--color-text-tertiary);
@@ -300,43 +330,9 @@ summary {
 details[open] > *:last-child {
   margin-bottom: 0;
 }
+/* /details */
 
-dt {
-  font-weight: var(--font-weight-m);
-}
-
-hr {
-  border: 0;
-  border-bottom: 1px solid var(--color-bg-highlight);
-  margin: 1.5rem auto;
-}
-
-table {
-  width: 100%;
-  font-size: var(--font-size-s);
-  line-height: var(--line-height-tight);
-  border-collapse: separate;
-  border-spacing: 1px;
-  border: 1px solid var(--color-bg-highlight);
-}
-
-td,
-th {
-  text-align: left;
-  padding: 0.25em 0.5em;
-  background: var(--color-bg-secondary);
-  vertical-align: top;
-}
-th {
-  color: var(--color-text-secondary);
-  background: var(--color-bg-highlight);
-}
-
-table caption {
-  font-weight: var(--font-weight-m);
-  margin-bottom: 0.5em;
-}
-
+/* list */
 ul,
 ol {
   padding: 0;
@@ -350,6 +346,36 @@ ol ol {
   margin-bottom: 0;
   padding-left: 1.5rem;
 }
+/* /list */
+
+/* table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-s);
+  line-height: var(--line-height-tight);
+}
+
+th,
+td {
+  border: 1px solid var(--color-bg-border);
+  text-align: left;
+  padding: 0.25em 0.5em;
+  vertical-align: top;
+}
+
+table caption {
+  font-weight: var(--font-weight-m);
+  margin-bottom: 0.5em;
+}
+
+table :is(code, kbd, samp) {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  font-size: inherit;
+}
+/* /table */
 
 /* HEADER/BREADCRUMBS ------------------------------------------------------------------- */
 
@@ -357,7 +383,6 @@ body > header,
 article > header {
   display: flex;
   flex-direction: column;
-  align-items: baseline;
   justify-content: space-between;
   gap: 0.25em;
   font-size: var(--font-size-s);
@@ -367,6 +392,10 @@ article > header {
 
 body > header:not(:hover) :is(nav, div, a) {
   color: var(--color-text-tertiary) !important;
+}
+
+body > header a:not(:hover) {
+  text-decoration: none;
 }
 
 article > header:not(:hover) :is(nav, div, li a) {
@@ -381,13 +410,6 @@ article > header:not(:hover) :is(nav, div, li a) {
 
 :is(body > header, article > header) :is(ol, ul) li {
   display: inline-block;
-}
-
-:is(body > header, article > header)
-  :not(nav)
-  :is(ol, ul)
-  li:not(:first-child) {
-  margin-left: 0.5em;
 }
 
 body > header nav ol li:not(:first-child)::before {
@@ -417,6 +439,10 @@ body > aside > section:not(:hover) :is(nav, div, a) {
   color: var(--color-text-tertiary) !important;
 }
 
+body > aside > section a:not(:hover) {
+  text-decoration: none;
+}
+
 aside section h6 {
   margin: 0;
   line-height: 2;
@@ -430,12 +456,13 @@ aside section h6 {
 
 aside section h6 a {
   color: inherit;
+  text-decoration: none;
 }
 
 aside section h6::after {
   flex: 1;
   content: "";
-  border-top: 1px solid var(--color-bg-highlight);
+  border-top: 1px solid var(--color-bg-border);
 }
 
 aside section :is(ul, ol) {
@@ -453,7 +480,7 @@ aside section :is(ul, ol) li {
 aside section :is(ul, ol) li a + span {
   display: block;
   flex: 1;
-  border-bottom: 1px dashed var(--color-bg-highlight);
+  border-bottom: 1px dashed var(--color-bg-border);
 }
 
 aside time {
