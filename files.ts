@@ -1,7 +1,7 @@
 import { copy, ensureDir, minify, MinifyOpts, WalkEntry } from "./deps.ts";
 import { basename, dirname, join, relative } from "./deps.ts";
 import { buildFeed, buildPage, buildTagPage } from "./build.ts";
-import { SiteConfig } from "./config.ts";
+import { UserConfig } from "./config.ts";
 import { getTags } from "./attributes.ts";
 import {
   getBacklinkPages,
@@ -22,7 +22,7 @@ interface BuildOpts {
   outputPath: string;
   view: string;
   head: string;
-  conf: SiteConfig;
+  userConfig: UserConfig;
   style: string;
   includeRefresh: boolean;
 }
@@ -66,7 +66,7 @@ export async function buildContentFiles(
       taggedPages: pagesByTag,
       childTags: page.isIndex ? getChildTags(pages, page) : [],
       view: opts.view,
-      siteConf: opts.conf,
+      userConfig: opts.userConfig,
       style: styleMinified,
     });
 
@@ -102,7 +102,7 @@ export async function buildTagFiles(
       view: opts.view,
       headInclude: opts.head,
       includeRefresh: opts.includeRefresh,
-      siteConf: opts.conf,
+      userConfig: opts.userConfig,
       style: styleMinified,
     });
 
@@ -123,12 +123,12 @@ export async function buildFeedFile(
   pages: Array<Page>,
   view: string,
   outputPath: string,
-  siteConf: SiteConfig,
+  userConfig: UserConfig,
 ): Promise<OutputFile | undefined> {
   const xml = await buildFeed(
     pages,
     view,
-    siteConf,
+    userConfig,
   );
 
   if (typeof xml === "string") {

@@ -1,13 +1,15 @@
-import { parse, stringify } from "./deps.ts";
+import { deepmerge } from "./deps.ts";
 import { ensureDir } from "./deps.ts";
 import { dirname, isAbsolute, join } from "./deps.ts";
-import { normalizeURL, withTrailingSlash } from "./deps.ts";
 
-export interface SiteConfig {
-  title: string;
-  description: string;
-  rootName: string;
-  url: string;
+export interface UserConfig {
+  site: {
+    title: string;
+    description: string;
+    rootName: string;
+    url: string;
+  };
+  navigation: Record<string, string>;
   author: { name: string; email: string; url: string };
 }
 
@@ -19,19 +21,22 @@ export interface BuildConfig {
   style: string;
   assetsPath: string;
   viewsPath: string;
-  siteConfigPath: string;
+  userConfigPath: string;
   ignoreKeys: string[];
   staticExts: string[];
-  site: SiteConfig;
+  userConfig: UserConfig;
   quiet: boolean;
   renderDrafts: boolean;
 }
 
-const defaultSiteConfig: SiteConfig = {
-  title: "Your Blog Name",
-  rootName: "index",
-  description: "I am writing about my experiences as a naval navel-gazer",
-  url: "https://example.com/",
+const defaultUserConfig: UserConfig = {
+  site: {
+    title: "Your Blog Name",
+    rootName: "index",
+    description: "I am writing about my experiences as a naval navel-gazer",
+    url: "https://example.com/",
+  },
+  navigation: {},
   author: {
     name: "Your Name Here",
     email: "youremailaddress@example.com",
@@ -47,7 +52,7 @@ const defaultConfig: BuildConfig = {
   pageView: "",
   feedView: "",
   style: "",
-  siteConfigPath: ".ter/config.yml",
+  userConfigPath: ".ter/config.yml",
   ignoreKeys: ["draft"],
   staticExts: [
     "png",
@@ -60,34 +65,30 @@ const defaultConfig: BuildConfig = {
     "webm",
     "mp4",
   ],
-  site: defaultSiteConfig,
+  userConfig: defaultUserConfig,
   quiet: false,
   renderDrafts: false,
 };
 
-async function checkSiteConfig(configPath: string): Promise<boolean> {
-  const filepath = isAbsolute(configPath)
-    ? configPath
-    : join(Deno.cwd(), configPath);
+async function checkUserConfig(path: string): Promise<boolean> {
+  const filepath = isAbsolute(path) ? path : join(Deno.cwd(), path);
   await Deno.stat(filepath).catch(() => Promise.reject(filepath));
   return Promise.resolve(true);
 }
 
-async function initSiteConfig(config: SiteConfig, configPath: string) {
-  const yaml = stringify(
-    config as unknown as Record<string, unknown>,
-  );
+async function initUserConfig(config: UserConfig, configPath: string) {
+  // const json = stringify(
+  //   config as unknown as Record<string, unknown>,
+  // );
   await ensureDir(dirname(configPath));
-  await Deno.writeTextFile(configPath, yaml);
+  await Deno.writeTextFile(configPath, JSON.stringify(config));
 }
 
-async function parseSiteConfig(path: string): Promise<SiteConfig | undefined> {
+async function parseUserConfig(path: string): Promise<UserConfig | undefined> {
   try {
-    const decoder = new TextDecoder("utf-8");
-    const data = decoder.decode(await Deno.readFile(path));
-    const conf = parse(data) as SiteConfig;
-    return conf;
+    return JSON.parse(await Deno.readTextFile(path));
   } catch {
+    console.error("Can't parse config");
     return undefined;
   }
 }
@@ -109,7 +110,7 @@ export async function createConfig(
   const conf = defaultConfig;
 
   if (opts.configPath && opts.configPath != "") {
-    conf.siteConfigPath = isAbsolute(opts.configPath)
+    conf.userConfigPath = isAbsolute(opts.configPath)
       ? opts.configPath
       : join(Deno.cwd(), opts.configPath);
   }
@@ -132,39 +133,23 @@ export async function createConfig(
   conf.quiet = opts.quiet;
   conf.renderDrafts = opts.renderDrafts;
 
-  await checkSiteConfig(conf.siteConfigPath)
+  await checkUserConfig(conf.userConfigPath)
     .catch(async () => {
-      console.log(
-        `Config file missing, initializing default config at ${conf.siteConfigPath}`,
+      console.warn(
+        `Config file missing, initializing default config at ${conf.userConfigPath}`,
       );
-      await initSiteConfig(conf.site, conf.siteConfigPath);
+      await initUserConfig(conf.userConfig, conf.userConfigPath);
     });
 
-  const siteConf = await parseSiteConfig(conf.siteConfigPath);
+  const parsedConf = await parseUserConfig(conf.userConfigPath);
+  // console.log(parsedConf);
 
-  if (siteConf) {
-    if (typeof siteConf.title === "string") {
-      conf.site.title = siteConf.title;
-    }
-    if (typeof siteConf.rootName === "string") {
-      conf.site.rootName = siteConf.rootName;
-    }
-    if (typeof siteConf.description === "string") {
-      conf.site.description = siteConf.description;
-    }
-    if (typeof siteConf.url === "string") {
-      conf.site.url = withTrailingSlash(normalizeURL(siteConf.url));
-    }
-    if (typeof siteConf.author?.name === "string") {
-      conf.site.author = { ...conf.site.author, name: siteConf.author.name };
-    }
-    if (typeof siteConf.author?.email === "string") {
-      conf.site.author = { ...conf.site.author, email: siteConf.author.email };
-    }
-    if (typeof siteConf.author?.url === "string") {
-      conf.site.author = { ...conf.site.author, url: siteConf.author.url };
-    }
+  if (parsedConf) {
+    conf.userConfig = deepmerge(conf.userConfig, parsedConf);
   }
+
+  console.log(conf);
+  // Deno.exit();
 
   return conf;
 }

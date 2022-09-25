@@ -4,7 +4,7 @@ import { fm } from "./deps.ts";
 import { slugify } from "./deps.ts";
 import { render } from "./render.ts";
 import * as attrs from "./attributes.ts";
-import { SiteConfig } from "./config.ts";
+import { UserConfig } from "./config.ts";
 import { INDEX_FILENAME } from "./entries.ts";
 
 const decoder = new TextDecoder("utf-8");
@@ -117,7 +117,7 @@ export function getChildTags(
 export async function generatePage(
   entry: WalkEntry,
   inputPath: string,
-  site: SiteConfig,
+  userConfig: UserConfig,
 ): Promise<Page> {
   if (entry.isFile && entry.name !== INDEX_FILENAME) {
     const relPath = relative(inputPath, entry.path);
@@ -131,14 +131,14 @@ export async function generatePage(
       text: body,
       currentPath: relPath,
       isIndex,
-      baseUrl: new URL(site.url),
+      baseUrl: new URL(userConfig.site.url),
     });
     const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
     const title = attrs.getTitle(pageAttrs) ||
       getTitleFromHeadings(headings) || getTitleFromFilename(relPath);
     const description = attrs.getDescription(pageAttrs) || "";
     const tags = attrs.getTags(pageAttrs);
-    const url = new URL(join(dirname(relPath), slug), site.url);
+    const url = new URL(join(dirname(relPath), slug), userConfig.site.url);
 
     return {
       attrs: pageAttrs,
@@ -167,13 +167,13 @@ export async function generatePage(
       text: body,
       currentPath: relPath,
       isIndex,
-      baseUrl: new URL(site.url),
+      baseUrl: new URL(userConfig.site.url),
     });
     const title = attrs.getTitle(pageAttrs) || getTitleFromHeadings(headings) ||
       name;
     const description = attrs.getDescription(pageAttrs) || "";
     const tags = attrs.getTags(pageAttrs);
-    const url = new URL(join(dirname(relPath), slug), site.url);
+    const url = new URL(join(dirname(relPath), slug), userConfig.site.url);
 
     return {
       attrs: pageAttrs,
@@ -191,7 +191,7 @@ export async function generatePage(
     const relPath = relative(inputPath, entry.path) || ".";
     const slug = relPath === "." ? "." : slugify(entry.name);
     const isIndex = true;
-    const url = new URL(join(dirname(relPath), slug), site.url);
+    const url = new URL(join(dirname(relPath), slug), userConfig.site.url);
 
     return {
       title: entry.name,
@@ -201,20 +201,4 @@ export async function generatePage(
       links: [],
     };
   } else return Promise.reject();
-}
-
-async function _getLastCommitDate(path: string): Promise<Date | undefined> {
-  const opts: Deno.RunOptions = {
-    cmd: ["git", "log", "-1", "--format=%as", "--", path],
-    stdout: "piped",
-    stderr: "piped",
-  };
-
-  const process = Deno.run(opts);
-  const { success } = await process.status();
-
-  if (success) {
-    const timestamp = Date.parse(decoder.decode(await process.output()));
-    if (!isNaN(timestamp)) return new Date(timestamp);
-  }
 }

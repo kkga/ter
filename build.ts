@@ -1,7 +1,7 @@
 import { basename, dirname, join } from "./deps.ts";
 import { compile, configure, render, templates } from "./deps.ts";
 import { Page } from "./pages.ts";
-import { SiteConfig } from "./config.ts";
+import { UserConfig } from "./config.ts";
 import { hasKey } from "./attributes.ts";
 
 configure({ autotrim: true });
@@ -21,7 +21,7 @@ interface PageOpts {
   taggedPages: { [tag: string]: Array<Page> };
   childTags: Array<string>;
   view: string;
-  siteConf: SiteConfig;
+  userConfig: UserConfig;
   style: string;
 }
 
@@ -30,7 +30,7 @@ interface TagPageOpts {
   includeRefresh: boolean;
   taggedPages: Array<Page>;
   view: string;
-  siteConf: SiteConfig;
+  userConfig: UserConfig;
   style: string;
 }
 
@@ -61,12 +61,10 @@ function generateBreadcrumbs(
     };
   });
 
-  if (currentPage.url.pathname !== "/") {
-    breadcrumbs = [
-      { slug: homeSlug ?? "index", url: "/", current: false },
-      ...breadcrumbs,
-    ];
-  }
+  breadcrumbs = [
+    { slug: homeSlug ?? "index", url: "/", current: false },
+    ...breadcrumbs,
+  ];
 
   if (slug !== "") {
     breadcrumbs = [
@@ -82,7 +80,7 @@ export async function buildPage(
   page: Page,
   opts: PageOpts,
 ): Promise<string | void> {
-  const breadcrumbs = generateBreadcrumbs(page, opts.siteConf.rootName);
+  const breadcrumbs = generateBreadcrumbs(page, opts.userConfig.site.rootName);
   const backlinkPages = sortPages(opts.backlinkPages);
   const childPages = sortPages(opts.childPages);
   const useLogLayout = hasKey(page.attrs, ["log"]) && page.attrs?.log === true;
@@ -109,7 +107,9 @@ export async function buildPage(
     backlinkPages,
     pagesByTag: taggedPages,
     childTags: opts.childTags,
-    site: opts.siteConf,
+    site: opts.userConfig.site,
+    author: opts.userConfig.author,
+    navigation: opts.userConfig.navigation,
     style: opts.style,
     includeRefresh: opts.includeRefresh,
   });
@@ -133,7 +133,9 @@ export async function buildTagPage(
     tagName,
     breadcrumbs,
     childPages: sortPages(opts.taggedPages),
-    site: opts.siteConf,
+    site: opts.userConfig.site,
+    author: opts.userConfig.author,
+    navigation: opts.userConfig.navigation,
     style: opts.style,
     includeRefresh: opts.includeRefresh,
   });
@@ -143,11 +145,12 @@ export async function buildTagPage(
 export async function buildFeed(
   pages: Array<Page>,
   view: string,
-  siteConf: SiteConfig,
+  userConfig: UserConfig,
 ): Promise<string | void> {
   const result = await render(view, {
     pages,
-    site: siteConf,
+    site: userConfig.site,
+    author: userConfig.author,
   });
   return result;
 }

@@ -55,7 +55,6 @@ async function getRemoteAsset(url: URL) {
 
 async function generateSite(config: BuildConfig, includeRefresh: boolean) {
   const {
-    inputPath,
     outputPath,
     pageView,
     feedView,
@@ -63,23 +62,24 @@ async function generateSite(config: BuildConfig, includeRefresh: boolean) {
     viewsPath,
     ignoreKeys,
     staticExts,
-    site: siteConf,
+    userConfig,
   } = config;
 
   const START = performance.now();
 
-  console.log(`scan\t${inputPath}`);
+  console.log(`scan\t${config.inputPath}`);
   const [contentEntries, staticEntries] = await Promise.all([
-    entries.getContentEntries(inputPath),
-    entries.getStaticEntries(inputPath, outputPath, staticExts),
+    entries.getContentEntries(config.inputPath),
+    entries.getStaticEntries(config.inputPath, outputPath, staticExts),
   ]);
 
   const headInclude = await getHeadInclude(viewsPath) ?? "";
 
   const pages: Page[] = [];
   for (const entry of contentEntries) {
-    config.quiet || console.log(`render\t${relative(inputPath, entry.path)}`);
-    const page = await generatePage(entry, inputPath, siteConf).catch(
+    config.quiet ||
+      console.log(`render\t${relative(config.inputPath, entry.path)}`);
+    const page = await generatePage(entry, config.inputPath, userConfig).catch(
       (reason: string) => {
         console.log(`Can not render ${entry.path}\n\t${reason}`);
       },
@@ -104,7 +104,7 @@ async function generateSite(config: BuildConfig, includeRefresh: boolean) {
       view: pageView,
       head: headInclude,
       includeRefresh,
-      conf: siteConf,
+      userConfig,
       style,
     }),
 
@@ -113,12 +113,12 @@ async function generateSite(config: BuildConfig, includeRefresh: boolean) {
       view: pageView,
       head: headInclude,
       includeRefresh,
-      conf: siteConf,
+      userConfig,
       style,
     }),
 
-    getStaticFiles(staticEntries, inputPath, outputPath),
-    buildFeedFile(pages, feedView, join(outputPath, "feed.xml"), siteConf),
+    getStaticFiles(staticEntries, config.inputPath, outputPath),
+    buildFeedFile(pages, feedView, join(outputPath, "feed.xml"), userConfig),
   ]);
 
   await emptyDir(outputPath);
@@ -164,7 +164,7 @@ async function main(args: string[]) {
     boolean: ["serve", "help", "quiet", "local", "drafts"],
     string: ["config", "input", "output", "port"],
     default: {
-      config: ".ter/config.yml",
+      config: ".ter/ter.json",
       input: ".",
       output: "_site",
       serve: false,

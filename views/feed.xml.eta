@@ -7,8 +7,8 @@
 	<updated><%= it.pages[0].date %></updated>
 	<id><%= it.site.url %></id>
 	<author>
-		<name><%= it.site.author.name %></name>
-		<email><%= it.site.author.email %></email>
+		<name><%= it.author.name %></name>
+		<email><%= it.author.email %></email>
 	</author>
 
     <% it.pages.forEach(({ path, title, date, html }) => { %>
