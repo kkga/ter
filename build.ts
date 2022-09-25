@@ -80,7 +80,7 @@ export async function buildPage(
   page: Page,
   opts: PageOpts,
 ): Promise<string | void> {
-  const crumbs = generateCrumbs(page, opts.userConfig.site.rootName);
+  const crumbs = generateCrumbs(page, opts.userConfig.site.rootCrumb);
   const backlinkPages = sortPages(opts.backlinkPages);
   const childPages = sortPages(opts.childPages);
   const useLogLayout = hasKey(page.attrs, ["log"]) && page.attrs?.log === true;

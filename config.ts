@@ -6,8 +6,8 @@ export interface UserConfig {
   site: {
     title: string;
     description: string;
-    rootName: string;
     url: string;
+    rootCrumb: string;
   };
   navigation: Record<string, string>;
   author: { name: string; email: string; url: string };
@@ -32,9 +32,9 @@ export interface BuildConfig {
 const defaultUserConfig: UserConfig = {
   site: {
     title: "Your Blog Name",
-    rootName: "index",
     description: "I am writing about my experiences as a naval navel-gazer",
     url: "https://example.com/",
+    rootCrumb: "index",
   },
   navigation: {},
   author: {
