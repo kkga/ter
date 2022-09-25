@@ -4,8 +4,7 @@ A tiny wiki engine with [Zettelkasten](zettelkasten.md) flavor.
 
 Ter takes a folder of markdown files and replicates its structure into a static
 site with automatically [indexed](usage/overview#index-pages) directories,
-[backlinks](usage/overview#backlinks) and
-[breadcrumbs](usage/overview#breadcrumbs).
+[backlinks](usage/overview#backlinks) and [crumbs](usage/overview#crumbs).
 
 ### Some quick links
 
