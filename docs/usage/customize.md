@@ -2,7 +2,14 @@
 description: Customize templates and styles
 ---
 
-### Note
+# Customize
+
+Ter should work out of the box with zero configuration needed to get a decent
+output. However, it's possible to customize various aspects of the rendered
+website.
+
+<details open>
+<summary>Important note</summary>
 
 The following customization options are outdated as Ter currently automatically
 fetches its default template and styles from the Deno module URL.
@@ -12,13 +19,7 @@ avoid potentially having outdated templates/styles. Simplicity > customization.
 
 I might add an option to use local assets in future.
 
----
-
-# Customize
-
-Ter should work out of the box with zero configuration needed to get a decent
-output. However, it's possible to customize various aspects of the rendered
-website.
+</details>
 
 ## Styles
 
