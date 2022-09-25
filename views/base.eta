@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <%
 const {
-  breadcrumbs, childPages, childTags, backlinkPages, pagesByTag,
+  crumbs, childPages, childTags, backlinkPages, pagesByTag,
   toc, indexLayout, page, site, includeRefresh, style, navigation,
 } = it;
 
@@ -58,9 +58,9 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
     <header>
 
       <div style="display: flex; justify-content: space-between; gap: 32px">
-        <nav aria-label="breadcrumbs">
+        <nav aria-label="crumbs">
           <ol>
-            <% breadcrumbs.forEach((crumb) => { %>
+            <% crumbs.forEach((crumb) => { %>
               <li>
                 <% if (crumb.url !== "") { %>
                 <a href="<%= crumb.url %>"><%= crumb.slug %></a>
