@@ -5,7 +5,8 @@
     "url": "https://ter.kkga.me/"
   },
   "navigation": {
-    "Usage": "/usage"
+    "Usage": "/usage",
+    "Source code": "https://github.com/kkga/ter"
   },
   "author": {
     "name": "Gadzhi Kharkharov",
