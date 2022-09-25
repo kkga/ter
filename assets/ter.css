@@ -192,6 +192,13 @@ body > :is(header, main, aside, footer) {
 dt {
   font-weight: var(--font-weight-m);
 }
+dd {
+  margin-left: 0;
+}
+dd::before {
+  content: "↳ ";
+  color: var(--color-text-tertiary);
+}
 
 hr {
   border: 0;
