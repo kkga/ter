@@ -4,32 +4,32 @@ toc: true
 
 # Overview
 
-## Site configuration
+## Configuration
 
-Before building, Ter checks for configuration file at `.ter/config.yml`. If it
+Before building, Ter checks for configuration file at `.ter/config.json`. If it
 doesn't exist, an example configuration file will be initialized before
 building.
 
-At the moment, the following configuration options are available:
+### Example
 
-```yaml
-# Site title: used in HTML title tags and in feeds
-title: Ter
-
-# Site description: used in HTML description tags and in feeds
-description: A tiny wiki-style site builder with Zettelkasten flavor.
-
-# Root name: used for root breadcrumb label
-rootName: index
-
-# URL: used in feed
-url: https://ter.kkga.me/
-
-# Author name: used in feeds
-author:
-  name: Gadzhi Kharkharov
-  email: x@kkga.me
-  url: https://kkga.me
+```json
+{
+  "site": {
+    "title": "Your Blog Name",
+    "description": "I am writing about my experiences as a naval navel-gazer",
+    "url": "https://example.com/",
+    "rootCrumb": "index"
+  },
+  "author": {
+    "name": "Your Name Here",
+    "email": "youremailaddress@example.com",
+    "url": "https://example.com/about-me/"
+  },
+  "navigation": {
+    "about": "/about",
+    "contact": "/contact"
+  }
+}
 ```
 
 ## Index pages
