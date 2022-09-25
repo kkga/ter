@@ -6,7 +6,7 @@ import { hasKey } from "./attributes.ts";
 
 configure({ autotrim: true });
 
-interface Breadcrumb {
+interface Crumb {
   slug: string;
   url: string;
   current: boolean;
@@ -43,15 +43,15 @@ const sortPages = (pages: Page[]): Page[] =>
     .sort((page) => page.isIndex ? -1 : 0)
     .sort((page) => hasKey(page.attrs, ["pinned"]) ? -1 : 0);
 
-function generateBreadcrumbs(
+function generateCrumbs(
   currentPage: Page,
   homeSlug?: string,
-): Array<Breadcrumb> {
+): Array<Crumb> {
   const dir = dirname(currentPage.url.pathname);
   const chunks: string[] = dir.split("/").filter((ch: string) => !!ch);
   const slug = basename(currentPage.url.pathname);
 
-  let breadcrumbs: Array<Breadcrumb> = chunks.map((chunk, i) => {
+  let crumbs: Array<Crumb> = chunks.map((chunk, i) => {
     const slug = chunk;
     const url = join("/", ...chunks.slice(0, i + 1));
     return {
@@ -61,26 +61,26 @@ function generateBreadcrumbs(
     };
   });
 
-  breadcrumbs = [
+  crumbs = [
     { slug: homeSlug ?? "index", url: "/", current: false },
-    ...breadcrumbs,
+    ...crumbs,
   ];
 
   if (slug !== "") {
-    breadcrumbs = [
-      ...breadcrumbs,
+    crumbs = [
+      ...crumbs,
       { slug, url: "", current: true },
     ];
   }
 
-  return breadcrumbs;
+  return crumbs;
 }
 
 export async function buildPage(
   page: Page,
   opts: PageOpts,
 ): Promise<string | void> {
-  const breadcrumbs = generateBreadcrumbs(page, opts.userConfig.site.rootName);
+  const crumbs = generateCrumbs(page, opts.userConfig.site.rootName);
   const backlinkPages = sortPages(opts.backlinkPages);
   const childPages = sortPages(opts.childPages);
   const useLogLayout = hasKey(page.attrs, ["log"]) && page.attrs?.log === true;
@@ -102,7 +102,7 @@ export async function buildPage(
     page,
     indexLayout: useLogLayout ? "log" : "default",
     toc: showToc,
-    breadcrumbs,
+    crumbs,
     childPages,
     backlinkPages,
     pagesByTag: taggedPages,
@@ -120,7 +120,7 @@ export async function buildTagPage(
   opts: TagPageOpts,
 ): Promise<string | void> {
   templates.define("head", compile(opts.headInclude));
-  const breadcrumbs: Array<Breadcrumb> = [
+  const crumbs: Array<Crumb> = [
     { slug: "index", url: "/", current: false },
     { slug: `#${tagName}`, url: "", current: true, isTag: true },
   ];
@@ -131,7 +131,7 @@ export async function buildTagPage(
       description: `Pages tagged #${tagName}`,
     },
     tagName,
-    breadcrumbs,
+    crumbs,
     childPages: sortPages(opts.taggedPages),
     site: opts.userConfig.site,
     author: opts.userConfig.author,

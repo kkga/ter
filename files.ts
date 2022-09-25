@@ -167,7 +167,6 @@ export async function writeFiles(
   files: OutputFile[],
   quiet = false,
 ) {
-  quiet && console.log(`writing files...`);
   for (const file of files) {
     if (file.fileContent) {
       quiet ||
@@ -182,7 +181,6 @@ export async function copyFiles(
   files: OutputFile[],
   quiet = false,
 ) {
-  quiet && console.log(`copying files...`);
   for (const file of files) {
     if (file.inputPath) {
       quiet ||

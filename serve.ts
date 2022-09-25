@@ -1,12 +1,12 @@
 import { join, relative } from "./deps.ts";
 import { readableStreamFromReader } from "./deps.ts";
 import { serve as httpServe } from "./deps.ts";
-import { TerConfig } from "./config.ts";
+import { BuildConfig } from "./config.ts";
 import { RE_HIDDEN_OR_UNDERSCORED } from "./entries.ts";
 
 interface WatchOpts {
-  config: TerConfig;
-  runner: (config: TerConfig, includeRefresh: true) => Promise<void>;
+  config: BuildConfig;
+  runner: (config: BuildConfig, includeRefresh: true) => Promise<void>;
 }
 
 interface ServeOpts extends WatchOpts {
@@ -18,8 +18,8 @@ const sockets: Set<WebSocket> = new Set();
 let servePath: string;
 
 async function watch(opts: WatchOpts) {
-  // TODO: watch for source ts changes in dev
   const watcher = Deno.watchFs(opts.config.inputPath);
+  const quietConfig = { ...opts.config, quiet: true };
   let timer = 0;
 
   eventLoop:
@@ -30,8 +30,6 @@ async function watch(opts: WatchOpts) {
 
     for (const eventPath of event.paths) {
       if (
-        // TODO: find a better way to filter events as this implementation
-        // doesn't refresh on changes to ter views/css
         eventPath.match(RE_HIDDEN_OR_UNDERSCORED) ||
         !relative(opts.config.outputPath, eventPath).startsWith("..")
       ) {
@@ -39,11 +37,12 @@ async function watch(opts: WatchOpts) {
       }
     }
 
-    console.log(`---\n[${event.kind}]\t${event.paths}\n---`);
-    await opts.runner(opts.config, true);
+    console.log(
+      `>>> ${event.kind}: ${relative(opts.config.inputPath, event.paths[0])}`,
+    );
+    await opts.runner(quietConfig, true);
 
     sockets.forEach((socket) => {
-      console.log(`---\nRefreshing...`);
       clearTimeout(timer);
       timer = setTimeout(() => socket.send("refresh"), 100);
     });
@@ -83,11 +82,15 @@ async function requestHandler(request: Request) {
     }
   } catch {
     // TODO: serve the 404.html
-    return new Response("404 Not Found", { status: 404 });
+    const resp = new Response("404 Not Found", { status: 404 });
+    console.log(`[${resp.status}]\t${url.pathname}`);
+    return resp;
   }
 
   const readableStream = readableStreamFromReader(file);
-  return new Response(readableStream);
+  const resp = new Response(readableStream);
+  console.log(`[${resp.status}]\t${url.pathname}`);
+  return resp;
 }
 
 export function serve(opts: ServeOpts) {

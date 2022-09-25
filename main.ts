@@ -3,14 +3,16 @@ import { emptyDir } from "./deps.ts";
 import { join, relative, toFileUrl } from "./deps.ts";
 import { withTrailingSlash } from "./deps.ts";
 
-import * as entries from "./entries.ts";
+import { getContentEntries, getStaticEntries } from "./entries.ts";
+
 import {
   generatePage,
   getAllTags,
   getPagesByTag,
   isDeadLink,
+  Page,
+  TagPage,
 } from "./pages.ts";
-import type { Page, TagPage } from "./pages.ts";
 
 import {
   buildContentFiles,
@@ -24,6 +26,12 @@ import {
 import { BuildConfig, createConfig } from "./config.ts";
 import { serve } from "./serve.ts";
 import { hasKey } from "./attributes.ts";
+
+interface BuildStats {
+  pageFiles: number;
+  staticFiles: number;
+  buildMillisecs: number;
+}
 
 const MOD_URL = new URL("https://deno.land/x/ter/");
 const BASE_VIEW_PATH = "views/base.eta";
@@ -42,7 +50,7 @@ async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
 
 async function getRemoteAsset(url: URL) {
   const fileResponse = await fetch(url.toString()).catch((err) => {
-    console.log(`Can't fetch file: ${url}, Error: ${err}`);
+    console.error(`Error fetching file: ${url}, ${err}`);
     Deno.exit(1);
   });
   if (fileResponse.ok && fileResponse.body) {
@@ -67,10 +75,10 @@ async function generateSite(config: BuildConfig, includeRefresh: boolean) {
 
   const START = performance.now();
 
-  console.log(`scan\t${config.inputPath}`);
+  config.quiet || console.log(`scan\t${config.inputPath}`);
   const [contentEntries, staticEntries] = await Promise.all([
-    entries.getContentEntries(config.inputPath),
-    entries.getStaticEntries(config.inputPath, outputPath, staticExts),
+    getContentEntries(config.inputPath),
+    getStaticEntries(config.inputPath, outputPath, staticExts),
   ]);
 
   const headInclude = await getHeadInclude(viewsPath) ?? "";
@@ -131,7 +139,6 @@ async function generateSite(config: BuildConfig, includeRefresh: boolean) {
 
   const END = performance.now();
   const BUILD_SECS = (END - START);
-  const totalFiles = contentFiles.length + tagFiles.length;
 
   const deadLinks: [from: URL, to: URL][] = [];
   for (const page of pages) {
@@ -153,16 +160,23 @@ async function generateSite(config: BuildConfig, includeRefresh: boolean) {
     });
   }
 
-  console.log("---");
-  console.log(`${totalFiles} pages`);
-  console.log(`${staticFiles.length} static files`);
-  console.log(`Done in ${Math.floor(BUILD_SECS)}ms`);
+  if (!config.quiet) {
+    const stats: BuildStats = {
+      pageFiles: contentFiles.length + tagFiles.length,
+      staticFiles: staticFiles.length,
+      buildMillisecs: Math.floor(BUILD_SECS),
+    };
+
+    console.log(
+      `---\n${stats.pageFiles} pages\n${stats.staticFiles} static files\nDone in ${stats.buildMillisecs}ms`,
+    );
+  }
 }
 
 async function main(args: string[]) {
   const flags = parseFlags(args, {
     boolean: ["serve", "help", "quiet", "local", "drafts"],
-    string: ["config", "input", "output", "port"],
+    string: ["config", "input", "output", "port", "modurl"],
     default: {
       config: ".ter/ter.json",
       input: ".",
@@ -172,6 +186,7 @@ async function main(args: string[]) {
       quiet: false,
       local: false,
       drafts: false,
+      modurl: "",
     },
   });
 
@@ -181,7 +196,9 @@ async function main(args: string[]) {
   }
 
   const moduleUrl = withTrailingSlash(
-    flags.local ? toFileUrl(Deno.cwd()).toString() : MOD_URL.toString(),
+    flags.local
+      ? toFileUrl(flags.modurl ? flags.modurl : Deno.cwd()).toString()
+      : MOD_URL.toString(),
   );
 
   const [pageView, baseStyle, feedView] = await Promise.all([
@@ -220,6 +237,7 @@ OPTIONS:
   --input\t\tSource directory (default: .)
   --output\t\tOutput directory (default: _site)
   --config\t\tPath to config file (default: .ter/config.yml)
+  --local\t\tUse local assets (default: false)
   --serve\t\tServe locally and watch for changes (default: false)
   --port\t\tServe port (default: 8080)
   --drafts\t\tRender pages marked as drafts (default: false)
