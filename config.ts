@@ -44,7 +44,7 @@ const defaultUserConfig: UserConfig = {
   },
 };
 
-const defaultConfig: BuildConfig = {
+const defaultBuildConfig: BuildConfig = {
   inputPath: Deno.cwd(),
   outputPath: "_site",
   assetsPath: ".ter/assets",
@@ -81,15 +81,6 @@ async function initUserConfig(config: UserConfig, configPath: string) {
   await Deno.writeTextFile(configPath, JSON.stringify(config, null, 2));
 }
 
-async function parseUserConfig(path: string): Promise<UserConfig | undefined> {
-  try {
-    return JSON.parse(await Deno.readTextFile(path));
-  } catch {
-    console.error("Can't parse config");
-    return undefined;
-  }
-}
-
 interface CreateConfigOpts {
   configPath: string | undefined;
   inputPath: string | undefined;
@@ -104,7 +95,7 @@ interface CreateConfigOpts {
 export async function createConfig(
   opts: CreateConfigOpts,
 ): Promise<BuildConfig> {
-  const conf = defaultConfig;
+  const conf = defaultBuildConfig;
 
   if (opts.configPath && opts.configPath != "") {
     conf.userConfigPath = isAbsolute(opts.configPath)
@@ -138,15 +129,13 @@ export async function createConfig(
       await initUserConfig(conf.userConfig, conf.userConfigPath);
     });
 
-  const parsedConf = await parseUserConfig(conf.userConfigPath);
-  // console.log(parsedConf);
-
-  if (parsedConf) {
+  try {
+    const parsedConf = JSON.parse(await Deno.readTextFile(conf.userConfigPath));
     conf.userConfig = deepmerge(conf.userConfig, parsedConf);
+  } catch {
+    console.error("Configuration file error in", conf.userConfigPath);
+    Deno.exit(1);
   }
-
-  console.log(conf);
-  // Deno.exit();
 
   return conf;
 }
