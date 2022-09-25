@@ -20,10 +20,7 @@ export {
   toFileUrl,
 } from "https://deno.land/std@0.157.0/path/mod.ts";
 
-export {
-  readableStreamFromReader,
-  writableStreamFromWriter,
-} from "https://deno.land/std@0.157.0/streams/mod.ts";
+export { readableStreamFromReader } from "https://deno.land/std@0.157.0/streams/mod.ts";
 
 export { serve } from "https://deno.land/std@0.157.0/http/server.ts";
 

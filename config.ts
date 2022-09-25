@@ -77,11 +77,8 @@ async function checkUserConfig(path: string): Promise<boolean> {
 }
 
 async function initUserConfig(config: UserConfig, configPath: string) {
-  // const json = stringify(
-  //   config as unknown as Record<string, unknown>,
-  // );
   await ensureDir(dirname(configPath));
-  await Deno.writeTextFile(configPath, JSON.stringify(config));
+  await Deno.writeTextFile(configPath, JSON.stringify(config, null, 2));
 }
 
 async function parseUserConfig(path: string): Promise<UserConfig | undefined> {
