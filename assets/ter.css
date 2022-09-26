@@ -184,6 +184,10 @@ small {
   color: var(--color-text-secondary);
 }
 
+del {
+  color: var(--color-text-tertiary);
+}
+
 :is(h1, h2, h3, h4, h5, h6) + * {
   margin-top: 0;
 }
@@ -459,6 +463,10 @@ body > header nav[aria-label="navigation"] ol li:not(:first-child)::before {
   content: "·";
   margin: 0 0.5em;
   color: var(--color-text-tertiary);
+}
+
+body > header ul.header-tags li {
+  margin-right: 0.5em;
 }
 
 article > header :is(h1, h2, h3, h4, h5, h6) {

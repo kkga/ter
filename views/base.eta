@@ -95,7 +95,7 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
         <% if (date && (tags && tags.length > 0)) { %>
         &middot;
         <% } %>
-        <ul>
+        <ul class="header-tags">
           <% tags.forEach((tag) => { %>
           <li><a href="<%= `/tag/${tag}` %>">#<%~ tag %></a></li>
           <% }) %>
