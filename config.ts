@@ -52,7 +52,7 @@ const defaultBuildConfig: BuildConfig = {
   pageView: "",
   feedView: "",
   style: "",
-  userConfigPath: ".ter/config.yml",
+  userConfigPath: ".ter/config.json",
   ignoreKeys: ["draft"],
   staticExts: [
     "png",

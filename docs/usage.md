@@ -50,7 +50,7 @@ USAGE:
 OPTIONS:
   --input     Source directory (default: .)
   --output    Output directory (default: _site)
-  --config    Path to config file (default: .ter/config.yml)
+  --config    Path to config file (default: .ter/config.json)
   --serve     Serve locally and watch for changes (default: false)
   --port      Serve port (default: 8080)
   --drafts    Render pages marked as drafts (default: false)

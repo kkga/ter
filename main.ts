@@ -178,7 +178,7 @@ async function main(args: string[]) {
     boolean: ["serve", "help", "quiet", "local", "drafts"],
     string: ["config", "input", "output", "port", "modurl"],
     default: {
-      config: ".ter/ter.json",
+      config: ".ter/config.json",
       input: ".",
       output: "_site",
       serve: false,
@@ -236,7 +236,7 @@ USAGE:
 OPTIONS:
   --input\t\tSource directory (default: .)
   --output\t\tOutput directory (default: _site)
-  --config\t\tPath to config file (default: .ter/config.yml)
+  --config\t\tPath to config file (default: .ter/config.json)
   --local\t\tUse local assets (default: false)
   --serve\t\tServe locally and watch for changes (default: false)
   --port\t\tServe port (default: 8080)
