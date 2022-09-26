@@ -1,5 +1,6 @@
 ---
 description: Note-taking system
+date: 2022-09-25
 ---
 
 # Zettelkasten

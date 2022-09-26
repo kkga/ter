@@ -1,5 +1,6 @@
 ---
 description: See if Ter works for you
+date: 2022-09-25
 ---
 
 # Goals

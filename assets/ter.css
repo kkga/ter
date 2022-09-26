@@ -156,16 +156,19 @@ h3 {
 
 h4 {
   font-size: var(--font-size-base);
+  margin-bottom: 0;
 }
 
 h5 {
   font-size: var(--font-size-s);
+  margin-bottom: 0;
 }
 
 h6 {
   font-size: var(--font-size-xs);
   text-transform: uppercase;
   letter-spacing: normal;
+  margin-bottom: 0;
 }
 
 h1:first-child,
@@ -342,7 +345,6 @@ details {
 
 details[open] {
   color: var(--color-text-secondary);
-  padding-bottom: 1rem;
 }
 
 summary {
