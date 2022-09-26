@@ -495,6 +495,7 @@ aside section h6 {
   display: flex;
   gap: 4px;
   align-items: baseline;
+  color: inherit;
 }
 
 aside section h6 a {
@@ -536,11 +537,14 @@ aside time {
 
 body > footer {
   margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
   font-size: var(--font-size-xs);
   color: var(--color-text-tertiary);
 }
 
-footer:not(:hover) a {
+footer a {
   color: currentColor;
 }
 

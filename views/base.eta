@@ -3,6 +3,7 @@
 const {
   crumbs, childPages, childTags, backlinkPages, pagesByTag,
   toc, indexLayout, page, site, includeRefresh, style, navigation,
+  author
 } = it;
 
 const { title, description, date, tags, headings, html } = page;
@@ -23,6 +24,7 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
     <meta property="og:description" content="<%= description ? description : site.description %>">
     <meta property="og:url" content="<%= site.url %>">
     <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+    <link rel="alternate" type="application/atom+xml" href="/feed.xml" title="<%= site.title %>" />
     <%~ include("head") %>
     <style><%_~ style _%></style>
   </head>
@@ -244,7 +246,12 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
       <% }) %>
     </aside>
 
-    <footer>Made with <a href="https://github.com/kkga/ter">Ter</a>.</footer>
+    <footer>
+      <span>
+        <%= author.name %>. Made with <a href="https://github.com/kkga/ter">Ter</a>.
+      </span>
+      <a href="/feed.xml">Feed</a>
+      </footer>
 
   </body>
 </html>
