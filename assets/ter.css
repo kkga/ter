@@ -132,7 +132,7 @@ h5,
 h6 {
   font-size: var(--font-size-base);
   letter-spacing: var(--leading-tight);
-  font-weight: var(--font-weight-b);
+  font-weight: var(--font-weight-sb);
   margin-top: 1.5em;
   margin-bottom: 0.5em;
 }
@@ -147,6 +147,25 @@ h1 {
 h2 {
   font-size: var(--font-size-l);
   line-height: var(--line-height-subhead);
+  margin-bottom: 0.75em;
+}
+
+h3 {
+  font-size: var(--font-size-m);
+}
+
+h4 {
+  font-size: var(--font-size-base);
+}
+
+h5 {
+  font-size: var(--font-size-s);
+}
+
+h6 {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: normal;
 }
 
 h1:first-child,
@@ -224,10 +243,6 @@ a[rel~="external"] {
 /* /link */
 
 /* header anchor */
-:is(h2, h3, h4, h5, h6) {
-  position: relative;
-}
-
 :is(h2, h3, h4, h5, h6) a.anchor {
   line-height: inherit;
   opacity: 0;
@@ -338,6 +353,16 @@ details[open] > *:last-child {
   margin-bottom: 0;
 }
 /* /details */
+
+/* table of contents */
+.toc {
+  margin-bottom: 2rem;
+  padding: 1.25ch;
+  border-radius: 0.25em;
+  background-color: var(--color-bg-container);
+}
+
+/* /table of contents */
 
 /* list */
 ul,
