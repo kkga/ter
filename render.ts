@@ -139,7 +139,7 @@ export function render(
   renderer.code = (code: string, lang: string): string => {
     const language = hljs.getLanguage(lang) ? lang : "plaintext";
     const html = hljs.highlight(code, { language }).value;
-    return `<div class="hljs language-${language}"><pre>${html}</pre></div>`;
+    return `<pre class="hljs language-${language}">${html}</pre>`;
   };
 
   marked.use({
