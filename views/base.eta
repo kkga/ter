@@ -248,7 +248,7 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
 
     <footer>
       <span>
-        <%= author.name %>. Made with <a href="https://github.com/kkga/ter">Ter</a>.
+        Made with <a href="https://github.com/kkga/ter">Ter</a>.
       </span>
       <a href="/feed.xml">Feed</a>
       </footer>
