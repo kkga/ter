@@ -28,6 +28,7 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
   </head>
 
   <body>
+
     <% if (includeRefresh) { %>
     <script>
       ((l) => {
@@ -55,8 +56,8 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
       })(location);
     </script>
     <% } %>
-    <header>
 
+    <header>
       <div style="display: flex; justify-content: space-between; gap: 32px">
         <nav aria-label="crumbs">
           <ol>
@@ -107,9 +108,9 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
 
     <main>
       <% if (toc && filteredHeadings?.length > 0) { %>
-      <details style="margin-bottom: 2rem">
+      <details class="toc">
         <summary>Contents</summary>
-        <ul>
+        <ul class="toc-list">
           <% filteredHeadings.forEach((h, i) => { %>
             <% if (h.level === 2) { %>
             <li>
