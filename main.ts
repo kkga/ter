@@ -27,6 +27,12 @@ import { BuildConfig, createConfig } from "./config.ts";
 import { serve } from "./serve.ts";
 import { hasKey } from "./attributes.ts";
 
+export interface GenerateSiteOpts {
+  config: BuildConfig;
+  quiet: boolean;
+  includeRefresh: boolean;
+}
+
 interface BuildStats {
   pageFiles: number;
   staticFiles: number;
@@ -61,8 +67,9 @@ async function getRemoteAsset(url: URL) {
   }
 }
 
-async function generateSite(config: BuildConfig, includeRefresh: boolean) {
+async function generateSite(opts: GenerateSiteOpts) {
   const {
+    inputPath,
     outputPath,
     pageView,
     feedView,
@@ -71,29 +78,29 @@ async function generateSite(config: BuildConfig, includeRefresh: boolean) {
     ignoreKeys,
     staticExts,
     userConfig,
-  } = config;
+    renderDrafts,
+  } = opts.config;
 
   const START = performance.now();
 
-  config.quiet || console.log(`scan\t${config.inputPath}`);
+  opts.quiet || console.log(`scan\t${inputPath}`);
   const [contentEntries, staticEntries] = await Promise.all([
-    getContentEntries(config.inputPath),
-    getStaticEntries(config.inputPath, outputPath, staticExts),
+    getContentEntries(inputPath),
+    getStaticEntries(inputPath, outputPath, staticExts),
   ]);
 
   const headInclude = await getHeadInclude(viewsPath) ?? "";
 
   const pages: Page[] = [];
   for (const entry of contentEntries) {
-    config.quiet ||
-      console.log(`render\t${relative(config.inputPath, entry.path)}`);
-    const page = await generatePage(entry, config.inputPath, userConfig).catch(
+    opts.quiet || console.log(`render\t${relative(inputPath, entry.path)}`);
+    const page = await generatePage(entry, inputPath, userConfig).catch(
       (reason: string) => {
         console.log(`Can not render ${entry.path}\n\t${reason}`);
       },
     );
 
-    if (config.renderDrafts) {
+    if (renderDrafts) {
       page && pages.push(page);
     } else {
       page && !hasKey(page.attrs, ignoreKeys) && pages.push(page);
@@ -111,7 +118,7 @@ async function generateSite(config: BuildConfig, includeRefresh: boolean) {
       outputPath,
       view: pageView,
       head: headInclude,
-      includeRefresh,
+      includeRefresh: opts.includeRefresh,
       userConfig,
       style,
     }),
@@ -120,18 +127,18 @@ async function generateSite(config: BuildConfig, includeRefresh: boolean) {
       outputPath,
       view: pageView,
       head: headInclude,
-      includeRefresh,
+      includeRefresh: opts.includeRefresh,
       userConfig,
       style,
     }),
 
-    getStaticFiles(staticEntries, config.inputPath, outputPath),
+    getStaticFiles(staticEntries, inputPath, outputPath),
     buildFeedFile(pages, feedView, join(outputPath, "feed.xml"), userConfig),
   ]);
 
   await emptyDir(outputPath);
-  await writeFiles([...contentFiles, ...tagFiles], config.quiet);
-  await copyFiles(staticFiles, config.quiet);
+  await writeFiles([...contentFiles, ...tagFiles], opts.quiet);
+  await copyFiles(staticFiles, opts.quiet);
 
   if (feedFile && feedFile.fileContent) {
     await Deno.writeTextFile(feedFile.filePath, feedFile.fileContent);
@@ -160,7 +167,7 @@ async function generateSite(config: BuildConfig, includeRefresh: boolean) {
     });
   }
 
-  if (!config.quiet) {
+  if (!opts.quiet) {
     const stats: BuildStats = {
       pageFiles: contentFiles.length + tagFiles.length,
       staticFiles: staticFiles.length,
@@ -177,17 +184,6 @@ async function main(args: string[]) {
   const flags = parseFlags(args, {
     boolean: ["serve", "help", "quiet", "local", "drafts"],
     string: ["config", "input", "output", "port", "modurl"],
-    default: {
-      config: ".ter/config.json",
-      input: ".",
-      output: "_site",
-      serve: false,
-      port: 8080,
-      quiet: false,
-      local: false,
-      drafts: false,
-      modurl: "",
-    },
   });
 
   if (flags.help) {
@@ -211,18 +207,21 @@ async function main(args: string[]) {
     configPath: flags.config,
     inputPath: flags.input,
     outputPath: flags.output,
-    quiet: flags.quiet,
     renderDrafts: flags.drafts,
     pageView: pageView,
     feedView: feedView,
     style: baseStyle,
   });
 
-  await generateSite(config, flags.serve);
+  await generateSite({
+    config: config,
+    quiet: flags.quiet,
+    includeRefresh: flags.serve,
+  });
 
-  if (flags.serve === true) {
+  if (flags.serve) {
     serve({
-      port: Number(flags.port),
+      port: flags.port ? Number(flags.port) : null,
       runner: generateSite,
       config,
     });
@@ -239,9 +238,9 @@ OPTIONS:
   --config\t\tPath to config file (default: .ter/config.json)
   --local\t\tUse local assets (default: false)
   --serve\t\tServe locally and watch for changes (default: false)
-  --port\t\tServe port (default: 8080)
+  --port\t\tServe port (default: 8000)
   --drafts\t\tRender pages marked as drafts (default: false)
-  --quiet\t\tDo not list generated files (default: false)`);
+  --quiet\t\tSuppress output (default: false)`);
 }
 
 main(Deno.args);
