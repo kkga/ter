@@ -3,7 +3,7 @@ name: udd-update-dependencies
 on:
   workflow_dispatch:
   schedule:
-    - cron: "42 19 * * *"
+    - cron: "30 22 * * *"
 
 jobs:
   update-dependencies:
