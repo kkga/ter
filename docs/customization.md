@@ -8,6 +8,14 @@ Ter should work out of the box with zero configuration needed to get a decent
 output. However, it's possible to customize various aspects of the rendered
 website.
 
+## Custom \<head\> template
+
+If a file at `.ter/views/head.eta` exists, its content will be injected at the
+bottom of HTML `<head>` tag for all pages. This can be used for adding things
+like analytics integration.
+
+---
+
 <details open>
 <summary>Important note</summary>
 
@@ -41,9 +49,3 @@ highlight.js-compatible theme file.
 
 Ter uses [Eta](https://eta.js.org/) templates to build pages. It’s possible to
 customize the output by changing the default view files in `.ter/views/`.
-
-### Custom \<head\> template
-
-If a file at `.ter/views/head.eta` exists, its content will be injected at the
-bottom of HTML `<head>` tag for all pages. This can be used for adding things
-like analytics integration.
