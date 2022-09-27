@@ -9,8 +9,8 @@ export interface UserConfig {
     url: string;
     rootCrumb: string;
   };
-  navigation: Record<string, string>;
   author: { name: string; email: string; url: string };
+  navigation: Record<string, string>;
 }
 
 export interface BuildConfig {
@@ -25,7 +25,6 @@ export interface BuildConfig {
   ignoreKeys: string[];
   staticExts: string[];
   userConfig: UserConfig;
-  quiet: boolean;
   renderDrafts: boolean;
 }
 
@@ -46,13 +45,13 @@ const defaultUserConfig: UserConfig = {
 
 const defaultBuildConfig: BuildConfig = {
   inputPath: Deno.cwd(),
-  outputPath: "_site",
-  assetsPath: ".ter/assets",
-  viewsPath: ".ter/views",
+  outputPath: join(Deno.cwd(), "_site"),
+  assetsPath: join(Deno.cwd(), ".ter/assets"),
+  viewsPath: join(Deno.cwd(), ".ter/views"),
+  userConfigPath: join(Deno.cwd(), ".ter/config.json"),
   pageView: "",
   feedView: "",
   style: "",
-  userConfigPath: ".ter/config.json",
   ignoreKeys: ["draft"],
   staticExts: [
     "png",
@@ -66,7 +65,6 @@ const defaultBuildConfig: BuildConfig = {
     "mp4",
   ],
   userConfig: defaultUserConfig,
-  quiet: false,
   renderDrafts: false,
 };
 
@@ -88,7 +86,6 @@ interface CreateConfigOpts {
   pageView: string;
   feedView: string;
   style: string;
-  quiet: boolean;
   renderDrafts: boolean;
 }
 
@@ -118,7 +115,6 @@ export async function createConfig(
   conf.pageView = opts.pageView;
   conf.feedView = opts.feedView;
   conf.style = opts.style;
-  conf.quiet = opts.quiet;
   conf.renderDrafts = opts.renderDrafts;
 
   await checkUserConfig(conf.userConfigPath)

@@ -3,14 +3,15 @@ import { readableStreamFromReader } from "./deps.ts";
 import { serve as httpServe } from "./deps.ts";
 import { BuildConfig } from "./config.ts";
 import { RE_HIDDEN_OR_UNDERSCORED } from "./entries.ts";
+import { GenerateSiteOpts } from "./main.ts";
 
 interface WatchOpts {
+  runner: (opts: GenerateSiteOpts) => Promise<void>;
   config: BuildConfig;
-  runner: (config: BuildConfig, includeRefresh: true) => Promise<void>;
 }
 
 interface ServeOpts extends WatchOpts {
-  port: number;
+  port: number | null;
 }
 
 const sockets: Set<WebSocket> = new Set();
@@ -19,7 +20,6 @@ let servePath: string;
 
 async function watch(opts: WatchOpts) {
   const watcher = Deno.watchFs(opts.config.inputPath);
-  const quietConfig = { ...opts.config, quiet: true };
   let timer = 0;
 
   eventLoop:
@@ -40,7 +40,11 @@ async function watch(opts: WatchOpts) {
     console.log(
       `>>> ${event.kind}: ${relative(opts.config.inputPath, event.paths[0])}`,
     );
-    await opts.runner(quietConfig, true);
+    await opts.runner({
+      config: opts.config,
+      quiet: true,
+      includeRefresh: true,
+    });
 
     sockets.forEach((socket) => {
       clearTimeout(timer);
@@ -96,6 +100,6 @@ async function requestHandler(request: Request) {
 export function serve(opts: ServeOpts) {
   servePath = opts.config.outputPath;
   watch(opts);
-  console.log(`---`);
-  httpServe(requestHandler, { port: opts.port });
+  if (opts.port) httpServe(requestHandler, { port: opts.port });
+  else httpServe(requestHandler);
 }

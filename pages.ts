@@ -163,6 +163,7 @@ export async function generatePage(
     const parsed = fm(content);
     const pageAttrs = parsed.attributes as attrs.PageAttributes;
     const body = parsed.body;
+    const date = attrs.getDate(pageAttrs);
     const { html, links, headings } = render({
       text: body,
       currentPath: relPath,
@@ -185,6 +186,7 @@ export async function generatePage(
       title,
       description,
       tags,
+      date,
       isIndex,
     };
   } else if (entry.isDirectory) {
