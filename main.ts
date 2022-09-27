@@ -47,7 +47,7 @@ const FEED_VIEW_PATH = "views/feed.xml.eta";
 async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
   try {
     const decoder = new TextDecoder("utf-8");
-    const headPath = join(Deno.cwd(), viewsPath, "head.eta");
+    const headPath = join(viewsPath, "head.eta");
     return decoder.decode(await Deno.readFile(headPath));
   } catch {
     return undefined;
