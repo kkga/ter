@@ -3,12 +3,13 @@
 const {
   crumbs, childPages, childTags, backlinkPages, pagesByTag,
   toc, indexLayout, page, site, includeRefresh, style, navigation,
-  author
+  author, locale
 } = it;
 
 const { title, description, date, tags, headings, html } = page;
 const filteredHeadings = headings && headings.filter(h => h.level >= 2 && h.level <= 5)
-const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
+const datePageOpts = { year: 'numeric', month: 'short', day: 'numeric' };
+const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
 %>
 <html lang="en">
   <head>
@@ -89,7 +90,7 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
       <% if (date || (tags && tags.length > 0)) { %>
       <div style="display: flex; gap: 0.5em">
         <% if (date) { %>
-        <time title="Published date" datetime="<%= date %>"><%= date.toLocaleDateString(undefined, dateOpts) %></time>
+        <time title="Published date" datetime="<%= date %>"><%= date.toLocaleDateString(locale?.date, datePageOpts) %></time>
         <% } %>
         <% if (tags && tags.length > 0 ) { %>
         <% if (date && (tags && tags.length > 0)) { %>
@@ -147,7 +148,7 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
           <h2><a href="<%= url.pathname %>"><%~ title %></a></h2>
           <% if (date || (tags && tags.length > 0)) { %>
           <div style="display: flex; gap: 0.5em">
-            <time datetime="<%= date %>"><%= date.toLocaleDateString(undefined, dateOpts) %></time>
+            <time datetime="<%= date %>"><%= date.toLocaleDateString(locale?.date, dateIndexOpts) %></time>
             <% if (tags && tags.length > 0 ) { %>
             <% if (date && (tags && tags.length > 0)) { %>
             &middot;
@@ -193,7 +194,7 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
             <% if (isIndex) { %>/ ..<% } %>
             <span></span>
             <% if (date) { %>
-              <time datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
+              <time datetime="<%= date %>"><%= date.toLocaleDateString(locale?.date, dateIndexOpts) %></time>
             <% } %>
           </li>
           <% }) %>
@@ -220,6 +221,7 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
             <a href="<%= url.pathname %>"><%= title %></a>
             <span></span>
             <% if (date) { %>
+              <time datetime="<%= date %>"><%= date.toLocaleDateString(locale?.date, dateIndexOpts) %></time>
             <% } %>
           </li>
           <% }) %>
@@ -237,7 +239,7 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
             <a href="<%= url.pathname %>"><%= title %></a>
             <span></span>
             <% if (date) { %>
-              <time datetime="<%= date %>"><%= date.toLocaleDateString() %></time>
+              <time datetime="<%= date %>"><%= date.toLocaleDateString(locale?.date, dateIndexOpts) %></time>
             <% } %>
           </li>
           <% }) %>
@@ -251,7 +253,7 @@ const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
         Made with <a href="https://github.com/kkga/ter">Ter</a>.
       </span>
       <a href="/feed.xml">Feed</a>
-      </footer>
+    </footer>
 
   </body>
 </html>

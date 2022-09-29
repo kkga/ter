@@ -108,8 +108,9 @@ export async function buildPage(
     pagesByTag: taggedPages,
     childTags: opts.childTags,
     site: opts.userConfig.site,
-    author: opts.userConfig.author,
-    navigation: opts.userConfig.navigation,
+    author: opts.userConfig?.author,
+    locale: opts.userConfig?.locale,
+    navigation: opts.userConfig?.navigation,
     style: opts.style,
     includeRefresh: opts.includeRefresh,
   });
