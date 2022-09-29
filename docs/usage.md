@@ -153,8 +153,8 @@ content.
 
 Items in the index are sorted in the following order:
 
-1. files with `pinned: true` in the [frontmatter](#frontmatter) are listed at
-   the top and get an ★ symbol;
+1. files with `pinned: true` in the [frontmatter](#markdown-frontmatter) are
+   listed at the top and get an ★ symbol;
 2. directories (child index pages);
 3. rest of markdown files, sorted by [date](#dates).
 
@@ -213,7 +213,7 @@ skipped during site generation.
 ### Draft pages
 
 In addition, any markdown file with `draft: true` in the
-[frontmatter](#frontmatter) will be ignored.
+[frontmatter](#markdown-frontmatter) will be ignored.
 
 ### Rendering draft pages
 
