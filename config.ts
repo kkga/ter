@@ -10,7 +10,10 @@ export interface UserConfig {
     rootCrumb: string;
   };
   author: { name: string; email: string; url: string };
-  navigation: Record<string, string>;
+  navigation?: Record<string, string>;
+  locale?: {
+    date?: string;
+  };
 }
 
 export interface BuildConfig {
@@ -35,7 +38,6 @@ const defaultUserConfig: UserConfig = {
     url: "https://example.com/",
     rootCrumb: "index",
   },
-  navigation: {},
   author: {
     name: "Your Name Here",
     email: "youremailaddress@example.com",
