@@ -19,8 +19,15 @@ const sockets: Set<WebSocket> = new Set();
 let servePath: string;
 
 async function watch(opts: WatchOpts) {
-  const watcher = Deno.watchFs(opts.config.inputPath);
+  const paths = [opts.config.inputPath, join(Deno.cwd(), ".ter")];
+  const watcher = Deno.watchFs(paths);
   let timer = 0;
+
+  const isInOutputDir = (path: string): boolean =>
+    relative(opts.config.outputPath, path).startsWith("..");
+
+  // const isInConfigDir = (path: string): boolean =>
+  //   relative(join(Deno.cwd(), ".ter"), path).startsWith("..") === false;
 
   eventLoop:
   for await (const event of watcher) {
@@ -30,15 +37,14 @@ async function watch(opts: WatchOpts) {
 
     for (const eventPath of event.paths) {
       if (
-        eventPath.match(RE_HIDDEN_OR_UNDERSCORED) ||
-        !relative(opts.config.outputPath, eventPath).startsWith("..")
+        eventPath.match(RE_HIDDEN_OR_UNDERSCORED) || !isInOutputDir(eventPath)
       ) {
         continue eventLoop;
       }
     }
 
     console.log(
-      `>>> ${event.kind}: ${relative(opts.config.inputPath, event.paths[0])}`,
+      `>>> ${event.kind}: ${relative(Deno.cwd(), event.paths[0])}`,
     );
     await opts.runner({
       config: opts.config,
