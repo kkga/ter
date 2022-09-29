@@ -84,10 +84,27 @@ deno run -A --unstable https://deno.land/x/ter/main.ts --serve
 
 ## Configuration
 
-Before building, Ter checks for configuration file at `.ter/config.json`. If it
-doesn't exist, an example configuration file is created before building.
+Configuration options can be specified in `.ter/config.json` from the root
+directory or in any `json` file specified with `--config` flag when running Ter.
 
-##### Example
+If the file does not exist, an example configuration file is created before
+building.
+
+### Options
+
+| Key                | Description                                                    |
+| ------------------ | -------------------------------------------------------------- |
+| `site.title`       | Title of your site.                                            |
+| `site.description` | Description of your site.                                      |
+| `site.url`         | Published URL address of your site.                            |
+| `site.rootCrumb`   | Label used for root crumb label (default: "index").            |
+| `author.name`      | Your name.                                                     |
+| `author.email`     | Your email.                                                    |
+| `author.url`       | Your home page.                                                |
+| `navigation`       | Optional. Object of navigation items in form of `label: path`. |
+| `locale.date`      | Optional. Locale used for formatting dates.                    |
+
+### Example
 
 ```json
 {
@@ -105,6 +122,9 @@ doesn't exist, an example configuration file is created before building.
   "navigation": {
     "about": "/about",
     "contact": "/contact"
+  },
+  "locale": {
+    "date": "en-US"
   }
 }
 ```
@@ -133,8 +153,8 @@ content.
 
 Items in the index are sorted in the following order:
 
-1. files with `pinned: true` in the [frontmatter](#frontmatter) are listed at
-   the top and get an ★ symbol;
+1. files with `pinned: true` in the [frontmatter](#markdown-frontmatter) are
+   listed at the top and get an ★ symbol;
 2. directories (child index pages);
 3. rest of markdown files, sorted by [date](#dates).
 
@@ -193,7 +213,7 @@ skipped during site generation.
 ### Draft pages
 
 In addition, any markdown file with `draft: true` in the
-[frontmatter](#frontmatter) will be ignored.
+[frontmatter](#markdown-frontmatter) will be ignored.
 
 ### Rendering draft pages
 
@@ -213,12 +233,9 @@ after building a site. Here's an example output:
 
 ```
 [...]
-
 Dead links:
 /overview -> /non-existent-page-name
 /overview -> /some-dead-link
-
-[...]
 ```
 
 ---
@@ -238,19 +255,19 @@ If using non-default input and output folders, update the build command
 and output directory accordingly.
 </details>
 
-##### Build command
+#### Build command
 
 ```
 deno run -A --unstable https://deno.land/x/ter/main.ts
 ```
 
-##### Output directory
+#### Output directory
 
 ```
 _site
 ```
 
-##### Install command
+#### Install command
 
 ```
 curl -fsSL https://deno.land/x/install/install.sh | DENO_INSTALL=/usr/local sh
