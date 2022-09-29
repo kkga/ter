@@ -1,4 +1,4 @@
-export { parse as parseFlags } from "https://deno.land/std@0.157.0/flags/mod.ts";
+export { parse as parseFlags } from "https://deno.land/std@0.158.0/flags/mod.ts";
 
 export {
   copy,
@@ -6,8 +6,8 @@ export {
   ensureDir,
   expandGlob,
   walk,
-} from "https://deno.land/std@0.157.0/fs/mod.ts";
-export type { WalkEntry } from "https://deno.land/std@0.157.0/fs/mod.ts";
+} from "https://deno.land/std@0.158.0/fs/mod.ts";
+export type { WalkEntry } from "https://deno.land/std@0.158.0/fs/mod.ts";
 
 export {
   basename,
@@ -18,11 +18,11 @@ export {
   join,
   relative,
   toFileUrl,
-} from "https://deno.land/std@0.157.0/path/mod.ts";
+} from "https://deno.land/std@0.158.0/path/mod.ts";
 
-export { readableStreamFromReader } from "https://deno.land/std@0.157.0/streams/mod.ts";
+export { readableStreamFromReader } from "https://deno.land/std@0.158.0/streams/mod.ts";
 
-export { serve } from "https://deno.land/std@0.157.0/http/server.ts";
+export { serve } from "https://deno.land/std@0.158.0/http/server.ts";
 
 export {
   normalizeURL,
