@@ -105,9 +105,14 @@ doesn't exist, an example configuration file is created before building.
   "navigation": {
     "about": "/about",
     "contact": "/contact"
+  },
+  "locale": {
+    "date": "en-US"
   }
 }
 ```
+
+The `navigation` and `locale` keys are optional.
 
 ---
 
