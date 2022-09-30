@@ -1,9 +1,8 @@
 ---
-description: Note-taking system
+title: Zettelkasten
+description: Note-taking system.
 date: 2022-09-25
 ---
-
-# Zettelkasten
 
 From [Wikipedia](https://en.wikipedia.org/wiki/Zettelkasten):
 

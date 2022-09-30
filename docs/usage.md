@@ -1,10 +1,10 @@
 ---
+title: Usage
+description: How to use and configure Ter.
 date: 2022-09-26
 toc: true
 pinned: true
 ---
-
-# Usage
 
 ## Quick start
 
