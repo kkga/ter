@@ -363,16 +363,6 @@ details[open] > *:last-child {
 }
 /* /details */
 
-/* table of contents */
-.toc {
-  margin-bottom: 2rem;
-  padding: 1.25ch;
-  border-radius: 0.25em;
-  background-color: var(--color-bg-container);
-}
-
-/* /table of contents */
-
 /* list */
 ul,
 ol {
@@ -417,6 +407,28 @@ table :is(code, kbd, samp) {
   font-size: inherit;
 }
 /* /table */
+
+/* ARTICLE HEADER ------------------------------------------------------------------ */
+
+.articleHeader {
+  margin-bottom: 3rem;
+}
+
+.articleHeader-title {
+  margin: 0;
+  margin-bottom: 0.25em;
+}
+
+.articleHeader-description,
+.articleHeader-meta {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-s);
+}
+
+.articleHeader-toc {
+  margin: 1rem 0;
+}
 
 /* HEADER/CRUMBS ------------------------------------------------------------------- */
 
