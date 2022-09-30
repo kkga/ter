@@ -1,6 +1,6 @@
 import { WalkEntry } from "./deps.ts";
 import { basename, dirname, extname, join, relative } from "./deps.ts";
-import { fm } from "./deps.ts";
+import { extractFrontmatter } from "./deps.ts";
 import { slugify } from "./deps.ts";
 import { render } from "./render.ts";
 import * as attrs from "./attributes.ts";
@@ -123,9 +123,9 @@ export async function generatePage(
     const relPath = relative(inputPath, entry.path);
     const isIndex = false;
     const content = decoder.decode(await Deno.readFile(entry.path));
-    const parsed = fm(content);
-    const pageAttrs = parsed.attributes as attrs.PageAttributes;
-    const body = parsed.body;
+    const fm = extractFrontmatter(content);
+    const pageAttrs = fm.attrs as attrs.PageAttributes;
+    const body = fm.body;
     const date = attrs.getDate(pageAttrs);
     const { html, links, headings } = render({
       text: body,
@@ -160,9 +160,9 @@ export async function generatePage(
     const slug = relPath === "." ? "." : slugify(name);
     const isIndex = true;
     const content = decoder.decode(await Deno.readFile(entry.path));
-    const parsed = fm(content);
-    const pageAttrs = parsed.attributes as attrs.PageAttributes;
-    const body = parsed.body;
+    const fm = extractFrontmatter(content);
+    const pageAttrs = fm.attrs as attrs.PageAttributes;
+    const body = fm.body;
     const date = attrs.getDate(pageAttrs);
     const { html, links, headings } = render({
       text: body,

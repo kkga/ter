@@ -24,6 +24,8 @@ export { readableStreamFromReader } from "https://deno.land/std@0.158.0/streams/
 
 export { serve } from "https://deno.land/std@0.158.0/http/server.ts";
 
+export { extract as extractFrontmatter } from "https://deno.land/std@0.158.0/encoding/front_matter.ts";
+
 export {
   normalizeURL,
   parseURL,
@@ -43,7 +45,6 @@ export {
 
 export { deepmerge } from "https://deno.land/x/deepmergets@v4.2.2/dist/deno/index.ts";
 export { marked } from "https://esm.sh/marked@4.1.0/";
-export { default as fm } from "https://esm.sh/front-matter@4.0.2";
 export { default as slugify } from "https://esm.sh/slugify@1.6.5";
 export { minify } from "https://esm.sh/html-minifier-terser@7.0.0/";
 export type { Options as MinifyOpts } from "https://esm.sh/html-minifier-terser@7.0.0/";
