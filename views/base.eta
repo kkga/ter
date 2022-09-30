@@ -87,56 +87,64 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
         </nav>
       </div>
 
-      <% if (date || (tags && tags.length > 0)) { %>
-      <div style="display: flex; gap: 0.5em">
-        <% if (date) { %>
-        <time title="Published date" datetime="<%= date %>"><%= date.toLocaleDateString(locale?.date, datePageOpts) %></time>
-        <% } %>
-        <% if (tags && tags.length > 0 ) { %>
-        <% if (date && (tags && tags.length > 0)) { %>
-        &middot;
-        <% } %>
-        <ul class="header-tags">
-          <% tags.forEach((tag) => { %>
-          <li><a href="<%= `/tag/${tag}` %>">#<%~ tag %></a></li>
-          <% }) %>
-        </ul>
-        <% } %>
-      </div>
-      <% } %>
-      <% if (description) { %>
-      <div><%= description %></div>
-      <% } %>
     </header>
 
     <main>
-      <% if (toc && filteredHeadings?.length > 0) { %>
-      <details class="toc">
-        <summary>Contents</summary>
-        <ul class="toc-list">
-          <% filteredHeadings.forEach((h, i) => { %>
-            <% if (h.level === 2) { %>
-            <li>
-              <a href="#<%= h.slug %>"><%= h.text %></a>
-              <% if (filteredHeadings[i+1]?.level === 3) { %>
-                <ul>
-                <% for (let j = i+1; j < filteredHeadings.length; j++) { %>
-                  <% const subH = filteredHeadings[j] %>
-                  <% if (subH.level === 3) { %>
-                  <li><a href="#<%= subH?.slug %>"><%= subH.text %></a></li>
-                  <% } else { break } %>
-                <% } %>
-                </ul>
-              <% } %>
-            </li>
-            <% } %>
-          <% }) %>
-        </ul>
-      </details>
-      <% } %>
-
       <% if (html) { %>
       <article>
+        <header>
+        <% if (title) { %>
+          <h1><%= title %></h1>
+        <% } %>
+
+        <% if (description) { %>
+          <p><%= description %></p>
+        <% } %>
+
+        <% if (date || (tags && tags.length > 0)) { %>
+        <div style="display: flex; gap: 0.5em">
+          <% if (date) { %>          <time title="Published date" datetime="<%= date %>"><%= date.toLocaleDateString(locale?.date, datePageOpts) %></time>
+          <% } %>
+          <% if (tags && tags.length > 0 ) { %>
+          <% if (date && (tags && tags.length > 0)) { %>
+          &middot;
+          <% } %>
+          <ul class="header-tags">
+            <% tags.forEach((tag) => { %>
+            <li><a href="<%= `/tag/${tag}` %>">#<%~ tag %></a></li>
+            <% }) %>
+          </ul>
+          <% } %>
+        </div>
+        <% } %>
+
+        <% if (toc && filteredHeadings?.length > 0) { %>
+        <details class="toc">
+          <summary>Contents</summary>
+          <ul class="toc-list">
+            <% filteredHeadings.forEach((h, i) => { %>
+              <% if (h.level === 2) { %>
+              <li>
+                <a href="#<%= h.slug %>"><%= h.text %></a>
+                <% if (filteredHeadings[i+1]?.level === 3) { %>
+                  <ul>
+                  <% for (let j = i+1; j < filteredHeadings.length; j++) { %>
+                    <% const subH = filteredHeadings[j] %>
+                    <% if (subH.level === 3) { %>
+                    <li><a href="#<%= subH?.slug %>"><%= subH.text %></a></li>
+                    <% } else { break } %>
+                  <% } %>
+                  </ul>
+                <% } %>
+              </li>
+              <% } %>
+            <% }) %>
+          </ul>
+        </details>
+        <% } %>
+        <hr/>
+        </header>
+
         <%~ html %>
       </article>
       <% } %>
