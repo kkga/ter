@@ -93,7 +93,7 @@ export function render(
       headings.push({
         text: token.text,
         level: token.depth,
-        slug: slugger.slug(token.raw),
+        slug: slugger.slug(token.text),
       });
     }
   }
@@ -128,9 +128,10 @@ export function render(
   renderer.heading = (
     text: string,
     level: 1 | 2 | 3 | 4 | 5 | 6,
-    raw: string,
+    _raw: string,
+    slugger: marked.Slugger,
   ): string => {
-    const slug = slugger.slug(raw);
+    const slug = slugger.slug(text);
     return `<h${level} id="${slug}">${text}<a class="anchor" href="#${slug}"></a></h${level}>`;
   };
 
