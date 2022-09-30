@@ -27,8 +27,6 @@ interface InternalLinkOpts {
   isIndex: boolean;
 }
 
-const renderer = new marked.Renderer();
-
 function createExternalLink(href: string, title: string, text: string): string {
   return `<a href="${href}" rel="external noopener noreferrer" title="${
     title || text
@@ -86,6 +84,23 @@ export function render(
 ): { html: string; links: Array<URL>; headings: Array<Heading> } {
   const internalUrls: Set<URL> = new Set();
   const headings: Array<Heading> = [];
+  const renderer = new marked.Renderer();
+  const tokens = marked.lexer(text);
+  const slugger = new marked.Slugger();
+
+  for (const [_index, token] of tokens.entries()) {
+    if (token.type === "heading") {
+      headings.push({
+        text: token.text,
+        level: token.depth,
+        slug: slugger.slug(token.raw),
+      });
+    }
+  }
+
+  if (tokens[0].type === "heading" && tokens[0].depth === 1) {
+    tokens.shift();
+  }
 
   // TODO: use path prefix from site config url to properly
   // handle cases when site is published in a sub directory on domain
@@ -114,10 +129,8 @@ export function render(
     text: string,
     level: 1 | 2 | 3 | 4 | 5 | 6,
     raw: string,
-    slugger: marked.Slugger,
   ): string => {
     const slug = slugger.slug(raw);
-    headings.push({ text, level, slug });
     return `<h${level} id="${slug}">${text}<a class="anchor" href="#${slug}"></a></h${level}>`;
   };
 
@@ -152,7 +165,7 @@ export function render(
     xhtml: false,
   });
 
-  const html = marked(text);
+  const html = marked.parser(tokens);
 
   return { html, links: Array.from(internalUrls), headings };
 }
