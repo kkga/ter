@@ -420,8 +420,7 @@ table :is(code, kbd, samp) {
 
 /* HEADER/CRUMBS ------------------------------------------------------------------- */
 
-body > header,
-article > header {
+body > header {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -439,17 +438,13 @@ body > header a:not(:hover) {
   text-decoration: none;
 }
 
-article > header:not(:hover) :is(nav, div, li a) {
-  color: var(--color-text-tertiary) !important;
-}
-
-:is(body > header, article > header) :is(ol, ul) {
+body > header :is(ol, ul) {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-:is(body > header, article > header) :is(ol, ul) li {
+body > header :is(ol, ul) li {
   display: inline-block;
 }
 
@@ -469,14 +464,14 @@ body > header ul.header-tags li {
   margin-right: 0.5em;
 }
 
-article > header :is(h1, h2, h3, h4, h5, h6) {
+/*article > header :is(h1, h2, h3, h4, h5, h6) {
   margin: 0;
   font-size: var(--font-size-base);
   line-height: var(--line-height-tight);
   font-weight: var(--font-weight-b);
   color: var(--color-text-body);
 }
-
+*/
 /* ASIDE ----------------------------------------------------------------- */
 
 body > aside {
