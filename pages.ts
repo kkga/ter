@@ -11,7 +11,7 @@ const decoder = new TextDecoder("utf-8");
 
 export interface Heading {
   text: string;
-  level: 1 | 2 | 3 | 4 | 5 | 6;
+  level: number;
   slug: string;
 }
 
