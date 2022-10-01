@@ -33,7 +33,7 @@ jobs:
         run: deno task build
 
       - name: Deploy to Deno Deploy
-        uses: denoland/deployctl@v1.3
+        uses: denoland/deployctl@v1
         with:
           project: ter
           entrypoint: https://deno.land/std/http/file_server.ts
