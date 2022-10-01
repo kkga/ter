@@ -2,6 +2,7 @@
 title: Ter
 description: Tiny wiki-style site builder.
 date: 2022-09-26
+dateUpdated: 2022-10-01
 ---
 
 A tiny wiki engine with [Zettelkasten](zettelkasten.md) flavor.
