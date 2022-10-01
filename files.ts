@@ -52,9 +52,9 @@ export async function buildContentFiles(
       "index.html",
     );
 
-    const tags = getTags(page.attrs);
+    const tags = page.attrs && getTags(page.attrs);
     const pagesByTag: { [tag: string]: Array<Page> } = {};
-    tags.forEach((tag: string) => {
+    tags && tags.forEach((tag: string) => {
       pagesByTag[tag] = getPagesByTag(pages, tag);
     });
 
