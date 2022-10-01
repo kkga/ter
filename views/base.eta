@@ -151,34 +151,41 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
         <% } %>
         </header>
 
+        <% if (html) { %>
         <%~ html %>
+        <% } %>
       </article>
 
       <% if (page?.logLayout) {
         childPages.forEach((page, index) => { const {title, description, datePublished, tags, html, url} = page %>
+
       <article>
-        <header>
-          <h2><a href="<%= url.pathname %>"><%~ title %></a></h2>
-          <% if (datePublished || (tags && tags.length > 0)) { %>
-          <div style="display: flex; gap: 0.5em">
-            <time datetime="<%= datePublished %>"><%= datePublished.toLocaleDateString(locale?.date, dateIndexOpts) %></time>
-            <% if (tags && tags.length > 0 ) { %>
-            <% if (datePublished && (tags && tags.length > 0)) { %>
-            &middot;
+        <header class="articleHeader">
+        <% if (title) { %>
+          <h2 class="articleHeader-title"><a href="<%= url.pathname %>"><%~ title %></a></h2>
+        <% } %>
+        <% if (description) { %>
+          <p class="articleHeader-description"><%= description %></p>
+        <% } %>
+
+        <% if (datePublished || (tags && tags.length > 0)) { %>
+          <div class="articleHeader-meta">
+            <% if (datePublished) { %>
+            Published: <time class="articleHeader-meta-datePublished" datetime="<%= datePublished %>"><%= datePublished.toLocaleDateString(locale?.date, datePageOpts) %></time>
             <% } %>
-            <ul>
+            <% if (tags && tags.length > 0 ) { %>
+            <ul class="articleHeader-meta-tags">
               <% tags.forEach((tag) => { %>
-              <li><a href="<%= `/tag/${tag}` %>">#<%~ tag %></a></li>
+              <li class="articleHeader-meta-tag"><a href="<%= `/tag/${tag}` %>">#<%~ tag %></a></li>
               <% }) %>
             </ul>
             <% } %>
           </div>
-          <% } %>
-          <% if (description) { %>
-          <div><%= description %></div>
-          <% } %>
+        <% } %>
         </header>
+        <% if (html) { %>
         <%~ html %>
+        <% } %>
       </article>
 
       <% if (index < childPages.length - 1) { %>
