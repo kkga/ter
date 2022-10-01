@@ -84,7 +84,7 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
           </ol>
         </nav>
         <% } %>
-        <% if (navigation) { %>
+        <% if (typeof navigation === "object") { %>
         <nav aria-label="navigation">
           <ol>
             <% Object.keys(navigation).forEach((link,i) => { %>
