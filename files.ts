@@ -68,6 +68,10 @@ export async function buildContentFiles(
       view: opts.view,
       userConfig: opts.userConfig,
       style: styleMinified,
+    }).catch((reason) => {
+      console.error("Error building page:", page);
+      console.error("Reason:", reason);
+      Deno.exit(1);
     });
 
     if (typeof html === "string") {

@@ -84,6 +84,8 @@ export async function buildPage(
   const childPages = sortPages(opts.childPages);
   const taggedPages: { [tag: string]: Array<Page> } = {};
 
+  templates.define("head", compile(opts.headInclude));
+
   for (const tag of Object.keys(opts.taggedPages)) {
     const tagIndex = sortPages(
       opts.taggedPages[tag].filter((taggedPage) => taggedPage !== page),
@@ -93,8 +95,6 @@ export async function buildPage(
     }
   }
 
-  templates.define("head", compile(opts.headInclude));
-
   return await render(opts.view, {
     page,
     crumbs,
@@ -102,10 +102,7 @@ export async function buildPage(
     backlinkPages,
     pagesByTag: taggedPages,
     childTags: opts.childTags,
-    site: opts.userConfig.site,
-    author: opts.userConfig?.author,
-    locale: opts.userConfig?.locale,
-    navigation: opts.userConfig?.navigation,
+    userConfig: opts.userConfig,
     style: opts.style,
     includeRefresh: opts.includeRefresh,
   });

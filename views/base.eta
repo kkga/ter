@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <%
 const {
-  crumbs, childPages, childTags, backlinkPages, pagesByTag,
-  page, site, includeRefresh, style, navigation,
-  author, locale
+  page,
+  crumbs,
+  childPages,
+  backlinkPages,
+  pagesByTag,
+  childTags,
+  userConfig,
+  style,
+  includeRefresh,
 } = it;
 
+const { site, author, locale, navigation } = userConfig
 const { title, description, datePublished, tags, headings, html } = page;
 const filteredHeadings = headings && headings.filter(h => h.level >= 2 && h.level <= 5)
 const datePageOpts = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -62,6 +69,7 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
     <header>
       <div style="display: flex; justify-content: space-between; gap: 32px">
+        <% if (crumbs) { %>
         <nav aria-label="crumbs">
           <ol>
             <% crumbs.forEach((crumb) => { %>
@@ -75,7 +83,8 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
             <% }) %>
           </ol>
         </nav>
-
+        <% } %>
+        <% if (navigation) { %>
         <nav aria-label="navigation">
           <ol>
             <% Object.keys(navigation).forEach((link,i) => { %>
@@ -85,6 +94,7 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
             <% }) %>
           </ol>
         </nav>
+        <% } %>
       </div>
 
     </header>
