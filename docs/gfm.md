@@ -1,9 +1,8 @@
 ---
-description: Sample of Markdown
+title: Markdown
+description: Sample of Markdown.
 date: 2022-09-25
 ---
-
-# Markdown
 
 Ter uses [GitHub Flavored Markdown (GFM)](https://github.github.com/gfm/) via
 [Marked](https://marked.js.org/) for rendering markdown files.

@@ -1,9 +1,8 @@
 ---
-description: See if Ter works for you
+title: Goals
+description: See if Ter works for you.
 date: 2022-09-25
 ---
-
-# Goals
 
 Ter tries to solve some specific use cases effortlessly, rather than being a
 full-fledged static site builder.

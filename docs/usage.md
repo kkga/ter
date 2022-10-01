@@ -1,10 +1,10 @@
 ---
+title: Usage
+description: How to use and configure Ter.
 date: 2022-09-26
 toc: true
 pinned: true
 ---
-
-# Usage
 
 ## Quick start
 
@@ -188,16 +188,17 @@ property: value
 
 Some properties are utilized when building a site.
 
-| Property      | Description                                                                         |
-| ------------- | ----------------------------------------------------------------------------------- |
-| `title`       | used for page title                                                                 |
-| `description` | used for page description                                                           |
-| `tags`        | used for tags                                                                       |
-| `date`        | date in YYYY-MM-DD format                                                           |
-| `pinned`      | if set to `true`, page is listed at the top of [index lists](#index-pages)          |
-| `draft`       | if set to `true`, file is [ignored](#ignoring-files) during site generation         |
-| `toc`         | if set to `true`, page renders table of contents at the top                         |
-| `log`         | if set to `true` on an index page (`index.md`), all child pages are rendered inline |
+| Property      | Description                                                                  |
+| ------------- | ---------------------------------------------------------------------------- |
+| `title`       | used for page title                                                          |
+| `description` | used for page description                                                    |
+| `tags`        | used for tags                                                                |
+| `date`        | date in YYYY-MM-DD format                                                    |
+| `pinned`      | if `true`, page is listed at the top of [index lists](#index-pages)          |
+| `draft`       | if `true`, file is [ignored](#ignoring-files) during site generation         |
+| `toc`         | if `true`, page renders table of contents at the top                         |
+| `hideTitle`   | if `true`, the page title heading is not displayed                           |
+| `log`         | if `true` on an index page (`index.md`), all child pages are rendered inline |
 
 All other properties are ignored but can be used in
 [templates](customization.md#templates).
@@ -255,21 +256,14 @@ If using non-default input and output folders, update the build command
 and output directory accordingly.
 </details>
 
-#### Build command
-
-```
+```sh
+# Build command
 deno run -A --unstable https://deno.land/x/ter/main.ts
-```
 
-#### Output directory
-
-```
+# Output directory
 _site
-```
 
-#### Install command
-
-```
+# Install command
 curl -fsSL https://deno.land/x/install/install.sh | DENO_INSTALL=/usr/local sh
 ```
 

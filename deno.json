@@ -1,8 +1,8 @@
 {
   "tasks": {
-    "build": "deno run -A --unstable main.ts --input docs",
-    "serve": "deno run -A --unstable main.ts --input docs --serve",
-    "dev": "deno run -A --unstable --watch=assets/,views/ main.ts --input docs --serve --local",
+    "build": "deno run -A --unstable main.ts --input docs --local",
+    "serve": "deno run -A --unstable main.ts --input docs --local  --serve",
+    "dev": "deno run -A --unstable --watch=assets/,views/ main.ts --input docs --local --serve",
     "clean": "rm -rf _site"
   }
 }

@@ -3,10 +3,16 @@ import { emptyDir } from "./deps.ts";
 import { join, relative, toFileUrl } from "./deps.ts";
 import { withTrailingSlash } from "./deps.ts";
 
-import { getContentEntries, getStaticEntries } from "./entries.ts";
+import {
+  getContentEntries,
+  getStaticEntries,
+  INDEX_FILENAME,
+} from "./entries.ts";
 
 import {
-  generatePage,
+  generateContentPage,
+  generateIndexPageFromDir,
+  generateIndexPageFromFile,
   getAllTags,
   getPagesByTag,
   isDeadLink,
@@ -25,7 +31,6 @@ import {
 
 import { BuildConfig, createConfig } from "./config.ts";
 import { serve } from "./serve.ts";
-import { hasKey } from "./attributes.ts";
 
 export interface GenerateSiteOpts {
   config: BuildConfig;
@@ -75,7 +80,6 @@ async function generateSite(opts: GenerateSiteOpts) {
     feedView,
     style,
     viewsPath,
-    ignoreKeys,
     staticExts,
     userConfig,
     renderDrafts,
@@ -84,26 +88,53 @@ async function generateSite(opts: GenerateSiteOpts) {
   const START = performance.now();
 
   opts.quiet || console.log(`scan\t${inputPath}`);
+
   const [contentEntries, staticEntries] = await Promise.all([
     getContentEntries(inputPath),
     getStaticEntries(inputPath, outputPath, staticExts),
   ]);
-
   const headInclude = await getHeadInclude(viewsPath) ?? "";
-
   const pages: Page[] = [];
+
   for (const entry of contentEntries) {
     opts.quiet || console.log(`render\t${relative(inputPath, entry.path)}`);
-    const page = await generatePage(entry, inputPath, userConfig).catch(
-      (reason: string) => {
-        console.log(`Can not render ${entry.path}\n\t${reason}`);
-      },
-    );
+    const isIndex = entry.isDirectory || entry.name === INDEX_FILENAME;
+
+    let page: Page | void;
+
+    if (!isIndex) {
+      page = await generateContentPage({
+        entry: entry,
+        inputPath: inputPath,
+        ignoreKeys: opts.config.ignoreKeys,
+        siteUrl: new URL(userConfig.site.url),
+      }).catch(
+        (reason: string) =>
+          console.error(`Can not render ${entry.path}\n\t${reason}`),
+      );
+    } else if (isIndex && entry.isFile) {
+      page = await generateIndexPageFromFile({
+        entry: entry,
+        inputPath: inputPath,
+        ignoreKeys: opts.config.ignoreKeys,
+        siteUrl: new URL(userConfig.site.url),
+      }).catch(
+        (reason: string) =>
+          console.error(`Can not render ${entry.path}\n\t${reason}`),
+      );
+    } else if (isIndex && entry.isDirectory) {
+      page = generateIndexPageFromDir({
+        entry: entry,
+        inputPath: inputPath,
+        ignoreKeys: opts.config.ignoreKeys,
+        siteUrl: new URL(userConfig.site.url),
+      });
+    }
 
     if (renderDrafts) {
       page && pages.push(page);
     } else {
-      page && !hasKey(page.attrs, ignoreKeys) && pages.push(page);
+      page && !page.ignored && pages.push(page);
     }
   }
 

@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <%
 const {
-  crumbs, childPages, childTags, backlinkPages, pagesByTag,
-  toc, indexLayout, page, site, includeRefresh, style, navigation,
-  author, locale
+  page,
+  crumbs,
+  childPages,
+  backlinkPages,
+  pagesByTag,
+  childTags,
+  userConfig,
+  style,
+  includeRefresh,
 } = it;
 
-const { title, description, date, tags, headings, html } = page;
+const { site, author, locale, navigation } = userConfig
+const { title, description, datePublished, tags, headings, html } = page;
 const filteredHeadings = headings && headings.filter(h => h.level >= 2 && h.level <= 5)
 const datePageOpts = { year: 'numeric', month: 'short', day: 'numeric' };
 const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
@@ -62,6 +69,7 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
     <header>
       <div style="display: flex; justify-content: space-between; gap: 32px">
+        <% if (crumbs) { %>
         <nav aria-label="crumbs">
           <ol>
             <% crumbs.forEach((crumb) => { %>
@@ -75,7 +83,8 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
             <% }) %>
           </ol>
         </nav>
-
+        <% } %>
+        <% if (typeof navigation === "object") { %>
         <nav aria-label="navigation">
           <ol>
             <% Object.keys(navigation).forEach((link,i) => { %>
@@ -85,87 +94,98 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
             <% }) %>
           </ol>
         </nav>
+        <% } %>
       </div>
 
-      <% if (date || (tags && tags.length > 0)) { %>
-      <div style="display: flex; gap: 0.5em">
-        <% if (date) { %>
-        <time title="Published date" datetime="<%= date %>"><%= date.toLocaleDateString(locale?.date, datePageOpts) %></time>
-        <% } %>
-        <% if (tags && tags.length > 0 ) { %>
-        <% if (date && (tags && tags.length > 0)) { %>
-        &middot;
-        <% } %>
-        <ul class="header-tags">
-          <% tags.forEach((tag) => { %>
-          <li><a href="<%= `/tag/${tag}` %>">#<%~ tag %></a></li>
-          <% }) %>
-        </ul>
-        <% } %>
-      </div>
-      <% } %>
-      <% if (description) { %>
-      <div><%= description %></div>
-      <% } %>
     </header>
 
     <main>
-      <% if (toc && filteredHeadings?.length > 0) { %>
-      <details class="toc">
-        <summary>Contents</summary>
-        <ul class="toc-list">
-          <% filteredHeadings.forEach((h, i) => { %>
-            <% if (h.level === 2) { %>
-            <li>
-              <a href="#<%= h.slug %>"><%= h.text %></a>
-              <% if (filteredHeadings[i+1]?.level === 3) { %>
-                <ul>
-                <% for (let j = i+1; j < filteredHeadings.length; j++) { %>
-                  <% const subH = filteredHeadings[j] %>
-                  <% if (subH.level === 3) { %>
-                  <li><a href="#<%= subH?.slug %>"><%= subH.text %></a></li>
-                  <% } else { break } %>
-                <% } %>
-                </ul>
-              <% } %>
-            </li>
+      <article>
+        <header class="articleHeader">
+        <% if (title && !page?.hideTitle) { %>
+          <h1 class="articleHeader-title"><%= title %></h1>
+        <% } %>
+
+        <% if (description) { %>
+          <p class="articleHeader-description"><%= description %></p>
+        <% } %>
+
+        <% if (datePublished || (tags && tags.length > 0)) { %>
+          <div class="articleHeader-meta">
+            <% if (datePublished) { %>
+            Published: <time class="articleHeader-meta-datePublished" datetime="<%= datePublished %>"><%= datePublished.toLocaleDateString(locale?.date, datePageOpts) %></time>
             <% } %>
-          <% }) %>
-        </ul>
-      </details>
-      <% } %>
-
-      <% if (html) { %>
-      <article>
-        <%~ html %>
-      </article>
-      <% } %>
-
-      <% if (indexLayout === "log") {
-        childPages.forEach((page, index) => { const {title, description, date, tags, html, url} = page %>
-      <article>
-        <header>
-          <h2><a href="<%= url.pathname %>"><%~ title %></a></h2>
-          <% if (date || (tags && tags.length > 0)) { %>
-          <div style="display: flex; gap: 0.5em">
-            <time datetime="<%= date %>"><%= date.toLocaleDateString(locale?.date, dateIndexOpts) %></time>
             <% if (tags && tags.length > 0 ) { %>
-            <% if (date && (tags && tags.length > 0)) { %>
-            &middot;
-            <% } %>
-            <ul>
+            <ul class="articleHeader-meta-tags">
               <% tags.forEach((tag) => { %>
-              <li><a href="<%= `/tag/${tag}` %>">#<%~ tag %></a></li>
+              <li class="articleHeader-meta-tag"><a href="<%= `/tag/${tag}` %>">#<%~ tag %></a></li>
               <% }) %>
             </ul>
             <% } %>
           </div>
-          <% } %>
-          <% if (description) { %>
-          <div><%= description %></div>
-          <% } %>
+        <% } %>
+
+        <% if (page?.showToc && filteredHeadings?.length > 0) { %>
+          <details class="articleHeader-toc">
+            <summary>Contents</summary>
+            <ul class="articleHeader-toc-list">
+              <% filteredHeadings.forEach((h, i) => { %>
+                <% if (h.level === 2) { %>
+                <li>
+                  <a href="#<%= h.slug %>"><%= h.text %></a>
+                  <% if (filteredHeadings[i+1]?.level === 3) { %>
+                    <ul>
+                    <% for (let j = i+1; j < filteredHeadings.length; j++) { %>
+                      <% const subH = filteredHeadings[j] %>
+                      <% if (subH.level === 3) { %>
+                      <li><a href="#<%= subH?.slug %>"><%= subH.text %></a></li>
+                      <% } else { break } %>
+                    <% } %>
+                    </ul>
+                  <% } %>
+                </li>
+                <% } %>
+              <% }) %>
+            </ul>
+          </details>
+        <% } %>
         </header>
+
+        <% if (html) { %>
         <%~ html %>
+        <% } %>
+      </article>
+
+      <% if (page?.logLayout) {
+        childPages.forEach((page, index) => { const {title, description, datePublished, tags, html, url} = page %>
+
+      <article>
+        <header class="articleHeader">
+        <% if (title) { %>
+          <h2 class="articleHeader-title"><a href="<%= url.pathname %>"><%~ title %></a></h2>
+        <% } %>
+        <% if (description) { %>
+          <p class="articleHeader-description"><%= description %></p>
+        <% } %>
+
+        <% if (datePublished || (tags && tags.length > 0)) { %>
+          <div class="articleHeader-meta">
+            <% if (datePublished) { %>
+            Published: <time class="articleHeader-meta-datePublished" datetime="<%= datePublished %>"><%= datePublished.toLocaleDateString(locale?.date, datePageOpts) %></time>
+            <% } %>
+            <% if (tags && tags.length > 0 ) { %>
+            <ul class="articleHeader-meta-tags">
+              <% tags.forEach((tag) => { %>
+              <li class="articleHeader-meta-tag"><a href="<%= `/tag/${tag}` %>">#<%~ tag %></a></li>
+              <% }) %>
+            </ul>
+            <% } %>
+          </div>
+        <% } %>
+        </header>
+        <% if (html) { %>
+        <%~ html %>
+        <% } %>
       </article>
 
       <% if (index < childPages.length - 1) { %>
@@ -183,7 +203,7 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
         <h6>Child pages</h6>
         <ul>
           <% childPages.forEach((page) => {
-            const {isIndex, url, description, title, date } = page;
+            const {isIndex, url, description, title, datePublished } = page;
             const pinned = page?.attrs?.pinned
             %>
           <li>
@@ -193,8 +213,8 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
             <% if (pinned) { %> * <% } %>
             <% if (isIndex) { %>/ ..<% } %>
             <span></span>
-            <% if (date) { %>
-              <time datetime="<%= date %>"><%= date.toLocaleDateString(locale?.date, dateIndexOpts) %></time>
+            <% if (datePublished) { %>
+              <time datetime="<%= datePublished %>"><%= datePublished.toLocaleDateString(locale?.date, dateIndexOpts) %></time>
             <% } %>
           </li>
           <% }) %>
@@ -216,12 +236,12 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
         <h6>Backlinks</h6>
         <ul>
           <% backlinkPages.forEach((page) => {
-            const {pinned, isIndex, url, description, title, date } = page; %>
+            const {pinned, isIndex, url, description, title, datePublished } = page; %>
           <li>
             <a href="<%= url.pathname %>"><%= title %></a>
             <span></span>
-            <% if (date) { %>
-              <time datetime="<%= date %>"><%= date.toLocaleDateString(locale?.date, dateIndexOpts) %></time>
+            <% if (datePublished) { %>
+              <time datetime="<%= datePublished %>"><%= datePublished.toLocaleDateString(locale?.date, dateIndexOpts) %></time>
             <% } %>
           </li>
           <% }) %>
@@ -234,12 +254,12 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
         <h6><a href=<%= `/tag/${tag}` %>><%= `Also tagged #${tag}` %></a></h6>
         <ul>
           <% pagesByTag[tag].forEach((page) => {
-            const {isIndex, url, title, date } = page; %>
+            const {isIndex, url, title, datePublished } = page; %>
           <li>
             <a href="<%= url.pathname %>"><%= title %></a>
             <span></span>
-            <% if (date) { %>
-              <time datetime="<%= date %>"><%= date.toLocaleDateString(locale?.date, dateIndexOpts) %></time>
+            <% if (datePublished) { %>
+              <time datetime="<%= datePublished %>"><%= datePublished.toLocaleDateString(locale?.date, dateIndexOpts) %></time>
             <% } %>
           </li>
           <% }) %>
