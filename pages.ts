@@ -205,6 +205,7 @@ export async function generateContentPage(
 
   page = { ...page, html, links, headings };
 
+  // TODO: heading title should override filename but not attr title
   const headingTitle = getTitleFromHeadings(headings);
   headingTitle && (page.title ??= headingTitle);
 

@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [master]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
 jobs:
   deploy:
     name: Deploy
@@ -36,7 +33,7 @@ jobs:
         run: deno task build
 
       - name: Deploy to Deno Deploy
-        uses: denoland/deployctl@v1
+        uses: denoland/deployctl@v1.3
         with:
           project: ter
           entrypoint: https://deno.land/std/http/file_server.ts
