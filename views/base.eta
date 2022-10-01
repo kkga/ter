@@ -102,7 +102,7 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
     <main>
       <article>
         <header class="articleHeader">
-        <% if (title) { %>
+        <% if (title && !page?.hideTitle) { %>
           <h1 class="articleHeader-title"><%= title %></h1>
         <% } %>
 

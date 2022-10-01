@@ -19,6 +19,7 @@ export interface Page {
   ignored: boolean;
   showToc: boolean;
   logLayout: boolean;
+  hideTitle: boolean;
   title?: string;
   body?: string;
   path?: string;
@@ -148,6 +149,8 @@ const extractPageData = (raw: string, ignoreKeys: string[]): PageData => {
   const ignored = attributes.hasKey(pageAttrs, ignoreKeys);
   const showToc = attributes.hasKey(pageAttrs, ["toc"]);
   const logLayout = attributes.hasKey(pageAttrs, ["log"]);
+  const hideTitle = attributes.hasKey(pageAttrs, ["hideTitle"]);
+
   const data: PageData = {};
 
   return Object.assign(
@@ -164,6 +167,7 @@ const extractPageData = (raw: string, ignoreKeys: string[]): PageData => {
     pinned ? { pinned: pinned } : {},
     showToc ? { showToc: showToc } : {},
     logLayout ? { logLayout: logLayout } : {},
+    hideTitle ? { hideTitle: hideTitle } : {},
   );
 };
 
@@ -189,6 +193,7 @@ export async function generateContentPage(
     ignored: false,
     showToc: false,
     logLayout: false,
+    hideTitle: false,
   };
 
   if (frontmatter.test(raw)) {
@@ -226,6 +231,7 @@ export async function generateIndexPageFromFile(
     ignored: false,
     showToc: false,
     logLayout: false,
+    hideTitle: false,
   };
 
   if (frontmatter.test(raw)) {
@@ -262,6 +268,7 @@ export function generateIndexPageFromDir(
     ignored: false,
     showToc: false,
     logLayout: false,
+    hideTitle: false,
   };
 
   return page;
