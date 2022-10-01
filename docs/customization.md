@@ -1,6 +1,6 @@
 ---
 title: Customization
-date: 2022-09-26
+date: 2022-09-24
 ---
 
 Ter should work out of the box with zero configuration needed to get a decent
