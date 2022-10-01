@@ -126,9 +126,7 @@ export async function buildTagPage(
     tagName,
     crumbs,
     childPages: sortPages(opts.taggedPages),
-    site: opts.userConfig.site,
-    author: opts.userConfig.author,
-    navigation: opts.userConfig.navigation,
+    userConfig: opts.userConfig,
     style: opts.style,
     includeRefresh: opts.includeRefresh,
   });
