@@ -245,10 +245,11 @@ a {
 a[href]:hover {
   color: var(--color-text-accent);
   text-decoration-color: inherit;
+  text-decoration-style: solid;
 }
 
 a[rel~="external"] {
-  color: var(--color-text-accent);
+  text-decoration-style: dashed;
 }
 /* /link */
 
@@ -418,12 +419,37 @@ table :is(code, kbd, samp) {
   margin: 0;
   margin-bottom: 0.25em;
 }
+.articleHeader-title a {
+  text-decoration: none;
+}
 
 .articleHeader-description,
 .articleHeader-meta {
   margin: 0;
   color: var(--color-text-tertiary);
   font-size: var(--font-size-s);
+}
+
+.articleHeader-meta-tags {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.articleHeader-meta-tags::before {
+  content: "·";
+  margin: 0 0.5em;
+}
+
+.articleHeader-meta-tag {
+  display: inline;
+  margin-right: 0.5em;
+}
+
+.articleHeader-meta-tag a {
+  color: inherit;
+  text-decoration: none;
 }
 
 .articleHeader-toc {
