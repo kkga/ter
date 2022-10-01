@@ -98,7 +98,11 @@ export function render(
     }
   }
 
-  if (tokens[0].type === "heading" && tokens[0].depth === 1) {
+  if (
+    tokens.length > 0 &&
+    tokens[0].type === "heading" &&
+    tokens[0].depth === 1
+  ) {
     tokens.shift();
   }
 
