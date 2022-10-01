@@ -14,13 +14,13 @@ export interface Heading {
 
 export interface Page {
   url: URL;
-  title: string;
-  body: string;
   isIndex: boolean;
   pinned: boolean;
   ignored: boolean;
   showToc: boolean;
   logLayout: boolean;
+  title?: string;
+  body?: string;
   path?: string;
   description?: string;
   attrs?: attributes.PageAttributes;
@@ -183,8 +183,6 @@ export async function generateContentPage(
   const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
 
   let page: Page = {
-    title: getTitleFromFilename(relPath),
-    body: raw,
     url: pageUrl,
     isIndex: false,
     pinned: false,
@@ -196,8 +194,9 @@ export async function generateContentPage(
   if (frontmatter.test(raw)) {
     page = { ...page, ...extractPageData(raw, ignoreKeys) };
   }
+
   const { html, links, headings } = render({
-    text: page.body,
+    text: page.body ?? raw,
     currentPath: relPath,
     isIndex: false,
     baseUrl: new URL(siteUrl),
@@ -205,12 +204,12 @@ export async function generateContentPage(
 
   page = { ...page, html, links, headings };
 
-  // TODO: heading title should override filename but not attr title
-  const headingTitle = getTitleFromHeadings(headings);
-  headingTitle && (page.title ??= headingTitle);
+  page.title ??= getTitleFromHeadings(headings) ||
+    getTitleFromFilename(relPath);
 
   return page;
 }
+
 export async function generateIndexPageFromFile(
   { entry, inputPath, siteUrl, ignoreKeys }: GeneratePageOpts,
 ): Promise<Page> {
@@ -219,9 +218,8 @@ export async function generateIndexPageFromFile(
   const dirName = basename(dirname(entry.path));
   const slug = relPath === "." ? "." : slugify(dirName);
   const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
+
   let page: Page = {
-    title: dirName,
-    body: raw,
     url: pageUrl,
     isIndex: true,
     pinned: false,
@@ -233,26 +231,24 @@ export async function generateIndexPageFromFile(
   if (frontmatter.test(raw)) {
     page = { ...page, ...extractPageData(raw, ignoreKeys) };
   }
+
   const { html, links, headings } = render({
-    text: page.body,
+    text: page.body ?? raw,
     currentPath: relPath,
     isIndex: false,
     baseUrl: new URL(siteUrl),
   });
 
   page = { ...page, html, links, headings };
-  if (dirName === "projects") {
-    console.log(page);
-  }
 
-  const headingTitle = getTitleFromHeadings(headings);
-  headingTitle && (page.title ??= headingTitle);
+  page.title ??= getTitleFromHeadings(headings) ||
+    getTitleFromFilename(dirName);
 
   return page;
 }
 
 export function generateIndexPageFromDir(
-  { entry, inputPath, siteUrl, ignoreKeys: _ }: GeneratePageOpts,
+  { entry, inputPath, siteUrl }: GeneratePageOpts,
 ): Page {
   const relPath = relative(inputPath, entry.path) || ".";
   const slug = relPath === "." ? "." : slugify(entry.name);
@@ -260,7 +256,6 @@ export function generateIndexPageFromDir(
 
   const page: Page = {
     title: entry.name,
-    body: "",
     url: pageUrl,
     isIndex: true,
     pinned: false,
