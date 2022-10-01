@@ -2,8 +2,6 @@ import { basename, dirname, join } from "./deps.ts";
 import { compile, configure, render, templates } from "./deps.ts";
 import { Page } from "./pages.ts";
 import { UserConfig } from "./config.ts";
-import { hasKey } from "./attributes.ts";
-
 configure({ autotrim: true });
 
 interface Crumb {
@@ -37,11 +35,12 @@ interface TagPageOpts {
 const sortPages = (pages: Page[]): Page[] =>
   pages
     .sort((a, b) => {
-      if (a.date && b.date) return b.date.valueOf() - a.date.valueOf();
-      else return 0;
+      if (a.datePublished && b.datePublished) {
+        return b.datePublished.valueOf() - a.datePublished.valueOf();
+      } else return 0;
     })
     .sort((page) => page.isIndex ? -1 : 0)
-    .sort((page) => hasKey(page.attrs, ["pinned"]) ? -1 : 0);
+    .sort((page) => page.pinned ? -1 : 0);
 
 function generateCrumbs(
   currentPage: Page,
@@ -83,8 +82,6 @@ export async function buildPage(
   const crumbs = generateCrumbs(page, opts.userConfig.site.rootCrumb);
   const backlinkPages = sortPages(opts.backlinkPages);
   const childPages = sortPages(opts.childPages);
-  const useLogLayout = hasKey(page.attrs, ["log"]) && page.attrs?.log === true;
-  const showToc = hasKey(page.attrs, ["toc"]) && page.attrs?.toc === true;
   const taggedPages: { [tag: string]: Array<Page> } = {};
 
   for (const tag of Object.keys(opts.taggedPages)) {
@@ -100,8 +97,6 @@ export async function buildPage(
 
   return await render(opts.view, {
     page,
-    indexLayout: useLogLayout ? "log" : "default",
-    toc: showToc,
     crumbs,
     childPages,
     backlinkPages,

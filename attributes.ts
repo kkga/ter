@@ -1,10 +1,12 @@
 export type PageAttributes = Record<string, unknown>;
 
 export const hasKey = (data: PageAttributes, keys: Array<string>): boolean => {
-  for (const key of Object.keys(data)) {
-    const keyTyped = key as keyof typeof data;
-    if (keys.includes(keyTyped) && data[keyTyped] === true) {
-      return true;
+  if (data) {
+    for (const key of Object.keys(data)) {
+      const keyTyped = key as keyof typeof data;
+      if (keys.includes(keyTyped) && data[keyTyped] === true) {
+        return true;
+      }
     }
   }
   return false;
@@ -22,11 +24,10 @@ export const getDescription = (data: PageAttributes): string | undefined => {
   }
 };
 
-export const getTags = (data: PageAttributes): Array<string> => {
+export const getTags = (data: PageAttributes): Array<string> | undefined => {
   if (Array.isArray(data.tags)) {
     return data.tags;
   }
-  return [];
 };
 
 export const getDate = (data: PageAttributes): Date | undefined => {
