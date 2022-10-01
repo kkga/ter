@@ -24,8 +24,7 @@ export { readableStreamFromReader } from "https://deno.land/std@0.158.0/streams/
 
 export { serve } from "https://deno.land/std@0.158.0/http/server.ts";
 
-export { extract as extractFrontmatter } from "https://deno.land/std@0.158.0/encoding/front_matter.ts";
-
+export * as frontmatter from "https://deno.land/std@0.158.0/encoding/front_matter.ts";
 export {
   normalizeURL,
   parseURL,
