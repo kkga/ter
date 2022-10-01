@@ -255,21 +255,14 @@ If using non-default input and output folders, update the build command
 and output directory accordingly.
 </details>
 
-#### Build command
-
-```
+```sh
+# Build command
 deno run -A --unstable https://deno.land/x/ter/main.ts
-```
 
-#### Output directory
-
-```
+# Output directory
 _site
-```
 
-#### Install command
-
-```
+# Install command
 curl -fsSL https://deno.land/x/install/install.sh | DENO_INSTALL=/usr/local sh
 ```
 
