@@ -43,7 +43,7 @@ const defaultUserConfig: UserConfig = {
     email: "youremailaddress@example.com",
     url: "https://example.com/about-me/",
   },
-  navigation: {}
+  navigation: {},
 };
 
 const defaultBuildConfig: BuildConfig = {
