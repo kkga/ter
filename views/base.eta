@@ -154,7 +154,7 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
 <% if (page?.logLayout) {childPages.forEach((page, index) => {
     const {title, description, datePublished, tags, html, url} = page %>
-      <article>
+      <article class="log-entry">
         <header class="articleHeader">
 <%   if (title) { %>
           <h2 class="articleHeader-title"><a href="<%= url.pathname %>"><%~ title %></a></h2>
@@ -182,11 +182,6 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
         <%~ html %>
 <%   } %>
       </article>
-
-<%   if (index < childPages.length - 1) { %>
-      <hr />
-<%   } %>
-
 <% })} %>
     </main>
 
@@ -199,11 +194,9 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
       const {isIndex, url, description, title, datePublished } = page;
       const pinned = page?.attrs?.pinned; %>
           <li>
-            <a href="<%= url.pathname %>"><%= title %></a>
-<%     if (pinned) { %>*<% } %>
-<%     if (isIndex) { %>/ ..<% } %>
-<%     if (datePublished) { %>
+            <a href="<%= url.pathname %>"><%= title %></a><% if (pinned) { %>*<% } %><% if (isIndex) { %>/ ..<% } %>
             <span></span>
+<%     if (datePublished) { %>
             <time datetime="<%= datePublished %>"><%= datePublished.toLocaleDateString(locale?.date, dateIndexOpts) %></time>
 <%     } %>
           </li>
@@ -214,7 +207,7 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
 <% if (childTags?.length > 0) { %>
       <section>
-        <h6>Child tags</h6>
+        <h6># 🗆 &rarr;</h6>
         <ul>
 <%   childTags.forEach((tag) => { %>
           <li style="display:inline-block; margin-right: 0.5em;">
@@ -243,7 +236,7 @@ const dateIndexOpts = { year: 'numeric', month: 'numeric', day: 'numeric' };
 <% } %>
 <% pagesByTag && Object.keys(pagesByTag).forEach((tag) => { %>
       <section>
-        <h6><a href=<%= `/tag/${tag}` %>><%= `Also tagged #${tag}` %></a></h6>
+        <h6><a href=<%= `/tag/${tag}` %>><%= `#${tag}` %></a></h6>
         <ul>
 <%   pagesByTag[tag].forEach((page) => {
             const {isIndex, url, title, datePublished } = page; %>

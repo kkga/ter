@@ -11,11 +11,11 @@
     <email><%= author.email %></email>
   </author>
 
-<% pages.forEach(({ url, title, date, html }) => { %>
+<% pages.forEach(({ url, title, datePublished, html }) => { %>
   <entry>
     <title><%= title %></title>
     <link href="<%= url %>"/>
-    <updated><%= date %></updated>
+    <updated><%= datePublished %></updated>
     <id><%= url %></id>
     <content type="html">
       <%= html %>
