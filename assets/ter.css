@@ -415,6 +415,10 @@ table :is(code, kbd, samp) {
   margin-bottom: 3rem;
 }
 
+.log-entry .articleHeader {
+  margin-bottom: 1.5rem;
+}
+
 .articleHeader-title {
   margin: 0;
   margin-bottom: 0.25em;
@@ -454,6 +458,18 @@ table :is(code, kbd, samp) {
 
 .articleHeader-toc {
   margin: 1rem 0;
+}
+
+/* LOG LAYOUT ------------------------------------------------------------------ */
+
+.log-entry + .log-entry {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-bg-border);
+}
+
+.log-entry .articleHeader {
+  margin-bottom: 1.5rem;
 }
 
 /* HEADER/CRUMBS ------------------------------------------------------------------- */
