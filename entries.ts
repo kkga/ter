@@ -1,9 +1,7 @@
 import { common, join } from "./deps.ts";
 import { expandGlob, walk, WalkEntry } from "./deps.ts";
 import { withoutTrailingSlash } from "./deps.ts";
-
-export const INDEX_FILENAME = "index.md";
-export const RE_HIDDEN_OR_UNDERSCORED = /^\.|^_|\/\.|\/\_/;
+import { INDEX_FILENAME, RE_HIDDEN_OR_UNDERSCORED } from "./constants.ts";
 
 const hasIgnoredPrefix = (path: string): boolean => {
   const pathChunks = path.split("/");
