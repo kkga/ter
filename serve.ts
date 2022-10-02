@@ -2,8 +2,8 @@ import { join, relative } from "./deps.ts";
 import { readableStreamFromReader } from "./deps.ts";
 import { serve as httpServe } from "./deps.ts";
 import { BuildConfig } from "./config.ts";
-import { RE_HIDDEN_OR_UNDERSCORED } from "./entries.ts";
 import { GenerateSiteOpts } from "./main.ts";
+import { RE_HIDDEN_OR_UNDERSCORED } from "./constants.ts";
 
 interface WatchOpts {
   runner: (opts: GenerateSiteOpts) => Promise<void>;
