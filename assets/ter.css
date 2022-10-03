@@ -409,6 +409,50 @@ table :is(code, kbd, samp) {
 }
 /* /table */
 
+/* HEADER/CRUMBS ------------------------------------------------------------------- */
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  font-size: var(--font-size-s);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-tertiary);
+}
+
+.pageHeader:not(:hover) :is(nav, div, a) {
+  color: var(--color-text-tertiary) !important;
+}
+
+.pageHeader a:not(:hover) {
+  text-decoration: none;
+}
+
+.pageHeader-crumbs,
+.pageHeader-navigation {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pageHeader-crumbs-item,
+.pageHeader-navigation-item {
+  display: inline;
+}
+
+.pageHeader-crumbs-item:not(:first-child)::before {
+  content: "/";
+  margin: 0 0.5em;
+  color: var(--color-text-tertiary);
+}
+
+.pageHeader-navigation-item:not(:first-child)::before {
+  content: "·";
+  margin: 0 0.5em;
+  color: var(--color-text-tertiary);
+}
+
 /* ARTICLE HEADER ------------------------------------------------------------------ */
 
 .articleHeader {
@@ -472,60 +516,6 @@ table :is(code, kbd, samp) {
   margin-bottom: 1.5rem;
 }
 
-/* HEADER/CRUMBS ------------------------------------------------------------------- */
-
-body > header {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 0.25em;
-  font-size: var(--font-size-s);
-  line-height: var(--line-height-tight);
-  color: var(--color-text-tertiary);
-}
-
-body > header:not(:hover) :is(nav, div, a) {
-  color: var(--color-text-tertiary) !important;
-}
-
-body > header a:not(:hover) {
-  text-decoration: none;
-}
-
-body > header :is(ol, ul) {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-body > header :is(ol, ul) li {
-  display: inline-block;
-}
-
-body > header nav[aria-label="crumbs"] ol li:not(:first-child)::before {
-  content: "/";
-  margin: 0 0.25em;
-  color: var(--color-text-tertiary);
-}
-
-body > header nav[aria-label="navigation"] ol li:not(:first-child)::before {
-  content: "·";
-  margin: 0 0.5em;
-  color: var(--color-text-tertiary);
-}
-
-body > header ul.header-tags li {
-  margin-right: 0.5em;
-}
-
-/*article > header :is(h1, h2, h3, h4, h5, h6) {
-  margin: 0;
-  font-size: var(--font-size-base);
-  line-height: var(--line-height-tight);
-  font-weight: var(--font-weight-b);
-  color: var(--color-text-body);
-}
-*/
 /* ASIDE ----------------------------------------------------------------- */
 
 body > aside {
