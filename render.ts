@@ -1,3 +1,5 @@
+import { default as Prism } from "https://esm.sh/prismjs";
+
 import { dirname, extname, isAbsolute, join } from "./deps.ts";
 import { hljs } from "./deps.ts";
 import { marked } from "./deps.ts";
@@ -22,7 +24,7 @@ interface InternalLinkOpts {
   text: string;
   parsed: ParsedURL;
   baseUrl: URL;
-  internalUrls: Set<URL>;
+  internalLinks: Set<URL>;
   currentPath: string;
   isIndex: boolean;
 }
@@ -41,7 +43,7 @@ function createInternalLink(opts: InternalLinkOpts): string {
 
   if (isAbsolute(cleanPathname)) {
     internalHref = cleanPathname + opts.parsed.hash;
-    opts.internalUrls.add(new URL(internalHref, opts.baseUrl));
+    opts.internalLinks.add(new URL(internalHref, opts.baseUrl));
   } else {
     let resolved: string;
 
@@ -59,7 +61,7 @@ function createInternalLink(opts: InternalLinkOpts): string {
       : withLeadingSlash(resolved) + opts.parsed.hash;
 
     if (resolved !== "") {
-      opts.internalUrls.add(
+      opts.internalLinks.add(
         new URL(withoutLeadingSlash(internalHref), opts.baseUrl),
       );
     }
@@ -82,7 +84,7 @@ function createInternalLink(opts: InternalLinkOpts): string {
 export function render(
   { text, currentPath, isIndex, baseUrl }: RenderOpts,
 ): { html: string; links: Array<URL>; headings: Array<Heading> } {
-  const internalUrls: Set<URL> = new Set();
+  const internalLinks: Set<URL> = new Set();
   const headings: Array<Heading> = [];
   const renderer = new marked.Renderer();
   const tokens = marked.lexer(text);
@@ -122,7 +124,7 @@ export function render(
         text,
         parsed,
         baseUrl,
-        internalUrls,
+        internalLinks,
         currentPath,
         isIndex,
       });
@@ -154,10 +156,24 @@ export function render(
     }
   };
 
-  renderer.code = (code: string, lang: string): string => {
-    const language = hljs.getLanguage(lang) ? lang : "plaintext";
-    const html = hljs.highlight(code, { language }).value;
-    return `<pre class="hljs language-${language}">${html}</pre>`;
+  // renderer.code = (code: string, lang: string): string => {
+  //   const language = hljs.getLanguage(lang) ? lang : "plaintext";
+  //   const html = hljs.highlight(code, { language }).value;
+  //   return `<pre class="hljs language-${language}">${html}</pre>`;
+  // };
+
+  renderer.code = (code: string, language?: string) => {
+    // a language of `ts, ignore` should really be `ts`
+    language = language?.split(",")?.[0];
+    const grammar =
+      language && Object.hasOwnProperty.call(Prism.languages, language)
+        ? Prism.languages[language]
+        : undefined;
+    if (grammar === undefined) {
+      return `<pre><code class="notranslate">${code}</code></pre>`;
+    }
+    const html = Prism.highlight(code, grammar, language!);
+    return `<div class="highlight highlight-source-${language} notranslate"><pre>${html}</pre></div>`;
   };
 
   marked.use({
@@ -172,5 +188,5 @@ export function render(
 
   const html = marked.parser(tokens);
 
-  return { html, links: Array.from(internalUrls), headings };
+  return { html, links: [...internalLinks], headings };
 }

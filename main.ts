@@ -1,13 +1,23 @@
-import { parseFlags } from "./deps.ts";
-import { emptyDir } from "./deps.ts";
-import { join, relative, toFileUrl } from "./deps.ts";
-import { withTrailingSlash } from "./deps.ts";
+import {
+  emptyDir,
+  groupBy,
+  join,
+  parseFlags,
+  relative,
+  toFileUrl,
+  withTrailingSlash,
+} from "./deps.ts";
 
 import {
-  getContentEntries,
-  getStaticEntries,
+  BASE_STYLE_PATH,
+  BASE_VIEW_PATH,
+  FEED_VIEW_PATH,
+  HELP,
   INDEX_FILENAME,
-} from "./entries.ts";
+  MOD_URL,
+} from "./constants.ts";
+
+import { getContentEntries, getStaticEntries } from "./entries.ts";
 
 import {
   generateContentPage,
@@ -16,8 +26,6 @@ import {
   getAllTags,
   getPagesByTag,
   isDeadLink,
-  Page,
-  TagPage,
 } from "./pages.ts";
 
 import {
@@ -29,8 +37,10 @@ import {
   writeFiles,
 } from "./files.ts";
 
-import { BuildConfig, createConfig } from "./config.ts";
+import { createConfig } from "./config.ts";
 import { serve } from "./serve.ts";
+
+import { BuildConfig, Page, TagPage } from "./types.d.ts";
 
 export interface GenerateSiteOpts {
   config: BuildConfig;
@@ -44,16 +54,10 @@ interface BuildStats {
   buildMillisecs: number;
 }
 
-const MOD_URL = new URL("https://deno.land/x/ter/");
-const BASE_VIEW_PATH = "views/base.eta";
-const BASE_STYLE_PATH = "assets/ter.css";
-const FEED_VIEW_PATH = "views/feed.xml.eta";
-
-async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
+async function readTemplate(path: string): Promise<string | undefined> {
   try {
     const decoder = new TextDecoder("utf-8");
-    const headPath = join(viewsPath, "head.eta");
-    return decoder.decode(await Deno.readFile(headPath));
+    return decoder.decode(await Deno.readFile(path));
   } catch {
     return undefined;
   }
@@ -87,15 +91,23 @@ async function generateSite(opts: GenerateSiteOpts) {
 
   const START = performance.now();
 
+  performance.mark("generate:start");
+
   opts.quiet || console.log(`scan\t${inputPath}`);
 
   const [contentEntries, staticEntries] = await Promise.all([
     getContentEntries(inputPath),
     getStaticEntries(inputPath, outputPath, staticExts),
   ]);
-  const headInclude = await getHeadInclude(viewsPath) ?? "";
+
+  const [headTemplate, footerTemplate] = await Promise.all([
+    readTemplate(join(viewsPath, "head.eta")),
+    readTemplate(join(viewsPath, "footer.eta")),
+  ]);
+
   const pages: Page[] = [];
 
+  performance.mark("render-markdown:start");
   for (const entry of contentEntries) {
     opts.quiet || console.log(`render\t${relative(inputPath, entry.path)}`);
     const isIndex = entry.isDirectory || entry.name === INDEX_FILENAME;
@@ -137,18 +149,26 @@ async function generateSite(opts: GenerateSiteOpts) {
       page && !page.ignored && pages.push(page);
     }
   }
+  performance.mark("render-markdown:end");
 
+  // TODO: use groupBy
+  // const taggedPages: Record<string, Page[]> = groupBy(
+  //   pages,
+  //   (it: Page) => {},
+  // );
   const tagPages: TagPage[] = [];
   for (const tag of getAllTags(pages)) {
     const pagesWithTag = getPagesByTag(pages, tag);
     tagPages.push({ name: tag, pages: pagesWithTag });
   }
 
+  performance.mark("render-html:start");
   const [contentFiles, tagFiles, staticFiles, feedFile] = await Promise.all([
     buildContentFiles(pages, {
       outputPath,
       view: pageView,
-      head: headInclude,
+      headTemplate: headTemplate,
+      footerTemplate: footerTemplate,
       includeRefresh: opts.includeRefresh,
       userConfig,
       style,
@@ -157,19 +177,22 @@ async function generateSite(opts: GenerateSiteOpts) {
     buildTagFiles(tagPages, {
       outputPath,
       view: pageView,
-      head: headInclude,
+      headTemplate: headTemplate,
+      footerTemplate: footerTemplate,
       includeRefresh: opts.includeRefresh,
       userConfig,
       style,
     }),
-
     getStaticFiles(staticEntries, inputPath, outputPath),
     buildFeedFile(pages, feedView, join(outputPath, "feed.xml"), userConfig),
   ]);
+  performance.mark("render-html:end");
 
+  performance.mark("write-files:start");
   await emptyDir(outputPath);
   await writeFiles([...contentFiles, ...tagFiles], opts.quiet);
   await copyFiles(staticFiles, opts.quiet);
+  performance.mark("write-files:end");
 
   if (feedFile && feedFile.fileContent) {
     await Deno.writeTextFile(feedFile.filePath, feedFile.fileContent);
@@ -177,6 +200,45 @@ async function generateSite(opts: GenerateSiteOpts) {
 
   const END = performance.now();
   const BUILD_SECS = (END - START);
+
+  performance.mark("generate:end");
+
+  performance.measure(
+    "render-markdown",
+    "render-markdown:start",
+    "render-markdown:end",
+  );
+  performance.measure("render-html", "render-html:start", "render-html:end");
+  performance.measure("write-files", "write-files:start", "write-files:end");
+  performance.measure("generate", "generate:start", "generate:end");
+
+  console.log(
+    `> render-markdown in ${
+      performance.getEntriesByName("render-markdown", "measure")[0].duration
+    }ms`,
+  );
+
+  console.log(
+    `> render-html in ${
+      performance.getEntriesByName("render-html", "measure")[0].duration
+    }ms`,
+  );
+
+  console.log(
+    `> write-files in ${
+      performance.getEntriesByName("write-files", "measure")[0].duration
+    }ms`,
+  );
+
+  console.log(
+    `> generate in ${
+      performance.getEntriesByName("generate", "measure")[0].duration
+    }ms`,
+  );
+
+  performance.clearMarks("generate:start");
+  performance.clearMarks("generate:end");
+  performance.clearMeasures("generate");
 
   const deadLinks: [from: URL, to: URL][] = [];
   for (const page of pages) {
@@ -218,7 +280,7 @@ async function main(args: string[]) {
   });
 
   if (flags.help) {
-    printHelp();
+    console.log(HELP);
     Deno.exit();
   }
 
@@ -257,21 +319,6 @@ async function main(args: string[]) {
       config,
     });
   }
-}
-
-function printHelp() {
-  console.log(`Ter -- tiny wiki-style site builder.\n
-USAGE:
-  ter [options]\n
-OPTIONS:
-  --input\t\tSource directory (default: .)
-  --output\t\tOutput directory (default: _site)
-  --config\t\tPath to config file (default: .ter/config.json)
-  --local\t\tUse local assets (default: false)
-  --serve\t\tServe locally and watch for changes (default: false)
-  --port\t\tServe port (default: 8000)
-  --drafts\t\tRender pages marked as drafts (default: false)
-  --quiet\t\tSuppress output (default: false)`);
 }
 
 main(Deno.args);

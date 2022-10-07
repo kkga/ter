@@ -4,41 +4,12 @@ import { frontmatter } from "./deps.ts";
 import { slugify } from "./deps.ts";
 import { render } from "./render.ts";
 import * as attributes from "./attributes.ts";
+
+import type { Heading, Body } from "./types.d.ts";
+
 const decoder = new TextDecoder("utf-8");
 
-export interface Heading {
-  text: string;
-  level: number;
-  slug: string;
-}
-
-export interface Page {
-  url: URL;
-  isIndex: boolean;
-  pinned: boolean;
-  ignored: boolean;
-  showToc: boolean;
-  logLayout: boolean;
-  hideTitle: boolean;
-  title?: string;
-  body?: string;
-  path?: string;
-  description?: string;
-  attrs?: attributes.PageAttributes;
-  links?: Array<URL>;
-  datePublished?: Date;
-  dateUpdated?: Date;
-  html?: string;
-  tags?: Array<string>;
-  headings?: Array<Heading>;
-}
-
-export interface TagPage {
-  name: string;
-  pages: Array<Page>;
-}
-
-export function isDeadLink(allPages: Array<Page>, linkUrl: URL): boolean {
+export function isDeadLink(allPages: Array<Body>, linkUrl: URL): boolean {
   for (const page of allPages) {
     if (page.url.pathname === linkUrl.pathname) return false;
     else continue;
@@ -56,7 +27,7 @@ const getTitleFromFilename = (filePath: string): string => {
   return basename(filePath).replace(extname(filePath), "");
 };
 
-export function getAllTags(pages: Array<Page>): Array<string> {
+export function getAllTags(pages: Array<Body>): Array<string> {
   const allTags: Set<string> = new Set();
   pages.forEach((page) => {
     if (page.attrs) {
@@ -67,7 +38,7 @@ export function getAllTags(pages: Array<Page>): Array<string> {
   return [...allTags];
 }
 
-export function getPagesByTag(allPages: Array<Page>, tag: string): Array<Page> {
+export function getPagesByTag(allPages: Array<Body>, tag: string): Array<Body> {
   const filtered = allPages.filter((page) => {
     if (page.attrs) {
       const pageTags = attributes.getTags(page.attrs);
@@ -78,10 +49,10 @@ export function getPagesByTag(allPages: Array<Page>, tag: string): Array<Page> {
 }
 
 export function getBacklinkPages(
-  allPages: Array<Page>,
-  current: Page,
-): Array<Page> {
-  const pages: Set<Page> = new Set();
+  allPages: Array<Body>,
+  current: Body,
+): Array<Body> {
+  const pages: Set<Body> = new Set();
 
   for (const outPage of allPages) {
     if (outPage.links) {
@@ -100,9 +71,9 @@ export function getBacklinkPages(
 }
 
 export function getChildPages(
-  allPages: Array<Page>,
-  current: Page,
-): Array<Page> {
+  allPages: Array<Body>,
+  current: Body,
+): Array<Body> {
   const pages = allPages.filter((p) =>
     current.url.pathname !== p.url.pathname &&
     current.url.pathname === dirname(p.url.pathname)
@@ -112,8 +83,8 @@ export function getChildPages(
 }
 
 export function getChildTags(
-  allPages: Array<Page>,
-  current: Page,
+  allPages: Array<Body>,
+  current: Body,
 ): Array<string> {
   const tags: Set<string> = new Set();
 
@@ -128,7 +99,7 @@ export function getChildTags(
 
 interface PageData {
   body?: string;
-  attrs?: attributes.PageAttributes;
+  attrs?: Record<string, unknown>;
   datePublished?: Date;
   title?: string;
   description?: string;
@@ -140,7 +111,7 @@ interface PageData {
 
 const extractPageData = (raw: string, ignoreKeys: string[]): PageData => {
   const fm = frontmatter.extract(raw);
-  const pageAttrs = fm.attrs as attributes.PageAttributes;
+  const pageAttrs = fm.attrs as Record<string, unknown>;
   const title = attributes.getTitle(pageAttrs);
   const datePublished = attributes.getDate(pageAttrs);
   const description = attributes.getDescription(pageAttrs);
@@ -180,13 +151,13 @@ interface GeneratePageOpts {
 
 export async function generateContentPage(
   { entry, inputPath, siteUrl, ignoreKeys }: GeneratePageOpts,
-): Promise<Page> {
+): Promise<Body> {
   const relPath = relative(inputPath, entry.path);
   const raw = decoder.decode(await Deno.readFile(entry.path));
   const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
   const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
 
-  let page: Page = {
+  let page: Body = {
     url: pageUrl,
     isIndex: false,
     pinned: false,
@@ -217,14 +188,14 @@ export async function generateContentPage(
 
 export async function generateIndexPageFromFile(
   { entry, inputPath, siteUrl, ignoreKeys }: GeneratePageOpts,
-): Promise<Page> {
+): Promise<Body> {
   const relPath = relative(inputPath, dirname(entry.path)) || ".";
   const raw = decoder.decode(await Deno.readFile(entry.path));
   const dirName = basename(dirname(entry.path));
   const slug = relPath === "." ? "." : slugify(dirName);
   const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
 
-  let page: Page = {
+  let page: Body = {
     url: pageUrl,
     isIndex: true,
     pinned: false,
@@ -255,12 +226,12 @@ export async function generateIndexPageFromFile(
 
 export function generateIndexPageFromDir(
   { entry, inputPath, siteUrl }: GeneratePageOpts,
-): Page {
+): Body {
   const relPath = relative(inputPath, entry.path) || ".";
   const slug = relPath === "." ? "." : slugify(entry.name);
   const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
 
-  const page: Page = {
+  const page: Body = {
     title: entry.name,
     url: pageUrl,
     isIndex: true,

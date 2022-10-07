@@ -1,9 +1,9 @@
 import { join, relative } from "./deps.ts";
 import { readableStreamFromReader } from "./deps.ts";
 import { serve as httpServe } from "./deps.ts";
-import { BuildConfig } from "./config.ts";
 import { GenerateSiteOpts } from "./main.ts";
 import { RE_HIDDEN_OR_UNDERSCORED } from "./constants.ts";
+import type { BuildConfig } from "./types.d.ts";
 
 interface WatchOpts {
   runner: (opts: GenerateSiteOpts) => Promise<void>;
@@ -54,7 +54,7 @@ async function watch(opts: WatchOpts) {
 
     sockets.forEach((socket) => {
       clearTimeout(timer);
-      timer = setTimeout(() => socket.send("refresh"), 100);
+      timer = setTimeout(() => socket.send("refresh"), 1000);
     });
   }
 }
