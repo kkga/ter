@@ -1,5 +1,16 @@
-import { css, FC, h, tw } from "../deps.ts";
+import { apply, css, FC, h, tw } from "../deps.ts";
 import { Crumb } from "../types.d.ts";
+
+const styles = {
+  sibling: css({
+    "&::before": { opacity: 0.25, content: '"/"', margin: "0 0.5ch" },
+  }),
+  header: css({
+    "&:not(:hover)": {
+      a: apply`text-gray-500!`,
+    },
+  }),
+};
 
 const PageHeader: FC<
   {
@@ -9,17 +20,13 @@ const PageHeader: FC<
 > = (
   { crumbs, navItems },
 ) => {
-  const itemSiblingStyle = css({
-    "&::before": { opacity: 0.5, content: '"/"' },
-  });
-
   return (
-    <header>
+    <header class={tw`text-gray-500 ${styles.header}`}>
       {crumbs &&
         (
           <ul class={tw`flex`}>
             {crumbs.map((crumb) => (
-              <li class={tw`sibling:${itemSiblingStyle}`}>
+              <li class={tw`sibling:${styles.sibling}`}>
                 {crumb.current &&
                   crumb.slug}
                 {!crumb.current &&

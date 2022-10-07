@@ -20,7 +20,7 @@ interface BodyProps {
 const Body: FC<BodyProps> = (
   { page, crumbs, childPages, childTags, backlinkPages, taggedPages },
 ) => (
-  <body class={tw`container mx-auto min-h-screen flex flex-col gap-12 p-8`}>
+  <body class={tw`max-w-3xl mx-auto min-h-screen flex flex-col gap-12 p-8`}>
     {crumbs && <Header crumbs={crumbs} />}
     <main>
       <Article

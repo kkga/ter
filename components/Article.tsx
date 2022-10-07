@@ -39,7 +39,7 @@ const Article: FC<ArticleProps> = ({
     <article>
       <header class={tw`mb-8 flex flex-col gap-2`}>
         <h1 class={tw`text-4xl font-extrabold tracking-tight`}>{title}</h1>
-        <div class={tw`text-sm text-gray-700`}>
+        <div class={tw`text-sm text-gray-500`}>
           <p>{description}</p>
           {datePublished && (
             <div>
