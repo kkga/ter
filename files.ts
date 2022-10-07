@@ -1,49 +1,31 @@
-import { copy, ensureDir, minify, MinifyOpts, WalkEntry } from "./deps.ts";
+import { copy, ensureDir, WalkEntry } from "./deps.ts";
 import { basename, dirname, join, relative } from "./deps.ts";
-import { buildFeed, buildPage, buildTagPage } from "./build.ts";
-import { UserConfig } from "./config.ts";
+import { buildFeed, buildPage, buildTagPage } from "./build.tsx";
 import { getTags } from "./attributes.ts";
 import {
   getBacklinkPages,
   getChildPages,
   getChildTags,
   getPagesByTag,
-  Page,
-  TagPage,
 } from "./pages.ts";
 
-export interface OutputFile {
-  inputPath?: string;
-  filePath: string;
-  fileContent?: string;
-}
+import type { OutputFile, Body, TagPage, UserConfig } from "./types.d.ts";
 
 interface BuildOpts {
   outputPath: string;
   view: string;
-  head: string;
+  headTemplate: string | undefined;
+  footerTemplate: string | undefined;
   userConfig: UserConfig;
   style: string;
   includeRefresh: boolean;
 }
 
-const minifyOpts: MinifyOpts = {
-  collapseWhitespace: true,
-  collapseBooleanAttributes: true,
-};
-
-const minifyStyleOpts: MinifyOpts = {
-  minifyCSS: true,
-  collapseWhitespace: true,
-  collapseBooleanAttributes: true,
-};
-
 export async function buildContentFiles(
-  pages: Array<Page>,
+  pages: Array<Body>,
   opts: BuildOpts,
 ): Promise<OutputFile[]> {
   const files: Array<OutputFile> = [];
-  const styleMinified = await minify(opts.style, minifyStyleOpts);
 
   for (const page of pages) {
     const filePath = join(
@@ -53,21 +35,22 @@ export async function buildContentFiles(
     );
 
     const tags = page.attrs && getTags(page.attrs);
-    const pagesByTag: { [tag: string]: Array<Page> } = {};
+    const pagesByTag: { [tag: string]: Array<Body> } = {};
     tags && tags.forEach((tag: string) => {
       pagesByTag[tag] = getPagesByTag(pages, tag);
     });
 
     const html = await buildPage(page, {
-      headInclude: opts.head,
+      headTemplate: opts.headTemplate,
+      footerTemplate: opts.footerTemplate,
       includeRefresh: opts.includeRefresh,
-      childPages: page.isIndex ? getChildPages(pages, page) : [],
+      childPages: getChildPages(pages, page),
       backlinkPages: getBacklinkPages(pages, page),
       taggedPages: pagesByTag,
-      childTags: page.isIndex ? getChildTags(pages, page) : [],
+      childTags: getChildTags(pages, page),
       view: opts.view,
       userConfig: opts.userConfig,
-      style: styleMinified,
+      style: opts.style,
     }).catch((reason) => {
       console.error("Error building page:", page);
       console.error("Reason:", reason);
@@ -75,10 +58,9 @@ export async function buildContentFiles(
     });
 
     if (typeof html === "string") {
-      const minified = await minify(html, minifyOpts);
       files.push({
         filePath,
-        fileContent: minified,
+        fileContent: html,
       });
     }
   }
@@ -91,7 +73,6 @@ export async function buildTagFiles(
   opts: BuildOpts,
 ): Promise<OutputFile[]> {
   const files: Array<OutputFile> = [];
-  const styleMinified = await minify(opts.style, minifyStyleOpts);
 
   for (const tag of tagPages) {
     const filePath = join(
@@ -102,20 +83,20 @@ export async function buildTagFiles(
     );
 
     const html = await buildTagPage(tag.name, {
+      headTemplate: opts.headTemplate,
+      footerTemplate: opts.footerTemplate,
       taggedPages: tag.pages,
       view: opts.view,
-      headInclude: opts.head,
       includeRefresh: opts.includeRefresh,
       userConfig: opts.userConfig,
-      style: styleMinified,
+      style: opts.style,
     });
 
     if (typeof html === "string") {
-      const minified = await minify(html, minifyOpts);
       files.push({
         inputPath: "",
         filePath,
-        fileContent: minified,
+        fileContent: html,
       });
     }
   }
@@ -124,7 +105,7 @@ export async function buildTagFiles(
 }
 
 export async function buildFeedFile(
-  pages: Array<Page>,
+  pages: Array<Body>,
   view: string,
   outputPath: string,
   userConfig: UserConfig,
