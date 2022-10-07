@@ -13,10 +13,14 @@ interface BodyProps {
   taggedPages?: { [tag: string]: Array<Page> };
 }
 
+// TODO
+// - generate toc
+// - figure out date format
+
 const Body: FC<BodyProps> = (
   { page, crumbs, childPages, childTags, backlinkPages, taggedPages },
 ) => (
-  <body class={tw`flex flex-col gap-12 p-8`}>
+  <body class={tw`container mx-auto min-h-screen flex flex-col gap-12 p-8`}>
     {crumbs && <Header crumbs={crumbs} />}
     <main>
       <Article
@@ -45,7 +49,7 @@ const Body: FC<BodyProps> = (
           <IndexList title={`#{tag}`} items={taggedPages[tag]} />;
         })}
     </aside>
-    <footer>heeey</footer>
+    <footer class={tw`mt-auto`}>heeey</footer>
   </body>
 );
 

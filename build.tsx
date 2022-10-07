@@ -23,12 +23,11 @@ twSetup({
     },
     colors: {
       gray: colors.warmGray,
-      accent: colors.red,
+      accent: colors.indigo,
     },
   },
   preflight: {
     body: apply`bg-gray-100 text-gray-900`,
-    h1: apply`text(gray-800 uppercase)`,
     a: apply`text-accent-500 no-underline hover:underline`,
   },
   sheet,
@@ -116,7 +115,7 @@ export async function buildPage(
   const styleTag = getStyleTag(sheet);
 
   return `
-<!DOCTYPE html
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">

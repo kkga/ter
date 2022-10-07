@@ -1,4 +1,4 @@
-import { FC, h, tw } from "../deps.ts";
+import { apply, css, FC, h, tw } from "../deps.ts";
 
 interface ArticleProps {
   title?: string;
@@ -26,27 +26,33 @@ const Article: FC<ArticleProps> = ({
   dateFormat = { year: "numeric", month: "short", day: "numeric" },
   html,
 }) => {
+  const contentStyles = css({
+    h1: apply`text-4xl   mt-8 mb-4 font-bold tracking-tight`,
+    h2: apply`text-3xl   mt-8 mb-4 font-bold tracking-tight`,
+    h3: apply`text-2xl   mt-8 mb-3 font-bold tracking-tight`,
+    h4: apply`text-xl    mt-8 mb-2 font-bold tracking-tight`,
+    h5: apply`text-lg    mt-8 mb-2 font-bold tracking-tight`,
+    h6: apply`text-base  mt-8 mb-2 font-bold tracking-tight`,
+  });
+
   return (
     <article>
-      <header>
-        <h1>{title}</h1>
-        <p>{description}</p>
-        {datePublished || tags && tags.length > 0 &&
-            (
-              <div class="articleHeader-meta">
-                {datePublished && (
-                  <div>
-                    Published:{" "}
-                    <time dateTime={datePublished.toString()}>
-                      {datePublished.toLocaleDateString("pt", dateFormat)}
-                    </time>
-                  </div>
-                )}
-                <ul class="articleHeader-meta-tags">
-                  {renderTags(tags)}
-                </ul>
-              </div>
-            )}
+      <header class={tw`mb-8 flex flex-col gap-2`}>
+        <h1 class={tw`text-4xl font-extrabold tracking-tight`}>{title}</h1>
+        <div class={tw`text-sm text-gray-700`}>
+          <p>{description}</p>
+          {datePublished && (
+            <div>
+              Published:{" "}
+              <time dateTime={datePublished.toString()}>
+                {datePublished.toLocaleDateString("pt", dateFormat)}
+              </time>
+            </div>
+          )}
+          <ul class="articleHeader-meta-tags">
+            {/*renderTags(tags)*/}
+          </ul>
+        </div>
 
         {toc &&
           (
@@ -78,7 +84,7 @@ const Article: FC<ArticleProps> = ({
           )}
       </header>
       <div
-        class="article-body"
+        class={tw(contentStyles)}
         dangerouslySetInnerHTML={{ __html: html || "" }}
       />
     </article>
