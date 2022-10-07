@@ -1,35 +1,7 @@
 import { deepmerge } from "./deps.ts";
 import { ensureDir } from "./deps.ts";
 import { dirname, isAbsolute, join } from "./deps.ts";
-
-export interface UserConfig {
-  site: {
-    title: string;
-    description: string;
-    url: string;
-    rootCrumb: string;
-  };
-  author: { name: string; email: string; url: string };
-  navigation?: Record<string, string>;
-  locale?: {
-    date?: string;
-  };
-}
-
-export interface BuildConfig {
-  inputPath: string;
-  outputPath: string;
-  pageView: string;
-  feedView: string;
-  style: string;
-  assetsPath: string;
-  viewsPath: string;
-  userConfigPath: string;
-  ignoreKeys: string[];
-  staticExts: string[];
-  userConfig: UserConfig;
-  renderDrafts: boolean;
-}
+import { BuildConfig, UserConfig } from "./types.d.ts";
 
 const defaultUserConfig: UserConfig = {
   site: {
