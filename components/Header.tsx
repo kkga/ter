@@ -1,32 +1,43 @@
+import { mapEntries } from "https://deno.land/std@0.159.0/collections/map_entries.ts";
 import { apply, css, FC, h, tw } from "../deps.ts";
 import { Crumb } from "../types.d.ts";
 
 const styles = {
-  sibling: css({
-    "&::before": { opacity: 0.25, content: '"/"', margin: "0 0.5ch" },
+  siblingCrumb: css({
+    "&::before": { opacity: 0.5, content: '"/"', margin: "0 0.5ch" },
+  }),
+  siblingLink: css({
+    "&::before": { opacity: 0.5, content: '"·"', margin: "0 0.5ch" },
   }),
   header: css({
-    "&:not(:hover)": {
-      a: apply`text-gray-500!`,
-    },
+    "&:not(:hover)": { a: apply`text-gray-500!` },
   }),
 };
 
 const PageHeader: FC<
   {
     crumbs?: Crumb[];
-    navItems?: { string: string }[];
+    navItems?: Record<string, string>;
   }
 > = (
   { crumbs, navItems },
 ) => {
   return (
-    <header class={tw`text-gray-500 text-xs font-mono ${styles.header}`}>
+    <header
+      class={tw`
+        flex
+        justify-between
+        align-baseline
+        text-xs
+        font-mono
+        ${styles.header}
+        text-gray-500`}
+    >
       {crumbs &&
         (
           <ul class={tw`flex`}>
             {crumbs.map((crumb) => (
-              <li class={tw`sibling:${styles.sibling}`}>
+              <li class={tw`sibling:${styles.siblingCrumb}`}>
                 {crumb.current &&
                   crumb.slug}
                 {!crumb.current &&
@@ -35,7 +46,15 @@ const PageHeader: FC<
             ))}
           </ul>
         )}
-      {navItems && navItems.map((item) => <div>{item}</div>)}
+      {navItems && (
+        <ul class={tw`flex`}>
+          {Object.entries(navItems).map(([label, path]) => (
+            <li class={tw`sibling:${styles.siblingLink}`}>
+              <a href={path}>{label}</a>
+            </li>
+          ))}
+        </ul>
+      )}
     </header>
   );
 };

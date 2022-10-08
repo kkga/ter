@@ -1,4 +1,4 @@
-import { FC, h, tw } from "../deps.ts";
+import { apply, css, FC, h, tw } from "../deps.ts";
 import { Crumb, Page } from "../types.d.ts";
 import Article from "./Article.tsx";
 import IndexList from "./IndexList.tsx";
@@ -11,14 +11,24 @@ interface BodyProps {
   childTags?: string[];
   backlinkPages?: Page[];
   taggedPages?: { [tag: string]: Array<Page> };
+  navItems?: Record<string, string>;
 }
+
+const styles = {
+  siblingLink: css({
+    "&::before": { opacity: 0.5, content: '"·"', margin: "0 1ch" },
+  }),
+  footer: css({
+    "&:not(:hover)": { a: apply`text-gray-500!` },
+  }),
+};
 
 // TODO
 // - generate toc
 // - figure out date format
 
 const Body: FC<BodyProps> = (
-  { page, crumbs, childPages, childTags, backlinkPages, taggedPages },
+  { page, crumbs, childPages, childTags, backlinkPages, taggedPages, navItems },
 ) => (
   <body
     class={tw`
@@ -38,7 +48,7 @@ const Body: FC<BodyProps> = (
         text-gray-300
       )`}
   >
-    {crumbs && <Header crumbs={crumbs} />}
+    {crumbs && <Header navItems={navItems} crumbs={crumbs} />}
     <main>
       <Article
         title={page.title}
@@ -66,7 +76,15 @@ const Body: FC<BodyProps> = (
           <IndexList title={`#{tag}`} items={taggedPages[tag]} />;
         })}
     </aside>
-    <footer class={tw`mt-auto text-sm`}>heeey</footer>
+
+    <footer
+      class={tw`flex align-baseline mt-auto text-xs text-gray-500 ${styles.footer}`}
+    >
+      <a href="/feed.xml">Feed</a>
+      <span class={tw`${styles.siblingLink}`}>
+        Made with <a href="https://ter.kkga.me">Ter</a>
+      </span>
+    </footer>
   </body>
 );
 

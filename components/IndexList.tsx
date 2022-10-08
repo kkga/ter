@@ -41,7 +41,10 @@ const Item: FC<{
         border(b dashed gray-200) dark:(border-gray-700)`}
       />
       {date && (
-        <time class={tw`text-xs`} dateTime={date.toString()}>
+        <time
+          class={tw`text-xs tabular-nums`}
+          dateTime={date.toString()}
+        >
           {date.toLocaleDateString()}
         </time>
       )}
