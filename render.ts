@@ -1,5 +1,3 @@
-import { default as Prism } from "https://esm.sh/prismjs";
-
 import { dirname, extname, isAbsolute, join } from "./deps.ts";
 import { hljs } from "./deps.ts";
 import { marked } from "./deps.ts";
@@ -10,7 +8,8 @@ import {
   withoutLeadingSlash,
   withoutTrailingSlash,
 } from "./deps.ts";
-import { Heading } from "./pages.ts";
+
+import { Heading } from "./types.d.ts";
 
 interface RenderOpts {
   text: string;
@@ -156,24 +155,10 @@ export function render(
     }
   };
 
-  // renderer.code = (code: string, lang: string): string => {
-  //   const language = hljs.getLanguage(lang) ? lang : "plaintext";
-  //   const html = hljs.highlight(code, { language }).value;
-  //   return `<pre class="hljs language-${language}">${html}</pre>`;
-  // };
-
-  renderer.code = (code: string, language?: string) => {
-    // a language of `ts, ignore` should really be `ts`
-    language = language?.split(",")?.[0];
-    const grammar =
-      language && Object.hasOwnProperty.call(Prism.languages, language)
-        ? Prism.languages[language]
-        : undefined;
-    if (grammar === undefined) {
-      return `<pre><code class="notranslate">${code}</code></pre>`;
-    }
-    const html = Prism.highlight(code, grammar, language!);
-    return `<div class="highlight highlight-source-${language} notranslate"><pre>${html}</pre></div>`;
+  renderer.code = (code: string, lang: string): string => {
+    const language = hljs.getLanguage(lang) ? lang : "plaintext";
+    const html = hljs.highlight(code, { language }).value;
+    return `<pre class="hljs language-${language}">${html}</pre>`;
   };
 
   marked.use({
