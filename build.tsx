@@ -23,7 +23,7 @@ twSetup({
     },
     colors: {
       gray: colors.coolGray,
-      accent: colors.indigo,
+      accent: colors.blue,
     },
   },
   preflight: {
@@ -111,6 +111,7 @@ export function buildPage(
       childTags={opts.childTags}
       backlinkPages={backlinkPages}
       taggedPages={taggedPages}
+      navItems={opts.userConfig.navigation}
     />,
   );
 
