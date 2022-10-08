@@ -35,7 +35,11 @@ const Item: FC<{
         {title}
       </a>
       {isIndex && <div class={tw`-ml-1 opacity-50 select-none`}>/ ..</div>}
-      <span class={tw`flex-1 border(b dashed gray-300)`} />
+      <span
+        class={tw`
+        flex-1
+        border(b dashed gray-200) dark:(border-gray-700)`}
+      />
       {date && (
         <time class={tw`text-xs`} dateTime={date.toString()}>
           {date.toLocaleDateString()}
@@ -57,10 +61,14 @@ const IndexList: FC<{ title: string; items: Page[] }> = (
           gap-2
           text-xs
           leading-6
-          font-medium`}
+          uppercase
+          tracking-wide
+          `}
       >
         {title}
-        <span class={tw`flex-1 border(b solid gray-300)`} />
+        <span
+          class={tw`flex-1 border(b solid gray-200) dark:(border-gray-700)`}
+        />
       </h6>
       <ul class={tw`flex flex-col`}>
         {items.map((item: Page) => (

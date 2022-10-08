@@ -40,7 +40,7 @@ import {
 import { createConfig } from "./config.ts";
 import { serve } from "./serve.ts";
 
-import { BuildConfig, Page, TagPage } from "./types.d.ts";
+import { BuildConfig, Page } from "./types.d.ts";
 
 export interface GenerateSiteOpts {
   config: BuildConfig;

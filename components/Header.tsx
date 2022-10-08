@@ -21,7 +21,7 @@ const PageHeader: FC<
   { crumbs, navItems },
 ) => {
   return (
-    <header class={tw`text-gray-500 ${styles.header}`}>
+    <header class={tw`text-gray-500 text-xs font-mono ${styles.header}`}>
       {crumbs &&
         (
           <ul class={tw`flex`}>

@@ -20,7 +20,24 @@ interface BodyProps {
 const Body: FC<BodyProps> = (
   { page, crumbs, childPages, childTags, backlinkPages, taggedPages },
 ) => (
-  <body class={tw`max-w-3xl mx-auto min-h-screen flex flex-col gap-12 p-8`}>
+  <body
+    class={tw`
+      bg-gray-100
+      text-gray-900
+      max-w-3xl
+      mx-auto
+      min-h-screen
+      flex
+      flex-col
+      gap-12
+      p-8
+      bg-gray-50
+      text-gray-900
+      dark:(
+        bg-gray-900
+        text-gray-300
+      )`}
+  >
     {crumbs && <Header crumbs={crumbs} />}
     <main>
       <Article
@@ -49,7 +66,7 @@ const Body: FC<BodyProps> = (
           <IndexList title={`#{tag}`} items={taggedPages[tag]} />;
         })}
     </aside>
-    <footer class={tw`mt-auto`}>heeey</footer>
+    <footer class={tw`mt-auto text-sm`}>heeey</footer>
   </body>
 );
 

@@ -9,7 +9,7 @@ import {
   getPagesByTag,
 } from "./pages.ts";
 
-import type { OutputFile, Body, TagPage, UserConfig } from "./types.d.ts";
+import type { OutputFile, Page, UserConfig } from "./types.d.ts";
 
 interface BuildOpts {
   outputPath: string;
@@ -21,8 +21,8 @@ interface BuildOpts {
   includeRefresh: boolean;
 }
 
-export async function buildContentFiles(
-  pages: Array<Body>,
+export function buildContentFiles(
+  pages: Array<Page>,
   opts: BuildOpts,
 ): Promise<OutputFile[]> {
   const files: Array<OutputFile> = [];
@@ -35,12 +35,12 @@ export async function buildContentFiles(
     );
 
     const tags = page.attrs && getTags(page.attrs);
-    const pagesByTag: { [tag: string]: Array<Body> } = {};
+    const pagesByTag: { [tag: string]: Page[] } = {};
     tags && tags.forEach((tag: string) => {
       pagesByTag[tag] = getPagesByTag(pages, tag);
     });
 
-    const html = await buildPage(page, {
+    const html = buildPage(page, {
       headTemplate: opts.headTemplate,
       footerTemplate: opts.footerTemplate,
       includeRefresh: opts.includeRefresh,
@@ -51,10 +51,6 @@ export async function buildContentFiles(
       view: opts.view,
       userConfig: opts.userConfig,
       style: opts.style,
-    }).catch((reason) => {
-      console.error("Error building page:", page);
-      console.error("Reason:", reason);
-      Deno.exit(1);
     });
 
     if (typeof html === "string") {
@@ -105,7 +101,7 @@ export async function buildTagFiles(
 }
 
 export async function buildFeedFile(
-  pages: Array<Body>,
+  pages: Page[],
   view: string,
   outputPath: string,
   userConfig: UserConfig,

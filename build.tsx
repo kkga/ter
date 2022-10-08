@@ -9,7 +9,7 @@ import {
   twSetup,
   virtualSheet,
 } from "./deps.ts";
-
+import { HMR_CLIENT } from "./constants.ts";
 import { Crumb, Page, UserConfig } from "./types.d.ts";
 import Body from "./components/Body.tsx";
 
@@ -22,13 +22,15 @@ twSetup({
       mono: ["monospace", "ui-monospace", "Menlo", "Monaco"],
     },
     colors: {
-      gray: colors.warmGray,
+      gray: colors.coolGray,
       accent: colors.indigo,
     },
   },
   preflight: {
-    body: apply`bg-gray-100 text-gray-900`,
-    a: apply`text-accent-500 no-underline hover:underline`,
+    a: apply`no-underline hover:underline text-accent-500 dark:(text-accent-400)`,
+  },
+  variants: {
+    "not-hover": "&:not(:hover)",
   },
   sheet,
 });
@@ -90,10 +92,10 @@ function generateCrumbs(currentPage: Page, homeSlug?: string): Array<Crumb> {
   return crumbs;
 }
 
-export async function buildPage(
+export function buildPage(
   page: Page,
   opts: PageBuildOpts,
-): Promise<string | void> {
+): string {
   const crumbs = generateCrumbs(page, opts.userConfig.site.rootCrumb);
   const backlinkPages = opts.backlinkPages && sortPages(opts.backlinkPages);
   const childPages = opts.childPages && sortPages(opts.childPages);
@@ -101,7 +103,7 @@ export async function buildPage(
 
   sheet.reset();
 
-  const body = await renderToString(
+  const body = renderToString(
     <Body
       page={page}
       crumbs={crumbs}
@@ -111,6 +113,8 @@ export async function buildPage(
       taggedPages={taggedPages}
     />,
   );
+
+  const refresh = <script>{HMR_CLIENT}</script>;
 
   const styleTag = getStyleTag(sheet);
 
@@ -132,6 +136,7 @@ export async function buildPage(
   <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
   <link rel="alternate" type="application/atom+xml" href="/feed.xml" title="" />
   ${styleTag}
+  ${opts.includeRefresh && `<script>${HMR_CLIENT}</script>`}
 </head>
 <html lang="en">
   ${body}

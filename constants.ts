@@ -5,6 +5,27 @@ export const FEED_VIEW_PATH = "views/feed.xml.eta";
 export const INDEX_FILENAME = "index.md";
 export const RE_HIDDEN_OR_UNDERSCORED = /^\.|^_|\/\.|\/\_/;
 
+export const HMR_CLIENT = `((l) => {
+  let w, i;
+  function d(m) { console.info("[refresh] ", m); }
+  function r() { l.reload(); }
+  function s(f) {
+    w && w.close();
+    w = new WebSocket(\`\${l.origin.replace("http", "ws")}/refresh\`);
+    w.addEventListener("open", f);
+    w.addEventListener("message", () => {
+      d("reloading...");
+      r();
+    });
+    w.addEventListener("close", () => {
+      d("connection lost - reconnecting...");
+      clearTimeout(i);
+      i = setTimeout(() => s(r), 1000);
+    });
+  }
+  s();
+})(location)`;
+
 export const INDEXLIST_TEMPLATE = `
 <section>
   <h6><%= it.title %></h6>

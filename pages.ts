@@ -5,11 +5,11 @@ import { slugify } from "./deps.ts";
 import { render } from "./render.ts";
 import * as attributes from "./attributes.ts";
 
-import type { Heading, Body } from "./types.d.ts";
+import type { Heading, Page } from "./types.d.ts";
 
 const decoder = new TextDecoder("utf-8");
 
-export function isDeadLink(allPages: Array<Body>, linkUrl: URL): boolean {
+export function isDeadLink(allPages: Page[], linkUrl: URL): boolean {
   for (const page of allPages) {
     if (page.url.pathname === linkUrl.pathname) return false;
     else continue;
@@ -27,7 +27,7 @@ const getTitleFromFilename = (filePath: string): string => {
   return basename(filePath).replace(extname(filePath), "");
 };
 
-export function getAllTags(pages: Array<Body>): Array<string> {
+export function getAllTags(pages: Page[]): Array<string> {
   const allTags: Set<string> = new Set();
   pages.forEach((page) => {
     if (page.attrs) {
@@ -38,7 +38,7 @@ export function getAllTags(pages: Array<Body>): Array<string> {
   return [...allTags];
 }
 
-export function getPagesByTag(allPages: Array<Body>, tag: string): Array<Body> {
+export function getPagesByTag(allPages: Page[], tag: string): Page[] {
   const filtered = allPages.filter((page) => {
     if (page.attrs) {
       const pageTags = attributes.getTags(page.attrs);
@@ -48,11 +48,8 @@ export function getPagesByTag(allPages: Array<Body>, tag: string): Array<Body> {
   return filtered;
 }
 
-export function getBacklinkPages(
-  allPages: Array<Body>,
-  current: Body,
-): Array<Body> {
-  const pages: Set<Body> = new Set();
+export function getBacklinkPages(allPages: Page[], current: Page): Page[] {
+  const pages: Set<Page> = new Set();
 
   for (const outPage of allPages) {
     if (outPage.links) {
@@ -71,9 +68,9 @@ export function getBacklinkPages(
 }
 
 export function getChildPages(
-  allPages: Array<Body>,
-  current: Body,
-): Array<Body> {
+  allPages: Page[],
+  current: Page,
+): Page[] {
   const pages = allPages.filter((p) =>
     current.url.pathname !== p.url.pathname &&
     current.url.pathname === dirname(p.url.pathname)
@@ -82,10 +79,7 @@ export function getChildPages(
   return pages;
 }
 
-export function getChildTags(
-  allPages: Array<Body>,
-  current: Body,
-): Array<string> {
+export function getChildTags(allPages: Page[], current: Page): Array<string> {
   const tags: Set<string> = new Set();
 
   allPages.forEach((page) => {
@@ -151,13 +145,13 @@ interface GeneratePageOpts {
 
 export async function generateContentPage(
   { entry, inputPath, siteUrl, ignoreKeys }: GeneratePageOpts,
-): Promise<Body> {
+): Promise<Page> {
   const relPath = relative(inputPath, entry.path);
   const raw = decoder.decode(await Deno.readFile(entry.path));
   const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
   const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
 
-  let page: Body = {
+  let page: Page = {
     url: pageUrl,
     isIndex: false,
     pinned: false,
@@ -188,14 +182,14 @@ export async function generateContentPage(
 
 export async function generateIndexPageFromFile(
   { entry, inputPath, siteUrl, ignoreKeys }: GeneratePageOpts,
-): Promise<Body> {
+): Promise<Page> {
   const relPath = relative(inputPath, dirname(entry.path)) || ".";
   const raw = decoder.decode(await Deno.readFile(entry.path));
   const dirName = basename(dirname(entry.path));
   const slug = relPath === "." ? "." : slugify(dirName);
   const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
 
-  let page: Body = {
+  let page: Page = {
     url: pageUrl,
     isIndex: true,
     pinned: false,
@@ -226,12 +220,12 @@ export async function generateIndexPageFromFile(
 
 export function generateIndexPageFromDir(
   { entry, inputPath, siteUrl }: GeneratePageOpts,
-): Body {
+): Page {
   const relPath = relative(inputPath, entry.path) || ".";
   const slug = relPath === "." ? "." : slugify(entry.name);
   const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
 
-  const page: Body = {
+  const page: Page = {
     title: entry.name,
     url: pageUrl,
     isIndex: true,
