@@ -2,7 +2,7 @@ import { WalkEntry } from "./deps.ts";
 import { basename, dirname, extname, join, relative } from "./deps.ts";
 import { frontmatter } from "./deps.ts";
 import { slugify } from "./deps.ts";
-import { render } from "./render.ts";
+import { parseMarkdown } from "./markdown.ts";
 import * as attributes from "./attributes.ts";
 
 import type { Heading, Page } from "./types.d.ts";
@@ -157,15 +157,15 @@ export async function generateContentPage(
     pinned: false,
     ignored: false,
     showToc: false,
-    logLayout: false,
     hideTitle: false,
+    layout: "default",
   };
 
   if (frontmatter.test(raw)) {
     page = { ...page, ...extractPageData(raw, ignoreKeys) };
   }
 
-  const { html, links, headings } = render({
+  const { html, links, headings } = parseMarkdown({
     text: page.body ?? raw,
     currentPath: relPath,
     isIndex: false,
@@ -195,7 +195,7 @@ export async function generateIndexPageFromFile(
     pinned: false,
     ignored: false,
     showToc: false,
-    logLayout: false,
+    layout: "default",
     hideTitle: false,
   };
 
@@ -203,7 +203,7 @@ export async function generateIndexPageFromFile(
     page = { ...page, ...extractPageData(raw, ignoreKeys) };
   }
 
-  const { html, links, headings } = render({
+  const { html, links, headings } = parseMarkdown({
     text: page.body ?? raw,
     currentPath: relPath,
     isIndex: false,
@@ -232,7 +232,7 @@ export function generateIndexPageFromDir(
     pinned: false,
     ignored: false,
     showToc: false,
-    logLayout: false,
+    "layout": "default",
     hideTitle: false,
   };
 

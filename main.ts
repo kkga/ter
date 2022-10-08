@@ -1,6 +1,5 @@
 import {
   emptyDir,
-  groupBy,
   join,
   parseFlags,
   relative,
@@ -8,14 +7,7 @@ import {
   withTrailingSlash,
 } from "./deps.ts";
 
-import {
-  BASE_STYLE_PATH,
-  BASE_VIEW_PATH,
-  FEED_VIEW_PATH,
-  HELP,
-  INDEX_FILENAME,
-  MOD_URL,
-} from "./constants.ts";
+import { getHelp, INDEX_FILENAME } from "./constants.ts";
 
 import { getContentEntries, getStaticEntries } from "./entries.ts";
 
@@ -54,36 +46,32 @@ interface BuildStats {
   buildMillisecs: number;
 }
 
-async function readTemplate(path: string): Promise<string | undefined> {
-  try {
-    const decoder = new TextDecoder("utf-8");
-    return decoder.decode(await Deno.readFile(path));
-  } catch {
-    return undefined;
-  }
-}
+// async function readTemplate(path: string): Promise<string | undefined> {
+//   try {
+//     const decoder = new TextDecoder("utf-8");
+//     return decoder.decode(await Deno.readFile(path));
+//   } catch {
+//     return undefined;
+//   }
+// }
 
-async function getRemoteAsset(url: URL) {
-  const fileResponse = await fetch(url.toString()).catch((err) => {
-    console.error(`Error fetching file: ${url}, ${err}`);
-    Deno.exit(1);
-  });
-  if (fileResponse.ok && fileResponse.body) {
-    return await fileResponse.text();
-  } else {
-    console.error(`Fetch response error: ${url}`);
-    Deno.exit(1);
-  }
-}
+// async function getRemoteAsset(url: URL) {
+//   const fileResponse = await fetch(url.toString()).catch((err) => {
+//     console.error(`Error fetching file: ${url}, ${err}`);
+//     Deno.exit(1);
+//   });
+//   if (fileResponse.ok && fileResponse.body) {
+//     return await fileResponse.text();
+//   } else {
+//     console.error(`Fetch response error: ${url}`);
+//     Deno.exit(1);
+//   }
+// }
 
 async function generateSite(opts: GenerateSiteOpts) {
   const {
     inputPath,
     outputPath,
-    pageView,
-    feedView,
-    style,
-    viewsPath,
     staticExts,
     userConfig,
     renderDrafts,
@@ -100,14 +88,9 @@ async function generateSite(opts: GenerateSiteOpts) {
     getStaticEntries(inputPath, outputPath, staticExts),
   ]);
 
-  const [headTemplate, footerTemplate] = await Promise.all([
-    readTemplate(join(viewsPath, "head.eta")),
-    readTemplate(join(viewsPath, "footer.eta")),
-  ]);
-
   const pages: Page[] = [];
 
-  performance.mark("render-markdown:start");
+  performance.mark("parse-markdown:start");
   for (const entry of contentEntries) {
     opts.quiet || console.log(`render\t${relative(inputPath, entry.path)}`);
     const isIndex = entry.isDirectory || entry.name === INDEX_FILENAME;
@@ -149,54 +132,50 @@ async function generateSite(opts: GenerateSiteOpts) {
       page && !page.ignored && pages.push(page);
     }
   }
-  performance.mark("render-markdown:end");
+  performance.mark("parse-markdown:end");
 
   // TODO: use groupBy
   // const taggedPages: Record<string, Page[]> = groupBy(
   //   pages,
   //   (it: Page) => {},
   // );
-  const tagPages: TagPage[] = [];
-  for (const tag of getAllTags(pages)) {
-    const pagesWithTag = getPagesByTag(pages, tag);
-    tagPages.push({ name: tag, pages: pagesWithTag });
-  }
+  // const tagPages: TagPage[] = [];
+  // for (const tag of getAllTags(pages)) {
+  //   const pagesWithTag = getPagesByTag(pages, tag);
+  //   tagPages.push({ name: tag, pages: pagesWithTag });
+  // }
 
   performance.mark("render-html:start");
-  const [contentFiles, tagFiles, staticFiles, feedFile] = await Promise.all([
+  const [contentFiles, staticFiles] = await Promise.all([
     buildContentFiles(pages, {
       outputPath,
-      view: pageView,
-      headTemplate: headTemplate,
-      footerTemplate: footerTemplate,
-      includeRefresh: opts.includeRefresh,
+      dev: opts.includeRefresh,
       userConfig,
-      style,
     }),
 
-    buildTagFiles(tagPages, {
-      outputPath,
-      view: pageView,
-      headTemplate: headTemplate,
-      footerTemplate: footerTemplate,
-      includeRefresh: opts.includeRefresh,
-      userConfig,
-      style,
-    }),
+    // buildTagFiles(tagPages, {
+    //   outputPath,
+    //   view: pageView,
+    //   headTemplate: headTemplate,
+    //   footerTemplate: footerTemplate,
+    //   includeRefresh: opts.includeRefresh,
+    //   userConfig,
+    //   style,
+    // }),
     getStaticFiles(staticEntries, inputPath, outputPath),
-    buildFeedFile(pages, feedView, join(outputPath, "feed.xml"), userConfig),
+    // buildFeedFile(pages, feedView, join(outputPath, "feed.xml"), userConfig),
   ]);
   performance.mark("render-html:end");
 
   performance.mark("write-files:start");
   await emptyDir(outputPath);
-  await writeFiles([...contentFiles, ...tagFiles], opts.quiet);
+  await writeFiles([...contentFiles], opts.quiet);
   await copyFiles(staticFiles, opts.quiet);
   performance.mark("write-files:end");
 
-  if (feedFile && feedFile.fileContent) {
-    await Deno.writeTextFile(feedFile.filePath, feedFile.fileContent);
-  }
+  // if (feedFile && feedFile.fileContent) {
+  //   await Deno.writeTextFile(feedFile.filePath, feedFile.fileContent);
+  // }
 
   const END = performance.now();
   const BUILD_SECS = (END - START);
@@ -204,9 +183,9 @@ async function generateSite(opts: GenerateSiteOpts) {
   performance.mark("generate:end");
 
   performance.measure(
-    "render-markdown",
-    "render-markdown:start",
-    "render-markdown:end",
+    "parse-markdown",
+    "parse-markdown:start",
+    "parse-markdown:end",
   );
   performance.measure("render-html", "render-html:start", "render-html:end");
   performance.measure("write-files", "write-files:start", "write-files:end");
@@ -214,7 +193,7 @@ async function generateSite(opts: GenerateSiteOpts) {
 
   console.log(
     `> render-markdown in ${
-      performance.getEntriesByName("render-markdown", "measure")[0].duration
+      performance.getEntriesByName("parse-markdown", "measure")[0].duration
     }ms`,
   );
 
@@ -262,7 +241,7 @@ async function generateSite(opts: GenerateSiteOpts) {
 
   if (!opts.quiet) {
     const stats: BuildStats = {
-      pageFiles: contentFiles.length + tagFiles.length,
+      pageFiles: contentFiles.length,
       staticFiles: staticFiles.length,
       buildMillisecs: Math.floor(BUILD_SECS),
     };
@@ -280,30 +259,15 @@ async function main(args: string[]) {
   });
 
   if (flags.help) {
-    console.log(HELP);
+    console.log(getHelp(import.meta.url));
     Deno.exit();
   }
-
-  const moduleUrl = withTrailingSlash(
-    flags.local
-      ? toFileUrl(flags.modurl ? flags.modurl : Deno.cwd()).toString()
-      : MOD_URL.toString(),
-  );
-
-  const [pageView, baseStyle, feedView] = await Promise.all([
-    getRemoteAsset(new URL(BASE_VIEW_PATH, moduleUrl)),
-    getRemoteAsset(new URL(BASE_STYLE_PATH, moduleUrl)),
-    getRemoteAsset(new URL(FEED_VIEW_PATH, moduleUrl)),
-  ]);
 
   const config = await createConfig({
     configPath: flags.config,
     inputPath: flags.input,
     outputPath: flags.output,
     renderDrafts: flags.drafts,
-    pageView: pageView,
-    feedView: feedView,
-    style: baseStyle,
   });
 
   await generateSite({

@@ -58,9 +58,6 @@ interface CreateConfigOpts {
   configPath: string | undefined;
   inputPath: string | undefined;
   outputPath: string | undefined;
-  pageView: string;
-  feedView: string;
-  style: string;
   renderDrafts: boolean;
 }
 
@@ -87,9 +84,6 @@ export async function createConfig(
       : join(Deno.cwd(), opts.outputPath);
   }
 
-  conf.pageView = opts.pageView;
-  conf.feedView = opts.feedView;
-  conf.style = opts.style;
   conf.renderDrafts = opts.renderDrafts;
 
   await checkUserConfig(conf.userConfigPath)

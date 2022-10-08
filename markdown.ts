@@ -11,14 +11,12 @@ import {
 
 import { Heading } from "./types.d.ts";
 
-interface RenderOpts {
-  text: string;
-  currentPath: string;
-  isIndex: boolean;
-  baseUrl: URL;
-}
+const toExternalLink = (href: string, title: string, text: string): string =>
+  `<a href="${href}" rel="external noopener noreferrer" title="${
+    title || text
+  }">${text}</a>`;
 
-interface InternalLinkOpts {
+const toInternalLink = (opts: {
   title: string;
   text: string;
   parsed: ParsedURL;
@@ -26,15 +24,7 @@ interface InternalLinkOpts {
   internalLinks: Set<URL>;
   currentPath: string;
   isIndex: boolean;
-}
-
-function createExternalLink(href: string, title: string, text: string): string {
-  return `<a href="${href}" rel="external noopener noreferrer" title="${
-    title || text
-  }">${text}</a>`;
-}
-
-function createInternalLink(opts: InternalLinkOpts): string {
+}): string => {
   const cleanPathname = opts.parsed.pathname === "" ? "" : withoutTrailingSlash(
     opts.parsed.pathname.replace(extname(opts.parsed.pathname), ""),
   );
@@ -78,11 +68,16 @@ function createInternalLink(opts: InternalLinkOpts): string {
       opts.title || opts.text
     }">${opts.text}</a>`
   );
-}
+};
 
-export function render(
-  { text, currentPath, isIndex, baseUrl }: RenderOpts,
-): { html: string; links: Array<URL>; headings: Array<Heading> } {
+export const parseMarkdown = (
+  { text, currentPath, isIndex, baseUrl }: {
+    text: string;
+    currentPath: string;
+    isIndex: boolean;
+    baseUrl: URL;
+  },
+): { html: string; links: Array<URL>; headings: Array<Heading> } => {
   const internalLinks: Set<URL> = new Set();
   const headings: Array<Heading> = [];
   const renderer = new marked.Renderer();
@@ -116,9 +111,9 @@ export function render(
     if (
       parsed.protocol !== undefined || parsed.pathname.startsWith("mailto")
     ) {
-      return createExternalLink(href, title, text);
+      return toExternalLink(href, title, text);
     } else {
-      return createInternalLink({
+      return toInternalLink({
         title,
         text,
         parsed,
@@ -155,11 +150,11 @@ export function render(
     }
   };
 
-  renderer.code = (code: string, lang: string): string => {
-    const language = hljs.getLanguage(lang) ? lang : "plaintext";
-    const html = hljs.highlight(code, { language }).value;
-    return `<pre class="hljs language-${language}">${html}</pre>`;
-  };
+  // renderer.code = (code: string, lang: string): string => {
+  //   const language = hljs.getLanguage(lang) ? lang : "plaintext";
+  //   const html = hljs.highlight(code, { language }).value;
+  //   return `<pre class="hljs language-${language}">${html}</pre>`;
+  // };
 
   marked.use({
     renderer,
@@ -174,4 +169,4 @@ export function render(
   const html = marked.parser(tokens);
 
   return { html, links: [...internalLinks], headings };
-}
+};

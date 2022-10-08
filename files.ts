@@ -1,6 +1,6 @@
 import { copy, ensureDir, WalkEntry } from "./deps.ts";
 import { basename, dirname, join, relative } from "./deps.ts";
-import { buildFeed, buildPage, buildTagPage } from "./build.tsx";
+import { renderPage } from "./render.tsx";
 import { getTags } from "./attributes.ts";
 import {
   getBacklinkPages,
@@ -11,20 +11,14 @@ import {
 
 import type { OutputFile, Page, UserConfig } from "./types.d.ts";
 
-interface BuildOpts {
-  outputPath: string;
-  view: string;
-  headTemplate: string | undefined;
-  footerTemplate: string | undefined;
-  userConfig: UserConfig;
-  style: string;
-  includeRefresh: boolean;
-}
-
 export function buildContentFiles(
-  pages: Array<Page>,
-  opts: BuildOpts,
-): Promise<OutputFile[]> {
+  pages: Page[],
+  opts: {
+    outputPath: string;
+    userConfig: UserConfig;
+    dev: boolean;
+  },
+): OutputFile[] {
   const files: Array<OutputFile> = [];
 
   for (const page of pages) {
@@ -40,17 +34,14 @@ export function buildContentFiles(
       pagesByTag[tag] = getPagesByTag(pages, tag);
     });
 
-    const html = buildPage(page, {
-      headTemplate: opts.headTemplate,
-      footerTemplate: opts.footerTemplate,
-      includeRefresh: opts.includeRefresh,
+    const html = renderPage({
+      page: page,
+      dev: opts.dev,
       childPages: getChildPages(pages, page),
       backlinkPages: getBacklinkPages(pages, page),
       taggedPages: pagesByTag,
       childTags: getChildTags(pages, page),
-      view: opts.view,
       userConfig: opts.userConfig,
-      style: opts.style,
     });
 
     if (typeof html === "string") {

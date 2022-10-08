@@ -46,7 +46,7 @@ export interface Page {
   pinned: boolean;
   ignored: boolean;
   showToc: boolean;
-  logLayout: boolean;
+  layout: "default" | "log";
   hideTitle: boolean;
   title?: string;
   body?: string;

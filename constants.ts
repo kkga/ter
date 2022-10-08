@@ -1,7 +1,4 @@
-export const MOD_URL = new URL("https://deno.land/x/ter/");
-export const BASE_VIEW_PATH = "views/base.eta";
-export const BASE_STYLE_PATH = "assets/ter.css";
-export const FEED_VIEW_PATH = "views/feed.xml.eta";
+// export const MOD_URL = new URL("https://deno.land/x/ter/");
 export const INDEX_FILENAME = "index.md";
 export const RE_HIDDEN_OR_UNDERSCORED = /^\.|^_|\/\.|\/\_/;
 
@@ -43,11 +40,12 @@ export const INDEXLIST_TEMPLATE = `
 </section>
 `;
 
-export const HELP = `ter
+export const getHelp = (mod_url: string) =>
+  `ter
 Tiny wiki-style site builder.
 
 USAGE:
-  deno run ${MOD_URL}main.ts [options]
+  deno run ${mod_url} [options]
 
 OPTIONS:
   --input\t\tSource directory (default: .)
