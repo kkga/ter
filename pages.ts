@@ -27,6 +27,7 @@ const getTitleFromFilename = (filePath: string): string => {
   return basename(filePath).replace(extname(filePath), "");
 };
 
+// TODO: use page.tags directly
 export function getAllTags(pages: Page[]): Array<string> {
   const allTags: Set<string> = new Set();
   pages.forEach((page) => {
@@ -153,12 +154,6 @@ export async function generateContentPage(
 
   let page: Page = {
     url: pageUrl,
-    isIndex: false,
-    pinned: false,
-    ignored: false,
-    showToc: false,
-    hideTitle: false,
-    layout: "default",
   };
 
   if (frontmatter.test(raw)) {
@@ -168,8 +163,8 @@ export async function generateContentPage(
   const { html, links, headings } = parseMarkdown({
     text: page.body ?? raw,
     currentPath: relPath,
-    isIndex: false,
     baseUrl: new URL(siteUrl),
+    isDirIndex: page.index === "dir",
   });
 
   page = { ...page, html, links, headings };
@@ -191,12 +186,7 @@ export async function generateIndexPageFromFile(
 
   let page: Page = {
     url: pageUrl,
-    isIndex: true,
-    pinned: false,
-    ignored: false,
-    showToc: false,
-    layout: "default",
-    hideTitle: false,
+    index: "dir",
   };
 
   if (frontmatter.test(raw)) {
@@ -206,7 +196,6 @@ export async function generateIndexPageFromFile(
   const { html, links, headings } = parseMarkdown({
     text: page.body ?? raw,
     currentPath: relPath,
-    isIndex: false,
     baseUrl: new URL(siteUrl),
   });
 
@@ -228,12 +217,7 @@ export function generateIndexPageFromDir(
   const page: Page = {
     title: entry.name,
     url: pageUrl,
-    isIndex: true,
-    pinned: false,
-    ignored: false,
-    showToc: false,
-    "layout": "default",
-    hideTitle: false,
+    index: "dir",
   };
 
   return page;

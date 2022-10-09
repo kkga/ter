@@ -7,6 +7,7 @@ interface ArticleProps {
   tags?: string[];
   dateFormat?: unknown;
   toc?: string[];
+  hideTitle?: boolean;
   html?: string;
 }
 
@@ -42,10 +43,13 @@ const Article: FC<ArticleProps> = ({
   toc,
   dateFormat = { year: "numeric", month: "short", day: "numeric" },
   html,
+  hideTitle,
 }) => (
   <article>
     <header class={tw`mb-8 flex flex-col gap-2`}>
-      <h1 class={tw`text-4xl font-extrabold tracking-tight`}>{title}</h1>
+      {!hideTitle && (
+        <h1 class={tw`text-4xl font-extrabold tracking-tight`}>{title}</h1>
+      )}
       <div class={tw`text-sm text-gray-500`}>
         <p>{description}</p>
         {datePublished && (

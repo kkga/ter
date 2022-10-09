@@ -1,7 +1,6 @@
 import { copy, ensureDir, WalkEntry } from "./deps.ts";
 import { basename, dirname, join, relative } from "./deps.ts";
 import { renderPage } from "./render.tsx";
-import { getTags } from "./attributes.ts";
 import {
   getBacklinkPages,
   getChildPages,
@@ -12,36 +11,40 @@ import {
 import type { OutputFile, Page, UserConfig } from "./types.d.ts";
 
 export function buildContentFiles(
-  pages: Page[],
-  opts: {
+  { pages, outputPath, userConfig, dev }: {
+    pages: Page[];
     outputPath: string;
     userConfig: UserConfig;
     dev: boolean;
   },
 ): OutputFile[] {
-  const files: Array<OutputFile> = [];
+  const files: OutputFile[] = [];
 
   for (const page of pages) {
     const filePath = join(
-      opts.outputPath,
+      outputPath,
       page.url.pathname,
       "index.html",
     );
 
-    const tags = page.attrs && getTags(page.attrs);
-    const pagesByTag: { [tag: string]: Page[] } = {};
-    tags && tags.forEach((tag: string) => {
-      pagesByTag[tag] = getPagesByTag(pages, tag);
-    });
+    const pagesByTag: Record<string, Page[]> = {};
+
+    if (page.index === "tag" && page.title) {
+      pagesByTag[page.title] = getPagesByTag(pages, page.title);
+    } else {
+      page.tags && page.tags.forEach((tag: string) => {
+        pagesByTag[tag] = getPagesByTag(pages, tag);
+      });
+    }
 
     const html = renderPage({
       page: page,
-      dev: opts.dev,
+      dev: dev,
       childPages: getChildPages(pages, page),
       backlinkPages: getBacklinkPages(pages, page),
       taggedPages: pagesByTag,
       childTags: getChildTags(pages, page),
-      userConfig: opts.userConfig,
+      userConfig: userConfig,
     });
 
     if (typeof html === "string") {
@@ -55,62 +58,64 @@ export function buildContentFiles(
   return files;
 }
 
-export async function buildTagFiles(
-  tagPages: Array<TagPage>,
-  opts: BuildOpts,
-): Promise<OutputFile[]> {
-  const files: Array<OutputFile> = [];
+// export function buildTagFiles(
+//   { tagPages, outputPath, userConfig, dev }: {
+//     tagPages: Record<string, Page[]>[];
+//     outputPath: string;
+//     userConfig: UserConfig;
+//     dev: boolean;
+//   },
+// ): OutputFile[] {
+//   const files: Array<OutputFile> = [];
 
-  for (const tag of tagPages) {
-    const filePath = join(
-      opts.outputPath,
-      "tag",
-      tag.name,
-      "index.html",
-    );
+//   for (const tag of tagPages) {
+//     const { name, pages } = tag;
+//     const filePath = join(
+//       outputPath,
+//       "tag",
+//       name,
+//       "index.html",
+//     );
 
-    const html = await buildTagPage(tag.name, {
-      headTemplate: opts.headTemplate,
-      footerTemplate: opts.footerTemplate,
-      taggedPages: tag.pages,
-      view: opts.view,
-      includeRefresh: opts.includeRefresh,
-      userConfig: opts.userConfig,
-      style: opts.style,
-    });
+//     const html = renderPage({
+//       tagName: tag,
+//       taggedPages: tag.pages,
+//       dev: opts.dev,
+//       userConfig: opts.userConfig,
+//     });
 
-    if (typeof html === "string") {
-      files.push({
-        inputPath: "",
-        filePath,
-        fileContent: html,
-      });
-    }
-  }
+//     if (typeof html === "string") {
+//       files.push({
+//         inputPath: "",
+//         filePath,
+//         fileContent: html,
+//       });
+//     }
+//   }
 
-  return files;
-}
+//   return files;
+// }
 
-export async function buildFeedFile(
-  pages: Page[],
-  view: string,
-  outputPath: string,
-  userConfig: UserConfig,
-): Promise<OutputFile | undefined> {
-  const xml = await buildFeed(
-    pages,
-    view,
-    userConfig,
-  );
+// export async function buildFeedFile(
+//   pages: Page[],
+//   view: string,
+//   outputPath: string,
+//   userConfig: UserConfig,
+// ): Promise<OutputFile | undefined> {
+//   const xml = await buildFeed(
+//     pages,
+//     view,
+//     userConfig,
+//   );
 
-  if (typeof xml === "string") {
-    return {
-      inputPath: "",
-      filePath: outputPath,
-      fileContent: xml,
-    };
-  }
-}
+//   if (typeof xml === "string") {
+//     return {
+//       inputPath: "",
+//       filePath: outputPath,
+//       fileContent: xml,
+//     };
+//   }
+// }
 
 export function getStaticFiles(
   entries: Array<WalkEntry>,

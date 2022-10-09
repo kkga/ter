@@ -10,13 +10,13 @@ const styles = {
 };
 
 const Item: FC<{
-  title?: string;
-  url?: URL;
+  url: URL;
+  title: string;
   pinned?: boolean;
-  isIndex?: boolean;
+  isDirIndex?: boolean;
   date?: Date;
 }> = (
-  { title, url, pinned, date, isIndex },
+  { title, url, pinned, date, isDirIndex },
 ) => {
   return (
     <li
@@ -34,7 +34,7 @@ const Item: FC<{
       <a className={tw`font-medium`} href={url.pathname}>
         {title}
       </a>
-      {isIndex && <div class={tw`-ml-1 opacity-50 select-none`}>/ ..</div>}
+      {isDirIndex && <div class={tw`-ml-1 opacity-50 select-none`}>/ ..</div>}
       <span
         class={tw`
         flex-1
@@ -76,9 +76,9 @@ const IndexList: FC<{ title: string; items: Page[] }> = (
       <ul class={tw`flex flex-col`}>
         {items.map((item: Page) => (
           <Item
-            title={item.title}
+            title={item.title || ""}
             url={item.url}
-            isIndex={item.isIndex}
+            isDirIndex={item.index === "dir"}
             pinned={item.pinned}
             date={item.datePublished}
           />

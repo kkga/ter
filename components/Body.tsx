@@ -3,6 +3,7 @@ import { Crumb, Page } from "../types.d.ts";
 import Article from "./Article.tsx";
 import IndexList from "./IndexList.tsx";
 import Header from "./Header.tsx";
+import { parseAll } from "https://deno.land/std@0.159.0/encoding/yaml.ts";
 
 interface BodyProps {
   page: Page;
@@ -10,7 +11,7 @@ interface BodyProps {
   childPages?: Page[];
   childTags?: string[];
   backlinkPages?: Page[];
-  taggedPages?: { [tag: string]: Array<Page> };
+  taggedPages?: Record<string, Page[]>;
   navItems?: Record<string, string>;
 }
 
@@ -58,6 +59,7 @@ const Body: FC<BodyProps> = (
         toc={page.toc}
         dateFormat={page.dateFormat}
         html={page.html}
+        hideTitle={page.hideTitle}
       />
     </main>
     <aside class={tw`flex flex-col gap-8`}>
@@ -67,14 +69,16 @@ const Body: FC<BodyProps> = (
       {backlinkPages && backlinkPages.length > 0 && (
         <IndexList title="Backlinks" items={backlinkPages} />
       )}
-      {childTags && childTags.length > 0 && (
-        <IndexList title="Child tags" items={childTags} />
-      )}
       {taggedPages &&
         Object.keys(taggedPages).length > 0 &&
-        Object.keys(taggedPages).map((tag) => {
-          <IndexList title={`#{tag}`} items={taggedPages[tag]} />;
-        })}
+        Object.keys(taggedPages).map((tag) => (
+          <IndexList title={`#${tag}`} items={taggedPages[tag]} />
+        ))}
+      {
+        /* childTags && childTags.length > 0 && (
+        <IndexList title="Child tags" items={childTags} />
+      ) */
+      }
     </aside>
 
     <footer

@@ -23,7 +23,7 @@ const toInternalLink = (opts: {
   baseUrl: URL;
   internalLinks: Set<URL>;
   currentPath: string;
-  isIndex: boolean;
+  isDirIndex?: boolean;
 }): string => {
   const cleanPathname = opts.parsed.pathname === "" ? "" : withoutTrailingSlash(
     opts.parsed.pathname.replace(extname(opts.parsed.pathname), ""),
@@ -39,7 +39,7 @@ const toInternalLink = (opts: {
     if (cleanPathname === "") {
       resolved = "";
     } else {
-      const joined = opts.isIndex
+      const joined = opts.isDirIndex
         ? join(dirname(opts.currentPath + "/index"), cleanPathname)
         : join(dirname(opts.currentPath), cleanPathname);
       resolved = withoutTrailingSlash(joined.replace(/\/index$/i, ""));
@@ -71,11 +71,11 @@ const toInternalLink = (opts: {
 };
 
 export const parseMarkdown = (
-  { text, currentPath, isIndex, baseUrl }: {
+  { text, currentPath, isDirIndex, baseUrl }: {
     text: string;
     currentPath: string;
-    isIndex: boolean;
     baseUrl: URL;
+    isDirIndex?: boolean;
   },
 ): { html: string; links: Array<URL>; headings: Array<Heading> } => {
   const internalLinks: Set<URL> = new Set();
@@ -120,7 +120,7 @@ export const parseMarkdown = (
         baseUrl,
         internalLinks,
         currentPath,
-        isIndex,
+        isDirIndex,
       });
     }
   };
@@ -143,7 +143,7 @@ export const parseMarkdown = (
         title || ""
       }"/>`;
     } else {
-      const href = isIndex
+      const href = isDirIndex
         ? join(dirname(currentPath + "/index"), parsed.pathname)
         : join(dirname(currentPath), parsed.pathname);
       return `<img src="${href}" alt="${text || ""}" title="${title || ""}"/>`;

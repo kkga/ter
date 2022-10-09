@@ -23,23 +23,6 @@ export const HMR_CLIENT = `((l) => {
   s();
 })(location)`;
 
-export const INDEXLIST_TEMPLATE = `
-<section>
-  <h6><%= it.title %></h6>
-  <ul class="indexList">
-<% it.items.forEach((item) => { %>
-    <li class="indexList-item<% if (item?.pinned) { %> indexList-item--pinned<% } %><% if (item?.isIndex) { %> indexList-item--dir<% } %>">
-      <a href="<%= item?.url.pathname %>"><%= item?.title %></a><% if (item?.isIndex) { %>/ ..<% } %>
-      <span></span>
-<%   if (item?.datePublished) { %>
-      <time datetime="<%= item?.datePublished %>"><%= item?.datePublished.toLocaleDateString(it?.locale?.date, it?.dateIndexOpts) %></time>
-<%   } %>
-    </li>
-<% }) %>
-  </ul>
-</section>
-`;
-
 export const getHelp = (mod_url: string) =>
   `ter
 Tiny wiki-style site builder.

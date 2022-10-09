@@ -42,23 +42,23 @@ export interface Heading {
 
 export interface Page {
   url: URL;
-  isIndex: boolean;
-  pinned: boolean;
-  ignored: boolean;
-  showToc: boolean;
-  layout: "default" | "log";
-  hideTitle: boolean;
   title?: string;
-  body?: string;
-  path?: string;
   description?: string;
   attrs?: Record<string, unknown>;
-  links?: Array<URL>;
   datePublished?: Date;
   dateUpdated?: Date;
+  tags?: string[];
+  body?: string;
+  path?: string;
   html?: string;
-  tags?: Array<string>;
-  headings?: Array<Heading>;
+  links?: URL[];
+  headings?: Heading[];
+  index?: "dir" | "tag";
+  layout?: "log";
+  pinned?: boolean;
+  ignored?: boolean;
+  showToc?: boolean;
+  hideTitle?: boolean;
 }
 
 export interface OutputFile {

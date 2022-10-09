@@ -1,11 +1,4 @@
-import {
-  emptyDir,
-  join,
-  parseFlags,
-  relative,
-  toFileUrl,
-  withTrailingSlash,
-} from "./deps.ts";
+import { emptyDir, join, parseFlags, relative } from "./deps.ts";
 
 import { getHelp, INDEX_FILENAME } from "./constants.ts";
 
@@ -16,14 +9,11 @@ import {
   generateIndexPageFromDir,
   generateIndexPageFromFile,
   getAllTags,
-  getPagesByTag,
   isDeadLink,
 } from "./pages.ts";
 
 import {
   buildContentFiles,
-  buildFeedFile,
-  buildTagFiles,
   copyFiles,
   getStaticFiles,
   writeFiles,
@@ -46,28 +36,6 @@ interface BuildStats {
   buildMillisecs: number;
 }
 
-// async function readTemplate(path: string): Promise<string | undefined> {
-//   try {
-//     const decoder = new TextDecoder("utf-8");
-//     return decoder.decode(await Deno.readFile(path));
-//   } catch {
-//     return undefined;
-//   }
-// }
-
-// async function getRemoteAsset(url: URL) {
-//   const fileResponse = await fetch(url.toString()).catch((err) => {
-//     console.error(`Error fetching file: ${url}, ${err}`);
-//     Deno.exit(1);
-//   });
-//   if (fileResponse.ok && fileResponse.body) {
-//     return await fileResponse.text();
-//   } else {
-//     console.error(`Fetch response error: ${url}`);
-//     Deno.exit(1);
-//   }
-// }
-
 async function generateSite(opts: GenerateSiteOpts) {
   const {
     inputPath,
@@ -88,16 +56,17 @@ async function generateSite(opts: GenerateSiteOpts) {
     getStaticEntries(inputPath, outputPath, staticExts),
   ]);
 
-  const pages: Page[] = [];
+  const contentPages: Page[] = [];
+  const tagPages: Page[] = [];
 
   performance.mark("parse-markdown:start");
   for (const entry of contentEntries) {
     opts.quiet || console.log(`render\t${relative(inputPath, entry.path)}`);
-    const isIndex = entry.isDirectory || entry.name === INDEX_FILENAME;
+    const isDirIndex = entry.isDirectory || entry.name === INDEX_FILENAME;
 
     let page: Page | void;
 
-    if (!isIndex) {
+    if (!isDirIndex) {
       page = await generateContentPage({
         entry: entry,
         inputPath: inputPath,
@@ -107,7 +76,7 @@ async function generateSite(opts: GenerateSiteOpts) {
         (reason: string) =>
           console.error(`Can not render ${entry.path}\n\t${reason}`),
       );
-    } else if (isIndex && entry.isFile) {
+    } else if (isDirIndex && entry.isFile) {
       page = await generateIndexPageFromFile({
         entry: entry,
         inputPath: inputPath,
@@ -117,7 +86,7 @@ async function generateSite(opts: GenerateSiteOpts) {
         (reason: string) =>
           console.error(`Can not render ${entry.path}\n\t${reason}`),
       );
-    } else if (isIndex && entry.isDirectory) {
+    } else if (isDirIndex && entry.isDirectory) {
       page = generateIndexPageFromDir({
         entry: entry,
         inputPath: inputPath,
@@ -127,9 +96,9 @@ async function generateSite(opts: GenerateSiteOpts) {
     }
 
     if (renderDrafts) {
-      page && pages.push(page);
+      page && contentPages.push(page);
     } else {
-      page && !page.ignored && pages.push(page);
+      page && !page.ignored && contentPages.push(page);
     }
   }
   performance.mark("parse-markdown:end");
@@ -139,29 +108,25 @@ async function generateSite(opts: GenerateSiteOpts) {
   //   pages,
   //   (it: Page) => {},
   // );
-  // const tagPages: TagPage[] = [];
-  // for (const tag of getAllTags(pages)) {
-  //   const pagesWithTag = getPagesByTag(pages, tag);
-  //   tagPages.push({ name: tag, pages: pagesWithTag });
-  // }
+  for (const tag of getAllTags(contentPages)) {
+    tagPages.push({
+      title: tag,
+      url: new URL(join(userConfig.site.url, "tag", tag)),
+      index: "tag",
+      hideTitle: true,
+    });
+  }
+
+  const pages = [...contentPages, ...tagPages];
 
   performance.mark("render-html:start");
   const [contentFiles, staticFiles] = await Promise.all([
-    buildContentFiles(pages, {
+    buildContentFiles({
+      pages,
       outputPath,
       dev: opts.includeRefresh,
       userConfig,
     }),
-
-    // buildTagFiles(tagPages, {
-    //   outputPath,
-    //   view: pageView,
-    //   headTemplate: headTemplate,
-    //   footerTemplate: footerTemplate,
-    //   includeRefresh: opts.includeRefresh,
-    //   userConfig,
-    //   style,
-    // }),
     getStaticFiles(staticEntries, inputPath, outputPath),
     // buildFeedFile(pages, feedView, join(outputPath, "feed.xml"), userConfig),
   ]);
