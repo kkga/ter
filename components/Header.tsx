@@ -1,4 +1,3 @@
-import { mapEntries } from "https://deno.land/std@0.159.0/collections/map_entries.ts";
 import { apply, css, FC, h, tw } from "../deps.ts";
 import { Crumb } from "../types.d.ts";
 
@@ -11,6 +10,7 @@ const styles = {
   }),
   header: css({
     "&:not(:hover)": { a: apply`text-gray-500!` },
+    a: apply`transition-colors no-underline hover:underline`,
   }),
 };
 
@@ -28,10 +28,9 @@ const PageHeader: FC<
         flex
         justify-between
         align-baseline
-        text-xs
-        font-mono
+        text-sm
         ${styles.header}
-        text-gray-500`}
+`}
     >
       {crumbs &&
         (

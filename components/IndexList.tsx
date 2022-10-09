@@ -3,9 +3,8 @@ import { Page } from "../types.d.ts";
 
 const styles = {
   section: css({
-    "&:not(:hover)": {
-      a: apply`text-gray-500!`,
-    },
+    "&:not(:hover)": { a: apply`text-gray-500!` },
+    a: apply`transition-colors no-underline hover:underline`,
   }),
 };
 
@@ -31,7 +30,7 @@ const Item: FC<{
       {pinned && (
         <div class={tw`absolute -left-5 opacity-50 select-none`}>★</div>
       )}
-      <a className={tw`font-medium`} href={url.pathname}>
+      <a className={tw`font-normal`} href={url.pathname}>
         {title}
       </a>
       {isDirIndex && <div class={tw`-ml-1 opacity-50 select-none`}>/ ..</div>}
@@ -42,7 +41,7 @@ const Item: FC<{
       />
       {date && (
         <time
-          class={tw`text-xs tabular-nums`}
+          class={tw`text(xs gray-500) tabular-nums`}
           dateTime={date.toString()}
         >
           {date.toLocaleDateString()}
@@ -56,7 +55,7 @@ const IndexList: FC<{ title: string; items: Page[] }> = (
   { title, items },
 ) => {
   return (
-    <section class={tw`text(gray-500) ${styles.section}`}>
+    <section class={tw`${styles.section}`}>
       <h6
         class={tw`
           flex
@@ -64,14 +63,18 @@ const IndexList: FC<{ title: string; items: Page[] }> = (
           gap-2
           text-xs
           leading-6
+          font-bold
           uppercase
           tracking-wide
+          text-gray-500
           `}
       >
         {title}
-        <span
+        {
+          /*<span
           class={tw`flex-1 border(b solid gray-200) dark:(border-gray-700)`}
-        />
+        />*/
+        }
       </h6>
       <ul class={tw`flex flex-col`}>
         {items.map((item: Page) => (

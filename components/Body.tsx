@@ -3,7 +3,7 @@ import { Crumb, Page } from "../types.d.ts";
 import Article from "./Article.tsx";
 import IndexList from "./IndexList.tsx";
 import Header from "./Header.tsx";
-import { parseAll } from "https://deno.land/std@0.159.0/encoding/yaml.ts";
+import Footer from "./Footer.tsx";
 
 interface BodyProps {
   page: Page;
@@ -13,23 +13,24 @@ interface BodyProps {
   backlinkPages?: Page[];
   taggedPages?: Record<string, Page[]>;
   navItems?: Record<string, string>;
+  author?: { name: string; email: string; url: string };
 }
-
-const styles = {
-  siblingLink: css({
-    "&::before": { opacity: 0.5, content: '"·"', margin: "0 1ch" },
-  }),
-  footer: css({
-    "&:not(:hover)": { a: apply`text-gray-500!` },
-  }),
-};
 
 // TODO
 // - generate toc
 // - figure out date format
 
 const Body: FC<BodyProps> = (
-  { page, crumbs, childPages, childTags, backlinkPages, taggedPages, navItems },
+  {
+    page,
+    crumbs,
+    childPages,
+    childTags,
+    backlinkPages,
+    taggedPages,
+    navItems,
+    author,
+  },
 ) => (
   <body
     class={tw`
@@ -50,18 +51,21 @@ const Body: FC<BodyProps> = (
       )`}
   >
     {crumbs && <Header navItems={navItems} crumbs={crumbs} />}
-    <main>
-      <Article
-        title={page.title}
-        description={page.description}
-        datePublished={page.datePublished}
-        tags={page.tags}
-        toc={page.toc}
-        dateFormat={page.dateFormat}
-        html={page.html}
-        hideTitle={page.hideTitle}
-      />
-    </main>
+    {page.index !== "tag" &&
+      (
+        <main>
+          <Article
+            title={page.title}
+            description={page.description}
+            datePublished={page.datePublished}
+            tags={page.tags}
+            toc={page.toc}
+            dateFormat={page.dateFormat}
+            html={page.html}
+            hideTitle={page.hideTitle}
+          />
+        </main>
+      )}
     <aside class={tw`flex flex-col gap-8`}>
       {childPages && childPages.length > 0 && (
         <IndexList title="Child pages" items={childPages} />
@@ -80,15 +84,7 @@ const Body: FC<BodyProps> = (
       ) */
       }
     </aside>
-
-    <footer
-      class={tw`flex align-baseline mt-auto text-xs text-gray-500 ${styles.footer}`}
-    >
-      <a href="/feed.xml">Feed</a>
-      <span class={tw`${styles.siblingLink}`}>
-        Made with <a href="https://ter.kkga.me">Ter</a>
-      </span>
-    </footer>
+    <Footer author={author} />
   </body>
 );
 
