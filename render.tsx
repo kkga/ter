@@ -24,10 +24,11 @@ twSetup({
     colors: {
       gray: colors.coolGray,
       accent: colors.blue,
+      current: "currentColor",
     },
   },
   preflight: {
-    a: apply`no-underline hover:underline text-accent-500 dark:(text-accent-400)`,
+    a: apply`text-current`,
   },
   variants: {
     "not-hover": "&:not(:hover)",
@@ -91,6 +92,7 @@ export function renderPage(
       childTags={childTags}
       taggedPages={taggedPages}
       navItems={userConfig.navigation}
+      author={userConfig.author}
     />,
   );
 
