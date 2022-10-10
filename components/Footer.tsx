@@ -2,10 +2,11 @@ import { apply, css, FC, h, tw } from "../deps.ts";
 
 const styles = {
   siblingItem: css({
-    "&::before": { opacity: 0.5, content: '"·"', margin: "0 0.5ch" },
+    "&::before": { content: '"·"', margin: "0 1ch" },
   }),
   footer: css({
     "&:not(:hover)": { a: apply`text-gray-500!` },
+    "&:hover": { a: apply`text-accent-500` },
     a: apply`transition-colors no-underline hover:underline`,
   }),
 };
