@@ -1,4 +1,4 @@
-import { apply, css, FC, h, tw } from "../deps.ts";
+import { FC, h, tw } from "../deps.ts";
 import { Crumb, Page } from "../types.d.ts";
 import Article from "./Article.tsx";
 import IndexList from "./IndexList.tsx";
@@ -14,11 +14,14 @@ interface BodyProps {
   taggedPages?: Record<string, Page[]>;
   navItems?: Record<string, string>;
   author?: { name: string; email: string; url: string };
+  dateFormat?: Record<string, string>;
+  locale?: string;
 }
 
 // TODO
 // - generate toc
 // - figure out date format
+// - implement log layout
 
 const Body: FC<BodyProps> = (
   {
@@ -30,6 +33,8 @@ const Body: FC<BodyProps> = (
     taggedPages,
     navItems,
     author,
+    dateFormat,
+    locale,
   },
 ) => (
   <body
@@ -60,9 +65,10 @@ const Body: FC<BodyProps> = (
             datePublished={page.datePublished}
             tags={page.tags}
             toc={page.toc}
-            dateFormat={page.dateFormat}
             html={page.html}
             hideTitle={page.hideTitle}
+            dateFormat={dateFormat}
+            locale={locale}
           />
         </main>
       )}
