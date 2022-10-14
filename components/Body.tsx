@@ -22,8 +22,8 @@ interface BodyProps {
 }
 
 // TODO
-// - generate toc
-// - figure out date format
+// x generate toc
+// - figure out date format, use config
 // - implement log layout
 
 const Body: FunctionComponent<BodyProps> = ({
@@ -40,20 +40,12 @@ const Body: FunctionComponent<BodyProps> = ({
 }) => (
   <body
     class={tw`
-      bg-gray-100
-      text-gray-900
-      max-w-3xl
-      mx-auto
-      min-h-screen
-      flex
-      flex-col
-      gap-12
-      p-8
-      bg-gray-50
-      text-gray-900
+      max-w-3xl mx-auto min-h-screen
+      flex flex-col
+      gap-12 p-8
+      bg-gray-50 text-gray-900
       dark:(
-        bg-gray-900
-        text-gray-300
+        bg-gray-900 text-gray-300
       )`}
   >
     {crumbs && <Header navItems={navItems} crumbs={crumbs} />}

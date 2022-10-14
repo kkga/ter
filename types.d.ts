@@ -7,9 +7,8 @@ export interface UserConfig {
   };
   author: { name: string; email: string; url: string };
   navigation?: Record<string, string>;
-  locale?: {
-    date?: string;
-  };
+  locale?: { date?: string };
+  head?: string;
 }
 
 export interface BuildConfig {

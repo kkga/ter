@@ -12,5 +12,6 @@
   "navigation": {
     "Usage": "/usage",
     "Source": "https://github.com/kkga/ter"
-  }
+  },
+  "head": "<script data-host=\"https://microanalytics.io\" data-dnt=\"false\" src=\"https://microanalytics.io/js/script.js\" id=\"ZwSg9rf6GA\" async defer></script>"
 }

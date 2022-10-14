@@ -66,6 +66,9 @@ const generateCrumbs = (currentPage: Page, homeSlug?: string): Crumb[] => {
   return crumbs;
 };
 
+// TODO
+// - render user head snippet
+
 export function renderPage({
   page,
   dev,
@@ -119,6 +122,7 @@ export function renderPage({
   <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
   <link rel="alternate" type="application/atom+xml" href="/feed.xml" title="" />
   ${styleTag}
+  ${userConfig.head || ""}
   ${dev && `<script>${HMR_CLIENT}</script>`}
 </head>
 <html lang="en">
@@ -126,14 +130,14 @@ export function renderPage({
 </html>`;
 }
 
-export async function buildFeed(
-  pages: Array<Page>,
-  view: string,
-  userConfig: UserConfig,
-): Promise<string | void> {
-  return await eta.render(view, {
-    pages,
-    site: userConfig.site,
-    author: userConfig.author,
-  });
-}
+// export async function buildFeed(
+//   pages: Array<Page>,
+//   view: string,
+//   userConfig: UserConfig,
+// ): Promise<string | void> {
+//   return await eta.render(view, {
+//     pages,
+//     site: userConfig.site,
+//     author: userConfig.author,
+//   });
+// }
