@@ -1,13 +1,14 @@
 import { FunctionComponent, h } from "preact";
 import { apply, tw } from "twind/";
 import { css } from "twind/css";
+import { Heading } from "../types.d.ts";
 
 interface ArticleProps {
   title?: string;
   description?: string;
   datePublished?: Date;
   tags?: string[];
-  toc?: string[];
+  headings?: Heading[];
   hideTitle?: boolean;
   html?: string;
   dateFormat?: Record<string, string>;
@@ -51,7 +52,7 @@ const Article: FunctionComponent<ArticleProps> = ({
   description,
   datePublished,
   tags,
-  toc,
+  headings,
   locale,
   dateFormat = { year: "numeric", month: "short", day: "numeric" },
   html,
@@ -84,34 +85,22 @@ const Article: FunctionComponent<ArticleProps> = ({
         </div>
       </div>
 
-      {toc &&
-        (
-          <details class="articleHeader-toc">
-            <summary>Contents</summary>
-            <ol class="articleHeader-toc-list">
-              {toc.map((h) => (
-                // <%   filteredHeadings.forEach((h, i) => { %>
-                // <%     if (h.level === 2) { %>
-                //               <li>
-                //                 <a href="#<%= h.slug %>"><%= h.text %></a>
-                // <%       if (filteredHeadings[i+1]?.level === 3) { %>
-                //                 <ul>
-                // <%         for (let j = i+1; j < filteredHeadings.length; j++) { %>
-                // <%            const subH = filteredHeadings[j] %>
-                // <%            if (subH.level === 3) { %>
-                //                   <li><a href="#<%= subH?.slug %>"><%= subH.text %></a></li>
-                // <%            } else { break } %>
-                // <%         } %>
-                //                 </ul>
-                // <%       } %>
-                //               </li>
-                // <%     } %>
-                // <%   }) %>
-                { h }
-              ))}
-            </ol>
-          </details>
-        )}
+      {headings?.some((h) => h.level > 2) && (
+        <details class={tw`mt-4 text-sm text-gray-500 dark:(text-gray-400)`}>
+          <summary>Contents</summary>
+          <ol class={tw`mt-2`}>
+            {headings.filter((h) =>
+              h.level < 4
+            ).map((h: Heading) => {
+              return (
+                <li class={h.level > 2 ? tw`ml-4` : tw`font-bold`}>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                </li>
+              );
+            })}
+          </ol>
+        </details>
+      )}
     </header>
     <div
       class={tw(styles.content)}

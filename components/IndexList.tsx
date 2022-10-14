@@ -48,7 +48,7 @@ const Item: FunctionComponent<{
       <span
         class={tw`
         flex-1
-        border(b dashed gray-700) `}
+        border(b dashed gray-200) `}
       />
       {date && (
         <time
@@ -62,7 +62,7 @@ const Item: FunctionComponent<{
   );
 };
 
-const IndexList: FC<{ title: string; items: Page[] }> = (
+const IndexList: FunctionComponent<{ title: string; items: Page[] }> = (
   { title, items },
 ) => {
   return (
@@ -74,20 +74,16 @@ const IndexList: FC<{ title: string; items: Page[] }> = (
           gap-2
           text-xs
           leading-6
-          mb-2
           font-medium
           uppercase
           tracking-wide
           text-gray-500
-          border(b t solid gray-700)
           `}
       >
         {title}
-        {
-          /*<span
+        <span
           class={tw`flex-1 border(b solid gray-200) dark:(border-gray-700)`}
-        />*/
-        }
+        />
       </h6>
       <ul class={tw`flex flex-col`}>
         {items.map((item: Page) => (
