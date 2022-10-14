@@ -1,4 +1,6 @@
-import { apply, css, FC, h, tw } from "../deps.ts";
+import { FunctionComponent, h } from "preact";
+import { apply, tw } from "twind/";
+import { css } from "twind/css";
 
 interface ArticleProps {
   title?: string;
@@ -44,7 +46,7 @@ const styles = {
   }),
 };
 
-const Article: FC<ArticleProps> = ({
+const Article: FunctionComponent<ArticleProps> = ({
   title,
   description,
   datePublished,

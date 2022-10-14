@@ -1,4 +1,6 @@
-import { apply, css, FC, h, tw } from "../deps.ts";
+import { FunctionComponent, h } from "preact";
+import { apply, tw } from "twind/";
+import { css } from "twind/css";
 import { Page } from "../types.d.ts";
 
 const styles = {
@@ -9,7 +11,7 @@ const styles = {
   }),
 };
 
-const Item: FC<{
+const Item: FunctionComponent<{
   url: URL;
   title: string;
   pinned?: boolean;

@@ -1,4 +1,6 @@
-import { apply, css, FC, h, tw } from "../deps.ts";
+import { FunctionComponent, h } from "preact";
+import { apply, tw } from "twind/";
+import { css } from "twind/css";
 
 const styles = {
   siblingItem: css({
@@ -15,7 +17,7 @@ interface FooterProps {
   author?: { name: string; email: string; url: string };
 }
 
-const Footer: FC<FooterProps> = ({ author }) => (
+const Footer: FunctionComponent<FooterProps> = ({ author }) => (
   <footer
     class={tw`flex align-baseline mt-auto text-xs text-gray-500 ${styles.footer}`}
   >

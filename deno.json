@@ -5,13 +5,9 @@
     "dev": "deno run -A --unstable --watch=assets/,views/ main.ts --input docs --local --serve",
     "clean": "rm -rf _site"
   },
+  "importMap": "./import_map.json",
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "dom.asynciterable",
-      "deno.ns"
-    ],
+    "lib": ["dom", "dom.iterable", "dom.asynciterable", "deno.ns"],
     "jsxFactory": "h",
     "jsxFragmentFactory": "Fragment"
   }

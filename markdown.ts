@@ -1,13 +1,13 @@
-import { dirname, extname, isAbsolute, join } from "./deps.ts";
-import { hljs } from "./deps.ts";
-import { marked } from "./deps.ts";
+import { dirname, extname, isAbsolute, join } from "$std/path/mod.ts";
+import { hljs } from "hljs";
+import { marked } from "marked";
 import {
   ParsedURL,
   parseURL,
   withLeadingSlash,
   withoutLeadingSlash,
   withoutTrailingSlash,
-} from "./deps.ts";
+} from "ufo";
 
 import { Heading } from "./types.d.ts";
 

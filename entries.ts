@@ -1,6 +1,6 @@
-import { common, join } from "./deps.ts";
-import { expandGlob, walk, WalkEntry } from "./deps.ts";
-import { withoutTrailingSlash } from "./deps.ts";
+import { common, join } from "$std/path/mod.ts";
+import { expandGlob, walk, WalkEntry } from "$std/fs/mod.ts";
+import { withoutTrailingSlash } from "ufo";
 import { INDEX_FILENAME, RE_HIDDEN_OR_UNDERSCORED } from "./constants.ts";
 
 const hasIgnoredPrefix = (path: string): boolean => {

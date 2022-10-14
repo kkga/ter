@@ -1,5 +1,5 @@
-import { copy, ensureDir, WalkEntry } from "./deps.ts";
-import { basename, dirname, join, relative } from "./deps.ts";
+import { copy, ensureDir, WalkEntry } from "$std/fs/mod.ts";
+import { basename, dirname, join, relative } from "$std/path/mod.ts";
 import { renderPage } from "./render.tsx";
 import {
   getBacklinkPages,

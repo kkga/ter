@@ -1,17 +1,13 @@
-import { basename, dirname, join } from "./deps.ts";
-import { eta } from "./deps.ts";
-import {
-  apply,
-  colors,
-  getStyleTag,
-  h,
-  renderToString,
-  twSetup,
-  virtualSheet,
-} from "./deps.ts";
+import { basename, dirname, join } from "$std/path/mod.ts";
+import * as colors from "twind/colors";
+import { apply, setup as twSetup } from "twind/";
+import { getStyleTag, virtualSheet } from "twind/sheets";
+import { h } from "preact";
+import { renderToString } from "preact-render-to-string";
+
 import { HMR_CLIENT } from "./constants.ts";
 import { Crumb, Page, UserConfig } from "./types.d.ts";
-import Body from "./components/Body.tsx";
+import Body from "@components/Body.tsx";
 
 const sheet = virtualSheet();
 
@@ -70,18 +66,23 @@ const generateCrumbs = (currentPage: Page, homeSlug?: string): Crumb[] => {
   return crumbs;
 };
 
-export function renderPage(
-  { page, dev, childPages, backlinkPages, taggedPages, childTags, userConfig }:
-    {
-      page: Page;
-      dev: boolean;
-      childPages?: Page[];
-      backlinkPages?: Page[];
-      taggedPages?: Record<string, Page[]>;
-      childTags?: string[];
-      userConfig: UserConfig;
-    },
-): string {
+export function renderPage({
+  page,
+  dev,
+  childPages,
+  backlinkPages,
+  taggedPages,
+  childTags,
+  userConfig,
+}: {
+  page: Page;
+  dev: boolean;
+  childPages?: Page[];
+  backlinkPages?: Page[];
+  taggedPages?: Record<string, Page[]>;
+  childTags?: string[];
+  userConfig: UserConfig;
+}): string {
   sheet.reset();
   const body = renderToString(
     <Body
@@ -130,10 +131,9 @@ export async function buildFeed(
   view: string,
   userConfig: UserConfig,
 ): Promise<string | void> {
-  const result = await eta.render(view, {
+  return await eta.render(view, {
     pages,
     site: userConfig.site,
     author: userConfig.author,
   });
-  return result;
 }

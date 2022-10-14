@@ -1,6 +1,6 @@
-import { join, relative } from "./deps.ts";
-import { readableStreamFromReader } from "./deps.ts";
-import { serve as httpServe } from "./deps.ts";
+import { join, relative } from "$std/path/mod.ts";
+import { readableStreamFromReader } from "$std/streams/mod.ts";
+import { serve as httpServe } from "$std/http/server.ts";
 import { GenerateSiteOpts } from "./main.ts";
 import { RE_HIDDEN_OR_UNDERSCORED } from "./constants.ts";
 import type { BuildConfig } from "./types.d.ts";

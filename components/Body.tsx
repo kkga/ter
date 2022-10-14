@@ -1,9 +1,12 @@
-import { FC, h, tw } from "../deps.ts";
+import { FunctionComponent, h } from "preact";
+import { tw } from "twind/";
+
+import Article from "@components/Article.tsx";
+import IndexList from "@components/IndexList.tsx";
+import Header from "@components/Header.tsx";
+import Footer from "@components/Footer.tsx";
+
 import { Crumb, Page } from "../types.d.ts";
-import Article from "./Article.tsx";
-import IndexList from "./IndexList.tsx";
-import Header from "./Header.tsx";
-import Footer from "./Footer.tsx";
 
 interface BodyProps {
   page: Page;
@@ -23,20 +26,18 @@ interface BodyProps {
 // - figure out date format
 // - implement log layout
 
-const Body: FC<BodyProps> = (
-  {
-    page,
-    crumbs,
-    childPages,
-    childTags,
-    backlinkPages,
-    taggedPages,
-    navItems,
-    author,
-    dateFormat,
-    locale,
-  },
-) => (
+const Body: FunctionComponent<BodyProps> = ({
+  page,
+  crumbs,
+  childPages,
+  childTags,
+  backlinkPages,
+  taggedPages,
+  navItems,
+  author,
+  dateFormat,
+  locale,
+}) => (
   <body
     class={tw`
       bg-gray-100
@@ -56,22 +57,21 @@ const Body: FC<BodyProps> = (
       )`}
   >
     {crumbs && <Header navItems={navItems} crumbs={crumbs} />}
-    {page.index !== "tag" &&
-      (
-        <main>
-          <Article
-            title={page.title}
-            description={page.description}
-            datePublished={page.datePublished}
-            tags={page.tags}
-            toc={page.toc}
-            html={page.html}
-            hideTitle={page.hideTitle}
-            dateFormat={dateFormat}
-            locale={locale}
-          />
-        </main>
-      )}
+    {page.index !== "tag" && (
+      <main>
+        <Article
+          title={page.title}
+          description={page.description}
+          datePublished={page.datePublished}
+          tags={page.tags}
+          toc={page.toc}
+          html={page.html}
+          hideTitle={page.hideTitle}
+          dateFormat={dateFormat}
+          locale={locale}
+        />
+      </main>
+    )}
     <aside class={tw`flex flex-col gap-8`}>
       {childPages && childPages.length > 0 && (
         <IndexList title="Child pages" items={childPages} />

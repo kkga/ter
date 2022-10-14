@@ -1,4 +1,6 @@
-import { apply, css, FC, h, tw } from "../deps.ts";
+import { FunctionComponent, h } from "preact";
+import { apply, tw } from "twind/";
+import { css } from "twind/css";
 import { Crumb } from "../types.d.ts";
 
 const styles = {
@@ -15,7 +17,7 @@ const styles = {
   }),
 };
 
-const PageHeader: FC<
+const PageHeader: FunctionComponent<
   {
     crumbs?: Crumb[];
     navItems?: Record<string, string>;

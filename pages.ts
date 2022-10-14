@@ -1,7 +1,8 @@
-import { WalkEntry } from "./deps.ts";
-import { basename, dirname, extname, join, relative } from "./deps.ts";
-import { frontmatter } from "./deps.ts";
-import { slugify } from "./deps.ts";
+import { WalkEntry } from "$std/fs/mod.ts";
+import { basename, dirname, extname, join, relative } from "$std/path/mod.ts";
+import * as frontmatter from "$std/encoding/front_matter.ts";
+import { default as slugify } from "slugify";
+
 import { parseMarkdown } from "./markdown.ts";
 import * as attributes from "./attributes.ts";
 
@@ -72,12 +73,10 @@ export function getChildPages(
   allPages: Page[],
   current: Page,
 ): Page[] {
-  const pages = allPages.filter((p) =>
+  return allPages.filter((p) =>
     current.url.pathname !== p.url.pathname &&
     current.url.pathname === dirname(p.url.pathname)
   );
-
-  return pages;
 }
 
 export function getChildTags(allPages: Page[], current: Page): Array<string> {

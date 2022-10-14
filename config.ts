@@ -1,6 +1,6 @@
-import { deepmerge } from "./deps.ts";
-import { ensureDir } from "./deps.ts";
-import { dirname, isAbsolute, join } from "./deps.ts";
+import { deepmerge } from "deepmerge";
+import { ensureDir } from "$std/fs/ensure_dir.ts";
+import { dirname, isAbsolute, join } from "$std/path/mod.ts";
 import { BuildConfig, UserConfig } from "./types.d.ts";
 
 const defaultUserConfig: UserConfig = {
