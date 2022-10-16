@@ -21,6 +21,8 @@ twSetup({
       gray: colors.coolGray,
       accent: colors.blue,
       current: "currentColor",
+      white: colors.white,
+      black: colors.black,
     },
   },
   preflight: {

@@ -35,16 +35,16 @@ const Item: FunctionComponent<{
       class={tw`
         relative
         flex
-        gap-2
+        gap-1
         items-baseline
         justify-between
         leading-6`}
     >
-      {pinned && <div class={tw`opacity-50 select-none`}>★</div>}
       <a className={tw`truncate`} href={url.pathname}>
+        {pinned && <span class={tw`mr-1`}>★</span>}
         {title}
       </a>
-      {isDirIndex && <div class={tw`-ml-1 opacity-50 select-none`}>/ ..</div>}
+      {isDirIndex && <div class={tw`opacity-50 select-none`}>/ ..</div>}
       <span
         class={tw`
         flex-1

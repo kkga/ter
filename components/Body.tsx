@@ -60,10 +60,10 @@ const Body: FunctionComponent<BodyProps> = ({
       class={tw`
       max-w-3xl mx-auto min-h-screen
       flex flex-col
-      gap-12 p-8
-      bg-gray-50 text-gray-900
+      gap-12 p-4
+      bg-white text-gray-900
       dark:(
-        bg-gray-900 text-gray-300
+        bg-black text-gray-300
       )`}
     >
       {crumbs && <Header navItems={navItems} crumbs={crumbs} />}

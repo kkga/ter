@@ -33,18 +33,23 @@ const styles = {
     h5: apply`text-lg    mt-8 mb-2 font-bold tracking-tight`,
     h6: apply`text-base  mt-8 mb-2 font-bold tracking-tight`,
     p: apply`my-4`,
-    figure: apply`my-4`,
-    img: apply`my-4`,
-    video: apply`my-4`,
-    ul: apply`list-disc list-inside`,
-    ol: apply`list-disc list-inside`,
-    hr: apply`my-8 border(gray-100) dark:(border(gray-700))`,
+    img: apply`my-6`,
+    video: apply`my-6`,
+    figure: css(
+      apply`my-6`,
+      { img: apply`m-0` },
+      { video: apply`m-0` },
+    ),
+    figcaption: apply`text-center mt-1 text(sm)`,
+    ul: apply`list(disc inside)`,
+    ol: apply`list(inside)`,
+    hr: apply`my-8 border(gray-200) dark:(border(gray-700))`,
     pre:
-      apply`my-4 overflow-x-scroll text-sm font-mono p-2 rounded leading-snug bg-gray-100 dark:(bg-gray-800 text-gray-300)`,
+      apply`my-4 overflow-x-scroll text-sm font-mono p-2 rounded leading-snug bg-gray-100 dark:(bg-gray-900 text-gray-300)`,
     details:
       apply`rounded p-2 text-sm children:(my-2 first-child:my-0 last-child:mb-0) bg-gray-100 text-gray-500 dark:(bg-gray-800 text-gray-400)`,
     blockquote: apply`mx-8 text-lg text-gray-500`,
-    figcaption: apply`text-center mt-1 text(sm gray-500)`,
+    del: apply`opacity-50`,
   }),
 };
 
@@ -62,9 +67,7 @@ const Article: FunctionComponent<ArticleProps> = ({
 }) => (
   <article>
     <header
-      class={tw`mb-8 flex flex-col ${
-        headerSize === "default" && "gap-2"
-      } ${styles.header}`}
+      class={tw`mb-8 only-child:(m-0) flex flex-col gap-2 ${styles.header}`}
     >
       {!hideTitle && headerSize === "default" &&
         <h1 class={tw`text-4xl font-extrabold tracking-tight`}>{title}</h1>}
@@ -109,10 +112,13 @@ const Article: FunctionComponent<ArticleProps> = ({
         </details>
       )}
     </header>
-    <div
-      class={tw(styles.content)}
-      dangerouslySetInnerHTML={{ __html: html || "" }}
-    />
+    {html &&
+      (
+        <div
+          class={tw(styles.content)}
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      )}
   </article>
 );
 
