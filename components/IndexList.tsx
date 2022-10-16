@@ -63,9 +63,30 @@ const Item: FunctionComponent<{
   );
 };
 
-const IndexList: FunctionComponent<{ title: string; items: Page[] }> = (
+const IndexList: FunctionComponent<
+  { title: string; items: Page[] | string[] }
+> = (
   { title, items },
 ) => {
+  const renderItem = (item: Page | string) => {
+    if (typeof item === "object") {
+      return (
+        <Item
+          title={item.title || ""}
+          url={item.url}
+          isDirIndex={item.index === "dir"}
+          pinned={item.pinned}
+          date={item.datePublished}
+        />
+      );
+    } else {
+      return (
+        <a class={tw`inline-block mr-3`} href={`/tag/${item}`}>
+          #{item}
+        </a>
+      );
+    }
+  };
   return (
     <section class={tw`${styles.section}`}>
       <h6
@@ -78,24 +99,15 @@ const IndexList: FunctionComponent<{ title: string; items: Page[] }> = (
           font-medium
           uppercase
           tracking-wide
-          text-gray-500
-          `}
+          text-gray-500`}
       >
         {title}
         <span
           class={tw`flex-1 border(b solid gray-200) dark:(border-gray-700)`}
         />
       </h6>
-      <ul class={tw`flex flex-col`}>
-        {items.map((item: Page) => (
-          <Item
-            title={item.title || ""}
-            url={item.url}
-            isDirIndex={item.index === "dir"}
-            pinned={item.pinned}
-            date={item.datePublished}
-          />
-        ))}
+      <ul>
+        {items.map((item) => renderItem(item))}
       </ul>
     </section>
   );

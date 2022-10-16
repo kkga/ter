@@ -113,11 +113,9 @@ const Body: FunctionComponent<BodyProps> = ({
           Object.keys(taggedPages).map((tag) => (
             <IndexList title={`#${tag}`} items={taggedPages[tag]} />
           ))}
-        {
-          /* childTags && childTags.length > 0 && (
-        <IndexList title="Child tags" items={childTags} />
-      ) */
-        }
+        {childTags && childTags.length > 0 && (
+          <IndexList title="Child tags" items={childTags} />
+        )}
       </aside>
       <Footer author={author} />
     </body>

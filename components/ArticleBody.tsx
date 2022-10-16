@@ -28,7 +28,7 @@ const styles = {
     ol: apply`mb-4 pl-4 list(decimal inside)`,
     hr: apply`my-8 border(gray-200) dark:(border(gray-700))`,
     pre:
-      apply`mb-4 overflow-x-scroll text-sm font-mono p-2 rounded leading-snug bg-gray-100 dark:(bg-gray-900 text-gray-300)`,
+      apply`mb-4 overflow-x-scroll text-sm font-mono p-2 rounded leading-snug bg-gray-100 dark:(bg-gray-800 text-gray-300)`,
     details:
       apply`mb-4 rounded p-2 text-sm children:(my-2 first-child:my-0 last-child:mb-0) bg-gray-100 text-gray-500 dark:(bg-gray-800 text-gray-400)`,
     blockquote: apply`mb-4 mx-8 text-lg text-gray-500`,
