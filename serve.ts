@@ -80,6 +80,15 @@ async function requestHandler(request: Request) {
   const url = new URL(request.url);
   const filepath = decodeURIComponent(url.pathname);
 
+  let notFoundFileExists;
+  let notFound;
+  try {
+    notFoundFileExists = await Deno.stat(join(servePath, "404", "index.html"));
+    notFound = await Deno.open(join(servePath, "404", "index.html"), {read: true});
+  } catch {
+    notFoundFileExists = false;
+  }
+
   let file;
   try {
     file = await Deno.open(join(servePath, filepath), { read: true });
@@ -91,10 +100,13 @@ async function requestHandler(request: Request) {
       file = await Deno.open(filePath, { read: true });
     }
   } catch {
-    // TODO: serve the 404.html
-    const resp = new Response("404 Not Found", { status: 404 });
-    console.log(`[${resp.status}]\t${url.pathname}`);
-    return resp;
+    if (!notFoundFileExists) {
+      const resp = new Response("404 Not Found", {status: 404});
+      console.log(`[${resp.status}]\t${url.pathname}`);
+      return resp;
+    }
+
+    file = notFound;
   }
 
   const readableStream = readableStreamFromReader(file);
