@@ -1,7 +1,8 @@
 import { Fragment, FunctionComponent, h } from "preact";
 import { tw } from "twind/";
 
-import Article from "@components/Article.tsx";
+import ArticleHeader from "@components/ArticleHeader.tsx";
+import ArticleBody from "@components/ArticleBody.tsx";
 import IndexList from "@components/IndexList.tsx";
 import Header from "@components/Header.tsx";
 import Footer from "@components/Footer.tsx";
@@ -38,19 +39,19 @@ const Body: FunctionComponent<BodyProps> = ({
   dateFormat,
   locale,
 }) => {
-  const renderArticle = (page: Page, small?: boolean) => {
+  const renderHeader = (page: Page, small?: boolean) => {
     return (
-      <Article
+      <ArticleHeader
         title={page.title}
         description={page.description}
         datePublished={page.datePublished}
         tags={page.tags}
-        headings={page.showToc ? page.headings : undefined}
-        html={page.html}
+        headings={page.headings}
         hideTitle={page.hideTitle}
         dateFormat={dateFormat}
         locale={locale}
-        headerSize={small && "small" || "default"}
+        size={small && "small" || "default"}
+        showToc={page.showToc}
       />
     );
   };
@@ -70,21 +71,33 @@ const Body: FunctionComponent<BodyProps> = ({
 
       {page.index !== "tag" && (
         <main>
-          {page.layout === "log" && childPages && childPages?.length > 0 &&
-            childPages.map((p: Page) => (
-              <>
-                {renderArticle(p, true)}
-                <hr
-                  class={tw`
+          {page.layout === "log" && childPages && childPages?.length > 0 && (
+            <>
+              {renderHeader(page)}
+              {page.html && <ArticleBody html={page.html} />}
+
+              {childPages.map((p: Page) => (
+                <article>
+                  {renderHeader(p, true)}
+                  {p.html && <ArticleBody html={p.html} />}
+                  <hr
+                    class={tw`
                    last-child:(hidden)
                    my-8
                    border(gray-200 dashed)
                    dark:(border-gray-700)`}
-                />
-              </>
-            ))}
+                  />
+                </article>
+              ))}
+            </>
+          )}
 
-          {page.layout === undefined && (renderArticle(page))}
+          {page.layout === undefined && (
+            <article>
+              {renderHeader(page)}
+              {page.html && <ArticleBody html={page.html} />}
+            </article>
+          )}
         </main>
       )}
 
