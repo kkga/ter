@@ -54,7 +54,7 @@ export function buildContentFiles(
       childPages: getChildPages(pages, page),
       backlinkPages: getBacklinkPages(pages, page),
       taggedPages: pagesByTag,
-      childTags: getChildTags(pages, page),
+      childTags: page.index && getChildTags(pages, page),
       userConfig: userConfig,
     });
 
