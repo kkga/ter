@@ -27,14 +27,25 @@ export function buildContentFiles(
       "index.html",
     );
 
-    const pagesByTag: Record<string, Page[]> = {};
+    let pagesByTag: Record<string, Page[]> = {};
 
     if (page.index === "tag" && page.title) {
       pagesByTag[page.title] = getPagesByTag(pages, page.title);
-    } else {
-      page.tags && page.tags.forEach((tag: string) => {
-        pagesByTag[tag] = getPagesByTag(pages, tag);
-      });
+    } else if (page.tags) {
+      pagesByTag = page.tags.reduce(
+        (acc, tag) => {
+          return {
+            ...acc,
+            [tag]: getPagesByTag(pages, tag).filter((p) => p.url !== page.url),
+          };
+        },
+        {},
+      );
+
+      pagesByTag = Object.entries(pagesByTag).reduce(
+        (acc, [k, v]) => v.length > 0 ? { ...acc, [k]: v } : acc,
+        {},
+      );
     }
 
     const html = renderPage({
