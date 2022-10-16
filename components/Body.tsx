@@ -73,7 +73,7 @@ const Body: FunctionComponent<BodyProps> = ({
           {page.layout === "log" && childPages && childPages?.length > 0 &&
             childPages.map((p: Page) => (
               <>
-                {renderArticle(page, true)}
+                {renderArticle(p, true)}
                 <hr
                   class={tw`
                    last-child:(hidden)
