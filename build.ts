@@ -35,12 +35,11 @@ interface TagPageOpts {
 const sortPages = (pages: Page[]): Page[] =>
   pages
     .sort((a, b) => {
-      if (a.datePublished && b.datePublished) {
+      if (a.isIndex || a.pinned) return -1;
+      else if (a.datePublished && b.datePublished) {
         return b.datePublished.valueOf() - a.datePublished.valueOf();
       } else return 0;
-    })
-    .sort((page) => page.isIndex ? -1 : 0)
-    .sort((page) => page.pinned ? -1 : 0);
+    });
 
 function generateCrumbs(
   currentPage: Page,
