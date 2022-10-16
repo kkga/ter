@@ -13,6 +13,7 @@ interface ArticleProps {
   html?: string;
   dateFormat?: Record<string, string>;
   locale?: string;
+  headerSize?: "small" | "default";
 }
 
 const styles = {
@@ -57,12 +58,18 @@ const Article: FunctionComponent<ArticleProps> = ({
   dateFormat = { year: "numeric", month: "short", day: "numeric" },
   html,
   hideTitle,
+  headerSize = "default",
 }) => (
   <article>
-    <header class={tw`mb-8 flex flex-col gap-2 ${styles.header}`}>
-      {!hideTitle && (
-        <h1 class={tw`text-4xl font-extrabold tracking-tight`}>{title}</h1>
-      )}
+    <header
+      class={tw`mb-8 flex flex-col ${
+        headerSize === "default" && "gap-2"
+      } ${styles.header}`}
+    >
+      {!hideTitle && headerSize === "default" &&
+        <h1 class={tw`text-4xl font-extrabold tracking-tight`}>{title}</h1>}
+      {!hideTitle && headerSize === "small" &&
+        <h1 class={tw`text-2xl font-extrabold tracking-tight`}>{title}</h1>}
       <div class={tw`text-sm text-gray-500`}>
         <span>{description}</span>
         <div class={tw`flex align-baseline`}>

@@ -100,7 +100,7 @@ interface PageData {
   tags?: string[];
   pinned?: boolean;
   ignored?: boolean;
-  logLayout?: boolean;
+  log?: boolean;
 }
 
 const extractPageData = (raw: string, ignoreKeys: string[]): PageData => {
@@ -131,7 +131,7 @@ const extractPageData = (raw: string, ignoreKeys: string[]): PageData => {
     ignored ? { ignored: ignored } : {},
     pinned ? { pinned: pinned } : {},
     showToc ? { showToc: showToc } : {},
-    logLayout ? { logLayout: logLayout } : {},
+    logLayout ? { layout: "log" } : {},
     hideTitle ? { hideTitle: hideTitle } : {},
   );
 };

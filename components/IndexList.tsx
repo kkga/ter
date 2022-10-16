@@ -48,7 +48,8 @@ const Item: FunctionComponent<{
       <span
         class={tw`
         flex-1
-        border(b dashed gray-200) `}
+        border(b dashed gray-200)
+        dark:(border(gray-700))`}
       />
       {date && (
         <time
