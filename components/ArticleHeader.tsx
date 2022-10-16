@@ -43,9 +43,9 @@ const ArticleHeader: FunctionComponent<ArticleHeaderProps> = ({
     class={tw`mb-8 only-child:(m-0) flex flex-col gap-2 ${styles.header}`}
   >
     {!hideTitle && size === "default" &&
-      <h1 class={tw`text-4xl font-extrabold tracking-tight`}>{title}</h1>}
+      <h1 class={tw`text-4xl font-semibold tracking-tight`}>{title}</h1>}
     {!hideTitle && size === "small" &&
-      <h1 class={tw`text-2xl font-extrabold tracking-tight`}>{title}</h1>}
+      <h1 class={tw`text-2xl font-bold tracking-tight`}>{title}</h1>}
     <div class={tw`text-sm text-gray-500`}>
       <span>{description}</span>
       <div class={tw`flex align-baseline`}>
@@ -76,7 +76,7 @@ const ArticleHeader: FunctionComponent<ArticleHeaderProps> = ({
             h.level < 4
           ).map((h: Heading) => {
             return (
-              <li class={h.level > 2 ? tw`ml-4` : tw`font-bold`}>
+              <li class={h.level > 2 ? tw`ml-4` : tw`font-semibold`}>
                 <a href={`#${h.slug}`}>{h.text}</a>
               </li>
             );

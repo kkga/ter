@@ -18,7 +18,7 @@ twSetup({
       mono: ["monospace", "ui-monospace", "Menlo", "Monaco"],
     },
     colors: {
-      gray: colors.coolGray,
+      gray: colors.warmGray,
       accent: colors.blue,
       current: "currentColor",
       white: colors.white,

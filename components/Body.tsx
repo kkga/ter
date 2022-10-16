@@ -64,7 +64,7 @@ const Body: FunctionComponent<BodyProps> = ({
       gap-12 p-4
       bg-white text-gray-900
       dark:(
-        bg-black text-gray-300
+        bg-gray-900 text-gray-300
       )`}
     >
       {crumbs && <Header navItems={navItems} crumbs={crumbs} />}

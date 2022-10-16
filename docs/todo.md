@@ -3,6 +3,21 @@ draft: true
 ---
 
 # Todos
+
+## preact rendering
+
+- [ ] fix log layout
+- [ ] improve tag labels
+- [x] tag pages
+- [x] content pages
+- [x] integrate twind
+
+## feeds
+
+- use feed module for atom/rss: https://esm.sh/feed
+
+---
+
 ## log layout
 
 - [x] add `log: true` option in frontmatter

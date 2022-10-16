@@ -25,13 +25,18 @@ directory and generate a site into the `_site` directory:
 deno run -A --unstable https://deno.land/x/ter/main.ts
 ```
 
+If your markdown files are not in root directory, or if you want a different
+name for the output directory, adjust accordingy, for example:
+
+```
+deno run -A --unstable https://deno.land/x/ter/main.ts --input pages --output _dist
+```
+
 To start a local server with live refresh, pass the `--serve` flag:
 
 ```
 deno run -A --unstable https://deno.land/x/ter/main.ts --serve
 ```
-
----
 
 ## Command line usage
 
@@ -56,31 +61,6 @@ OPTIONS:
   --drafts    Render pages marked as drafts (default: false)
   --quiet     Do not list generated files (default: false)
 ```
-
-### Changing input and output paths
-
-Ter takes 2 optional arguments:
-
-- `--input` (default: `.`)
-- `--output` (default: `_site`)
-
-If your markdown files are in some other directory, or if you want a different
-name for the output directory, adjust accordingy, for example:
-
-```
-deno run -A --unstable https://deno.land/x/ter/main.ts --input pages --output _dist
-```
-
-### Local server with live refresh
-
-Passing `--serve` flag will start a local server. Ter will automatically rebuild
-the site and refresh the browser on any file changes.
-
-```
-deno run -A --unstable https://deno.land/x/ter/main.ts --serve
-```
-
----
 
 ## Configuration
 
@@ -129,8 +109,6 @@ building.
 }
 ```
 
----
-
 ## Index pages
 
 Ter recursively recreates the source file system on the rendered site and each
@@ -158,14 +136,10 @@ Items in the index are sorted in the following order:
 2. directories (child index pages);
 3. rest of markdown files, sorted by [date](#dates).
 
-### Markdown in index files
-
 If the source directory contains an `index.md` file, its content will be
 injected into the rendered `index.html` above the index list. This can be useful
 for describing what the directory content is about or calling out individual
 pages.
-
----
 
 ## Markdown frontmatter
 
@@ -203,29 +177,19 @@ Some properties are utilized when building a site.
 All other properties are ignored but can be used in
 [templates](customization.md#templates).
 
----
-
 ## Ignoring files
 
 Any files and folders that start with an `_` or `.` (hidden) are ignored. For
 example, if there is a `_drafts` folder in the content directory, it will be
 skipped during site generation.
 
-### Draft pages
-
 In addition, any markdown file with `draft: true` in the
-[frontmatter](#markdown-frontmatter) will be ignored.
-
-### Rendering draft pages
-
-To render files with `draft: true`, pass `--drafts` flag to the main command.
-For example:
+[frontmatter](#markdown-frontmatter) will be ignored. To render files with
+`draft: true`, pass `--drafts` flag to the main command. For example:
 
 ```
 deno run -A --unstable https://deno.land/x/ter/main.ts --serve --drafts
 ```
-
----
 
 ## Dead internal links
 
@@ -238,8 +202,6 @@ Dead links:
 /overview -> /non-existent-page-name
 /overview -> /some-dead-link
 ```
-
----
 
 ## Deploy
 
@@ -280,7 +242,7 @@ the repository, and use the production branch. For deployment mode, select
 Next, create a `.github/workflows/deno-deploy.yml` file in the repository and
 make changes according to your setup.
 
-##### GitHub Action (deno-deploy.yml)
+GitHub Action (deno-deploy.yml):
 
 ```yaml
 name: Deploy to Deno Deploy
