@@ -40,7 +40,7 @@ const styles = {
     h4: apply`text-base  mb-1  font-semibold`,
     h5: apply`text-base  mb-1  font-semibold`,
     h6: apply`text-base  mb-1  font-semibold`,
-    a: apply`text-accent-700 no-underline hover:underline`,
+    a: apply`text-accent-700 dark:(text-accent-400) no-underline hover:underline`,
     "a[rel~='external']": apply`text-current underline`,
     p: apply``,
     img: apply``,
@@ -59,7 +59,7 @@ const styles = {
     details:
       apply`rounded p-2 text-sm children:(my-2 first-child:my-0 last-child:mb-0) bg-gray-100 text-gray-600 dark:(bg-gray-900 text-gray-400)`,
     blockquote: apply`mb-4 mx-8 text-lg text-gray-500`,
-    del: apply`opacity-50`,
+    del: apply`opacity-60`,
     table:
       apply`text(left sm) table-auto w-full overflow-scroll border border-gray-300 border-collapse dark:(border-gray-700)`,
     th: apply`border border-gray-300 dark:(border-gray-700) py-1 px-2`,
