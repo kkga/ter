@@ -4,7 +4,8 @@
       "handle": "filesystem"
     },
     {
-      "src": "/404/index.html",
+      "src": "/(.*)",
+      "dest": "/404/index.html",
       "status": 404
     }
   ]
