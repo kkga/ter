@@ -28,7 +28,8 @@ const PageHeader: FunctionComponent<
   return (
     <header
       class={tw`
-             flex justify-between items-baseline gap-4
+             flex flex-col md:(flex-row)
+             justify-between items-baseline gap-2 md:(gap-4)
              text(sm gray-500)
              py-2
              ${styles.header}`}
@@ -47,7 +48,7 @@ const PageHeader: FunctionComponent<
           </ul>
         )}
       {navItems && (
-        <ul class={tw`place-self-end flex`}>
+        <ul class={tw`order-first md:(order-last place-self-end) flex`}>
           {Object.entries(navItems).map(([label, path]) => (
             <li class={tw`sibling:${styles.siblingLink}`}>
               <a href={path}>{label}</a>

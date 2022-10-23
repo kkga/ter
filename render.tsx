@@ -1,6 +1,7 @@
 import { basename, dirname, join } from "$std/path/mod.ts";
 import * as colors from "twind/colors";
-import { apply, setup as twSetup } from "twind/";
+import { apply, setup as twSetup, theme } from "twind/";
+import { css } from "twind/css";
 import { getStyleTag, virtualSheet } from "twind/sheets";
 import { h } from "preact";
 import { renderToString } from "preact-render-to-string";
@@ -24,12 +25,6 @@ twSetup({
       white: colors.white,
       black: colors.black,
     },
-  },
-  preflight: {
-    a: apply`text-current`,
-  },
-  variants: {
-    "not-hover": "&:not(:hover)",
   },
   sheet,
 });

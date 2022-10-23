@@ -91,7 +91,7 @@ const IndexList: FunctionComponent<
     >
       <h6
         class={tw`
-               mb-4
+               mb-2
                text(xs gray-500)
                font-mono
                font-medium uppercase
@@ -99,7 +99,7 @@ const IndexList: FunctionComponent<
       >
         {title}
       </h6>
-      <ul class={tw`text-sm`}>
+      <ul class={tw`text-sm leading-6`}>
         {items.map((item) => renderItem(item))}
       </ul>
     </section>

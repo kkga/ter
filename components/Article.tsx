@@ -20,6 +20,7 @@ interface ArticleProps {
   page: Page;
   dateFormat?: Record<string, string>;
   locale?: string;
+  headerSize?: "small" | "default";
 }
 
 const styles = {
@@ -39,11 +40,13 @@ const styles = {
     h4: apply`text-base  mb-1  font-semibold`,
     h5: apply`text-base  mb-1  font-semibold`,
     h6: apply`text-base  mb-1  font-semibold`,
-    a: apply`text-current`,
+    a: apply`text-accent-700 no-underline hover:underline`,
+    "a[rel~='external']": apply`text-current underline`,
     p: apply``,
     img: apply``,
     video: apply``,
     figure: css(
+      apply`my-6`,
       { img: apply`m-0` },
       { video: apply`m-0` },
       { figcaption: apply`mt-1 text(center sm gray-500)` },
@@ -58,9 +61,10 @@ const styles = {
     blockquote: apply`mb-4 mx-8 text-lg text-gray-500`,
     del: apply`opacity-50`,
     table:
-      apply`text(left sm) table-auto w-full overflow-scroll border border-collapse`,
-    th: apply`border py-1 px-2`,
-    td: apply`border py-1 px-2`,
+      apply`text(left sm) table-auto w-full overflow-scroll border border-gray-300 border-collapse dark:(border-gray-700)`,
+    th: apply`border border-gray-300 dark:(border-gray-700) py-1 px-2`,
+    td: apply`border border-gray-300 dark:(border-gray-700) py-1 px-2`,
+    ".full-bleed": apply`lg:(-mx-24)`,
   }),
 };
 
@@ -77,30 +81,54 @@ const Header: FunctionComponent<HeaderProps> = ({
   size = "default",
 }) => (
   <header
-    class={tw`mb-16 only-child:(m-0) flex flex-col gap-2 ${styles.header}`}
+    class={tw`${
+      size === "small" ? "mb-8" : "mb-16"
+    } only-child:(m-0) flex flex-col gap-2 empty:hidden ${styles.header}`}
   >
-    <div class={tw`flex items-baseline text(xs gray-500) font-mono`}>
-      {datePublished && (
-        <div>
-          <time dateTime={datePublished.toString()}>
-            {datePublished.toLocaleDateString(locale, dateFormat)}
-          </time>
+    {(datePublished || tags) &&
+      (
+        <div class={tw`flex items-baseline text(xs gray-500) font-mono`}>
+          {datePublished && (
+            <div>
+              <time dateTime={datePublished.toString()}>
+                {datePublished.toLocaleDateString(locale, dateFormat)}
+              </time>
+            </div>
+          )}
+          {tags && (
+            <ul class={tw`flex ${styles.dotDivider}`}>
+              {tags.map((tag) => (
+                <li class={tw`mr-2`}>
+                  <a href={`/tag/${tag}`}>#{tag}</a>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
-      {tags && (
-        <ul class={tw`flex ${styles.dotDivider}`}>
-          {tags.map((tag) => (
-            <li class={tw`mr-2`}>
-              <a href={`/tag/${tag}`}>#{tag}</a>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
     {!hideTitle && size === "default" &&
-      <h1 class={tw`mt-0 text-4xl font-semibold tracking-tight`}>{title}</h1>}
+      (
+        <h1
+          class={tw`
+                 mt-0
+                 text-2xl md:(text-4xl)
+                 font-semibold tracking-tight
+                 `}
+        >
+          {title}
+        </h1>
+      )}
     {!hideTitle && size === "small" &&
-      <h1 class={tw`mt-0 text-xl font-bold tracking-tight`}>{title}</h1>}
+      (
+        <h1
+          class={tw`
+                 mt-0
+                 text-xl
+                 font-bold tracking-tight`}
+        >
+          {title}
+        </h1>
+      )}
     {description && (
       <p class={tw`text-gray-500`}>
         {description}
@@ -138,10 +166,12 @@ const Article: FunctionComponent<ArticleProps> = ({
   dateFormat,
   locale,
   children,
+  headerSize = "default",
 }) => (
   <article
     class={tw`sibling:(
-      mt-4 pt-4 border(t dashed white)
+      mt-8 pt-8 border(t dashed gray-400)
+      dark:(border(gray-700))
     )`}
   >
     <Header
@@ -154,6 +184,7 @@ const Article: FunctionComponent<ArticleProps> = ({
       dateFormat={dateFormat}
       locale={locale}
       showToc={page.showToc}
+      size={headerSize}
     />
     {page.html &&
       (

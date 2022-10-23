@@ -46,6 +46,7 @@ const Body: FunctionComponent<BodyProps> = ({
              px-4
              flex flex-col gap-16
              bg-white text-gray-900
+             text-sm md:(text-base)
              dark:(
                bg-black text-gray-300
              )`}
@@ -57,14 +58,25 @@ const Body: FunctionComponent<BodyProps> = ({
           {page.layout === "log" && childPages && childPages?.length > 0 && (
             childPages.map((p: Page) => (
               p.html && (
-                <Article page={p} dateFormat={dateFormat} locale={locale} />
+                <Article
+                  page={p}
+                  dateFormat={dateFormat}
+                  locale={locale}
+                  headerSize={"small"}
+                />
               )
             ))
           )}
         </Article>
       </main>
 
-      <aside class={tw`md:grid grid-cols-2 gap-x-8 gap-y-4`}>
+      <aside
+        class={tw`
+               grid grid-cols-1
+               gap-8
+               md:(grid-cols-2)
+               `}
+      >
         {childPages && childPages.length > 0 && (
           <IndexList title="Pages" items={childPages} />
         )}
