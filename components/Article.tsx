@@ -57,8 +57,9 @@ const styles = {
       apply`rounded p-2 text-sm children:(my-2 first-child:my-0 last-child:mb-0) bg-gray-100 text-gray-600 dark:(bg-gray-900 text-gray-400)`,
     blockquote: apply`mb-4 mx-8 text-lg text-gray-500`,
     del: apply`opacity-50`,
-    table: apply`table-auto min-w-full border border-collapse text(sm)`,
-    th: apply`border py-1 px-2 text-left`,
+    table:
+      apply`text(left sm) table-auto w-full overflow-scroll border border-collapse`,
+    th: apply`border py-1 px-2`,
     td: apply`border py-1 px-2`,
   }),
 };

@@ -64,7 +64,7 @@ const Body: FunctionComponent<BodyProps> = ({
         </Article>
       </main>
 
-      <aside class={tw`grid grid-cols-2 gap-x-8 gap-y-4`}>
+      <aside class={tw`md:grid grid-cols-2 gap-x-8 gap-y-4`}>
         {childPages && childPages.length > 0 && (
           <IndexList title="Pages" items={childPages} />
         )}
