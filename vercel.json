@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "destination": "/404",
+      "source": "/(.*)"
+    }
+  ]
+}
