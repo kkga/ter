@@ -6,7 +6,7 @@ import { Page } from "../types.d.ts";
 const styles = {
   section: css({
     "&:not(:hover)": { a: apply`text-gray-500!` },
-    "&:hover": { a: apply`text-accent-500` },
+    "&:hover": { a: apply`text-black dark:(text-white)` },
     a: apply`transition-colors no-underline hover:underline`,
   }),
 };
@@ -26,14 +26,13 @@ const Item: FunctionComponent<{
     pinned,
     isDirIndex,
     date,
-    dateFormat = { year: "2-digit", month: "numeric" },
+    dateFormat = { year: "2-digit", month: "2-digit" },
     locale,
   },
 ) => {
   return (
     <li
       class={tw`
-        relative
         flex
         gap-1
         items-baseline
@@ -41,19 +40,18 @@ const Item: FunctionComponent<{
         leading-6`}
     >
       <a className={tw`truncate`} href={url.pathname}>
-        {pinned && <span class={tw`mr-1`}>★</span>}
-        {title}
+        {pinned && <span>★</span>} {title}
       </a>
       {isDirIndex && <div class={tw`opacity-50 select-none`}>/ ..</div>}
       <span
         class={tw`
         flex-1
-        border(b dashed gray-200)
+        border(b solid gray-300)
         dark:(border(gray-700))`}
       />
       {date && (
         <time
-          class={tw`text(xs gray-500) tabular-nums`}
+          class={tw`font-mono text(xs gray-500) tabular-nums`}
           dateTime={date.toString()}
         >
           {date.toLocaleDateString(locale, dateFormat)}
@@ -88,25 +86,20 @@ const IndexList: FunctionComponent<
     }
   };
   return (
-    <section class={tw`${styles.section}`}>
+    <section
+      class={tw`${styles.section}`}
+    >
       <h6
         class={tw`
-          flex
-          items-baseline
-          gap-2
-          text-xs
-          leading-6
-          font-medium
-          uppercase
-          tracking-wide
-          text-gray-500`}
+               mb-4
+               text(xs gray-500)
+               font-mono
+               font-medium uppercase
+               `}
       >
         {title}
-        <span
-          class={tw`flex-1 border(b solid gray-200) dark:(border-gray-700)`}
-        />
       </h6>
-      <ul>
+      <ul class={tw`text-sm`}>
         {items.map((item) => renderItem(item))}
       </ul>
     </section>

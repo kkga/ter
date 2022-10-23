@@ -8,7 +8,7 @@ const styles = {
   }),
   footer: css({
     "&:not(:hover)": { a: apply`text-gray-500!` },
-    "&:hover": { a: apply`text-accent-500` },
+    "&:hover": { a: apply`text-black dark:(text-white)` },
     a: apply`transition-colors no-underline hover:underline`,
   }),
 };
@@ -19,9 +19,13 @@ interface FooterProps {
 
 const Footer: FunctionComponent<FooterProps> = ({ author }) => (
   <footer
-    class={tw`flex align-baseline mt-auto text-xs text-gray-500 ${styles.footer}`}
+    class={tw`
+           mt-auto py-2
+           flex items-baseline
+           text-xs text-gray-500
+           ${styles.footer}`}
   >
-    <ul class={tw`flex`}>
+    <ul class={tw`col-start-2 col-span-3 flex`}>
       <li class={tw`sibling:${styles.siblingItem}`}>
         {author && <a href={author.url}>{author.name}</a>}
       </li>

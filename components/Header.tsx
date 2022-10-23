@@ -5,14 +5,14 @@ import { Crumb } from "../types.d.ts";
 
 const styles = {
   siblingCrumb: css({
-    "&::before": { content: '"/"', margin: "0 0.5ch" },
+    "&::before": { content: '"/"', opacity: 0.75, margin: "0 0.5em" },
   }),
   siblingLink: css({
-    "&::before": { content: '"·"', margin: "0 1ch" },
+    "&::before": { content: '"·"', opacity: 0.75, margin: "0 0.5em" },
   }),
   header: css({
     "&:not(:hover)": { a: apply`text-gray-500!` },
-    "&:hover": { a: apply`text-accent-500` },
+    "&:hover": { a: apply`text-black dark:(text-white)` },
     a: apply`transition-colors no-underline hover:underline`,
   }),
 };
@@ -28,12 +28,10 @@ const PageHeader: FunctionComponent<
   return (
     <header
       class={tw`
-        flex
-        justify-between
-        align-baseline
-        text(sm gray-500)
-        ${styles.header}
-`}
+             flex justify-between items-baseline gap-4
+             text(sm gray-500)
+             py-2
+             ${styles.header}`}
     >
       {crumbs &&
         (
@@ -49,7 +47,7 @@ const PageHeader: FunctionComponent<
           </ul>
         )}
       {navItems && (
-        <ul class={tw`flex`}>
+        <ul class={tw`place-self-end flex`}>
           {Object.entries(navItems).map(([label, path]) => (
             <li class={tw`sibling:${styles.siblingLink}`}>
               <a href={path}>{label}</a>
