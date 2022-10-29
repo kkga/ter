@@ -1,4 +1,3 @@
-// export const MOD_URL = new URL("https://deno.land/x/ter/");
 export const INDEX_FILENAME = "index.md";
 export const RE_HIDDEN_OR_UNDERSCORED = /^\.|^_|\/\.|\/\_/;
 
@@ -34,7 +33,6 @@ OPTIONS:
   --input\t\tSource directory (default: .)
   --output\t\tOutput directory (default: _site)
   --config\t\tPath to config file (default: .ter/config.json)
-  --local\t\tUse local assets (default: false)
   --serve\t\tServe locally and watch for changes (default: false)
   --port\t\tServe port (default: 8000)
   --drafts\t\tRender pages marked as drafts (default: false)
