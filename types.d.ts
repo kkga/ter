@@ -57,7 +57,9 @@ export interface Page {
   pinned?: boolean;
   ignored?: boolean;
   showToc?: boolean;
-  hideTitle?: boolean;
+  showTitle?: boolean;
+  showMeta?: boolean;
+  showDescription?: boolean;
 }
 
 export interface OutputFile {
