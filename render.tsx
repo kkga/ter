@@ -41,7 +41,7 @@ const sortPages = (pages: Page[]): Page[] =>
 
 const generateCrumbs = (currentPage: Page, homeSlug?: string): Crumb[] => {
   const dir = dirname(currentPage.url.pathname);
-  const chunks: string[] = dir.split("/").filter((ch: string) => !!ch);
+  const chunks: string[] = dir.split("/").filter((ch) => !!ch);
   const slug = basename(currentPage.url.pathname);
 
   let crumbs: Crumb[] = chunks.map((chunk, i) => {
@@ -54,11 +54,13 @@ const generateCrumbs = (currentPage: Page, homeSlug?: string): Crumb[] => {
     };
   });
 
-  crumbs = [{ slug: homeSlug ?? "index", url: "/", current: false }, ...crumbs];
+  crumbs = [{
+    slug: homeSlug ?? "index",
+    url: "/",
+    current: false,
+  }, ...crumbs];
 
-  if (slug !== "") {
-    crumbs = [...crumbs, { slug, url: "", current: true }];
-  }
+  if (slug !== "") crumbs = [...crumbs, { slug, url: "", current: true }];
 
   return crumbs;
 };
