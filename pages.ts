@@ -11,11 +11,8 @@ import type { Heading, Page } from "./types.d.ts";
 const decoder = new TextDecoder("utf-8");
 
 export function isDeadLink(allPages: Page[], linkUrl: URL): boolean {
-  for (const page of allPages) {
-    if (page.url.pathname === linkUrl.pathname) return false;
-    else continue;
-  }
-  return true;
+  return allPages.some((page) => page?.url?.pathname === linkUrl.pathname) ===
+    false;
 }
 
 const getTitleFromHeadings = (headings: Array<Heading>): string | undefined => {
@@ -28,30 +25,18 @@ const getTitleFromFilename = (filePath: string): string => {
   return basename(filePath).replace(extname(filePath), "");
 };
 
-// TODO: use page.tags directly
 export function getAllTags(pages: Page[]): Array<string> {
-  const allTags: Set<string> = new Set();
-  pages.forEach((page) => {
-    if (page.attrs) {
-      const tags = attributes.getTags(page.attrs);
-      if (tags) tags.forEach((tag: string) => allTags.add(tag));
-    }
-  });
-  return [...allTags];
+  const tagSet: Set<string> = new Set();
+  pages.forEach((p) => p.tags && p.tags.forEach((tag) => tagSet.add(tag)));
+  return [...tagSet];
 }
 
 export function getPagesByTag(allPages: Page[], tag: string): Page[] {
-  const filtered = allPages.filter((page) => {
-    if (page.attrs) {
-      const pageTags = attributes.getTags(page.attrs);
-      return pageTags && pageTags.includes(tag);
-    }
-  });
-  return filtered;
+  return allPages.filter((page) => page.tags && page.tags.includes(tag));
 }
 
 export function getBacklinkPages(allPages: Page[], current: Page): Page[] {
-  const pages: Set<Page> = new Set();
+  const pageSet: Set<Page> = new Set();
 
   for (const outPage of allPages) {
     if (outPage.links) {
@@ -60,13 +45,13 @@ export function getBacklinkPages(allPages: Page[], current: Page): Page[] {
           outPage.url.pathname !== current.url.pathname &&
           url.pathname === current.url.pathname
         ) {
-          pages.add(outPage);
+          pageSet.add(outPage);
         }
       }
     }
   }
 
-  return [...pages];
+  return [...pageSet];
 }
 
 export function getChildPages(
@@ -95,45 +80,48 @@ interface PageData {
   body?: string;
   attrs?: Record<string, unknown>;
   datePublished?: Date;
+  dateUpdated?: Date;
   title?: string;
   description?: string;
   tags?: string[];
   pinned?: boolean;
   ignored?: boolean;
   log?: boolean;
+  showTitle: boolean;
+  showDescription: boolean;
+  showMeta: boolean;
+  showToc: boolean;
 }
 
 const extractPageData = (raw: string, ignoreKeys: string[]): PageData => {
   const fm = frontmatter.extract(raw);
-  const pageAttrs = fm.attrs as Record<string, unknown>;
-  const title = attributes.getTitle(pageAttrs);
-  const datePublished = attributes.getDate(pageAttrs);
-  const description = attributes.getDescription(pageAttrs);
-  const tags = attributes.getTags(pageAttrs);
-  const pinned = attributes.hasKey(pageAttrs, ["pinned"]);
-  const ignored = attributes.hasKey(pageAttrs, ignoreKeys);
-  const showToc = attributes.hasKey(pageAttrs, ["toc"]);
-  const logLayout = attributes.hasKey(pageAttrs, ["log"]);
-  const hideTitle = attributes.hasKey(pageAttrs, ["hideTitle"]);
+  const attrs = fm.attrs as Record<string, unknown>;
+  const {
+    getTitle,
+    getDescription,
+    getDate,
+    getDateUpdated,
+    hasKey,
+    getBool,
+    getTags,
+  } = attributes;
 
-  const data: PageData = {};
-
-  return Object.assign(
-    data,
-    {
-      attrs: pageAttrs,
-      body: fm.body,
-    },
-    title ? { title: title } : {},
-    datePublished ? { datePublished: datePublished } : {},
-    description ? { description: description } : {},
-    tags ? { tags: tags } : {},
-    ignored ? { ignored: ignored } : {},
-    pinned ? { pinned: pinned } : {},
-    showToc ? { showToc: showToc } : {},
-    logLayout ? { layout: "log" } : {},
-    hideTitle ? { hideTitle: hideTitle } : {},
-  );
+  return {
+    attrs: attrs,
+    body: fm.body,
+    title: getTitle(attrs),
+    datePublished: getDate(attrs),
+    dateUpdated: getDateUpdated(attrs),
+    description: getDescription(attrs),
+    tags: getTags(attrs),
+    pinned: getBool(attrs, "pinned") ?? false,
+    ignored: hasKey(attrs, ignoreKeys),
+    log: getBool(attrs, "log") ?? true,
+    showTitle: getBool(attrs, "showTitle") ?? true,
+    showDescription: getBool(attrs, "showDescription") ?? true,
+    showMeta: getBool(attrs, "showMeta") ?? true,
+    showToc: getBool(attrs, "showToc") ?? false,
+  };
 };
 
 interface GeneratePageOpts {
