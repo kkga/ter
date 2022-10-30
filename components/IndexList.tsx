@@ -1,15 +1,7 @@
 import { FunctionComponent, h } from "preact";
-import { apply, tw } from "twind/";
-import { css } from "twind/css";
+import { tw } from "twind/";
 import { Page } from "../types.d.ts";
-
-const styles = {
-  section: css({
-    "&:not(:hover)": { a: apply`text-gray-500!` },
-    "&:hover": { a: apply`text-black dark:(text-white)` },
-    a: apply`transition-colors no-underline hover:underline`,
-  }),
-};
+import { styleUtils } from "@components/styleUtils.ts";
 
 const Item: FunctionComponent<{
   url: URL;
@@ -37,7 +29,8 @@ const Item: FunctionComponent<{
         gap-1
         items-baseline
         justify-between
-        leading-6`}
+        leading-6
+      `}
     >
       <a className={tw`truncate`} href={url.pathname}>
         {pinned && <span>★</span>} {title}
@@ -45,9 +38,10 @@ const Item: FunctionComponent<{
       {isDirIndex && <div class={tw`opacity-50 select-none`}>/ ..</div>}
       <span
         class={tw`
-        flex-1
-        border(b solid gray-300)
-        dark:(border(gray-700))`}
+          flex-1
+          border(b solid gray-300)
+          dark:(border(gray-700))
+        `}
       />
       {date && (
         <time
@@ -89,18 +83,20 @@ const IndexList: FunctionComponent<
     <section
       id={title}
       class={tw`
-             target:(
-               ring ring-offset-8
-               dark:(ring-offset-black))
-             ${styles.section}`}
+        target:(
+          ring ring-offset-8
+          dark:(ring-offset-black)
+        )
+        ${styleUtils.linkDimmer}
+      `}
     >
       <h6
         class={tw`
-               mb-2
-               text(xs gray-500)
-               font-mono
-               font-medium uppercase
-               `}
+          mb-2
+          text(xs gray-500)
+          font-mono
+          font-medium uppercase
+        `}
       >
         {title}
       </h6>

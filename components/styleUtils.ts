@@ -3,7 +3,11 @@ import { apply } from "twind/";
 
 export const styleUtils = {
   childrenDivider: css({
-    "& > * + *::before": { content: '"·"', margin: "0 1ch" },
+    "& > * + *::before": { content: '"·"', margin: "0 0.5em" },
+  }),
+
+  childrenBreadcrumbDivider: css({
+    "& > * + *::before": { content: '"/"', margin: "0 0.5em" },
   }),
 
   linkDimmer: css({

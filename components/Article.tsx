@@ -28,15 +28,33 @@ interface ArticleProps {
 }
 
 const contentStyles = css({
-  "> *": apply`mb-4 first-child:(mt-0)`,
-  h1: apply`text-3xl   mt-12 font-semibold tracking-tight`,
-  h2: apply`text-xl    mt-12 font-semibold tracking-tight`,
-  h3: apply`text-base  mt-6 mb-1  font-semibold`,
-  h4: apply`text-base  mt-6 mb-1  font-semibold`,
-  h5: apply`text-base  mt-6 mb-1  font-semibold`,
-  h6: apply`text-base  mt-6 mb-1  font-semibold`,
-  a: apply`text-accent-700 dark:(text-accent-400) no-underline hover:underline`,
-  "a[rel~='external']": apply`text-current underline`,
+  "> *": apply`
+    mb-4 first-child:(mt-0)
+  `,
+  h1: apply`
+    text-3xl mt-12 font-semibold tracking-tight
+  `,
+  h2: apply`
+    text-xl mt-12 font-semibold tracking-tight
+  `,
+  h3: apply`
+    text-base mt-6 mb-1 font-semibold
+  `,
+  h4: apply`
+    text-base mt-6 mb-1 font-semibold
+  `,
+  h5: apply`
+    text-base mt-6 mb-1 font-semibold
+  `,
+  h6: apply`
+    text-base mt-6 mb-1 font-semibold
+  `,
+  a: apply`
+    text-accent-700 dark:(text-accent-400) no-underline hover:underline
+  `,
+  "a[rel~='external']": apply`
+    text-current underline
+  `,
   p: apply``,
   img: apply``,
   video: apply``,
@@ -46,19 +64,69 @@ const contentStyles = css({
     { video: apply`m-0` },
     { figcaption: apply`mt-1 text(center sm gray-500)` },
   ),
-  ul: apply`list(inside disc)`,
-  ol: apply`list(inside decimal)`,
-  hr: apply`my-8 border(gray-200) dark:(border(gray-700))`,
-  pre:
-    apply` overflow-x-scroll text-sm font-mono p-2 rounded leading-snug bg-gray-100 dark:(bg-gray-800 text-gray-300)`,
-  details:
-    apply`rounded p-2 text-sm children:(my-2 first-child:my-0 last-child:mb-0) bg-gray-100 text-gray-600 dark:(bg-gray-900 text-gray-400)`,
-  blockquote: apply`mb-4 mx-8 text-lg text-gray-500`,
-  del: apply`opacity-60`,
-  table:
-    apply`text(left sm) table-auto w-full overflow-scroll border border-gray-300 border-collapse dark:(border-gray-700)`,
-  th: apply`border border-gray-300 dark:(border-gray-700) py-1 px-2`,
-  td: apply`border border-gray-300 dark:(border-gray-700) py-1 px-2`,
+  ul: apply`
+    list(inside disc)
+  `,
+  ol: apply`
+    list(inside decimal)
+  `,
+  hr: apply`
+    my-8
+    border(gray-200)
+    dark:(border(gray-700))
+  `,
+  pre: apply`
+    overflow-x-scroll
+    text-sm
+    font-mono
+    p-2
+    rounded
+    leading-snug
+    bg-gray-100
+    dark:(bg-gray-800 text-gray-300)
+  `,
+  details: apply`
+    rounded
+    p-2
+    text-sm
+    children:(my-2
+    first-child:my-0
+    last-child:mb-0)
+    bg-gray-100
+    text-gray-600
+    dark:(bg-gray-900
+    text-gray-400)
+  `,
+  blockquote: apply`
+    mb-4 mx-8 text-lg text-gray-500
+  `,
+  del: apply`
+    opacity-60
+  `,
+  table: apply`
+    text(left sm)
+    table-auto
+    w-full
+    overflow-scroll
+    border
+    border-gray-300
+    border-collapse
+    dark:(border-gray-700)
+  `,
+  th: apply`
+    border
+    border-gray-300
+    dark:(border-gray-700)
+    py-1
+    px-2
+  `,
+  td: apply`
+    border
+    border-gray-300
+    dark:(border-gray-700)
+    py-1
+    px-2
+  `,
   ".full-bleed": apply`lg:(-mx-24)`,
 });
 
@@ -140,10 +208,11 @@ const Header: FunctionComponent<HeaderProps> = ({
       <details
         open
         class={tw`
-               mt-4
-               text-sm
-               text-gray-600
-               dark:(text-gray-400)`}
+          mt-4
+          text-sm
+          text-gray-600
+          dark:(text-gray-400)
+        `}
       >
         <summary>Contents</summary>
         <ol class={tw`mt-2`}>

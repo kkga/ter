@@ -1,17 +1,6 @@
 import { FunctionComponent, h } from "preact";
-import { apply, tw } from "twind/";
-import { css } from "twind/css";
-
-const styles = {
-  siblingItem: css({
-    "&::before": { content: '"·"', margin: "0 1ch" },
-  }),
-  footer: css({
-    "&:not(:hover)": { a: apply`text-gray-500!` },
-    "&:hover": { a: apply`text-black dark:(text-white)` },
-    a: apply`transition-colors no-underline hover:underline`,
-  }),
-};
+import { tw } from "twind/";
+import { styleUtils } from "@components/styleUtils.ts";
 
 interface FooterProps {
   author?: { name: string; email: string; url: string };
@@ -20,21 +9,24 @@ interface FooterProps {
 const Footer: FunctionComponent<FooterProps> = ({ author }) => (
   <footer
     class={tw`
-           mt-auto py-2
-           flex items-baseline
-           text-xs text-gray-500
-           ${styles.footer}`}
+      mt-auto py-2
+      flex items-baseline
+      text-xs text-gray-500
+      ${styleUtils.linkDimmer}
+    `}
   >
-    <ul class={tw`col-start-2 col-span-3 flex`}>
-      <li class={tw`sibling:${styles.siblingItem}`}>
-        {author && <a href={author.url}>{author.name}</a>}
-      </li>
+    <ul class={tw`flex items-baseline ${styleUtils.childrenDivider}`}>
+      {author && (
+        <li>
+          <a href={author.url}>{author.name}</a>
+        </li>
+      )}
 
-      <li class={tw`sibling:${styles.siblingItem}`}>
+      <li>
         <a href="/feed.xml">Feed</a>
       </li>
 
-      <li class={tw`sibling:${styles.siblingItem}`}>
+      <li>
         <a href="https://ter.kkga.me">Made with Ter</a>
       </li>
     </ul>
