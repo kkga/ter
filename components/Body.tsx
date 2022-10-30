@@ -55,18 +55,20 @@ const Body: FunctionComponent<BodyProps> = ({
 
       <main>
         <Article page={page} dateFormat={dateFormat} locale={locale}>
-          {page.layout === "log" && childPages && childPages?.length > 0 && (
-            childPages.map((p: Page) => (
-              p.html && (
-                <Article
-                  page={p}
-                  dateFormat={dateFormat}
-                  locale={locale}
-                  headerSize={"small"}
-                />
-              )
-            ))
-          )}
+          {page.layout === "log" &&
+            childPages &&
+            childPages?.length > 0 &&
+            childPages.map(
+              (p: Page) =>
+                p.html && (
+                  <Article
+                    page={p}
+                    dateFormat={dateFormat}
+                    locale={locale}
+                    headerSize={"small"}
+                  />
+                ),
+            )}
         </Article>
       </main>
 

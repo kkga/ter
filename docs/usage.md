@@ -2,8 +2,8 @@
 title: Usage
 description: How to use and configure Ter.
 date: 2022-09-26
-toc: true
 pinned: true
+showToc: true
 ---
 
 ## Quick start
@@ -173,6 +173,8 @@ Some properties are utilized when building a site.
 | `toc`         | if `true`, page renders table of contents at the top                         |
 | `hideTitle`   | if `true`, the page title heading is not displayed                           |
 | `log`         | if `true` on an index page (`index.md`), all child pages are rendered inline |
+
+[//]: # "TODO: rename hideTitle"
 
 All other properties are ignored but can be used in
 [templates](customization.md#templates).

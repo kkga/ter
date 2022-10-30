@@ -79,7 +79,7 @@ const IndexList: FunctionComponent<
       );
     } else {
       return (
-        <a class={tw`inline-block mr-3`} href={`/tag/${item}`}>
+        <a class={tw`inline-block mr-3`} href={`/tags##${item}`}>
           #{item}
         </a>
       );
@@ -87,7 +87,12 @@ const IndexList: FunctionComponent<
   };
   return (
     <section
-      class={tw`${styles.section}`}
+      id={title}
+      class={tw`
+             target:(
+               ring ring-offset-8
+               dark:(ring-offset-black))
+             ${styles.section}`}
     >
       <h6
         class={tw`
