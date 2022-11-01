@@ -42,7 +42,7 @@ const Body: FunctionComponent<BodyProps> = ({
     <body
       class={tw`
              min-h-screen
-             mx-auto max-w-3xl
+             mx-auto max-w-4xl
              px-4
              flex flex-col gap-16
              bg-white text-gray-900
