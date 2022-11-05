@@ -6,7 +6,7 @@ import { INDEX_FILENAME, RE_HIDDEN_OR_UNDERSCORED } from "./constants.ts";
 const hasIgnoredPrefix = (path: string): boolean => {
   const pathChunks = path.split("/");
   for (const chunk of pathChunks) {
-    if (/^\./.test(chunk) || /^\_/.test(chunk)) return true;
+    if (/^\./.test(chunk) || /^_/.test(chunk)) return true;
   }
   return false;
 };
@@ -93,7 +93,5 @@ export async function getContentEntries(
     return commonPaths.includes(withoutTrailingSlash(dir.path));
   });
 
-  const entries = [...fileEntries, ...dirEntries];
-
-  return entries;
+  return [...fileEntries, ...dirEntries];
 }
