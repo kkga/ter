@@ -78,7 +78,7 @@ const Item: FC<ItemProps> = ({
   pinned,
   isDirIndex,
   date,
-  dateFormat = { year: "2-digit", day: "numeric", month: "short" },
+  dateFormat = { year: "2-digit", day: "2-digit", month: "short" },
   tags,
   locale,
   icon,
@@ -110,7 +110,7 @@ const Item: FC<ItemProps> = ({
 
         {date && (
           <time
-            class={tw`text(xs) tabular-nums flex-shrink-0`}
+            class={tw`text(xs) tabular-nums slashed-zero flex-shrink-0`}
             dateTime={date.toString()}
           >
             {date.toLocaleDateString(locale, dateFormat)}

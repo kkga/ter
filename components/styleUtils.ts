@@ -12,7 +12,7 @@ export const styleUtils = {
 
   linkDimmer: css({
     "&:not(:hover)": { a: apply`text-gray-500!` },
-    "&:hover": { a: apply`text-black dark:(text-white)` },
+    "&:hover": { a: apply`text-gray-900 dark:(text-gray-100)` },
     a: apply`transition-colors no-underline hover:underline`,
   }),
 };

@@ -1,4 +1,4 @@
-import { FunctionComponent, h } from "preact";
+import { FunctionComponent as FC, h } from "preact";
 import { apply, tw } from "twind/";
 import { css } from "twind/css";
 import { Heading, Page } from "../types.d.ts";
@@ -130,7 +130,7 @@ const contentStyles = css({
   ".full-bleed": apply`lg:(-mx-24)`,
 });
 
-const Header: FunctionComponent<HeaderProps> = ({
+const Header: FC<HeaderProps> = ({
   title,
   description,
   datePublished,
@@ -138,7 +138,7 @@ const Header: FunctionComponent<HeaderProps> = ({
   tags,
   headings,
   locale,
-  dateFormat = { year: "numeric", month: "short", day: "numeric" },
+  dateFormat = { year: "numeric", month: "long", day: "numeric" },
   showTitle,
   showDescription,
   showMeta,
@@ -146,19 +146,32 @@ const Header: FunctionComponent<HeaderProps> = ({
   size = "default",
 }) => (
   <header
-    class={tw`${
-      size === "small" ? "mb-8" : "mb-16"
-    } only-child:(m-0) flex flex-col gap-4 empty:hidden ${
-      styleUtils.linkDimmer
-    }`}
+    class={tw`
+      ${size === "small" ? "mb-8" : "mb-16"} 
+      flex flex-col gap-2 
+      only-child:(m-0) 
+      empty:hidden 
+      ${styleUtils.linkDimmer}
+    `}
   >
+    {showTitle && (
+      <h1
+        class={tw`
+          mt-0
+          ${size === "small" ? "text-xl" : "text-2xl md:(text-3xl)"}
+          font-bold tracking-tight
+        `}
+      >
+        {title}
+      </h1>
+    )}
+
     {showMeta && (datePublished || tags) && (
       <div
-        class={tw`flex font-mono items-baseline text(xs gray-500) ${styleUtils.childrenDivider}`}
+        class={tw`flex items-baseline text(sm gray-500) ${styleUtils.childrenDivider}`}
       >
         {datePublished && (
           <div>
-            Published:{" "}
             <time class={tw`font-medium`} dateTime={datePublished.toString()}>
               {datePublished.toLocaleDateString(locale, dateFormat)}
             </time>
@@ -183,21 +196,8 @@ const Header: FunctionComponent<HeaderProps> = ({
         )}
       </div>
     )}
-
-    {showTitle && (
-      <h1
-        class={tw`
-          mt-0
-          ${size === "small" ? "text-xl" : "text-2xl md:(text-4xl)"}
-          font-extrabold tracking-tight
-        `}
-      >
-        {title}
-      </h1>
-    )}
-
     {showDescription && description && (
-      <p class={tw`text-xl text-gray-500`}>{description}</p>
+      <p class={tw`text(sm gray-500) font(medium italic)`}>{description}</p>
     )}
 
     {showToc && headings?.some((h) => h.level > 2) && (
@@ -231,7 +231,7 @@ const Header: FunctionComponent<HeaderProps> = ({
   </header>
 );
 
-const Article: FunctionComponent<ArticleProps> = ({
+const Article: FC<ArticleProps> = ({
   page,
   dateFormat,
   locale,
