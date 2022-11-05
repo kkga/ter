@@ -2,8 +2,9 @@
 title: Usage
 description: How to use and configure Ter.
 date: 2022-09-26
+dateUpdated: 2022-10-30
 pinned: true
-showToc: true
+toc: true
 ---
 
 ## Quick start
@@ -160,19 +161,19 @@ property: value
 ## My content
 ```
 
-Some properties are utilized when building a site.
+Some properties are utilized when building a site. All of them are optional.
 
 | Property      | Description                                                                  |
 | ------------- | ---------------------------------------------------------------------------- |
 | `title`       | used for page title                                                          |
 | `description` | used for page description                                                    |
 | `tags`        | used for tags                                                                |
-| `date`        | date in YYYY-MM-DD format                                                    |
+| `date`        | publish date in YYYY-MM-DD format                                            |
+| `dateUpdated` | update date in YYYY-MM-DD format                                             |
 | `pinned`      | if `true`, page is listed at the top of [index lists](#index-pages)          |
 | `draft`       | if `true`, file is [ignored](#ignoring-files) during site generation         |
-| `toc`         | if `true`, page renders table of contents at the top                         |
-| `hideTitle`   | if `true`, the page title heading is not displayed                           |
 | `log`         | if `true` on an index page (`index.md`), all child pages are rendered inline |
+| `toc`         | if `true`, page renders table of contents at the top                         |
 
 [//]: # "TODO: rename hideTitle"
 
