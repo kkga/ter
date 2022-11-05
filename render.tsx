@@ -1,33 +1,15 @@
-import { basename, dirname, join } from "$std/path/mod.ts";
-import * as colors from "twind/colors";
-import { apply, setup as twSetup, theme } from "twind/";
-import { css } from "twind/css";
-import { getStyleTag, virtualSheet } from "twind/sheets";
 import { h } from "preact";
 import { renderToString } from "preact-render-to-string";
+import { setup as twSetup } from "twind/";
+import { getStyleTag } from "twind/sheets";
+import { basename, dirname, join } from "$std/path/mod.ts";
 
+import twindConfig, { sheet } from "./twind.config.ts";
 import { HMR_CLIENT } from "./constants.ts";
 import { Crumb, Page, UserConfig } from "./types.d.ts";
 import Body from "@components/Body.tsx";
 
-const sheet = virtualSheet();
-
-twSetup({
-  theme: {
-    fontFamily: {
-      sans: ["system-ui", "-apple-system", "sans-serif"],
-      mono: ["monospace", "ui-monospace", "Menlo", "Monaco"],
-    },
-    colors: {
-      gray: colors.blueGray,
-      accent: colors.blue,
-      current: "currentColor",
-      white: colors.white,
-      black: colors.black,
-    },
-  },
-  sheet,
-});
+twSetup(twindConfig);
 
 const sortPages = (pages: Page[]): Page[] =>
   pages
@@ -54,11 +36,14 @@ const generateCrumbs = (currentPage: Page, homeSlug?: string): Crumb[] => {
     };
   });
 
-  crumbs = [{
-    slug: homeSlug ?? "index",
-    url: "/",
-    current: false,
-  }, ...crumbs];
+  crumbs = [
+    {
+      slug: homeSlug ?? "index",
+      url: "/",
+      current: false,
+    },
+    ...crumbs,
+  ];
 
   if (slug !== "") crumbs = [...crumbs, { slug, url: "", current: true }];
 
@@ -96,7 +81,7 @@ export function renderPage({
       taggedPages={taggedPages}
       navItems={userConfig.navigation}
       author={userConfig.author}
-    />,
+    />
   );
 
   const styleTag = getStyleTag(sheet);
