@@ -14,10 +14,6 @@ const PageHeader: FC<{
         justify-between items-baseline gap-2 md:(gap-4)
         py-2
         text(sm gray-500)
-        border(b gray-300)
-        dark:(
-          border(b gray-700)
-        )
         ${styleUtils.linkDimmer}
       `}
     >

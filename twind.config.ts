@@ -11,7 +11,7 @@ export default {
       mono: ["monospace", "ui-monospace", "Menlo", "Monaco"],
     },
     colors: {
-      gray: colors.warmGray,
+      gray: colors.gray,
       accent: colors.blue,
       current: "currentColor",
       white: colors.white,

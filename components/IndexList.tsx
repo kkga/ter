@@ -63,6 +63,7 @@ const StarIcon: FC = () => {
 interface ItemProps {
   url: URL;
   title: string;
+  description?: string;
   pinned?: boolean;
   isDirIndex?: boolean;
   date?: Date;
@@ -74,6 +75,7 @@ interface ItemProps {
 
 const Item: FC<ItemProps> = ({
   title,
+  description,
   url,
   pinned,
   isDirIndex,
@@ -99,14 +101,29 @@ const Item: FC<ItemProps> = ({
         `}
       >
         {pinned && (
-          <div class={tw`absolute left-[-20px]`}>
+          <div
+            class={tw`
+              md:(
+                absolute top-[9px] left-[-20px]
+              )
+            `}
+          >
             <StarIcon />
           </div>
         )}
-        <span class={tw`flex-1 font-medium truncate`}>
-          {title}
-          {isDirIndex && <span class={tw`opacity-50 select-none`}> / ..</span>}
-        </span>
+        <div
+          class={tw`flex-1 flex overflow-hidden whitespace-nowrap font-medium ${styleUtils.childrenDivider}`}
+        >
+          <span class={tw`flex-shrink-0 truncate`}>
+            {title}
+            {isDirIndex && <span class={tw`select-none`}> /..</span>}
+          </span>
+          {description && (
+            <span class={tw`opacity-60 truncate font-normal`}>
+              {description}
+            </span>
+          )}
+        </div>
 
         {date && (
           <time
@@ -132,6 +149,7 @@ const IndexList: FC<{
       return (
         <Item
           title={item.title || ""}
+          description={item.description}
           url={item.url}
           isDirIndex={item.index === "dir"}
           pinned={item.pinned}
@@ -164,30 +182,27 @@ const IndexList: FC<{
     <section
       id={title}
       class={tw`
-        grid grid-cols-3 items-start
         text(sm gray-500) tracking-tight leading-4
-        border(t gray-300)
         target:(
           ring ring-offset-8
           dark:(ring-offset-black)
-        )
-        dark:(
-          border(t gray-700)
         )
       `}
     >
       <h6
         class={tw`
-          py-2
-          col-start-1 col-end-2
+          pb-2
           font-medium
+          border(b gray-200)
+          dark:(
+            border(gray-800)
+          )
         `}
       >
         {title}
       </h6>
       <ul
         class={tw`
-          col-start-2 col-end-4
           flex 
           ${
             type === "backlinks" || type === "pages"

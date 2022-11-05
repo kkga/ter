@@ -73,7 +73,7 @@ const contentStyles = css({
   hr: apply`
     my-8
     border(gray-200)
-    dark:(border(gray-700))
+    dark:(border(gray-800))
   `,
   pre: apply`
     overflow-x-scroll
@@ -83,7 +83,7 @@ const contentStyles = css({
     rounded
     leading-snug
     bg-gray-100
-    dark:(bg-gray-800 text-gray-300)
+    dark:(bg-gray-900 text-gray-300)
   `,
   details: apply`
     rounded
@@ -108,26 +108,28 @@ const contentStyles = css({
     table-auto
     w-full
     overflow-scroll
-    border
-    border-gray-300
-    border-collapse
-    dark:(border-gray-700)
+    dark:(
+      border-gray-700
+    )
   `,
   th: apply`
-    border
-    border-gray-300
+    border(b gray-400)
     dark:(border-gray-700)
-    py-1
-    px-2
+    text(gray-500)
+    font(medium)
+    py-1.5
   `,
   td: apply`
-    border
-    border-gray-300
-    dark:(border-gray-700)
-    py-1
-    px-2
+    border(b gray-400)
+    dark:(border-gray-800)
+    py-1.5
+    pr-4
+    align-baseline
   `,
-  ".full-bleed": apply`lg:(-mx-24)`,
+  ".full-bleed": apply`
+    lg:(-mx-24)
+    xl:(-mx-32)
+  `,
 });
 
 const Header: FC<HeaderProps> = ({
@@ -197,7 +199,7 @@ const Header: FC<HeaderProps> = ({
       </div>
     )}
     {showDescription && description && (
-      <p class={tw`text(sm gray-500) font(medium italic)`}>{description}</p>
+      <p class={tw`text(sm gray-500) font(italic)`}>{description}</p>
     )}
 
     {showToc && headings?.some((h) => h.level > 2) && (
