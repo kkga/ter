@@ -41,15 +41,16 @@ const Body: FunctionComponent<BodyProps> = ({
   return (
     <body
       class={tw`
-             min-h-screen
-             mx-auto max-w-4xl
-             px-4
-             flex flex-col gap-16
-             bg-white text-gray-900
-             text-sm md:(text-base)
-             dark:(
-               bg-black text-gray-300
-             )`}
+        antialiased 
+        min-h-screen
+        mx-auto max-w-3xl
+        px-4
+        flex flex-col gap-16
+        bg-gray-50 text-gray-900
+        text-sm md:(text-base)
+        dark:(
+          bg-black text-gray-300
+        )`}
     >
       {crumbs && <Header navItems={navItems} crumbs={crumbs} />}
 
@@ -67,31 +68,36 @@ const Body: FunctionComponent<BodyProps> = ({
                     locale={locale}
                     headerSize={"small"}
                   />
-                ),
+                )
             )}
         </Article>
       </main>
 
-      <aside
-        class={tw`
-               grid grid-cols-1
-               gap-8
-               md:(grid-cols-2)
-               `}
-      >
+      <aside class={tw`flex flex-col gap-12`}>
         {childPages && childPages.length > 0 && (
-          <IndexList title="Pages" items={childPages} />
+          <IndexList title="Pages" items={childPages} type={"pages"} />
         )}
+
         {backlinkPages && backlinkPages.length > 0 && (
-          <IndexList title="Backlinks" items={backlinkPages} />
+          <IndexList
+            title="Backlinks"
+            items={backlinkPages}
+            type={"backlinks"}
+          />
         )}
+
         {taggedPages &&
           Object.keys(taggedPages).length > 0 &&
           Object.keys(taggedPages).map((tag) => (
-            <IndexList title={`#${tag}`} items={taggedPages[tag]} />
+            <IndexList
+              title={`#${tag}`}
+              items={taggedPages[tag]}
+              type={"pages"}
+            />
           ))}
+
         {childTags && childTags.length > 0 && (
-          <IndexList title="Tags" items={childTags} />
+          <IndexList title="Tags" items={childTags} type={"tags"} />
         )}
       </aside>
       <Footer author={author} />

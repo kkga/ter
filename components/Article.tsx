@@ -62,7 +62,7 @@ const contentStyles = css({
     apply`my-6`,
     { img: apply`m-0` },
     { video: apply`m-0` },
-    { figcaption: apply`mt-1 text(center sm gray-500)` },
+    { figcaption: apply`mt-1 text(center sm gray-500)` }
   ),
   ul: apply`
     list(inside disc)
@@ -148,7 +148,9 @@ const Header: FunctionComponent<HeaderProps> = ({
   <header
     class={tw`${
       size === "small" ? "mb-8" : "mb-16"
-    } only-child:(m-0) flex flex-col gap-4 empty:hidden ${styleUtils.linkDimmer}`}
+    } only-child:(m-0) flex flex-col gap-4 empty:hidden ${
+      styleUtils.linkDimmer
+    }`}
   >
     {showMeta && (datePublished || tags) && (
       <div
@@ -157,10 +159,7 @@ const Header: FunctionComponent<HeaderProps> = ({
         {datePublished && (
           <div>
             Published:{" "}
-            <time
-              class={tw`font-medium`}
-              dateTime={datePublished.toString()}
-            >
+            <time class={tw`font-medium`} dateTime={datePublished.toString()}>
               {datePublished.toLocaleDateString(locale, dateFormat)}
             </time>
           </div>
@@ -168,10 +167,7 @@ const Header: FunctionComponent<HeaderProps> = ({
         {dateUpdated && (
           <div>
             Updated:{" "}
-            <time
-              class={tw`font-medium`}
-              dateTime={dateUpdated.toString()}
-            >
+            <time class={tw`font-medium`} dateTime={dateUpdated.toString()}>
               {dateUpdated.toLocaleDateString(locale, dateFormat)}
             </time>
           </div>
@@ -221,9 +217,9 @@ const Header: FunctionComponent<HeaderProps> = ({
             .map((h: Heading) => {
               return (
                 <li
-                  class={h.level > 2
-                    ? tw`py-px pl-3`
-                    : tw`py-0.5 font-semibold`}
+                  class={
+                    h.level > 2 ? tw`py-px pl-3` : tw`py-0.5 font-semibold`
+                  }
                 >
                   <a href={`#${h.slug}`}>{h.text}</a>
                 </li>
