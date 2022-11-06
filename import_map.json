@@ -5,7 +5,7 @@
 
     "preact": "https://esm.sh/preact@10.11.2^",
     "preact/": "https://esm.sh/preact@10.11.2^/",
-    "preact-render-to-string": "https://esm.sh/preact-render-to-string@5.2.5^",
+    "preact-render-to-string": "https://esm.sh/preact-render-to-string@5.2.6^",
     "twind": "https://esm.sh/twind@0.16.17^",
     "twind/": "https://esm.sh/twind@0.16.17^/",
 

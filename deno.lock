@@ -182,6 +182,7 @@
     "https://esm.sh/marked@4.1.1/": "27a6f12df4912498a62aef40d57f826c0f0abf11fce584b0274714e810609d64",
     "https://esm.sh/marked@4.2.2/": "dabfc499b90e17f6126ca64d732211770a865c0d96eecf994e7f33086339d28e",
     "https://esm.sh/preact-render-to-string@5.2.6": "7b0214b1bbc385caf84d8618aa82ee1b98c7f95438e71c05c7e8d1726f770410",
+    "https://esm.sh/preact-render-to-string@5.2.6^": "7b0214b1bbc385caf84d8618aa82ee1b98c7f95438e71c05c7e8d1726f770410",
     "https://esm.sh/preact@10.11.2": "a7484db8d718104c029053f08954ed862f15b2a1440867a4eb63a3a78e7749c7",
     "https://esm.sh/preact@10.11.2^": "a7484db8d718104c029053f08954ed862f15b2a1440867a4eb63a3a78e7749c7",
     "https://esm.sh/preact@10.11.2^/": "a7484db8d718104c029053f08954ed862f15b2a1440867a4eb63a3a78e7749c7",
