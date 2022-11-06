@@ -1,5 +1,5 @@
 import { dirname, extname, isAbsolute, join } from "$std/path/mod.ts";
-import { hljs } from "hljs";
+import hljs from "hljs";
 import { marked } from "marked";
 import {
   ParsedURL,
@@ -150,11 +150,11 @@ export const parseMarkdown = (
     }
   };
 
-  // renderer.code = (code: string, lang: string): string => {
-  //   const language = hljs.getLanguage(lang) ? lang : "plaintext";
-  //   const html = hljs.highlight(code, { language }).value;
-  //   return `<pre class="hljs language-${language}">${html}</pre>`;
-  // };
+  renderer.code = (code: string, lang: string): string => {
+    const language = hljs.getLanguage(lang) ? lang : "plaintext";
+    const html = hljs.highlight(code, { language }).value;
+    return `<pre class="hljs language-${language}">${html}</pre>`;
+  };
 
   marked.use({
     renderer,

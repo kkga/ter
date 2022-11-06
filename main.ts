@@ -54,8 +54,8 @@ async function generateSite(opts: GenerateSiteOpts) {
   opts.quiet || console.log(`scan\t${inputPath}`);
 
   const [contentEntries, staticEntries] = await Promise.all([
-    getContentEntries(inputPath),
-    getStaticEntries(inputPath, outputPath, staticExts),
+    getContentEntries({ path: inputPath }),
+    getStaticEntries({ path: inputPath, exts: staticExts }),
   ]);
 
   const contentPages: Page[] = [];

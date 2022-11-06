@@ -81,7 +81,7 @@ export function renderPage({
       taggedPages={taggedPages}
       navItems={userConfig.navigation}
       author={userConfig.author}
-    />
+    />,
   );
 
   const styleTag = getStyleTag(sheet);
@@ -92,7 +92,7 @@ export function renderPage({
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${page.title}</title>
+  <title>${page.title} &middot; ${userConfig.site.title}</title>
   <meta name="description" content="${
     page.description || userConfig.site.description
   }">

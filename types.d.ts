@@ -56,6 +56,7 @@ export interface Page {
   layout?: "log";
   pinned?: boolean;
   ignored?: boolean;
+  showHeader?: boolean;
   showToc?: boolean;
   showTitle?: boolean;
   showMeta?: boolean;
@@ -67,8 +68,3 @@ export interface OutputFile {
   filePath: string;
   fileContent?: string;
 }
-
-// interface TagPage {
-//   name: string;
-//   pages: Array<Page>;
-// }

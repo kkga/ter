@@ -87,6 +87,7 @@ interface PageData {
   pinned?: boolean;
   ignored?: boolean;
   log?: boolean;
+  showHeader: boolean;
   showTitle: boolean;
   showDescription: boolean;
   showMeta: boolean;
@@ -117,10 +118,11 @@ const extractPageData = (raw: string, ignoreKeys: string[]): PageData => {
     pinned: getBool(attrs, "pinned") ?? false,
     ignored: hasKey(attrs, ignoreKeys),
     log: getBool(attrs, "log") ?? true,
+    showHeader: getBool(attrs, "showHeader") ?? true,
     showTitle: getBool(attrs, "showTitle") ?? true,
     showDescription: getBool(attrs, "showDescription") ?? true,
     showMeta: getBool(attrs, "showMeta") ?? true,
-    showToc: getBool(attrs, "showToc") ?? false,
+    showToc: getBool(attrs, "toc") ?? false,
   };
 };
 
@@ -201,11 +203,9 @@ export function generateIndexPageFromDir(
   const slug = relPath === "." ? "." : slugify(entry.name);
   const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
 
-  const page: Page = {
+  return {
     title: entry.name,
     url: pageUrl,
     index: "dir",
   };
-
-  return page;
 }

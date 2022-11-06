@@ -62,7 +62,7 @@ const contentStyles = css({
     apply`my-6`,
     { img: apply`m-0` },
     { video: apply`m-0` },
-    { figcaption: apply`mt-1 text(center sm gray-500)` }
+    { figcaption: apply`mt-1 text(center sm gray-500)` },
   ),
   ul: apply`
     list(inside disc)
@@ -219,9 +219,9 @@ const Header: FC<HeaderProps> = ({
             .map((h: Heading) => {
               return (
                 <li
-                  class={
-                    h.level > 2 ? tw`py-px pl-3` : tw`py-0.5 font-semibold`
-                  }
+                  class={h.level > 2
+                    ? tw`py-px pl-3`
+                    : tw`py-0.5 font-semibold`}
                 >
                   <a href={`#${h.slug}`}>{h.text}</a>
                 </li>
@@ -246,21 +246,23 @@ const Article: FC<ArticleProps> = ({
       dark:(border(gray-700))
     )`}
   >
-    <Header
-      title={page.title}
-      description={page.description}
-      datePublished={page.datePublished}
-      dateUpdated={page.dateUpdated}
-      tags={page.tags}
-      headings={page.headings}
-      dateFormat={dateFormat}
-      locale={locale}
-      size={headerSize}
-      showTitle={page.showTitle}
-      showMeta={page.showMeta}
-      showDescription={page.showDescription}
-      showToc={page.showToc}
-    />
+    {page.showHeader && (
+      <Header
+        title={page.title}
+        description={page.description}
+        datePublished={page.datePublished}
+        dateUpdated={page.dateUpdated}
+        tags={page.tags}
+        headings={page.headings}
+        dateFormat={dateFormat}
+        locale={locale}
+        size={headerSize}
+        showTitle={page.showTitle}
+        showMeta={page.showMeta}
+        showDescription={page.showDescription}
+        showToc={page.showToc}
+      />
+    )}
     {page.html && (
       <div
         class={tw`${contentStyles}`}
