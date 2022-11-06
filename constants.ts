@@ -1,5 +1,5 @@
 export const INDEX_FILENAME = "index.md";
-export const RE_HIDDEN_OR_UNDERSCORED = /^\.|^_|\/\.|\/\_/;
+export const RE_HIDDEN_OR_UNDERSCORED = /^\.|^\_|\/\.|\/\_/;
 
 export const HMR_CLIENT = `((l) => {
   let w, i;
