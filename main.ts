@@ -1,5 +1,5 @@
 import { emptyDir } from "$std/fs/mod.ts";
-import { join, relative } from "$std/path/mod.ts";
+import { relative } from "$std/path/mod.ts";
 import { parse as parseFlags } from "$std/flags/mod.ts";
 
 import { getHelp, INDEX_FILENAME } from "./constants.ts";
@@ -59,7 +59,6 @@ async function generateSite(opts: GenerateSiteOpts) {
   ]);
 
   const contentPages: Page[] = [];
-  const tagPages: Page[] = [];
 
   performance.mark("parse-markdown:start");
   for (const entry of contentEntries) {
@@ -105,21 +104,14 @@ async function generateSite(opts: GenerateSiteOpts) {
   }
   performance.mark("parse-markdown:end");
 
-  // TODO: use groupBy
-  // const taggedPages: Record<string, Page[]> = groupBy(
-  //   pages,
-  //   (it: Page) => {},
-  // );
-  for (const tag of getAllTags(contentPages)) {
-    tagPages.push({
-      title: tag,
-      url: new URL(join(userConfig.site.url, "tag", tag)),
-      index: "tag",
-      hideTitle: true,
-    });
-  }
-
-  const pages = [...contentPages, ...tagPages];
+  const pages = [
+    ...contentPages,
+    {
+      url: new URL("/tags", userConfig.site.url),
+      tags: getAllTags(contentPages),
+      title: "Tags",
+    },
+  ];
 
   performance.mark("render-html:start");
   const [contentFiles, staticFiles] = await Promise.all([
