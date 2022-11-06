@@ -1,6 +1,7 @@
 ---
 title: Customization
 date: 2022-09-24
+dateUpdated: 2022-11-06
 ---
 
 Ter should work out of the box with zero configuration needed to get a decent
@@ -14,6 +15,8 @@ bottom of HTML `<head>` tag for all pages. This can be used for adding things
 like analytics integration.
 
 ---
+
+## More customization
 
 <details open>
 <summary>Important note</summary>
@@ -30,8 +33,6 @@ I might add an option to use local assets in future.
 
 ## Styles
 
-### Page styles
-
 Main page styles are defined in `.ter/assets/ter.css`. The content-related CSS
 is mostly classless to avoid depending on specific classes from the
 [template](#templates).
@@ -43,8 +44,6 @@ the theme defined in `.ter/assets/hljs.css`, which can be replaced by any
 highlight.js-compatible theme file.
 
 ## Templates
-
-### Page template
 
 Ter uses [Eta](https://eta.js.org/) templates to build pages. It’s possible to
 customize the output by changing the default view files in `.ter/views/`.

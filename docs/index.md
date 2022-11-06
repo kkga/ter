@@ -7,10 +7,10 @@ dateUpdated: 2022-10-01
 
 Ter takes a folder of markdown files and replicates its structure into a static
 site with automatically [indexed](usage#index-pages) directories and backlinks.
-[Zettelkasten](zettelkasten.md)-style.
+[Zettelkasten](zettelkasten)-style.
 
 - see [usage](usage) on how to get started
-- [goals](goals.md) for some thinking behind Ter's approach
+- [goals](goals) for some thinking behind Ter's approach
 - or feel free to just roam around
 
 Made with [Deno](https://deno.land). Deno is fun. Contribute or submit issues:

@@ -22,20 +22,20 @@ Navigate to a directory with some markdown files and run Ter to build a site.
 This command will recursively search for all `*.md` files in the current
 directory and generate a site into the `_site` directory:
 
-```
+```sh
 deno run -A --unstable https://deno.land/x/ter/main.ts
 ```
 
 If your markdown files are not in root directory, or if you want a different
 name for the output directory, adjust accordingy, for example:
 
-```
+```sh
 deno run -A --unstable https://deno.land/x/ter/main.ts --input pages --output _dist
 ```
 
 To start a local server with live refresh, pass the `--serve` flag:
 
-```
+```sh
 deno run -A --unstable https://deno.land/x/ter/main.ts --serve
 ```
 
@@ -43,11 +43,11 @@ deno run -A --unstable https://deno.land/x/ter/main.ts --serve
 
 Run Ter with the `--help` flag to see usage reference.
 
-```
+```sh
 deno run https://deno.land/x/ter/main.ts --help
 ```
 
-```
+```sh
 Ter -- tiny wiki-style site builder
 
 USAGE:
@@ -147,7 +147,7 @@ pages.
 Ter extracts [YAML frontmatter](https://jekyllrb.com/docs/front-matter/)
 delimited by `---` from markdown files. Here’s an example:
 
-```
+```markdown
 ---
 title: My page
 description: Here’s my description
@@ -159,6 +159,8 @@ property: value
 ---
 
 ## My content
+
+...
 ```
 
 Some properties are utilized when building a site. All of them are optional.
@@ -190,7 +192,7 @@ In addition, any markdown file with `draft: true` in the
 [frontmatter](#markdown-frontmatter) will be ignored. To render files with
 `draft: true`, pass `--drafts` flag to the main command. For example:
 
-```
+```sh
 deno run -A --unstable https://deno.land/x/ter/main.ts --serve --drafts
 ```
 
@@ -199,7 +201,7 @@ deno run -A --unstable https://deno.land/x/ter/main.ts --serve --drafts
 Ter automatically finds non-working internal links and lets you know about them
 after building a site. Here's an example output:
 
-```
+```sh
 [...]
 Dead links:
 /overview -> /non-existent-page-name

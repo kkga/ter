@@ -14,7 +14,7 @@ draft: true
 
 ## feeds
 
-- [ ] use feed module for atom/rss: https://esm.sh/feed
+- [ ] use feed module for atom/rss: <https://esm.sh/feed>
 
 ---
 

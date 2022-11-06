@@ -109,14 +109,14 @@ And a nested list:
 Definition lists can be used with HTML syntax.
 
 <dl>
-    <dt>Name</dt>
-    <dd>Godzilla</dd>
-    <dt>Born</dt>
-    <dd>1952</dd>
-    <dt>Birthplace</dt>
-    <dd>Japan</dd>
-    <dt>Color</dt>
-    <dd>Green</dd>
+  <dt>Name</dt>
+  <dd>Godzilla</dd>
+  <dt>Born</dt>
+  <dd>1952</dd>
+  <dt>Birthplace</dt>
+  <dd>Japan</dd>
+  <dt>Color</dt>
+  <dd>Green</dd>
 </dl>
 
 ---
@@ -206,7 +206,7 @@ Inline code inside table cells should still be distinguishable.
 
 Small images should be shown at their actual size.
 
-![](img/img-small.jpg)
+![Bridge](img/img-small.jpg)
 
 Large images should always scale down and fit in the content container.
 
