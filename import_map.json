@@ -3,13 +3,15 @@
     "@components/": "./components/",
     "$std/": "https://deno.land/std@0.162.0/",
 
-    "preact": "https://esm.sh/preact@10.11.1^/",
+    "preact": "https://esm.sh/preact@10.11.2^",
+    "preact/": "https://esm.sh/preact@10.11.2^/",
     "preact-render-to-string": "https://esm.sh/preact-render-to-string@5.2.5^",
+    "twind": "https://esm.sh/twind@0.16.17^",
     "twind/": "https://esm.sh/twind@0.16.17^/",
 
     "deepmerge": "https://deno.land/x/deepmergets@v4.2.2/dist/deno/index.ts",
     "ufo": "https://esm.sh/ufo@0.8.6/",
-    "slugify": "https://esm.sh/slugify@1.6.5",
+    "slugify": "https://esm.sh/slugify@1.6.5/",
     "marked": "https://esm.sh/marked@4.2.2/",
     "hljs": "https://cdn.skypack.dev/highlight.js"
   }

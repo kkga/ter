@@ -1,5 +1,5 @@
 import { FunctionComponent as FC, h } from "preact";
-import { apply, tw } from "twind/";
+import { apply, tw } from "twind";
 import { css } from "twind/css";
 import { Heading, Page } from "../types.d.ts";
 import { styleUtils } from "@components/styleUtils.ts";
