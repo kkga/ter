@@ -4,8 +4,8 @@ import { renderPage } from "./render.tsx";
 import {
   getBacklinkPages,
   getChildPages,
-  getChildTags,
   getPagesByTags,
+  getTags,
 } from "./pages.ts";
 
 import type { OutputFile, Page, UserConfig } from "./types.d.ts";
@@ -31,7 +31,7 @@ function buildContentFiles({ pages, outputPath, userConfig, dev }: {
       childPages: getChildPages(pages, page),
       backlinkPages: getBacklinkPages(pages, page),
       taggedPages: page.tags && getPagesByTags(pages, page.tags, [page]),
-      childTags: page.index && getChildTags(pages, page),
+      childTags: getTags(getChildPages(pages, page)),
       userConfig: userConfig,
     });
 

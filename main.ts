@@ -10,7 +10,7 @@ import {
   generateContentPage,
   generateIndexPageFromDir,
   generateIndexPageFromFile,
-  getAllTags,
+  getTags,
   isDeadLink,
 } from "./pages.ts";
 
@@ -108,7 +108,7 @@ async function generateSite(opts: GenerateSiteOpts) {
     ...contentPages,
     {
       url: new URL("/tags", userConfig.site.url),
-      tags: getAllTags(contentPages),
+      tags: getTags(contentPages),
       title: "Tags",
     },
   ];

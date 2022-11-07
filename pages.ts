@@ -51,7 +51,7 @@ function getPagesWithTag(pages: Page[], tag: string, exclude?: Page[]): Page[] {
   );
 }
 
-function getAllTags(pages: Page[]): string[] {
+function getTags(pages: Page[]): string[] {
   const tagSet: Set<string> = new Set();
   pages.forEach((p) => p.tags && p.tags.forEach((tag) => tagSet.add(tag)));
   return [...tagSet].sort((a, b) =>
@@ -63,14 +63,6 @@ function getChildPages(pages: Page[], current: Page): Page[] {
   return pages.filter((p) =>
     current.url.pathname !== p.url.pathname &&
     current.url.pathname === dirname(p.url.pathname)
-  );
-}
-
-function getChildTags(pages: Page[], current: Page): string[] {
-  const childPages = getChildPages(pages, current);
-  return getAllTags(childPages).sort((a, b) =>
-    getPagesWithTag(childPages, b).length -
-    getPagesWithTag(childPages, a).length
   );
 }
 
@@ -228,11 +220,10 @@ export {
   generateContentPage,
   generateIndexPageFromDir,
   generateIndexPageFromFile,
-  getAllTags,
   getBacklinkPages,
   getChildPages,
-  getChildTags,
   getPagesByTags,
   getPagesWithTag,
+  getTags,
   isDeadLink,
 };
