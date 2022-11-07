@@ -1,5 +1,5 @@
-import { FunctionComponent, h } from "preact";
-import { tw } from "twind/";
+import { FunctionComponent as FC, h } from "preact";
+import { tw } from "twind";
 
 import Article from "@components/Article.tsx";
 import IndexList from "@components/IndexList.tsx";
@@ -26,7 +26,7 @@ interface BodyProps {
 // - figure out date format, use config
 // - implement log layout
 
-const Body: FunctionComponent<BodyProps> = ({
+const Body: FC<BodyProps> = ({
   page,
   crumbs,
   childPages,
@@ -68,7 +68,7 @@ const Body: FunctionComponent<BodyProps> = ({
                     locale={locale}
                     headerSize={"small"}
                   />
-                )
+                ),
             )}
         </Article>
       </main>

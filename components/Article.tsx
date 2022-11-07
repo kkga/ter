@@ -219,9 +219,7 @@ const Header: FC<HeaderProps> = ({
             .map((h: Heading) => {
               return (
                 <li
-                  class={h.level > 2
-                    ? tw`py-px pl-3`
-                    : tw`py-0.5 font-semibold`}
+                  class={h.level > 2 ? tw`py-px pl-3` : tw`py-0.5 font-medium`}
                 >
                   <a href={`#${h.slug}`}>{h.text}</a>
                 </li>

@@ -17,7 +17,8 @@ const ArrowRightIcon: FC = () => {
         fill="currentColor"
         fill-rule="evenodd"
         clip-rule="evenodd"
-      ></path>
+      >
+      </path>
     </svg>
   );
 };
@@ -36,7 +37,8 @@ const ArrowLeftIcon: FC = () => {
         fill="currentColor"
         fill-rule="evenodd"
         clip-rule="evenodd"
-      ></path>
+      >
+      </path>
     </svg>
   );
 };
@@ -55,7 +57,8 @@ const StarIcon: FC = () => {
         fill="currentColor"
         fill-rule="evenodd"
         clip-rule="evenodd"
-      ></path>
+      >
+      </path>
     </svg>
   );
 };
@@ -116,7 +119,7 @@ const Item: FC<ItemProps> = ({
         >
           <span class={tw`flex-shrink-0 truncate`}>
             {title}
-            {isDirIndex && <span class={tw`select-none`}> /..</span>}
+            {isDirIndex && <span class={tw`select-none`}>/..</span>}
           </span>
           {description && (
             <span class={tw`opacity-60 truncate font-normal`}>
@@ -200,16 +203,17 @@ const IndexList: FC<{
         `}
       >
         {title}
+        <span class={tw`font-normal opacity-60`}>: {items.length}</span>
       </h6>
       <ul
         class={tw`
           flex 
           ${
-            type === "backlinks" || type === "pages"
-              ? `flex-col divide-y divide-gray-200
+          type === "backlinks" || type === "pages"
+            ? `flex-col divide-y divide-gray-200
                 dark:(divide-gray-800)`
-              : "flex-row flex-wrap"
-          }
+            : "flex-row flex-wrap"
+        }
         `}
       >
         {items.map((item) => renderItem(item))}
