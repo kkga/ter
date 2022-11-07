@@ -121,15 +121,15 @@ async function generateSite(opts: GenerateSiteOpts) {
       dev: opts.includeRefresh,
       userConfig,
     }),
-    getStaticFiles(staticEntries, inputPath, outputPath),
+    getStaticFiles({ entries: staticEntries, inputPath, outputPath }),
     // buildFeedFile(pages, feedView, join(outputPath, "feed.xml"), userConfig),
   ]);
   performance.mark("render-html:end");
 
   performance.mark("write-files:start");
   await emptyDir(outputPath);
-  await writeFiles([...contentFiles], opts.quiet);
-  await copyFiles(staticFiles, opts.quiet);
+  await writeFiles({ files: [...contentFiles], quiet: opts.quiet });
+  await copyFiles({ files: staticFiles, quiet: opts.quiet });
   performance.mark("write-files:end");
 
   // if (feedFile && feedFile.fileContent) {

@@ -19,8 +19,6 @@ export async function getStaticEntries(opts: {
     entries.push(entry);
   }
 
-  console.log(entries);
-
   return entries;
 }
 

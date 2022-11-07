@@ -10,11 +10,6 @@ import type { Heading, Page } from "./types.d.ts";
 
 const decoder = new TextDecoder("utf-8");
 
-export function isDeadLink(allPages: Page[], linkUrl: URL): boolean {
-  return allPages.some((page) => page?.url?.pathname === linkUrl.pathname) ===
-    false;
-}
-
 const getTitleFromHeadings = (headings: Array<Heading>): string | undefined => {
   for (const h of headings) {
     if (h.level === 1) return h.text;
@@ -25,20 +20,10 @@ const getTitleFromFilename = (filePath: string): string => {
   return basename(filePath).replace(extname(filePath), "");
 };
 
-export function getAllTags(pages: Page[]): Array<string> {
-  const tagSet: Set<string> = new Set();
-  pages.forEach((p) => p.tags && p.tags.forEach((tag) => tagSet.add(tag)));
-  return [...tagSet];
-}
-
-export function getPagesByTag(allPages: Page[], tag: string): Page[] {
-  return allPages.filter((page) => page.tags && page.tags.includes(tag));
-}
-
-export function getBacklinkPages(allPages: Page[], current: Page): Page[] {
+function getBacklinkPages(pages: Page[], current: Page): Page[] {
   const pageSet: Set<Page> = new Set();
 
-  for (const outPage of allPages) {
+  for (const outPage of pages) {
     if (outPage.links) {
       for (const url of outPage.links) {
         if (
@@ -54,26 +39,51 @@ export function getBacklinkPages(allPages: Page[], current: Page): Page[] {
   return [...pageSet];
 }
 
-export function getChildPages(
-  allPages: Page[],
-  current: Page,
-): Page[] {
-  return allPages.filter((p) =>
+/**
+ * Get pages with a given tag
+ * @param {Page[]} pages
+ * @param {string} tag
+ * @returns {Page[]} Array of pages with the given tag
+ */
+function getPagesWithTag(pages: Page[], tag: string, exclude?: Page[]): Page[] {
+  return pages.filter(
+    (page) => page.tags && page.tags.includes(tag) && !exclude?.includes(page),
+  );
+}
+
+function getAllTags(pages: Page[]): string[] {
+  const tagSet: Set<string> = new Set();
+  pages.forEach((p) => p.tags && p.tags.forEach((tag) => tagSet.add(tag)));
+  return [...tagSet].sort((a, b) =>
+    getPagesWithTag(pages, b).length - getPagesWithTag(pages, a).length
+  );
+}
+
+function getChildPages(pages: Page[], current: Page): Page[] {
+  return pages.filter((p) =>
     current.url.pathname !== p.url.pathname &&
     current.url.pathname === dirname(p.url.pathname)
   );
 }
 
-export function getChildTags(allPages: Page[], current: Page): Array<string> {
-  const tags: Set<string> = new Set();
+function getChildTags(pages: Page[], current: Page): string[] {
+  const childPages = getChildPages(pages, current);
+  return getAllTags(childPages).sort((a, b) =>
+    getPagesWithTag(childPages, b).length -
+    getPagesWithTag(childPages, a).length
+  );
+}
 
-  allPages.forEach((page) => {
-    if (page.url.pathname.startsWith(current.url.pathname)) {
-      page.tags?.forEach((tag) => tags.add(tag));
-    }
+function getPagesByTags(
+  pages: Page[],
+  tags: string[],
+  exclude?: Page[],
+): Record<string, Page[]> {
+  const pageMap: Record<string, Page[]> = {};
+  tags.forEach((tag) => {
+    pageMap[tag] = getPagesWithTag(pages, tag, exclude);
   });
-
-  return [...tags];
+  return pageMap;
 }
 
 interface PageData {
@@ -133,7 +143,7 @@ interface GeneratePageOpts {
   ignoreKeys: string[];
 }
 
-export async function generateContentPage(
+async function generateContentPage(
   { entry, inputPath, siteUrl, ignoreKeys }: GeneratePageOpts,
 ): Promise<Page> {
   const relPath = relative(inputPath, entry.path);
@@ -164,7 +174,7 @@ export async function generateContentPage(
   return page;
 }
 
-export async function generateIndexPageFromFile(
+async function generateIndexPageFromFile(
   { entry, inputPath, siteUrl, ignoreKeys }: GeneratePageOpts,
 ): Promise<Page> {
   const relPath = relative(inputPath, dirname(entry.path)) || ".";
@@ -196,7 +206,7 @@ export async function generateIndexPageFromFile(
   return page;
 }
 
-export function generateIndexPageFromDir(
+function generateIndexPageFromDir(
   { entry, inputPath, siteUrl }: GeneratePageOpts,
 ): Page {
   const relPath = relative(inputPath, entry.path) || ".";
@@ -209,3 +219,20 @@ export function generateIndexPageFromDir(
     index: "dir",
   };
 }
+
+function isDeadLink(pages: Page[], linkUrl: URL): boolean {
+  return !pages.some((page) => page?.url?.pathname === linkUrl.pathname);
+}
+
+export {
+  generateContentPage,
+  generateIndexPageFromDir,
+  generateIndexPageFromFile,
+  getAllTags,
+  getBacklinkPages,
+  getChildPages,
+  getChildTags,
+  getPagesByTags,
+  getPagesWithTag,
+  isDeadLink,
+};
