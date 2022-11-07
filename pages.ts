@@ -39,12 +39,6 @@ function getBacklinkPages(pages: Page[], current: Page): Page[] {
   return [...pageSet];
 }
 
-/**
- * Get pages with a given tag
- * @param {Page[]} pages
- * @param {string} tag
- * @returns {Page[]} Array of pages with the given tag
- */
 function getPagesWithTag(pages: Page[], tag: string, exclude?: Page[]): Page[] {
   return pages.filter(
     (page) => page.tags && page.tags.includes(tag) && !exclude?.includes(page),
