@@ -1,4 +1,4 @@
-export { parse as parseFlags } from "https://deno.land/std@0.161.0/flags/mod.ts";
+export { parse as parseFlags } from "https://deno.land/std@0.163.0/flags/mod.ts";
 
 export {
   copy,
@@ -6,8 +6,8 @@ export {
   ensureDir,
   expandGlob,
   walk,
-} from "https://deno.land/std@0.161.0/fs/mod.ts";
-export type { WalkEntry } from "https://deno.land/std@0.161.0/fs/mod.ts";
+} from "https://deno.land/std@0.163.0/fs/mod.ts";
+export type { WalkEntry } from "https://deno.land/std@0.163.0/fs/mod.ts";
 
 export {
   basename,
@@ -18,13 +18,13 @@ export {
   join,
   relative,
   toFileUrl,
-} from "https://deno.land/std@0.161.0/path/mod.ts";
+} from "https://deno.land/std@0.163.0/path/mod.ts";
 
-export { readableStreamFromReader } from "https://deno.land/std@0.161.0/streams/mod.ts";
+export { readableStreamFromReader } from "https://deno.land/std@0.163.0/streams/mod.ts";
 
-export { serve } from "https://deno.land/std@0.161.0/http/server.ts";
+export { serve } from "https://deno.land/std@0.163.0/http/server.ts";
 
-export * as frontmatter from "https://deno.land/std@0.161.0/encoding/front_matter.ts";
+export * as frontmatter from "https://deno.land/std@0.163.0/encoding/front_matter.ts";
 export {
   normalizeURL,
   parseURL,
@@ -43,7 +43,7 @@ export {
 } from "https://deno.land/x/eta@v1.12.3/mod.ts";
 
 export { deepmerge } from "https://deno.land/x/deepmergets@v4.2.2/dist/deno/index.ts";
-export { marked } from "https://esm.sh/marked@4.1.1/";
+export { marked } from "https://esm.sh/marked@4.2.2/";
 export { default as slugify } from "https://esm.sh/slugify@1.6.5";
 export { minify } from "https://esm.sh/html-minifier-terser@7.0.0/";
 export type { Options as MinifyOpts } from "https://esm.sh/html-minifier-terser@7.0.0/";
