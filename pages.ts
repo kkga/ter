@@ -10,15 +10,13 @@ import type { Heading, Page } from "./types.d.ts";
 
 const decoder = new TextDecoder("utf-8");
 
-const getTitleFromHeadings = (headings: Array<Heading>): string | undefined => {
-  for (const h of headings) {
-    if (h.level === 1) return h.text;
-  }
-};
+function getTitleFromHeadings(headings: Array<Heading>): string | undefined {
+  return headings.find((h) => h.level === 1)?.text;
+}
 
-const getTitleFromFilename = (filePath: string): string => {
+function getTitleFromFilename(filePath: string): string {
   return basename(filePath).replace(extname(filePath), "");
-};
+}
 
 function getBacklinkPages(pages: Page[], current: Page): Page[] {
   const pageSet: Set<Page> = new Set();
@@ -50,6 +48,12 @@ function getTags(pages: Page[]): string[] {
   pages.forEach((p) => p.tags && p.tags.forEach((tag) => tagSet.add(tag)));
   return [...tagSet].sort((a, b) =>
     getPagesWithTag(pages, b).length - getPagesWithTag(pages, a).length
+  );
+}
+
+function getRelatedPages(pages: Page[], current: Page): Page[] {
+  return pages.filter((page) =>
+    page?.tags?.some((tag) => current?.tags?.includes(tag))
   );
 }
 
@@ -206,8 +210,16 @@ function generateIndexPageFromDir(
   };
 }
 
-function isDeadLink(pages: Page[], linkUrl: URL): boolean {
-  return !pages.some((page) => page?.url?.pathname === linkUrl.pathname);
+function getDeadlinks(pages: Page[]): [from: URL, to: URL][] {
+  return pages.reduce((deadlinks: [from: URL, to: URL][], page) => {
+    if (page.links) {
+      page.links.forEach((link) => {
+        !pages.some((page) => page.url.pathname === link.pathname) &&
+          deadlinks.push([page.url, link]);
+      });
+    }
+    return deadlinks;
+  }, []);
 }
 
 export {
@@ -216,8 +228,9 @@ export {
   generateIndexPageFromFile,
   getBacklinkPages,
   getChildPages,
+  getDeadlinks,
   getPagesByTags,
   getPagesWithTag,
+  getRelatedPages,
   getTags,
-  isDeadLink,
 };

@@ -1,19 +1,15 @@
 import { emptyDir } from "$std/fs/mod.ts";
-import { relative } from "$std/path/mod.ts";
 import { parse as parseFlags } from "$std/flags/mod.ts";
 
 import { getHelp, INDEX_FILENAME } from "./constants.ts";
-
 import { getContentEntries, getStaticEntries } from "./entries.ts";
-
 import {
   generateContentPage,
   generateIndexPageFromDir,
   generateIndexPageFromFile,
+  getDeadlinks,
   getTags,
-  isDeadLink,
 } from "./pages.ts";
-
 import {
   buildContentFiles,
   copyFiles,
@@ -47,64 +43,84 @@ async function generateSite(opts: GenerateSiteOpts) {
     renderDrafts,
   } = opts.config;
 
-  const START = performance.now();
+  performance.mark("total:start");
 
-  performance.mark("generate:start");
+  /**
+   * SCAN
+   * scan the input directory for content and static files
+   */
+
+  performance.mark("scan:start");
 
   opts.quiet || console.log(`scan\t${inputPath}`);
-
   const [contentEntries, staticEntries] = await Promise.all([
     getContentEntries({ path: inputPath }),
     getStaticEntries({ path: inputPath, exts: staticExts }),
   ]);
 
+  const [indexDirEntries, indexFileEntries, nonIndexEntries] = [
+    contentEntries.filter((entry) => entry.isDirectory),
+    contentEntries.filter((entry) =>
+      entry.isFile && entry.name === INDEX_FILENAME
+    ),
+    contentEntries.filter((entry) =>
+      entry.isFile && entry.name !== INDEX_FILENAME
+    ),
+  ];
+
+  performance.mark("scan:end");
+
+  /**
+   * PARSE
+   * parse the files and generate pages
+   */
+
+  performance.mark("parse:start");
+
+  const indexPages: Page[] = [];
   const contentPages: Page[] = [];
 
-  performance.mark("parse-markdown:start");
-  for (const entry of contentEntries) {
-    opts.quiet || console.log(`render\t${relative(inputPath, entry.path)}`);
-    const isDirIndex = entry.isDirectory || entry.name === INDEX_FILENAME;
-
-    let page: Page | void;
-
-    if (!isDirIndex) {
-      page = await generateContentPage({
-        entry: entry,
-        inputPath: inputPath,
-        ignoreKeys: opts.config.ignoreKeys,
-        siteUrl: new URL(userConfig.site.url),
-      }).catch(
-        (reason: string) =>
-          console.error(`Can not render ${entry.path}\n\t${reason}`),
-      );
-    } else if (isDirIndex && entry.isFile) {
-      page = await generateIndexPageFromFile({
-        entry: entry,
-        inputPath: inputPath,
-        ignoreKeys: opts.config.ignoreKeys,
-        siteUrl: new URL(userConfig.site.url),
-      }).catch(
-        (reason: string) =>
-          console.error(`Can not render ${entry.path}\n\t${reason}`),
-      );
-    } else if (isDirIndex && entry.isDirectory) {
-      page = generateIndexPageFromDir({
-        entry: entry,
-        inputPath: inputPath,
-        ignoreKeys: opts.config.ignoreKeys,
-        siteUrl: new URL(userConfig.site.url),
-      });
-    }
-
-    if (renderDrafts) {
-      page && contentPages.push(page);
-    } else {
-      page && !page.ignored && contentPages.push(page);
-    }
+  for (const entry of indexDirEntries) {
+    const page = generateIndexPageFromDir({
+      entry: entry,
+      inputPath: inputPath,
+      ignoreKeys: opts.config.ignoreKeys,
+      siteUrl: new URL(userConfig.site.url),
+    });
+    if (renderDrafts) page && indexPages.push(page);
+    else page && !page.ignored && indexPages.push(page);
   }
-  performance.mark("parse-markdown:end");
+
+  for (const entry of indexFileEntries) {
+    const page = await generateIndexPageFromFile({
+      entry: entry,
+      inputPath: inputPath,
+      ignoreKeys: opts.config.ignoreKeys,
+      siteUrl: new URL(userConfig.site.url),
+    }).catch(
+      (reason: string) =>
+        console.error(`Can not render ${entry.path}\n\t${reason}`),
+    );
+    if (renderDrafts) page && indexPages.push(page);
+    else page && !page.ignored && indexPages.push(page);
+  }
+
+  for (const entry of nonIndexEntries) {
+    const page = await generateContentPage({
+      entry: entry,
+      inputPath: inputPath,
+      ignoreKeys: opts.config.ignoreKeys,
+      siteUrl: new URL(userConfig.site.url),
+    }).catch(
+      (reason: string) =>
+        console.error(`Can not render ${entry.path}\n\t${reason}`),
+    );
+    if (renderDrafts) page && contentPages.push(page);
+    else page && !page.ignored && contentPages.push(page);
+  }
 
   const pages = [
+    ...indexPages,
     ...contentPages,
     {
       url: new URL("/tags", userConfig.site.url),
@@ -113,7 +129,14 @@ async function generateSite(opts: GenerateSiteOpts) {
     },
   ];
 
-  performance.mark("render-html:start");
+  performance.mark("parse:end");
+
+  /**
+   * RENDER
+   * render markdown to html
+   */
+
+  performance.mark("render:start");
   const [contentFiles, staticFiles] = await Promise.all([
     buildContentFiles({
       pages,
@@ -124,68 +147,37 @@ async function generateSite(opts: GenerateSiteOpts) {
     getStaticFiles({ entries: staticEntries, inputPath, outputPath }),
     // buildFeedFile(pages, feedView, join(outputPath, "feed.xml"), userConfig),
   ]);
-  performance.mark("render-html:end");
+  performance.mark("render:end");
 
-  performance.mark("write-files:start");
+  /**
+   * WRITE
+   * write rendered files and copy static files to output directory
+   */
+
+  performance.mark("write-copy:start");
   await emptyDir(outputPath);
   await writeFiles({ files: [...contentFiles], quiet: opts.quiet });
   await copyFiles({ files: staticFiles, quiet: opts.quiet });
-  performance.mark("write-files:end");
+  performance.mark("write-copy:end");
 
   // if (feedFile && feedFile.fileContent) {
   //   await Deno.writeTextFile(feedFile.filePath, feedFile.fileContent);
   // }
 
-  const END = performance.now();
-  const BUILD_SECS = (END - START);
+  // const END = performance.now();
+  // const BUILD_SECS = (END - START);
 
-  performance.mark("generate:end");
+  performance.mark("total:end");
+  performance.measure("scan", "scan:start", "scan:end");
+  performance.measure("parse", "parse:start", "parse:end");
+  performance.measure("render", "render:start", "render:end");
+  performance.measure("write-copy", "write-copy:start", "write-copy:end");
+  performance.measure("total", "total:start", "total:end");
+  performance.getEntriesByType("measure").forEach((entry) => {
+    console.log(entry.name, entry.duration);
+  });
 
-  performance.measure(
-    "parse-markdown",
-    "parse-markdown:start",
-    "parse-markdown:end",
-  );
-  performance.measure("render-html", "render-html:start", "render-html:end");
-  performance.measure("write-files", "write-files:start", "write-files:end");
-  performance.measure("generate", "generate:start", "generate:end");
-
-  console.log(
-    `> render-markdown in ${
-      performance.getEntriesByName("parse-markdown", "measure")[0].duration
-    }ms`,
-  );
-
-  console.log(
-    `> render-html in ${
-      performance.getEntriesByName("render-html", "measure")[0].duration
-    }ms`,
-  );
-
-  console.log(
-    `> write-files in ${
-      performance.getEntriesByName("write-files", "measure")[0].duration
-    }ms`,
-  );
-
-  console.log(
-    `> generate in ${
-      performance.getEntriesByName("generate", "measure")[0].duration
-    }ms`,
-  );
-
-  performance.clearMarks("generate:start");
-  performance.clearMarks("generate:end");
-  performance.clearMeasures("generate");
-
-  const deadLinks: [from: URL, to: URL][] = [];
-  for (const page of pages) {
-    if (page.links) {
-      page.links.forEach((link: URL) =>
-        isDeadLink(pages, link) && deadLinks.push([page.url, link])
-      );
-    }
-  }
+  const deadLinks = getDeadlinks(pages);
 
   if (deadLinks.length > 0) {
     console.log("---");
@@ -202,13 +194,20 @@ async function generateSite(opts: GenerateSiteOpts) {
     const stats: BuildStats = {
       pageFiles: contentFiles.length,
       staticFiles: staticFiles.length,
-      buildMillisecs: Math.floor(BUILD_SECS),
+      buildMillisecs: Math.floor(
+        performance.getEntriesByName("total")[0].duration,
+      ),
     };
 
     console.log(
       `---\n${stats.pageFiles} pages\n${stats.staticFiles} static files\nDone in ${stats.buildMillisecs}ms`,
     );
   }
+
+  performance.getEntries().forEach((entry) => {
+    performance.clearMarks(entry.name);
+    performance.clearMeasures(entry.name);
+  });
 }
 
 async function main(args: string[]) {
