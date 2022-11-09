@@ -77,13 +77,17 @@ const contentStyles = css({
   `,
   pre: apply`
     overflow-x-scroll
-    text-sm
+    text-xs
     font-mono
     p-2
     rounded
     leading-snug
-    bg-gray-100
+    bg-gray-50
     dark:(bg-gray-900 text-gray-300)
+    md:(
+      text-sm
+      -mx-3 px-3 py-2
+    )
   `,
   details: apply`
     rounded
@@ -108,22 +112,19 @@ const contentStyles = css({
     table-auto
     w-full
     overflow-scroll
-    dark:(
-      border-gray-700
-    )
   `,
   th: apply`
-    border(b gray-400)
+    border(b gray-300)
     dark:(border-gray-700)
     text(gray-500)
     font(medium)
-    py-1.5
+    py-1
   `,
   td: apply`
-    border(b gray-400)
+    border(b gray-200)
     dark:(border-gray-800)
-    py-1.5
-    pr-4
+    py-1
+    pr-3
     align-baseline
   `,
   ".full-bleed": apply`

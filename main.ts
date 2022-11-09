@@ -119,14 +119,18 @@ async function generateSite(opts: GenerateSiteOpts) {
     else page && !page.ignored && contentPages.push(page);
   }
 
+  const tagIndexPage: Page = {
+    url: new URL("/tags", userConfig.site.url),
+    tags: getTags(contentPages),
+    title: "Tags",
+    index: "tag",
+    ignored: true,
+  };
+
   const pages = [
     ...indexPages,
     ...contentPages,
-    {
-      url: new URL("/tags", userConfig.site.url),
-      tags: getTags(contentPages),
-      title: "Tags",
-    },
+    tagIndexPage,
   ];
 
   performance.mark("parse:end");
@@ -163,9 +167,6 @@ async function generateSite(opts: GenerateSiteOpts) {
   // if (feedFile && feedFile.fileContent) {
   //   await Deno.writeTextFile(feedFile.filePath, feedFile.fileContent);
   // }
-
-  // const END = performance.now();
-  // const BUILD_SECS = (END - START);
 
   performance.mark("total:end");
   performance.measure("scan", "scan:start", "scan:end");

@@ -5,6 +5,7 @@ import {
   getBacklinkPages,
   getChildPages,
   getPagesByTags,
+  getRelatedPages,
   getTags,
 } from "./pages.ts";
 
@@ -25,13 +26,19 @@ function buildContentFiles({ pages, outputPath, userConfig, dev }: {
       "index.html",
     );
 
+    const childPages = getChildPages(pages, page);
+    const backlinkPages = getBacklinkPages(pages, page);
+    const childTags = getTags(childPages);
+    const childPagesByTag = getPagesByTags(pages, childTags);
+    const allPagesByTag = getPagesByTags(pages, getTags(pages));
+
     const html = renderPage({
       page: page,
       dev: dev,
-      childPages: getChildPages(pages, page),
-      backlinkPages: getBacklinkPages(pages, page),
-      taggedPages: page.tags && getPagesByTags(pages, page.tags, [page]),
-      childTags: getTags(getChildPages(pages, page)),
+      childPages: childPages,
+      backlinkPages: backlinkPages,
+      pagesByTag: page.index === "tag" ? allPagesByTag : childPagesByTag,
+      relatedPages: getRelatedPages(pages, page),
       userConfig: userConfig,
     });
 

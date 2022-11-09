@@ -12,9 +12,9 @@ interface BodyProps {
   page: Page;
   crumbs: Crumb[];
   childPages?: Page[];
-  childTags?: string[];
   backlinkPages?: Page[];
-  taggedPages?: Record<string, Page[]>;
+  relatedPages?: Page[];
+  pagesByTag?: Record<string, Page[]>;
   navItems?: Record<string, string>;
   author?: { name: string; email: string; url: string };
   dateFormat?: Record<string, string>;
@@ -30,9 +30,9 @@ const Body: FC<BodyProps> = ({
   page,
   crumbs,
   childPages,
-  childTags,
   backlinkPages,
-  taggedPages,
+  relatedPages,
+  pagesByTag,
   navItems,
   author,
   dateFormat,
@@ -46,7 +46,7 @@ const Body: FC<BodyProps> = ({
         mx-auto max-w-3xl
         px-4
         flex flex-col gap-16
-        bg-gray-50 text-gray-900
+        bg-white text-gray-800
         text-sm md:(text-base)
         dark:(
           bg-black text-gray-300
@@ -86,18 +86,35 @@ const Body: FC<BodyProps> = ({
           />
         )}
 
-        {taggedPages &&
-          Object.keys(taggedPages).length > 0 &&
-          Object.keys(taggedPages).map((tag) => (
+        {page.index !== "tag" && relatedPages && relatedPages.length > 0 && (
+          <IndexList
+            title={`Related (${page.tags?.join(", ")})`}
+            items={relatedPages}
+            type={"pages"}
+          />
+        )}
+
+        {page.index === "tag" && pagesByTag &&
+          Object.keys(pagesByTag).length > 0 &&
+          Object.keys(pagesByTag).map((tag) => (
             <IndexList
               title={`#${tag}`}
-              items={taggedPages[tag]}
+              items={pagesByTag[tag]}
               type={"pages"}
             />
           ))}
 
-        {childTags && childTags.length > 0 && (
-          <IndexList title="Tags" items={childTags} type={"tags"} />
+        {page.index === "dir" && pagesByTag &&
+          Object.keys(pagesByTag).length > 0 && (
+          <IndexList
+            title="Tags"
+            // items={Object.keys(pagesByTag).map((tag) =>
+            //   tag + ` (${pagesByTag[tag].length})`
+            // )}
+
+            items={pagesByTag}
+            type={"tags"}
+          />
         )}
       </aside>
       <Footer author={author} />

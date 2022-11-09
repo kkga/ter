@@ -8,18 +8,9 @@ import twindConfig, { sheet } from "./twind.config.ts";
 import { HMR_CLIENT } from "./constants.ts";
 import { Crumb, Page, UserConfig } from "./types.d.ts";
 import Body from "@components/Body.tsx";
+import { sortPages, sortTaggedPages } from "./pages.ts";
 
 twSetup(twindConfig);
-
-const sortPages = (pages: Page[]): Page[] =>
-  pages
-    .sort((a, b) => {
-      if (a.datePublished && b.datePublished) {
-        return b.datePublished.valueOf() - a.datePublished.valueOf();
-      } else return 0;
-    })
-    .sort((page) => (page.index === "dir" ? -1 : 0))
-    .sort((page) => (page.pinned ? -1 : 0));
 
 const generateCrumbs = (currentPage: Page, homeSlug?: string): Crumb[] => {
   const dir = dirname(currentPage.url.pathname);
@@ -53,23 +44,25 @@ const generateCrumbs = (currentPage: Page, homeSlug?: string): Crumb[] => {
 // TODO
 // - render user head snippet
 
+interface RenderOpts {
+  page: Page;
+  dev: boolean;
+  childPages?: Page[];
+  backlinkPages?: Page[];
+  relatedPages?: Page[];
+  pagesByTag?: Record<string, Page[]>;
+  userConfig: UserConfig;
+}
+
 export function renderPage({
   page,
   dev,
   childPages,
   backlinkPages,
-  taggedPages,
-  childTags,
+  relatedPages,
+  pagesByTag,
   userConfig,
-}: {
-  page: Page;
-  dev: boolean;
-  childPages?: Page[];
-  backlinkPages?: Page[];
-  taggedPages?: Record<string, Page[]>;
-  childTags?: string[];
-  userConfig: UserConfig;
-}): string {
+}: RenderOpts): string {
   sheet.reset();
   const body = renderToString(
     <Body
@@ -77,8 +70,8 @@ export function renderPage({
       crumbs={generateCrumbs(page, userConfig.site.rootCrumb)}
       childPages={childPages && sortPages(childPages)}
       backlinkPages={backlinkPages && sortPages(backlinkPages)}
-      childTags={childTags}
-      taggedPages={taggedPages}
+      relatedPages={relatedPages && sortPages(relatedPages)}
+      pagesByTag={pagesByTag && sortTaggedPages(pagesByTag)}
       navItems={userConfig.navigation}
       author={userConfig.author}
     />,

@@ -144,11 +144,11 @@ const Item: FC<ItemProps> = ({
 
 const IndexList: FC<{
   title: string;
-  items: Page[] | string[];
+  items: Page[] | Record<string, Page[]>;
   type: "pages" | "tags" | "backlinks";
 }> = ({ title, items, type }) => {
-  const renderItem = (item: Page | string) => {
-    if (typeof item === "object") {
+  const renderItem = (item: Page | [string, Page[]]) => {
+    if (typeof item === "object" && "url" in item) {
       return (
         <Item
           title={item.title || ""}
@@ -162,20 +162,21 @@ const IndexList: FC<{
         />
       );
     } else {
+      const tag = item[0];
+      const count = item[1].length;
       return (
         <a
           class={tw`
-            inline-block 
-            pt-2 mr-3
+            leading-6 
             hover:(text-gray-900)
             dark:(
               text(gray-400)
               hover:(text-gray-100)
             )
           `}
-          href={`/tags##${item}`}
+          href={`/tags##${tag}`}
         >
-          #{item}
+          {item} <span class={tw`opacity-60`}>{count}</span>
         </a>
       );
     }
@@ -203,20 +204,24 @@ const IndexList: FC<{
         `}
       >
         {title}
-        <span class={tw`font-normal opacity-60`}>: {items.length}</span>
+        <span class={tw`font-normal opacity-60`}>
+          : {Object.keys(items).length}
+        </span>
       </h6>
       <ul
         class={tw`
           flex 
           ${
-          type === "backlinks" || type === "pages"
-            ? `flex-col divide-y divide-gray-200
-                dark:(divide-gray-800)`
-            : "flex-row flex-wrap"
+          (type === "backlinks" || type === "pages") &&
+          "flex-col divide-y divide-gray-200 dark:(divide-gray-800)"
         }
+          ${type === "tags" && `flex-wrap pt-1`}
+          ${type === "tags" && styleUtils.childrenDivider}
         `}
       >
-        {items.map((item) => renderItem(item))}
+        {Array.isArray(items)
+          ? items.map((item) => renderItem(item))
+          : Object.entries(items).map((item) => renderItem(item))}
       </ul>
     </section>
   );

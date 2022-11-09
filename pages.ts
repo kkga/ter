@@ -37,17 +37,15 @@ function getBacklinkPages(pages: Page[], current: Page): Page[] {
   return [...pageSet];
 }
 
-function getPagesWithTag(pages: Page[], tag: string, exclude?: Page[]): Page[] {
-  return pages.filter(
-    (page) => page.tags && page.tags.includes(tag) && !exclude?.includes(page),
-  );
-}
-
 function getTags(pages: Page[]): string[] {
   const tagSet: Set<string> = new Set();
   pages.forEach((p) => p.tags && p.tags.forEach((tag) => tagSet.add(tag)));
-  return [...tagSet].sort((a, b) =>
-    getPagesWithTag(pages, b).length - getPagesWithTag(pages, a).length
+  return [...tagSet];
+}
+
+function getPagesWithTag(pages: Page[], tag: string, exclude?: Page[]): Page[] {
+  return pages.filter(
+    (page) => page.tags && page.tags.includes(tag) && !exclude?.includes(page),
   );
 }
 
@@ -76,6 +74,28 @@ function getPagesByTags(
   return pageMap;
 }
 
+function sortPages(pages: Page[]): Page[] {
+  return pages
+    .sort((a, b) => {
+      if (a.datePublished && b.datePublished) {
+        return b.datePublished.valueOf() - a.datePublished.valueOf();
+      } else return 0;
+    })
+    .sort((page) => (page.index === "dir" ? -1 : 0))
+    .sort((page) => (page.pinned ? -1 : 0));
+}
+
+function sortTaggedPages(
+  taggedPages: Record<string, Page[]>,
+): Record<string, Page[]> {
+  return Object.keys(taggedPages)
+    .sort((a, b) => taggedPages[b].length - taggedPages[a].length)
+    .reduce((acc: Record<string, Page[]>, key) => {
+      acc[key] = taggedPages[key];
+      return acc;
+    }, {});
+}
+
 interface PageData {
   body?: string;
   attrs?: Record<string, unknown>;
@@ -102,9 +122,9 @@ const extractPageData = (raw: string, ignoreKeys: string[]): PageData => {
     getDescription,
     getDate,
     getDateUpdated,
-    hasKey,
     getBool,
     getTags,
+    hasKey,
   } = attributes;
 
   return {
@@ -233,4 +253,6 @@ export {
   getPagesWithTag,
   getRelatedPages,
   getTags,
+  sortPages,
+  sortTaggedPages,
 };
