@@ -78,14 +78,6 @@ const Body: FC<BodyProps> = ({
           <IndexList title="Pages" items={childPages} type={"pages"} />
         )}
 
-        {backlinkPages && backlinkPages.length > 0 && (
-          <IndexList
-            title="Backlinks"
-            items={backlinkPages}
-            type={"backlinks"}
-          />
-        )}
-
         {page.index !== "tag" && relatedPages && relatedPages.length > 0 && (
           <IndexList
             title={`Related (${page.tags?.join(", ")})`}
@@ -114,6 +106,14 @@ const Body: FC<BodyProps> = ({
 
             items={pagesByTag}
             type={"tags"}
+          />
+        )}
+
+        {backlinkPages && backlinkPages.length > 0 && (
+          <IndexList
+            title="Backlinks"
+            items={backlinkPages}
+            type={"backlinks"}
           />
         )}
       </aside>
