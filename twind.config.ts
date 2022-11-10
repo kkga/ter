@@ -1,4 +1,3 @@
-import * as colors from "twind/colors";
 import { virtualSheet } from "twind/sheets";
 import { apply, Configuration } from "twind/";
 

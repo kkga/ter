@@ -1,5 +1,5 @@
 import { dirname, extname, isAbsolute, join } from "$std/path/mod.ts";
-import hljs from "hljs";
+// import hljs from "hljs";
 import { marked } from "marked";
 import {
   ParsedURL,
@@ -10,6 +10,14 @@ import {
 } from "ufo";
 
 import { Heading } from "./types.d.ts";
+
+interface ParseOpts {
+  text: string;
+  currentPath: string;
+  baseUrl: URL;
+  isDirIndex?: boolean;
+  highlightCode?: boolean;
+}
 
 const toExternalLink = (href: string, title: string, text: string): string =>
   `<a href="${href}" rel="external noopener noreferrer" title="${
@@ -71,12 +79,7 @@ const toInternalLink = (opts: {
 };
 
 export const parseMarkdown = (
-  { text, currentPath, isDirIndex, baseUrl }: {
-    text: string;
-    currentPath: string;
-    baseUrl: URL;
-    isDirIndex?: boolean;
-  },
+  { text, currentPath, isDirIndex, baseUrl, highlightCode }: ParseOpts,
 ): { html: string; links: Array<URL>; headings: Array<Heading> } => {
   const internalLinks: Set<URL> = new Set();
   const headings: Array<Heading> = [];
@@ -150,11 +153,11 @@ export const parseMarkdown = (
     }
   };
 
-  renderer.code = (code: string, lang: string): string => {
-    const language = hljs.getLanguage(lang) ? lang : "plaintext";
-    const html = hljs.highlight(code, { language }).value;
-    return `<pre class="hljs language-${language}">${html}</pre>`;
-  };
+  // renderer.code = (code: string, lang: string): string => {
+  //   const language = hljs.getLanguage(lang) ? lang : "plaintext";
+  //   const html = hljs.highlight(code, { language }).value;
+  //   return `<pre class="hljs language-${language}">${html}</pre>`;
+  // };
 
   marked.use({
     renderer,
