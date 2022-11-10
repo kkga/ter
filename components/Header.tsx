@@ -1,18 +1,19 @@
-import { h, FunctionComponent as FC } from "preact";
+import { FunctionComponent as FC, h } from "preact";
 import { tw } from "twind/";
 import { Crumb } from "../types.d.ts";
 import { styleUtils } from "@components/styleUtils.ts";
 
 const PageHeader: FC<{
+  currentPath: string;
   crumbs?: Crumb[];
   navItems?: Record<string, string>;
-}> = ({ crumbs, navItems }) => {
+}> = ({ currentPath, crumbs, navItems }) => {
   return (
     <header
       class={tw`
         flex flex-col md:(flex-row)
         justify-between items-baseline gap-2 md:(gap-4)
-        py-2
+        py-4
         text(sm gray-500)
         ${styleUtils.linkDimmer}
       `}
@@ -33,7 +34,9 @@ const PageHeader: FC<{
         >
           {Object.entries(navItems).map(([label, path]) => (
             <li>
-              <a href={path}>{label}</a>
+              {currentPath === path
+                ? <span>{label}</span>
+                : <a href={path}>{label}</a>}
             </li>
           ))}
         </ul>

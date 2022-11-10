@@ -111,9 +111,8 @@ async function generateSite(opts: GenerateSiteOpts) {
       inputPath: inputPath,
       ignoreKeys: opts.config.ignoreKeys,
       siteUrl: new URL(userConfig.site.url),
-    }).catch(
-      (reason: string) =>
-        console.error(`Can not render ${entry.path}\n\t${reason}`),
+    }).catch((reason: string) =>
+      console.error(`Can not render ${entry.path}\n\t${reason}`)
     );
     if (renderDrafts) page && contentPages.push(page);
     else page && !page.ignored && contentPages.push(page);
@@ -124,7 +123,6 @@ async function generateSite(opts: GenerateSiteOpts) {
     tags: getTags(contentPages),
     title: "Tags",
     index: "tag",
-    ignored: true,
   };
 
   const pages = [

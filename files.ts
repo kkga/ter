@@ -2,6 +2,7 @@ import { copy, ensureDir, WalkEntry } from "$std/fs/mod.ts";
 import { basename, dirname, join, relative } from "$std/path/mod.ts";
 import { renderPage } from "./render.tsx";
 import {
+  generateCrumbs,
   getBacklinkPages,
   getChildPages,
   getPagesByTags,
@@ -31,15 +32,17 @@ function buildContentFiles({ pages, outputPath, userConfig, dev }: {
     const childTags = getTags(childPages);
     const childPagesByTag = getPagesByTags(pages, childTags);
     const allPagesByTag = getPagesByTags(pages, getTags(pages));
+    const crumbs = generateCrumbs(page, userConfig.site.rootCrumb);
 
     const html = renderPage({
       page: page,
-      dev: dev,
+      crumbs: crumbs,
       childPages: childPages,
       backlinkPages: backlinkPages,
       pagesByTag: page.index === "tag" ? allPagesByTag : childPagesByTag,
       relatedPages: getRelatedPages(pages, page),
       userConfig: userConfig,
+      dev: dev,
     });
 
     files.push({

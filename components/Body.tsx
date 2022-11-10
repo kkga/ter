@@ -17,7 +17,7 @@ interface BodyProps {
   pagesByTag?: Record<string, Page[]>;
   navItems?: Record<string, string>;
   author?: { name: string; email: string; url: string };
-  dateFormat?: Record<string, string>;
+  dateFormat?: Intl.DateTimeFormatOptions;
   locale?: string;
 }
 
@@ -46,13 +46,19 @@ const Body: FC<BodyProps> = ({
         mx-auto max-w-3xl
         px-4
         flex flex-col gap-16
-        bg-white text-gray-800
         text-sm md:(text-base)
+        bg-white text-gray-900
         dark:(
           bg-black text-gray-300
         )`}
     >
-      {crumbs && <Header navItems={navItems} crumbs={crumbs} />}
+      {crumbs && (
+        <Header
+          currentPath={page.url.pathname}
+          navItems={navItems}
+          crumbs={crumbs}
+        />
+      )}
 
       <main>
         <Article page={page} dateFormat={dateFormat} locale={locale}>
@@ -100,10 +106,6 @@ const Body: FC<BodyProps> = ({
           Object.keys(pagesByTag).length > 0 && (
           <IndexList
             title="Tags"
-            // items={Object.keys(pagesByTag).map((tag) =>
-            //   tag + ` (${pagesByTag[tag].length})`
-            // )}
-
             items={pagesByTag}
             type={"tags"}
           />
@@ -111,7 +113,7 @@ const Body: FC<BodyProps> = ({
 
         {backlinkPages && backlinkPages.length > 0 && (
           <IndexList
-            title="Backlinks"
+            title="Links to this page"
             items={backlinkPages}
             type={"backlinks"}
           />

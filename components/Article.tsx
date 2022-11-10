@@ -1,8 +1,8 @@
 import { FunctionComponent as FC, h } from "preact";
 import { apply, tw } from "twind";
 import { css } from "twind/css";
-import { Heading, Page } from "../types.d.ts";
 import { styleUtils } from "@components/styleUtils.ts";
+import { Heading, Page } from "../types.d.ts";
 
 interface HeaderProps {
   title?: string;
@@ -11,7 +11,7 @@ interface HeaderProps {
   dateUpdated?: Date;
   tags?: string[];
   headings?: Heading[];
-  dateFormat?: Record<string, string>;
+  dateFormat?: Intl.DateTimeFormatOptions;
   locale?: string;
   size?: "small" | "default";
   showTitle?: boolean;
@@ -22,7 +22,7 @@ interface HeaderProps {
 
 interface ArticleProps {
   page: Page;
-  dateFormat?: Record<string, string>;
+  dateFormat?: Intl.DateTimeFormatOptions;
   locale?: string;
   headerSize?: "small" | "default";
 }
@@ -38,23 +38,38 @@ const contentStyles = css({
     text-xl mt-12 font-semibold tracking-tight
   `,
   h3: apply`
-    text-base mt-6 mb-1 font-semibold
+    text-base mt-6 mb-2 font-semibold tracking-tight
   `,
   h4: apply`
-    text-base mt-6 mb-1 font-semibold
+    text-base mt-6 mb-2 font-semibold tracking-tight
   `,
   h5: apply`
-    text-base mt-6 mb-1 font-semibold
+    text-base mt-6 mb-2 font-semibold
   `,
   h6: apply`
-    text-base mt-6 mb-1 font-semibold
+    text-base mt-6 mb-2 font-semibold
   `,
-  a: apply`
-    text-accent-700 dark:(text-accent-400) no-underline hover:underline
-  `,
-  "a[rel~='external']": apply`
-    text-current underline
-  `,
+  // a: apply`
+  //   text-accent-700
+  //   no-underline
+  //   hover:(
+  //     bg-accent-100 text-accent-900
+  //   )
+  //   dark:(
+  //     text-accent-300
+  //     hover:(bg-accent-900 text-accent-100)
+  //   )
+  // `,
+  "a[rel~='external']": css(
+    apply`
+      not-hover:text-current 
+      underline  hover:(no-underline)
+    `,
+    {
+      textDecorationStyle: "dotted",
+      textDecorationThickness: "1px",
+    },
+  ),
   p: apply``,
   img: apply``,
   video: apply``,
@@ -79,14 +94,16 @@ const contentStyles = css({
     overflow-x-scroll
     text-xs
     font-mono
-    p-2
-    rounded
+    py-2 px-4
     leading-snug
-    bg-gray-50
-    dark:(bg-gray-900 text-gray-300)
+    text-pink-700
+    border(l gray-300)
+    dark:(
+      border(l gray-800)
+      text-pink-300
+    )
     md:(
       text-sm
-      -mx-3 px-3 py-2
     )
   `,
   details: apply`
@@ -141,7 +158,7 @@ const Header: FC<HeaderProps> = ({
   tags,
   headings,
   locale,
-  dateFormat = { year: "numeric", month: "long", day: "numeric" },
+  dateFormat = { year: "numeric", month: "short", day: "numeric" },
   showTitle,
   showDescription,
   showMeta,
@@ -219,9 +236,7 @@ const Header: FC<HeaderProps> = ({
             .filter((h) => h.level < 4)
             .map((h: Heading) => {
               return (
-                <li
-                  class={h.level > 2 ? tw`py-px pl-3` : tw`py-0.5 font-medium`}
-                >
+                <li class={h.level > 2 ? tw`pl-3` : tw`font-medium`}>
                   <a href={`#${h.slug}`}>{h.text}</a>
                 </li>
               );

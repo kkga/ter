@@ -6,9 +6,59 @@ import { default as slugify } from "slugify";
 import { parseMarkdown } from "./markdown.ts";
 import * as attributes from "./attributes.ts";
 
-import type { Heading, Page } from "./types.d.ts";
+import type { Crumb, Heading, Page } from "./types.d.ts";
+
+interface GeneratePageOpts {
+  entry: WalkEntry;
+  inputPath: string;
+  siteUrl: URL;
+  ignoreKeys: string[];
+}
+
+interface PageData {
+  body?: string;
+  attrs?: Record<string, unknown>;
+  datePublished?: Date;
+  dateUpdated?: Date;
+  title?: string;
+  description?: string;
+  tags?: string[];
+  pinned?: boolean;
+  ignored?: boolean;
+  log?: boolean;
+  showHeader: boolean;
+  showTitle: boolean;
+  showDescription: boolean;
+  showMeta: boolean;
+  showToc: boolean;
+}
 
 const decoder = new TextDecoder("utf-8");
+
+function generateCrumbs(page: Page, rootCrumb?: string): Crumb[] {
+  const dir = dirname(page.url.pathname);
+  const chunks: string[] = dir.split("/").filter((ch) => !!ch);
+  const slug = basename(page.url.pathname);
+
+  let crumbs: Crumb[] = chunks.map((chunk, i) => {
+    const url = join("/", ...chunks.slice(0, i + 1));
+    return {
+      slug: chunk,
+      url,
+      current: false,
+    };
+  });
+
+  crumbs = [{
+    slug: rootCrumb ?? "index",
+    url: "/",
+    current: false,
+  }, ...crumbs];
+
+  if (slug !== "") crumbs = [...crumbs, { slug, url: "", current: true }];
+
+  return crumbs;
+}
 
 function getTitleFromHeadings(headings: Array<Heading>): string | undefined {
   return headings.find((h) => h.level === 1)?.text;
@@ -96,25 +146,7 @@ function sortTaggedPages(
     }, {});
 }
 
-interface PageData {
-  body?: string;
-  attrs?: Record<string, unknown>;
-  datePublished?: Date;
-  dateUpdated?: Date;
-  title?: string;
-  description?: string;
-  tags?: string[];
-  pinned?: boolean;
-  ignored?: boolean;
-  log?: boolean;
-  showHeader: boolean;
-  showTitle: boolean;
-  showDescription: boolean;
-  showMeta: boolean;
-  showToc: boolean;
-}
-
-const extractPageData = (raw: string, ignoreKeys: string[]): PageData => {
+function extractPageData(raw: string, ignoreKeys: string[]): PageData {
   const fm = frontmatter.extract(raw);
   const attrs = fm.attrs as Record<string, unknown>;
   const {
@@ -144,20 +176,39 @@ const extractPageData = (raw: string, ignoreKeys: string[]): PageData => {
     showMeta: getBool(attrs, "showMeta") ?? true,
     showToc: getBool(attrs, "toc") ?? false,
   };
-};
+}
 
-interface GeneratePageOpts {
-  entry: WalkEntry;
-  inputPath: string;
-  siteUrl: URL;
-  ignoreKeys: string[];
+function getDeadlinks(pages: Page[]): [from: URL, to: URL][] {
+  return pages.reduce((deadlinks: [from: URL, to: URL][], page) => {
+    if (page.links) {
+      page.links.forEach((link) => {
+        !pages.some((page) => page.url.pathname === link.pathname) &&
+          deadlinks.push([page.url, link]);
+      });
+    }
+    return deadlinks;
+  }, []);
+}
+
+function generateIndexPageFromDir(
+  { entry, inputPath, siteUrl }: GeneratePageOpts,
+): Page {
+  const relPath = relative(inputPath, entry.path) || ".";
+  const slug = relPath === "." ? "." : slugify(entry.name);
+  const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
+
+  return {
+    title: entry.name,
+    url: pageUrl,
+    index: "dir",
+  };
 }
 
 async function generateContentPage(
   { entry, inputPath, siteUrl, ignoreKeys }: GeneratePageOpts,
 ): Promise<Page> {
   const relPath = relative(inputPath, entry.path);
-  const raw = decoder.decode(await Deno.readFile(entry.path));
+  const raw = decoder.decode(await Deno.readFileSync(entry.path));
   const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
   const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
 
@@ -216,34 +267,9 @@ async function generateIndexPageFromFile(
   return page;
 }
 
-function generateIndexPageFromDir(
-  { entry, inputPath, siteUrl }: GeneratePageOpts,
-): Page {
-  const relPath = relative(inputPath, entry.path) || ".";
-  const slug = relPath === "." ? "." : slugify(entry.name);
-  const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
-
-  return {
-    title: entry.name,
-    url: pageUrl,
-    index: "dir",
-  };
-}
-
-function getDeadlinks(pages: Page[]): [from: URL, to: URL][] {
-  return pages.reduce((deadlinks: [from: URL, to: URL][], page) => {
-    if (page.links) {
-      page.links.forEach((link) => {
-        !pages.some((page) => page.url.pathname === link.pathname) &&
-          deadlinks.push([page.url, link]);
-      });
-    }
-    return deadlinks;
-  }, []);
-}
-
 export {
   generateContentPage,
+  generateCrumbs,
   generateIndexPageFromDir,
   generateIndexPageFromFile,
   getBacklinkPages,

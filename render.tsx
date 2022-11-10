@@ -2,7 +2,6 @@ import { h } from "preact";
 import { renderToString } from "preact-render-to-string";
 import { setup as twSetup } from "twind/";
 import { getStyleTag } from "twind/sheets";
-import { basename, dirname, join } from "$std/path/mod.ts";
 
 import twindConfig, { sheet } from "./twind.config.ts";
 import { HMR_CLIENT } from "./constants.ts";
@@ -12,40 +11,12 @@ import { sortPages, sortTaggedPages } from "./pages.ts";
 
 twSetup(twindConfig);
 
-const generateCrumbs = (currentPage: Page, homeSlug?: string): Crumb[] => {
-  const dir = dirname(currentPage.url.pathname);
-  const chunks: string[] = dir.split("/").filter((ch) => !!ch);
-  const slug = basename(currentPage.url.pathname);
-
-  let crumbs: Crumb[] = chunks.map((chunk, i) => {
-    const slug = chunk;
-    const url = join("/", ...chunks.slice(0, i + 1));
-    return {
-      slug,
-      url,
-      current: false,
-    };
-  });
-
-  crumbs = [
-    {
-      slug: homeSlug ?? "index",
-      url: "/",
-      current: false,
-    },
-    ...crumbs,
-  ];
-
-  if (slug !== "") crumbs = [...crumbs, { slug, url: "", current: true }];
-
-  return crumbs;
-};
-
 // TODO
 // - render user head snippet
 
 interface RenderOpts {
   page: Page;
+  crumbs: Crumb[];
   dev: boolean;
   childPages?: Page[];
   backlinkPages?: Page[];
@@ -56,6 +27,7 @@ interface RenderOpts {
 
 export function renderPage({
   page,
+  crumbs,
   dev,
   childPages,
   backlinkPages,
@@ -67,7 +39,7 @@ export function renderPage({
   const body = renderToString(
     <Body
       page={page}
-      crumbs={generateCrumbs(page, userConfig.site.rootCrumb)}
+      crumbs={crumbs}
       childPages={childPages && sortPages(childPages)}
       backlinkPages={backlinkPages && sortPages(backlinkPages)}
       relatedPages={relatedPages && sortPages(relatedPages)}

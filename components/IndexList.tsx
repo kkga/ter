@@ -96,10 +96,15 @@ const Item: FC<ItemProps> = ({
           relative
           flex flex-row items-center gap-2
           py-2
-          hover:(text(gray-900))
+          text-gray-500
+          hover:(
+            bg-transparent
+          )
           dark:(
             text(gray-400) 
-            hover:(text(gray-100))
+            hover:(
+              text-pink-200
+            )
           )
         `}
       >
@@ -122,7 +127,11 @@ const Item: FC<ItemProps> = ({
             {isDirIndex && <span class={tw`select-none`}>/..</span>}
           </span>
           {description && (
-            <span class={tw`opacity-60 truncate font-normal`}>
+            <span
+              class={tw`
+                truncate font-normal opacity-70
+              `}
+            >
               {description}
             </span>
           )}
@@ -165,19 +174,19 @@ const IndexList: FC<{
       const tag = item[0];
       const count = item[1].length;
       return (
-        <a
-          class={tw`
+        <li>
+          <a
+            class={tw`
             leading-6 
-            hover:(text-gray-900)
             dark:(
-              text(gray-400)
-              hover:(text-gray-100)
+              text(gray-400) 
             )
           `}
-          href={`/tags##${tag}`}
-        >
-          {item} <span class={tw`opacity-60`}>{count}</span>
-        </a>
+            href={`/tags##${tag}`}
+          >
+            {item} <span class={tw`opacity-60`}>{count}</span>
+          </a>
+        </li>
       );
     }
   };
@@ -186,7 +195,7 @@ const IndexList: FC<{
     <section
       id={title}
       class={tw`
-        text(sm gray-500) tracking-tight leading-4
+        text(sm) tracking-tight leading-4
         target:(
           ring ring-offset-8
           dark:(ring-offset-black)
@@ -196,7 +205,8 @@ const IndexList: FC<{
       <h6
         class={tw`
           pb-2
-          font-medium
+          font-semibold
+          text(gray-500)
           border(b gray-200)
           dark:(
             border(gray-800)
@@ -205,12 +215,13 @@ const IndexList: FC<{
       >
         {title}
         <span class={tw`font-normal opacity-60`}>
-          : {Object.keys(items).length}
+          {" "}: {Object.keys(items).length}
         </span>
       </h6>
       <ul
         class={tw`
           flex 
+          tracking-tight
           ${
           (type === "backlinks" || type === "pages") &&
           "flex-col divide-y divide-gray-200 dark:(divide-gray-800)"

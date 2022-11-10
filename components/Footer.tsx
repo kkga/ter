@@ -1,4 +1,4 @@
-import { FunctionComponent, h } from "preact";
+import { FunctionComponent as FC, h } from "preact";
 import { tw } from "twind/";
 import { styleUtils } from "@components/styleUtils.ts";
 
@@ -6,31 +6,31 @@ interface FooterProps {
   author?: { name: string; email: string; url: string };
 }
 
-const Footer: FunctionComponent<FooterProps> = ({ author }) => (
-  <footer
-    class={tw`
-      mt-auto py-2
-      flex items-baseline
-      text-xs text-gray-500
-      ${styleUtils.linkDimmer}
-    `}
-  >
-    <ul class={tw`flex items-baseline ${styleUtils.childrenDivider}`}>
-      {author && (
-        <li>
-          <a href={author.url}>{author.name}</a>
-        </li>
-      )}
+const Footer: FC<FooterProps> = ({ author }) => {
+  let items = [
+    ["Feed", "/feed.xml"],
+    ["Made with Ter", "https://ter.kkga.me"],
+  ];
 
-      <li>
-        <a href="/feed.xml">Feed</a>
-      </li>
+  if (author) items = [[author.name, author.url], ...items];
 
-      <li>
-        <a href="https://ter.kkga.me">Made with Ter</a>
-      </li>
-    </ul>
-  </footer>
-);
-
+  return (
+    <footer
+      class={tw`
+        mt-auto py-4
+        flex items-baseline
+        text(xs gray-500)
+        ${styleUtils.linkDimmer}
+      `}
+    >
+      <ul class={tw`flex items-baseline ${styleUtils.childrenDivider}`}>
+        {items.map(([label, path]) => (
+          <li>
+            <a href={path}>{label}</a>
+          </li>
+        ))}
+      </ul>
+    </footer>
+  );
+};
 export default Footer;
