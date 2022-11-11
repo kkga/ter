@@ -25,7 +25,7 @@ interface PageData {
   tags?: string[];
   pinned?: boolean;
   ignored?: boolean;
-  log?: boolean;
+  layout?: "log";
   showHeader: boolean;
   showTitle: boolean;
   showDescription: boolean;
@@ -169,7 +169,7 @@ function extractPageData(raw: string, ignoreKeys: string[]): PageData {
     tags: getTags(attrs),
     pinned: getBool(attrs, "pinned") ?? false,
     ignored: hasKey(attrs, ignoreKeys),
-    log: getBool(attrs, "log") ?? true,
+    layout: getBool(attrs, "log") ? "log" : undefined,
     showHeader: getBool(attrs, "showHeader") ?? true,
     showTitle: getBool(attrs, "showTitle") ?? true,
     showDescription: getBool(attrs, "showDescription") ?? true,
