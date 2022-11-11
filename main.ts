@@ -123,6 +123,7 @@ async function generateSite(opts: GenerateSiteOpts) {
     tags: getTags(contentPages),
     title: "Tags",
     index: "tag",
+    unlisted: true,
   };
 
   const pages = [

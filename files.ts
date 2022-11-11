@@ -27,20 +27,24 @@ function buildContentFiles({ pages, outputPath, userConfig, dev }: {
       "index.html",
     );
 
-    const childPages = getChildPages(pages, page);
-    const backlinkPages = getBacklinkPages(pages, page);
-    const childTags = getTags(childPages);
-    const childPagesByTag = getPagesByTags(pages, childTags);
-    const allPagesByTag = getPagesByTags(pages, getTags(pages));
+    const listedPages = pages.filter((p) => !p.unlisted);
+
+    const childPages = getChildPages(listedPages, page);
+    const allChildPages = getChildPages(listedPages, page, true);
+    const backlinkPages = getBacklinkPages(listedPages, page);
+    const childTags = getTags(allChildPages);
+    const childPagesByTag = getPagesByTags(listedPages, childTags);
+    const allPagesByTag = getPagesByTags(listedPages, getTags(listedPages));
     const crumbs = generateCrumbs(page, userConfig.site.rootCrumb);
+    const relatedPages = getRelatedPages(listedPages, page);
 
     const html = renderPage({
       page: page,
       crumbs: crumbs,
       childPages: childPages,
+      relatedPages: relatedPages,
       backlinkPages: backlinkPages,
       pagesByTag: page.index === "tag" ? allPagesByTag : childPagesByTag,
-      relatedPages: getRelatedPages(pages, page),
       userConfig: userConfig,
       dev: dev,
     });

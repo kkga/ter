@@ -101,14 +101,22 @@ function getPagesWithTag(pages: Page[], tag: string, exclude?: Page[]): Page[] {
 
 function getRelatedPages(pages: Page[], current: Page): Page[] {
   return pages.filter((page) =>
+    page.url.pathname !== current.url.pathname &&
     page?.tags?.some((tag) => current?.tags?.includes(tag))
   );
 }
 
-function getChildPages(pages: Page[], current: Page): Page[] {
+function getChildPages(pages: Page[], current: Page, deep?: boolean): Page[] {
   return pages.filter((p) =>
-    current.url.pathname !== p.url.pathname &&
-    current.url.pathname === dirname(p.url.pathname)
+    deep
+      ? (
+        current.url.pathname !== p.url.pathname &&
+        p.url.pathname.startsWith(current.url.pathname)
+      )
+      : (
+        current.url.pathname !== p.url.pathname &&
+        current.url.pathname === dirname(p.url.pathname)
+      )
   );
 }
 

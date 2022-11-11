@@ -57,7 +57,6 @@ export interface Page {
   dateUpdated?: Date;
   tags?: string[];
   body?: string;
-  path?: string;
   html?: string;
   links?: URL[];
   headings?: Heading[];
@@ -65,6 +64,7 @@ export interface Page {
   layout?: "log";
   pinned?: boolean;
   ignored?: boolean;
+  unlisted?: boolean;
   showHeader?: boolean;
   showToc?: boolean;
   showTitle?: boolean;
