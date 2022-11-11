@@ -42,6 +42,7 @@ const Body: FC<BodyProps> = ({
     <body
       class={tw`
         antialiased 
+        tracking-[-0.01em]
         min-h-screen
         mx-auto max-w-3xl
         px-4

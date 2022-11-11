@@ -167,8 +167,8 @@ const Header: FC<HeaderProps> = ({
 }) => (
   <header
     class={tw`
-      ${size === "small" ? "mb-8" : "mb-16"} 
-      flex flex-col gap-2 
+      ${size === "small" ? "mb-4" : "mb-16"} 
+      flex flex-col ${size === "small" ? "gap-0.5" : "gap-2"} 
       only-child:(m-0) 
       empty:hidden 
       tracking-tight
@@ -179,8 +179,8 @@ const Header: FC<HeaderProps> = ({
       <h1
         class={tw`
           mt-0
-          ${size === "small" ? "text-xl" : "text-2xl md:(text-3xl)"}
-          font-bold tracking-tight
+          ${size === "small" ? "text" : "text-2xl md:(text-3xl)"}
+          font-semibold tracking-tight
         `}
       >
         {title}
@@ -257,7 +257,7 @@ const Article: FC<ArticleProps> = ({
 }) => (
   <article
     class={tw`sibling:(
-      mt-8 pt-8 border(t dashed gray-400)
+      mt-6 pt-6 border(t dashed gray-300)
       dark:(border(gray-700))
     )`}
   >

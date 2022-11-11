@@ -196,8 +196,8 @@ const IndexList: FC<{
       class={tw`
         text(sm) tracking-tight leading-4
         target:(
-          ring ring-offset-8
-          dark:(ring-offset-black)
+          ring ring-pink-200 ring-offset-8
+          dark:(ring-pink-900 ring-offset-black)
         )
       `}
     >
