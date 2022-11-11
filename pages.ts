@@ -6,7 +6,7 @@ import { default as slugify } from "slugify";
 import { parseMarkdown } from "./markdown.ts";
 import * as attributes from "./attributes.ts";
 
-import type { Crumb, Heading, Page } from "./types.d.ts";
+import type { Crumb, Heading, JSONValue, Page } from "./types.d.ts";
 
 interface GeneratePageOpts {
   entry: WalkEntry;
@@ -17,7 +17,7 @@ interface GeneratePageOpts {
 
 interface PageData {
   body?: string;
-  attrs?: Record<string, unknown>;
+  attrs?: JSONValue;
   datePublished?: Date;
   dateUpdated?: Date;
   title?: string;
@@ -148,7 +148,7 @@ function sortTaggedPages(
 
 function extractPageData(raw: string, ignoreKeys: string[]): PageData {
   const fm = frontmatter.extract(raw);
-  const attrs = fm.attrs as Record<string, unknown>;
+  const attrs = fm.attrs as JSONValue;
   const {
     getTitle,
     getDescription,

@@ -39,11 +39,20 @@ export interface Heading {
   slug: string;
 }
 
+export interface JSONValue {
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | { [key: string]: JSONValue }
+    | Array<JSONValue>;
+}
+
 export interface Page {
   url: URL;
   title?: string;
   description?: string;
-  attrs?: Record<string, unknown>;
+  attrs?: JSONValue;
   datePublished?: Date;
   dateUpdated?: Date;
   tags?: string[];

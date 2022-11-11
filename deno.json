@@ -14,6 +14,8 @@
       "deno.ns"
     ],
     "jsxFactory": "h",
-    "jsxFragmentFactory": "Fragment"
+    "jsxFragmentFactory": "Fragment",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true
   }
 }
