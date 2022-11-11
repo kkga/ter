@@ -16,6 +16,7 @@
     "jsxFactory": "h",
     "jsxFragmentFactory": "Fragment",
     "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true
+    "noImplicitReturns": true,
+    "noUnusedLocals": true
   }
 }
