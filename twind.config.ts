@@ -13,7 +13,7 @@ export default {
   preflight: {
     a: apply`
       no-underline
-      text(blue-600)
+      text(pink-600)
       hover:(
         bg-pink-100
         text-pink-600

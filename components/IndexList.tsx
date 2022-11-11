@@ -96,7 +96,7 @@ const Item: FC<ItemProps> = ({
           relative
           flex flex-row items-center gap-2
           py-2
-          text-gray-500
+          text-gray-600
           hover:(
             bg-transparent
           )
@@ -111,9 +111,7 @@ const Item: FC<ItemProps> = ({
         {pinned && (
           <div
             class={tw`
-              md:(
-                absolute top-[9px] left-[-20px]
-              )
+              md:(absolute top-[9px] left-[-20px])
             `}
           >
             <StarIcon />
@@ -178,6 +176,7 @@ const IndexList: FC<{
           <a
             class={tw`
             leading-6 
+            text-gray-600
             dark:(
               text(gray-400) 
             )
@@ -205,7 +204,6 @@ const IndexList: FC<{
       <h6
         class={tw`
           pb-2
-          font-semibold
           text(gray-500)
           border(b gray-200)
           dark:(

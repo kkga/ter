@@ -171,6 +171,7 @@ const Header: FC<HeaderProps> = ({
       flex flex-col gap-2 
       only-child:(m-0) 
       empty:hidden 
+      tracking-tight
       ${styleUtils.linkDimmer}
     `}
   >
@@ -192,7 +193,7 @@ const Header: FC<HeaderProps> = ({
       >
         {datePublished && (
           <div>
-            <time class={tw`font-medium`} dateTime={datePublished.toString()}>
+            <time dateTime={datePublished.toString()}>
               {datePublished.toLocaleDateString(locale, dateFormat)}
             </time>
           </div>
@@ -200,7 +201,7 @@ const Header: FC<HeaderProps> = ({
         {dateUpdated && (
           <div>
             Updated:{" "}
-            <time class={tw`font-medium`} dateTime={dateUpdated.toString()}>
+            <time dateTime={dateUpdated.toString()}>
               {dateUpdated.toLocaleDateString(locale, dateFormat)}
             </time>
           </div>
@@ -217,20 +218,20 @@ const Header: FC<HeaderProps> = ({
       </div>
     )}
     {showDescription && description && (
-      <p class={tw`text(sm gray-500) font(italic)`}>{description}</p>
+      <p class={tw`text(sm gray-500)`}>{description}</p>
     )}
 
     {showToc && headings?.some((h) => h.level > 2) && (
       <details
-        open
         class={tw`
+          pl-4
+          border(l gray-300)
           mt-4
           text-sm
-          text-gray-600
-          dark:(text-gray-400)
+          text-gray-500
         `}
       >
-        <summary>Contents</summary>
+        <summary class={tw`text-current`}>Contents</summary>
         <ol class={tw`mt-2`}>
           {headings
             .filter((h) => h.level < 4)
