@@ -25,6 +25,7 @@ interface PageData {
   tags?: string[];
   pinned?: boolean;
   ignored?: boolean;
+  unlisted?: boolean;
   layout?: "log";
   showHeader: boolean;
   showTitle: boolean;
@@ -108,15 +109,10 @@ function getRelatedPages(pages: Page[], current: Page): Page[] {
 
 function getChildPages(pages: Page[], current: Page, deep?: boolean): Page[] {
   return pages.filter((p) =>
-    deep
-      ? (
-        current.url.pathname !== p.url.pathname &&
-        p.url.pathname.startsWith(current.url.pathname)
-      )
-      : (
-        current.url.pathname !== p.url.pathname &&
-        current.url.pathname === dirname(p.url.pathname)
-      )
+    current.url.pathname !== p.url.pathname &&
+    (deep
+      ? p.url.pathname.startsWith(current.url.pathname)
+      : current.url.pathname === dirname(p.url.pathname))
   );
 }
 
@@ -177,6 +173,7 @@ function extractPageData(raw: string, ignoreKeys: string[]): PageData {
     tags: getTags(attrs),
     pinned: getBool(attrs, "pinned") ?? false,
     ignored: hasKey(attrs, ignoreKeys),
+    unlisted: getBool(attrs, "unlisted") ?? false,
     layout: getBool(attrs, "log") ? "log" : undefined,
     showHeader: getBool(attrs, "showHeader") ?? true,
     showTitle: getBool(attrs, "showTitle") ?? true,
