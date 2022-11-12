@@ -1,5 +1,6 @@
 import { virtualSheet } from "twind/sheets";
 import { apply, Configuration } from "twind/";
+import { css } from "twind/css";
 
 export const sheet = virtualSheet();
 
@@ -11,21 +12,16 @@ export default {
     },
   },
   preflight: {
-    a: apply`
-      no-underline
-      text(pink-600)
-      hover:(
-        bg-pink-100
-        text-pink-600
-      )
-      dark:(
-        text-pink-300
-        hover:(
-          text-pink-100
-          bg-pink-900
-        )
-      )
-    `,
+    a: css(
+      apply`
+        no-underline
+        text(pink-600 dark:pink-300)
+        hover:(underline)
+      `,
+      {
+        textUnderlineOffset: "4px",
+      },
+    ),
   },
   sheet,
 } as Configuration;

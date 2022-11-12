@@ -94,17 +94,11 @@ const Item: FC<ItemProps> = ({
         href={url.pathname}
         class={tw`
           relative
+          no-underline!
           flex flex-row items-center gap-2
           py-2
-          text-gray-600
-          hover:(
-            bg-transparent
-          )
-          dark:(
-            text(gray-400) 
-            hover:(
-              text-pink-200
-            )
+          not-hover:(
+            text(gray-600 dark:gray-400)
           )
         `}
       >
@@ -175,12 +169,12 @@ const IndexList: FC<{
         <li>
           <a
             class={tw`
-            leading-6 
-            text-gray-600
-            dark:(
-              text(gray-400) 
-            )
-          `}
+              leading-6 
+                no-underline!
+                not-hover:(
+                  text(gray-600 dark:gray-400)
+                )
+            `}
             href={`/tags##${tag}`}
           >
             {item} <span class={tw`opacity-60`}>{count}</span>

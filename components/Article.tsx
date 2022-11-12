@@ -49,26 +49,9 @@ const contentStyles = css({
   h6: apply`
     text-base mt-6 mb-2 font-semibold
   `,
-  // a: apply`
-  //   text-accent-700
-  //   no-underline
-  //   hover:(
-  //     bg-accent-100 text-accent-900
-  //   )
-  //   dark:(
-  //     text-accent-300
-  //     hover:(bg-accent-900 text-accent-100)
-  //   )
-  // `,
   "a[rel~='external']": css(
-    apply`
-      not-hover:text-current 
-      underline  hover:(no-underline)
-    `,
-    {
-      textDecorationStyle: "dotted",
-      textDecorationThickness: "1px",
-    },
+    apply`text-current underline`,
+    { "&:not(:hover)": { textDecorationStyle: "dotted" } },
   ),
   p: apply``,
   img: apply``,
@@ -92,34 +75,27 @@ const contentStyles = css({
   `,
   pre: apply`
     overflow-x-scroll
-    text-xs
+    text(xs md:sm)
     font-mono
     py-2 px-4
     leading-snug
-    text-pink-700
-    border(l gray-300)
-    dark:(
-      border(l gray-800)
-      text-pink-300
-    )
-    md:(
-      text-sm
-    )
+    text(pink-700 dark:pink-300)
+    border(l gray-300 dark:gray-800)
   `,
   details: apply`
     rounded
     p-2
     text-sm
-    children:(my-2
-    first-child:my-0
-    last-child:mb-0)
-    bg-gray-100
-    text-gray-600
-    dark:(bg-gray-900
-    text-gray-400)
+    children:(
+      my-2
+      first-child:my-0
+      last-child:mb-0
+    )
+    bg(gray-100 dark:gray-900)
+    text(gray-600 dark:gray-400)
   `,
   blockquote: apply`
-    mb-4 mx-8 text-lg text-gray-500
+    mb-4 mx-8 text(lg gray-500)
   `,
   del: apply`
     opacity-60
@@ -131,17 +107,14 @@ const contentStyles = css({
     overflow-scroll
   `,
   th: apply`
-    border(b gray-300)
-    dark:(border-gray-700)
+    border(b gray-300 dark:gray-700)
     text(gray-500)
     font(medium)
     py-1
   `,
   td: apply`
-    border(b gray-200)
-    dark:(border-gray-800)
-    py-1
-    pr-3
+    border(b gray-200 dark:gray-800)
+    py-1 pr-3
     align-baseline
   `,
   ".full-bleed": apply`
