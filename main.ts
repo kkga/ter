@@ -241,8 +241,8 @@ async function generateSite(opts: GenerateSiteOpts) {
 
 async function main(args: string[]) {
   const flags = parseFlags(args, {
-    boolean: ["serve", "help", "quiet", "local", "drafts"],
-    string: ["config", "input", "output", "port", "modurl"],
+    boolean: ["serve", "help", "quiet", "drafts"],
+    string: ["config", "input", "output", "port"],
   });
 
   if (flags.help) {
