@@ -4,18 +4,14 @@ import { dirname, isAbsolute, join } from "$std/path/mod.ts";
 import { BuildConfig, UserConfig } from "./types.d.ts";
 
 const defaultUserConfig: UserConfig = {
-  site: {
-    title: "Your Blog Name",
-    description: "I am writing about my experiences as a naval navel-gazer",
-    url: "https://example.com/",
-    rootCrumb: "index",
-  },
-  author: {
-    name: "Your Name Here",
-    email: "youremailaddress@example.com",
-    url: "https://example.com/about-me/",
-  },
-  navigation: {},
+  title: "Your Blog Name",
+  description: "I am writing about my experiences as a naval navel-gazer",
+  url: "https://example.com/",
+  rootCrumb: "index",
+  author_name: "Your Name Here",
+  author_email: "youremailaddress@example.com",
+  author_url: "https://example.com/about-me/",
+  nav_links: {},
 };
 
 const defaultBuildConfig: BuildConfig = {

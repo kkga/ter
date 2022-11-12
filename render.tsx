@@ -44,8 +44,12 @@ export function renderPage({
       backlinkPages={backlinkPages && sortPages(backlinkPages)}
       relatedPages={relatedPages && sortPages(relatedPages)}
       pagesByTag={pagesByTag && sortTaggedPages(pagesByTag)}
-      navItems={userConfig.navigation}
-      author={userConfig.author}
+      navItems={userConfig.nav_links}
+      author={{
+        name: userConfig.author_name,
+        email: userConfig.author_email,
+        url: userConfig.author_url,
+      }}
     />,
   );
 
@@ -57,36 +61,28 @@ export function renderPage({
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${page.title} &middot; ${userConfig.site.title}</title>
+  <title>${page.title} &middot; ${userConfig.title}</title>
   <meta name="description" content="${
-    page.description || userConfig.site.description
+    page.description || userConfig.description
   }">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="<%= title ? title : site.title %>">
-  <meta name="twitter:description" content="<%= description ? description : site.description %>">
+  <meta name="twitter:title" content="${page.title} &middot; ${userConfig.title}">
+  <meta name="twitter:description" content="${
+    page.description || userConfig.description
+  }">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="<%= title ? title : site.title %>">
-  <meta property="og:description" content="<%= description ? description : site.description %>">
-  <meta property="og:url" content="<%= site.url %>">
+  <meta property="og:title" content="${page.title} &middot; ${userConfig.title}">
+  <meta property="og:description" content="${
+    page.description || userConfig.description
+  }">
+  <meta property="og:url" content="${page.url}">
   <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
-  <link rel="alternate" type="application/atom+xml" href="/feed.xml" title="" />
+  <link rel="alternate" type="application/atom+xml" href="/feed.xml" title="${userConfig.title}" />
   ${styleTag}
   ${userConfig.head || ""}
   ${dev && `<script>${HMR_CLIENT}</script>`}
 </head>
-<html lang="en">
+<html lang="${userConfig.lang || "en"}">
   ${body}
 </html>`;
 }
-
-// export async function buildFeed(
-//   pages: Array<Page>,
-//   view: string,
-//   userConfig: UserConfig,
-// ): Promise<string | void> {
-//   return await eta.render(view, {
-//     pages,
-//     site: userConfig.site,
-//     author: userConfig.author,
-//   });
-// }
