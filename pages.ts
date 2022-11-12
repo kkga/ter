@@ -209,11 +209,11 @@ function generateIndexPageFromDir(
   };
 }
 
-async function generateContentPage(
+function generateContentPage(
   { entry, inputPath, siteUrl, ignoreKeys }: GeneratePageOpts,
-): Promise<Page> {
+): Page {
   const relPath = relative(inputPath, entry.path);
-  const raw = decoder.decode(await Deno.readFileSync(entry.path));
+  const raw = decoder.decode(Deno.readFileSync(entry.path));
   const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
   const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
 
@@ -240,11 +240,11 @@ async function generateContentPage(
   return page;
 }
 
-async function generateIndexPageFromFile(
+function generateIndexPageFromFile(
   { entry, inputPath, siteUrl, ignoreKeys }: GeneratePageOpts,
-): Promise<Page> {
+): Page {
   const relPath = relative(inputPath, dirname(entry.path)) || ".";
-  const raw = decoder.decode(await Deno.readFile(entry.path));
+  const raw = decoder.decode(Deno.readFileSync(entry.path));
   const dirName = basename(dirname(entry.path));
   const slug = relPath === "." ? "." : slugify(dirName);
   const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
