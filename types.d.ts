@@ -1,13 +1,13 @@
 export interface UserConfig {
-  site: {
-    title: string;
-    description: string;
-    url: string;
-    rootCrumb: string;
-  };
-  author: { name: string; email: string; url: string };
-  navigation?: Record<string, string>;
-  locale?: { date?: string };
+  title: string;
+  description: string;
+  url: string;
+  rootCrumb: string;
+  lang?: string;
+  author_name: string;
+  author_email: string;
+  author_url: string;
+  nav_links?: Record<string, string>;
   head?: string;
 }
 
@@ -70,10 +70,4 @@ export interface Page {
   showTitle?: boolean;
   showMeta?: boolean;
   showDescription?: boolean;
-}
-
-export interface OutputFile {
-  inputPath?: string;
-  filePath: string;
-  fileContent?: string;
 }
