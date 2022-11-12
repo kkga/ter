@@ -76,7 +76,7 @@ export function renderPage({
   <link rel="alternate" type="application/atom+xml" href="/feed.xml" title="${userConfig.title}" />
   ${styleTag}
   ${userConfig.head || ""}
-  ${dev && `<script>${HMR_CLIENT}</script>`}
+  ${dev ? `<script>${HMR_CLIENT}</script>` : ""}
   ${body}
 </html>`;
 }
