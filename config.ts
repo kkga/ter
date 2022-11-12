@@ -11,18 +11,13 @@ const defaultUserConfig: UserConfig = {
   author_name: "Your Name Here",
   author_email: "youremailaddress@example.com",
   author_url: "https://example.com/about-me/",
-  nav_links: {},
+  lang: "en",
 };
 
 const defaultBuildConfig: BuildConfig = {
   inputPath: Deno.cwd(),
   outputPath: join(Deno.cwd(), "_site"),
-  assetsPath: join(Deno.cwd(), ".ter/assets"),
-  viewsPath: join(Deno.cwd(), ".ter/views"),
   userConfigPath: join(Deno.cwd(), ".ter/config.json"),
-  pageView: "",
-  feedView: "",
-  style: "",
   ignoreKeys: ["draft"],
   staticExts: [
     "png",

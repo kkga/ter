@@ -3,7 +3,7 @@ export interface UserConfig {
   description: string;
   url: string;
   rootCrumb: string;
-  lang?: string;
+  lang: Intl.LocalesArgument;
   author_name: string;
   author_email: string;
   author_url: string;
@@ -14,11 +14,6 @@ export interface UserConfig {
 export interface BuildConfig {
   inputPath: string;
   outputPath: string;
-  pageView: string;
-  feedView: string;
-  style: string;
-  assetsPath: string;
-  viewsPath: string;
   userConfigPath: string;
   ignoreKeys: string[];
   staticExts: string[];
@@ -37,15 +32,6 @@ export interface Heading {
   text: string;
   level: number;
   slug: string;
-}
-
-export interface JSONValue {
-  [key: string]:
-    | string
-    | number
-    | boolean
-    | { [key: string]: JSONValue }
-    | Array<JSONValue>;
 }
 
 export interface Page {
@@ -70,4 +56,13 @@ export interface Page {
   showTitle?: boolean;
   showMeta?: boolean;
   showDescription?: boolean;
+}
+
+export interface JSONValue {
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | { [key: string]: JSONValue }
+    | Array<JSONValue>;
 }

@@ -70,9 +70,8 @@ interface ItemProps {
   pinned?: boolean;
   isDirIndex?: boolean;
   date?: Date;
-  dateFormat?: Record<string, string>;
-  tags?: string[];
-  locale?: string;
+  dateFormat?: Intl.DateTimeFormatOptions;
+  lang?: Intl.LocalesArgument;
   icon?: VNode;
 }
 
@@ -84,8 +83,7 @@ const Item: FC<ItemProps> = ({
   isDirIndex,
   date,
   dateFormat = { year: "2-digit", day: "2-digit", month: "short" },
-  tags,
-  locale,
+  lang,
   icon,
 }) => {
   return (
@@ -134,7 +132,7 @@ const Item: FC<ItemProps> = ({
             class={tw`text(xs) tabular-nums slashed-zero flex-shrink-0`}
             dateTime={date.toString()}
           >
-            {date.toLocaleDateString(locale, dateFormat)}
+            {date.toLocaleDateString(lang, dateFormat)}
           </time>
         )}
         <div class={tw`flex-shrink-0`}>{icon}</div>
@@ -147,7 +145,8 @@ const IndexList: FC<{
   title: string;
   items: Page[] | Record<string, Page[]>;
   type: "pages" | "tags" | "backlinks";
-}> = ({ title, items, type }) => {
+  lang: Intl.LocalesArgument;
+}> = ({ title, items, type, lang }) => {
   const renderItem = (item: Page | [string, Page[]]) => {
     if (typeof item === "object" && "url" in item) {
       return (
@@ -158,7 +157,7 @@ const IndexList: FC<{
           isDirIndex={item.index === "dir"}
           pinned={item.pinned}
           date={item.datePublished}
-          tags={item.tags}
+          lang={lang}
           icon={type === "backlinks" ? <ArrowLeftIcon /> : <ArrowRightIcon />}
         />
       );

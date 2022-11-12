@@ -11,9 +11,6 @@ import { sortPages, sortTaggedPages } from "./pages.ts";
 
 twSetup(twindConfig);
 
-// TODO
-// - render user head snippet
-
 interface RenderOpts {
   page: Page;
   crumbs: Crumb[];
@@ -45,6 +42,7 @@ export function renderPage({
       relatedPages={relatedPages && sortPages(relatedPages)}
       pagesByTag={pagesByTag && sortTaggedPages(pagesByTag)}
       navItems={userConfig.nav_links}
+      lang={userConfig.lang}
       author={{
         name: userConfig.author_name,
         email: userConfig.author_email,
@@ -54,35 +52,31 @@ export function renderPage({
   );
 
   const styleTag = getStyleTag(sheet);
+  const pageTitle = page.title === userConfig.title
+    ? page.title
+    : `${page.title} &middot; ${userConfig.title}`;
+  const pageDescription = `${page.description || userConfig.description}`;
 
   return `
 <!doctype html>
-<html lang="en">
+<html lang="${userConfig.lang || "en"}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${page.title} &middot; ${userConfig.title}</title>
-  <meta name="description" content="${
-    page.description || userConfig.description
-  }">
+  <title>${pageTitle}</title>
+  <meta name="description" content="${pageDescription}">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="${page.title} &middot; ${userConfig.title}">
-  <meta name="twitter:description" content="${
-    page.description || userConfig.description
-  }">
+  <meta name="twitter:title" content="${pageTitle}">
+  <meta name="twitter:description" content="${pageDescription}">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="${page.title} &middot; ${userConfig.title}">
-  <meta property="og:description" content="${
-    page.description || userConfig.description
-  }">
+  <meta property="og:title" content="${pageTitle}">
+  <meta property="og:description" content="$${pageDescription}">
   <meta property="og:url" content="${page.url}">
   <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
   <link rel="alternate" type="application/atom+xml" href="/feed.xml" title="${userConfig.title}" />
   ${styleTag}
   ${userConfig.head || ""}
   ${dev && `<script>${HMR_CLIENT}</script>`}
-</head>
-<html lang="${userConfig.lang || "en"}">
   ${body}
 </html>`;
 }

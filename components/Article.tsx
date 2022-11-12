@@ -12,7 +12,7 @@ interface HeaderProps {
   tags?: string[];
   headings?: Heading[];
   dateFormat?: Intl.DateTimeFormatOptions;
-  locale?: string;
+  lang?: Intl.LocalesArgument;
   size?: "small" | "default";
   showTitle?: boolean;
   showMeta?: boolean;
@@ -23,7 +23,7 @@ interface HeaderProps {
 interface ArticleProps {
   page: Page;
   dateFormat?: Intl.DateTimeFormatOptions;
-  locale?: string;
+  lang?: Intl.LocalesArgument;
   headerSize?: "small" | "default";
 }
 
@@ -60,7 +60,7 @@ const contentStyles = css({
     apply`my-6`,
     { img: apply`m-0` },
     { video: apply`m-0` },
-    { figcaption: apply`mt-1 text(center sm gray-500)` },
+    { figcaption: apply`mt-1 text(center sm gray-600 dark:gray-400)` },
   ),
   ul: apply`
     list(inside disc)
@@ -121,6 +121,9 @@ const contentStyles = css({
     lg:(-mx-24)
     xl:(-mx-32)
   `,
+  ".cols-2": apply`sm:grid grid(cols-2) gap-4`,
+  ".cols-3": apply`sm:grid grid(cols-3) gap-4`,
+  ".cols-4": apply`grid grid(cols-2 md:cols-4) gap-4`,
 });
 
 const Header: FC<HeaderProps> = ({
@@ -130,7 +133,7 @@ const Header: FC<HeaderProps> = ({
   dateUpdated,
   tags,
   headings,
-  locale,
+  lang,
   dateFormat = { year: "numeric", month: "short", day: "numeric" },
   showTitle,
   showDescription,
@@ -167,7 +170,7 @@ const Header: FC<HeaderProps> = ({
         {datePublished && (
           <div>
             <time dateTime={datePublished.toString()}>
-              {datePublished.toLocaleDateString(locale, dateFormat)}
+              {datePublished.toLocaleDateString(lang, dateFormat)}
             </time>
           </div>
         )}
@@ -175,7 +178,7 @@ const Header: FC<HeaderProps> = ({
           <div>
             Updated:{" "}
             <time dateTime={dateUpdated.toString()}>
-              {dateUpdated.toLocaleDateString(locale, dateFormat)}
+              {dateUpdated.toLocaleDateString(lang, dateFormat)}
             </time>
           </div>
         )}
@@ -224,7 +227,7 @@ const Header: FC<HeaderProps> = ({
 const Article: FC<ArticleProps> = ({
   page,
   dateFormat,
-  locale,
+  lang,
   children,
   headerSize = "default",
 }) => (
@@ -243,7 +246,7 @@ const Article: FC<ArticleProps> = ({
         tags={page.tags}
         headings={page.headings}
         dateFormat={dateFormat}
-        locale={locale}
+        lang={lang}
         size={headerSize}
         showTitle={page.showTitle}
         showMeta={page.showMeta}

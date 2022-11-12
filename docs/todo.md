@@ -6,15 +6,18 @@ draft: true
 
 ## preact rendering
 
-- [ ] fix log layout
-- [ ] improve tag labels
+- [x] fix log layout
+- [x] improve tag labels
 - [x] tag pages
 - [x] content pages
 - [x] integrate twind
+- [-] fix code highlighting
+- [ ] update base html template to use user head
+- [ ] include some utility classes in twind content styles (grid etc)
 
 ## feeds
 
-- [ ] use feed module for atom/rss: <https://esm.sh/feed>
+- [x] use feed module for atom/rss: <https://esm.sh/feed>
 
 ---
 

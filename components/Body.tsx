@@ -15,16 +15,11 @@ interface BodyProps {
   backlinkPages?: Page[];
   relatedPages?: Page[];
   pagesByTag?: Record<string, Page[]>;
-  navItems?: Record<string, string>;
   author?: { name: string; email: string; url: string };
   dateFormat?: Intl.DateTimeFormatOptions;
-  locale?: string;
+  lang: Intl.LocalesArgument;
+  navItems?: Record<string, string>;
 }
-
-// TODO
-// x generate toc
-// - figure out date format, use config
-// - implement log layout
 
 const Body: FC<BodyProps> = ({
   page,
@@ -36,7 +31,7 @@ const Body: FC<BodyProps> = ({
   navItems,
   author,
   dateFormat,
-  locale,
+  lang,
 }) => {
   return (
     <body
@@ -62,7 +57,7 @@ const Body: FC<BodyProps> = ({
       )}
 
       <main>
-        <Article page={page} dateFormat={dateFormat} locale={locale}>
+        <Article page={page} dateFormat={dateFormat} lang={lang}>
           {page.layout === "log" &&
             childPages &&
             childPages?.length > 0 &&
@@ -72,7 +67,7 @@ const Body: FC<BodyProps> = ({
                   <Article
                     page={p}
                     dateFormat={dateFormat}
-                    locale={locale}
+                    lang={lang}
                     headerSize={"small"}
                   />
                 ),
@@ -82,7 +77,12 @@ const Body: FC<BodyProps> = ({
 
       <aside class={tw`flex flex-col gap-12`}>
         {childPages && childPages.length > 0 && (
-          <IndexList title="Pages" items={childPages} type={"pages"} />
+          <IndexList
+            title="Pages"
+            items={childPages}
+            type={"pages"}
+            lang={lang}
+          />
         )}
 
         {page.index !== "tag" && relatedPages && relatedPages.length > 0 && (
@@ -90,6 +90,7 @@ const Body: FC<BodyProps> = ({
             title={`Related (${page.tags?.join(", ")})`}
             items={relatedPages}
             type={"pages"}
+            lang={lang}
           />
         )}
 
@@ -100,6 +101,7 @@ const Body: FC<BodyProps> = ({
               title={`#${tag}`}
               items={pagesByTag[tag]}
               type={"pages"}
+              lang={lang}
             />
           ))}
 
@@ -109,6 +111,7 @@ const Body: FC<BodyProps> = ({
             title="Tags"
             items={pagesByTag}
             type={"tags"}
+            lang={lang}
           />
         )}
 
@@ -117,6 +120,7 @@ const Body: FC<BodyProps> = ({
             title="Links to this page"
             items={backlinkPages}
             type={"backlinks"}
+            lang={lang}
           />
         )}
       </aside>

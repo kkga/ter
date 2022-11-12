@@ -23,7 +23,7 @@ export function generateFeed(opts: FeedOpts): Feed {
     description: description,
     id: url,
     link: url,
-    language: lang || "en",
+    language: lang?.toString() || "en",
     // image: site.url,
     // favicon: site.url,
     copyright: `Copyright ${new Date().getFullYear()} ${url}`,
