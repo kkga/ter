@@ -82,18 +82,24 @@ const contentStyles = css({
     text(pink-700 dark:pink-300)
     border(l gray-300 dark:gray-800)
   `,
-  details: apply`
-    rounded
-    p-2
-    text-sm
-    children:(
-      my-2
-      first-child:my-0
-      last-child:mb-0
-    )
-    bg(gray-100 dark:gray-900)
-    text(gray-600 dark:gray-400)
-  `,
+  details: css(
+    apply`
+      px-4 py-3
+      text-sm leading-snug
+      children:(
+        my-2
+        first-child:my-0
+        last-child:mb-0
+      )
+      bg(green-100 dark:green-900)
+      text(green-800 dark:green-300)
+      border(l green-500)
+    `,
+    {
+      "summary": apply`font-semibold`,
+      "&[open] summary": apply`mb-2`,
+    },
+  ),
   blockquote: apply`
     mb-4 mx-8 text(lg gray-500)
   `,
@@ -143,10 +149,10 @@ const Header: FC<HeaderProps> = ({
 }) => (
   <header
     class={tw`
-      ${size === "small" ? "mb-4" : "mb-16"} 
-      flex flex-col ${size === "small" ? "gap-0.5" : "gap-2"} 
-      only-child:(m-0) 
-      empty:hidden 
+      ${size === "small" ? "mb-4" : "mb-16"}
+      flex flex-col ${size === "small" ? "gap-0.5" : "gap-2"}
+      only-child:(m-0)
+      empty:hidden
       tracking-tight
       ${styleUtils.linkDimmer}
     `}
