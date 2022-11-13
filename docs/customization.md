@@ -8,26 +8,15 @@ Ter should work out of the box with zero configuration needed to get a decent
 output. However, it's possible to customize various aspects of the rendered
 website.
 
-## Custom \<head\> template
+<details class="note" open>
+<summary>Note</summary>
 
-If a file at `.ter/views/head.eta` exists, its content will be injected at the
-bottom of HTML `<head>` tag for all pages. This can be used for adding things
-like analytics integration.
+The following customization options are outdated as Ter recently switched to
+server-side Preact rendering.
 
----
-
-## More customization
-
-<details open>
-<summary>Important note</summary>
-
-The following customization options are outdated as Ter currently automatically
-fetches its default template and styles from the Deno module URL.
-
-This is done to avoid having any extra files in the directory by default and to
-avoid potentially having outdated templates/styles. Simplicity > customization.
-
-I might add an option to use local assets in future.
+This is done to avoid having any extra files in the directory and potentially
+having outdated templates/styles. Simplicity > customization. I might add an
+option to use local Preact components for rendering in future.
 
 </details>
 

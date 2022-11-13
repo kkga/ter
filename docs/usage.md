@@ -160,22 +160,22 @@ property: value
 
 Some properties are utilized when building a site. All of them are optional.
 
-| Property      | Description                                                                  |
-| ------------- | ---------------------------------------------------------------------------- |
-| `title`       | used for page title                                                          |
-| `description` | used for page description                                                    |
-| `tags`        | used for tags                                                                |
-| `date`        | publish date in YYYY-MM-DD format                                            |
-| `dateUpdated` | update date in YYYY-MM-DD format                                             |
-| `pinned`      | if `true`, page is listed at the top of [index lists](#index-pages)          |
-| `draft`       | if `true`, file is [ignored](#ignoring-files) during site generation         |
-| `log`         | if `true` on an index page (`index.md`), all child pages are rendered inline |
-| `toc`         | if `true`, page renders table of contents at the top                         |
-
-[//]: # "TODO: rename hideTitle"
-
-All other properties are ignored but can be used in
-[templates](customization.md#templates).
+| Property          | Default | Description                                                               |
+| ----------------- | ------- | ------------------------------------------------------------------------- |
+| `title`           |         | page title                                                                |
+| `description`     |         | page description                                                          |
+| `tags`            |         | page tags                                                                 |
+| `date`            |         | page publish date in YYYY-MM-DD format                                    |
+| `dateUpdated`     |         | page last update date in YYYY-MM-DD format                                |
+| `pinned`          | `false` | page is listed at the top of [index lists](#index-pages)                  |
+| `unlisted`        | `false` | page is excluded from all index lists                                     |
+| `draft`           | `false` | file is [ignored](#ignoring-files) during site generation                 |
+| `log`             | `false` | if set on an index page (`index.md`), all child pages are rendered inline |
+| `toc`             | `false` | affects rending of table of contents                                      |
+| `showHeader`      | `true`  | affects rendering of page header with title, description, date and tags   |
+| `showTitle`       | `true`  | affects rendering of page title                                           |
+| `showDescription` | `true`  | affects rendering of page description                                     |
+| `showMeta`        | `true`  | affects rendering of page date and tags                                   |
 
 ## Ignoring files
 
