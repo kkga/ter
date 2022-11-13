@@ -1,4 +1,4 @@
-import { FunctionComponent as FC, h } from "preact";
+import { FunctionComponent as FC } from "preact";
 import { apply, tw } from "twind";
 import { css } from "twind/css";
 import { styleUtils } from "@components/styleUtils.ts";

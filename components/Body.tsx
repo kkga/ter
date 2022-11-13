@@ -1,4 +1,4 @@
-import { FunctionComponent as FC, h } from "preact";
+import { FunctionComponent as FC } from "preact";
 import { tw } from "twind";
 
 import Article from "@components/Article.tsx";
@@ -36,7 +36,7 @@ const Body: FC<BodyProps> = ({
   return (
     <body
       class={tw`
-        antialiased 
+        antialiased
         tracking-[-0.01em]
         min-h-screen
         mx-auto max-w-3xl

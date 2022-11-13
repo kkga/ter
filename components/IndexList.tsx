@@ -1,4 +1,4 @@
-import { FunctionComponent as FC, h, VNode } from "preact";
+import { FunctionComponent as FC, VNode } from "preact";
 import { tw } from "twind/";
 import { Page } from "../types.d.ts";
 import { styleUtils } from "@components/styleUtils.ts";
@@ -168,7 +168,7 @@ const IndexList: FC<{
         <li>
           <a
             class={tw`
-              leading-6 
+              leading-6
                 no-underline!
                 not-hover:(
                   text(gray-600 dark:gray-400)
@@ -211,7 +211,7 @@ const IndexList: FC<{
       </h6>
       <ul
         class={tw`
-          flex 
+          flex
           tracking-tight
           ${
           (type === "backlinks" || type === "pages") &&

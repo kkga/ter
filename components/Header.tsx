@@ -1,4 +1,4 @@
-import { FunctionComponent as FC, h } from "preact";
+import { FunctionComponent as FC } from "preact";
 import { tw } from "twind/";
 import { Crumb } from "../types.d.ts";
 import { styleUtils } from "@components/styleUtils.ts";

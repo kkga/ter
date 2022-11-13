@@ -1,4 +1,3 @@
-import { h } from "preact";
 import { renderToString } from "preact-render-to-string";
 import { setup as twSetup } from "twind/";
 import { getStyleTag } from "twind/sheets";
