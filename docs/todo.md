@@ -12,8 +12,8 @@ draft: true
 - [x] content pages
 - [x] integrate twind
 - [-] fix code highlighting
-- [ ] update base html template to use user head
-- [ ] include some utility classes in twind content styles (grid etc)
+- [x] update base html template to use user head
+- [x] include some utility classes in twind content styles (grid etc)
 
 ## feeds
 
