@@ -84,7 +84,7 @@ building.
 | `author_url`   | Your home page.                                                       |
 | `lang`         | Optional. [Locale][locale] used for formatting dates.                 |
 | `nav_links`    | Optional. Object of navigation links in form of `{label: path, ...}`. |
-| `head`         | Optional. String to in the `<head>` tag for each page.                |
+| `head`         | Optional. String to inject at the bottom of `<head>` tag.             |
 
 [locale]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl#locales_argument
 
