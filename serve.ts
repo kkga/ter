@@ -8,6 +8,7 @@ import type { BuildConfig } from "./types.d.ts";
 interface WatchOpts {
   runner: (opts: GenerateSiteOpts) => Promise<void>;
   config: BuildConfig;
+  logLevel: 0 | 1 | 2;
 }
 
 interface ServeOpts extends WatchOpts {
@@ -48,8 +49,8 @@ async function watch(opts: WatchOpts) {
     );
     await opts.runner({
       config: opts.config,
-      quiet: true,
       includeRefresh: true,
+      logLevel: opts.logLevel,
     });
 
     sockets.forEach((socket) => {

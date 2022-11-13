@@ -14,7 +14,7 @@ twSetup(twindConfig);
 interface RenderOpts {
   page: Page;
   crumbs: Crumb[];
-  dev: boolean;
+  dev?: boolean;
   childPages?: Page[];
   backlinkPages?: Page[];
   relatedPages?: Page[];

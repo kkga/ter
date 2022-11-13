@@ -26,8 +26,8 @@ import { generateFeed } from "./feed.ts";
 
 export interface GenerateSiteOpts {
   config: BuildConfig;
-  quiet: boolean;
-  includeRefresh: boolean;
+  includeRefresh?: boolean;
+  logLevel?: 0 | 1 | 2;
 }
 
 interface BuildStats {
@@ -45,6 +45,8 @@ async function generateSite(opts: GenerateSiteOpts) {
     renderDrafts,
   } = opts.config;
 
+  const logLevel = opts.logLevel || 0;
+
   performance.mark("total:start");
 
   /**
@@ -54,7 +56,7 @@ async function generateSite(opts: GenerateSiteOpts) {
 
   performance.mark("scan:start");
 
-  opts.quiet || console.log(`scan\t${inputPath}`);
+  console.log(`scan:\t${inputPath}`);
   const [contentEntries, staticEntries] = await Promise.all([
     getContentEntries({ path: inputPath }),
     getStaticEntries({ path: inputPath, exts: staticExts }),
@@ -177,7 +179,7 @@ async function generateSite(opts: GenerateSiteOpts) {
   emptyDirSync(outputPath);
 
   files.forEach(({ writePath, content }) => {
-    opts.quiet || console.log(`write\t${relative(Deno.cwd(), writePath)}`);
+    logLevel > 1 && console.log(`write\t${relative(Deno.cwd(), writePath)}`);
     ensureDirSync(dirname(writePath));
     Deno.writeTextFileSync(writePath, content);
   });
@@ -185,7 +187,7 @@ async function generateSite(opts: GenerateSiteOpts) {
   staticEntries.forEach(({ path }) => {
     const relPath = relative(inputPath, path);
     const writePath = join(outputPath, dirname(relPath), basename(relPath));
-    opts.quiet || console.log(`copy\t${relative(Deno.cwd(), writePath)}`);
+    logLevel > 1 && console.log(`copy\t${relative(Deno.cwd(), writePath)}`);
     ensureDirSync(dirname(writePath));
     Deno.copyFileSync(path, writePath);
   });
@@ -197,14 +199,7 @@ async function generateSite(opts: GenerateSiteOpts) {
    */
 
   performance.mark("total:end");
-  performance.measure("scan", "scan:start", "scan:end");
-  performance.measure("parse", "parse:start", "parse:end");
-  performance.measure("render", "render:start", "render:end");
-  performance.measure("write", "write:start", "write:end");
-  performance.measure("total", "total:start", "total:end");
-  performance.getEntriesByType("measure").forEach((entry) => {
-    console.log("==>", entry.name, "\t", entry.duration);
-  });
+  console.log("Done:", "\t", relative(Deno.cwd(), outputPath));
 
   const deadLinks = getDeadlinks(pages);
 
@@ -219,7 +214,18 @@ async function generateSite(opts: GenerateSiteOpts) {
     });
   }
 
-  if (!opts.quiet) {
+  if (logLevel > 1) {
+    console.log("---");
+    console.log("Build stats:");
+    performance.measure("scan", "scan:start", "scan:end");
+    performance.measure("parse", "parse:start", "parse:end");
+    performance.measure("render", "render:start", "render:end");
+    performance.measure("write", "write:start", "write:end");
+    performance.measure("total", "total:start", "total:end");
+    performance.getEntriesByType("measure").forEach((entry) => {
+      console.log("=>", entry.name, "(ms)", "\t", Math.floor(entry.duration));
+    });
+
     const stats: BuildStats = {
       pageFiles: files.length,
       staticFiles: staticEntries.length,
@@ -228,9 +234,8 @@ async function generateSite(opts: GenerateSiteOpts) {
       ),
     };
 
-    console.log(
-      `---\n${stats.pageFiles} pages\n${stats.staticFiles} static files\nDone in ${stats.buildMillisecs}ms`,
-    );
+    console.log("=> pages", "\t", stats.pageFiles);
+    console.log("=> assets", "\t", stats.staticFiles);
   }
 
   performance.getEntries().forEach((entry) => {
@@ -241,8 +246,17 @@ async function generateSite(opts: GenerateSiteOpts) {
 
 async function main(args: string[]) {
   const flags = parseFlags(args, {
-    boolean: ["serve", "help", "quiet", "drafts"],
+    boolean: ["serve", "help", "debug", "drafts"],
     string: ["config", "input", "output", "port"],
+    unknown: (flag) => {
+      console.error(`%cUnknown flag: ${flag}`, "color: red");
+      Deno.exit(1);
+    },
+    alias: {
+      "s": "serve",
+      "h": "help",
+      "d": "debug",
+    },
   });
 
   if (flags.help) {
@@ -259,7 +273,7 @@ async function main(args: string[]) {
 
   await generateSite({
     config: config,
-    quiet: flags.quiet,
+    logLevel: flags.debug ? 2 : 0,
     includeRefresh: flags.serve,
   });
 
@@ -268,6 +282,7 @@ async function main(args: string[]) {
       port: flags.port ? Number(flags.port) : null,
       runner: generateSite,
       config,
+      logLevel: flags.debug ? 2 : 0,
     });
   }
 }

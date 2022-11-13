@@ -27,7 +27,7 @@ export const getHelp = (mod_url: string) =>
 Tiny wiki-style site builder.
 
 USAGE:
-  deno run ${mod_url} [options]
+  deno run --allow-read --allow-write ${mod_url} [options]
 
 OPTIONS:
   --input\t\tSource directory (default: .)
@@ -36,4 +36,4 @@ OPTIONS:
   --serve\t\tServe locally and watch for changes (default: false)
   --port\t\tServe port (default: 8000)
   --drafts\t\tRender pages marked as drafts (default: false)
-  --quiet\t\tSuppress output (default: false)`;
+  --debug\t\tVerbose output and statistics (default: false)`;
