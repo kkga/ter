@@ -1,39 +1,38 @@
-import { dirname, extname, isAbsolute, join } from "./deps.ts";
-import { hljs } from "./deps.ts";
-import { marked } from "./deps.ts";
+import { dirname, extname, isAbsolute, join } from "$std/path/mod.ts";
+// import hljs from "hljs";
+import { marked } from "marked";
 import {
   ParsedURL,
   parseURL,
   withLeadingSlash,
   withoutLeadingSlash,
   withoutTrailingSlash,
-} from "./deps.ts";
-import { Heading } from "./pages.ts";
+} from "ufo";
 
-interface RenderOpts {
+import { Heading } from "./types.d.ts";
+
+interface ParseOpts {
   text: string;
   currentPath: string;
-  isIndex: boolean;
   baseUrl: URL;
+  isDirIndex?: boolean;
+  highlightCode?: boolean;
 }
 
-interface InternalLinkOpts {
+const toExternalLink = (href: string, title: string, text: string): string =>
+  `<a href="${href}" rel="external noopener noreferrer" title="${
+    title || text
+  }">${text}</a>`;
+
+const toInternalLink = (opts: {
   title: string;
   text: string;
   parsed: ParsedURL;
   baseUrl: URL;
-  internalUrls: Set<URL>;
+  internalLinks: Set<URL>;
   currentPath: string;
-  isIndex: boolean;
-}
-
-function createExternalLink(href: string, title: string, text: string): string {
-  return `<a href="${href}" rel="external noopener noreferrer" title="${
-    title || text
-  }">${text}</a>`;
-}
-
-function createInternalLink(opts: InternalLinkOpts): string {
+  isDirIndex?: boolean;
+}): string => {
   const cleanPathname = opts.parsed.pathname === "" ? "" : withoutTrailingSlash(
     opts.parsed.pathname.replace(extname(opts.parsed.pathname), ""),
   );
@@ -41,14 +40,14 @@ function createInternalLink(opts: InternalLinkOpts): string {
 
   if (isAbsolute(cleanPathname)) {
     internalHref = cleanPathname + opts.parsed.hash;
-    opts.internalUrls.add(new URL(internalHref, opts.baseUrl));
+    opts.internalLinks.add(new URL(internalHref, opts.baseUrl));
   } else {
     let resolved: string;
 
     if (cleanPathname === "") {
       resolved = "";
     } else {
-      const joined = opts.isIndex
+      const joined = opts.isDirIndex
         ? join(dirname(opts.currentPath + "/index"), cleanPathname)
         : join(dirname(opts.currentPath), cleanPathname);
       resolved = withoutTrailingSlash(joined.replace(/\/index$/i, ""));
@@ -59,7 +58,7 @@ function createInternalLink(opts: InternalLinkOpts): string {
       : withLeadingSlash(resolved) + opts.parsed.hash;
 
     if (resolved !== "") {
-      opts.internalUrls.add(
+      opts.internalLinks.add(
         new URL(withoutLeadingSlash(internalHref), opts.baseUrl),
       );
     }
@@ -77,12 +76,12 @@ function createInternalLink(opts: InternalLinkOpts): string {
       opts.title || opts.text
     }">${opts.text}</a>`
   );
-}
+};
 
-export function render(
-  { text, currentPath, isIndex, baseUrl }: RenderOpts,
-): { html: string; links: Array<URL>; headings: Array<Heading> } {
-  const internalUrls: Set<URL> = new Set();
+export const parseMarkdown = (
+  { text, currentPath, isDirIndex, baseUrl, highlightCode }: ParseOpts,
+): { html: string; links: Array<URL>; headings: Array<Heading> } => {
+  const internalLinks: Set<URL> = new Set();
   const headings: Array<Heading> = [];
   const renderer = new marked.Renderer();
   const tokens = marked.lexer(text);
@@ -115,16 +114,16 @@ export function render(
     if (
       parsed.protocol !== undefined || parsed.pathname.startsWith("mailto")
     ) {
-      return createExternalLink(href, title, text);
+      return toExternalLink(href, title, text);
     } else {
-      return createInternalLink({
+      return toInternalLink({
         title,
         text,
         parsed,
         baseUrl,
-        internalUrls,
+        internalLinks,
         currentPath,
-        isIndex,
+        isDirIndex,
       });
     }
   };
@@ -147,18 +146,18 @@ export function render(
         title || ""
       }"/>`;
     } else {
-      const href = isIndex
+      const href = isDirIndex
         ? join(dirname(currentPath + "/index"), parsed.pathname)
         : join(dirname(currentPath), parsed.pathname);
       return `<img src="${href}" alt="${text || ""}" title="${title || ""}"/>`;
     }
   };
 
-  renderer.code = (code: string, lang: string): string => {
-    const language = hljs.getLanguage(lang) ? lang : "plaintext";
-    const html = hljs.highlight(code, { language }).value;
-    return `<pre class="hljs language-${language}">${html}</pre>`;
-  };
+  // renderer.code = (code: string, lang: string): string => {
+  //   const language = hljs.getLanguage(lang) ? lang : "plaintext";
+  //   const html = hljs.highlight(code, { language }).value;
+  //   return `<pre class="hljs language-${language}">${html}</pre>`;
+  // };
 
   marked.use({
     renderer,
@@ -172,5 +171,5 @@ export function render(
 
   const html = marked.parser(tokens);
 
-  return { html, links: Array.from(internalUrls), headings };
-}
+  return { html, links: [...internalLinks], headings };
+};

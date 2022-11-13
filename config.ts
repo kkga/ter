@@ -1,60 +1,23 @@
-import { deepmerge } from "./deps.ts";
-import { ensureDir } from "./deps.ts";
-import { dirname, isAbsolute, join } from "./deps.ts";
-
-export interface UserConfig {
-  site: {
-    title: string;
-    description: string;
-    url: string;
-    rootCrumb: string;
-  };
-  author: { name: string; email: string; url: string };
-  navigation?: Record<string, string>;
-  locale?: {
-    date?: string;
-  };
-}
-
-export interface BuildConfig {
-  inputPath: string;
-  outputPath: string;
-  pageView: string;
-  feedView: string;
-  style: string;
-  assetsPath: string;
-  viewsPath: string;
-  userConfigPath: string;
-  ignoreKeys: string[];
-  staticExts: string[];
-  userConfig: UserConfig;
-  renderDrafts: boolean;
-}
+import { deepmerge } from "deepmerge";
+import { ensureDir } from "$std/fs/ensure_dir.ts";
+import { dirname, isAbsolute, join } from "$std/path/mod.ts";
+import { BuildConfig, UserConfig } from "./types.d.ts";
 
 const defaultUserConfig: UserConfig = {
-  site: {
-    title: "Your Blog Name",
-    description: "I am writing about my experiences as a naval navel-gazer",
-    url: "https://example.com/",
-    rootCrumb: "index",
-  },
-  author: {
-    name: "Your Name Here",
-    email: "youremailaddress@example.com",
-    url: "https://example.com/about-me/",
-  },
-  navigation: {}
+  title: "Your Blog Name",
+  description: "I am writing about my experiences as a naval navel-gazer",
+  url: "https://example.com/",
+  rootCrumb: "index",
+  author_name: "Your Name Here",
+  author_email: "youremailaddress@example.com",
+  author_url: "https://example.com/about-me/",
+  lang: "en",
 };
 
 const defaultBuildConfig: BuildConfig = {
   inputPath: Deno.cwd(),
   outputPath: join(Deno.cwd(), "_site"),
-  assetsPath: join(Deno.cwd(), ".ter/assets"),
-  viewsPath: join(Deno.cwd(), ".ter/views"),
   userConfigPath: join(Deno.cwd(), ".ter/config.json"),
-  pageView: "",
-  feedView: "",
-  style: "",
   ignoreKeys: ["draft"],
   staticExts: [
     "png",
@@ -86,9 +49,6 @@ interface CreateConfigOpts {
   configPath: string | undefined;
   inputPath: string | undefined;
   outputPath: string | undefined;
-  pageView: string;
-  feedView: string;
-  style: string;
   renderDrafts: boolean;
 }
 
@@ -115,9 +75,6 @@ export async function createConfig(
       : join(Deno.cwd(), opts.outputPath);
   }
 
-  conf.pageView = opts.pageView;
-  conf.feedView = opts.feedView;
-  conf.style = opts.style;
   conf.renderDrafts = opts.renderDrafts;
 
   await checkUserConfig(conf.userConfigPath)

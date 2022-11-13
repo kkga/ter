@@ -1,67 +1,35 @@
-import { common, join } from "./deps.ts";
-import { expandGlob, walk, WalkEntry } from "./deps.ts";
-import { withoutTrailingSlash } from "./deps.ts";
+import { common, join } from "$std/path/mod.ts";
+import { walk, WalkEntry } from "$std/fs/mod.ts";
+import { withoutTrailingSlash } from "ufo";
+import { INDEX_FILENAME, RE_HIDDEN_OR_UNDERSCORED } from "./constants.ts";
 
-export const INDEX_FILENAME = "index.md";
-export const RE_HIDDEN_OR_UNDERSCORED = /^\.|^_|\/\.|\/\_/;
-
-const hasIgnoredPrefix = (path: string): boolean => {
-  const pathChunks = path.split("/");
-  for (const chunk of pathChunks) {
-    if (/^\./.test(chunk) || /^\_/.test(chunk)) return true;
-  }
-  return false;
-};
-
-export async function getStaticEntries(
-  staticPath: string,
-  outputPath: string,
-  extensions?: Array<string>,
-): Promise<Array<WalkEntry>> {
+export async function getStaticEntries(opts: {
+  path: string;
+  exts?: Array<string>;
+}): Promise<Array<WalkEntry>> {
   const entries: Array<WalkEntry> = [];
-  let glob = "**/*";
-
-  if (extensions && extensions.length > 0) {
-    glob = `**/*.{${extensions.join(",")}}`;
-  }
 
   for await (
-    const entry of expandGlob(glob, {
-      root: staticPath,
+    const entry of walk(opts.path, {
       includeDirs: false,
-      caseInsensitive: true,
-      exclude: [outputPath],
+      skip: [RE_HIDDEN_OR_UNDERSCORED],
+      exts: opts.exts,
     })
   ) {
-    if (hasIgnoredPrefix(entry.path)) continue;
     entries.push(entry);
   }
 
   return entries;
 }
 
-export async function getAssetEntries(
-  assetPath: string,
-): Promise<Array<WalkEntry>> {
-  const entries: Array<WalkEntry> = [];
-
-  for await (
-    const entry of walk(assetPath, { includeDirs: false, followSymlinks: true })
-  ) {
-    entries.push(entry);
-  }
-
-  return entries;
-}
-
-export async function getContentEntries(
-  contentPath: string,
-): Promise<Array<WalkEntry>> {
+export async function getContentEntries(opts: {
+  path: string;
+}): Promise<Array<WalkEntry>> {
   const fileEntries: Array<WalkEntry> = [];
   let dirEntries: Array<WalkEntry> = [];
 
   for await (
-    const entry of walk(contentPath, {
+    const entry of walk(opts.path, {
       includeDirs: false,
       skip: [RE_HIDDEN_OR_UNDERSCORED],
       exts: ["md"],
@@ -71,7 +39,7 @@ export async function getContentEntries(
   }
 
   for await (
-    const entry of walk(contentPath, {
+    const entry of walk(opts.path, {
       includeDirs: true,
       includeFiles: false,
       skip: [RE_HIDDEN_OR_UNDERSCORED],
@@ -95,7 +63,5 @@ export async function getContentEntries(
     return commonPaths.includes(withoutTrailingSlash(dir.path));
   });
 
-  const entries = [...fileEntries, ...dirEntries];
-
-  return entries;
+  return [...fileEntries, ...dirEntries];
 }

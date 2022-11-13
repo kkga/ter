@@ -1,41 +1,33 @@
-import { parseFlags } from "./deps.ts";
-import { emptyDir } from "./deps.ts";
-import { join, relative, toFileUrl } from "./deps.ts";
-import { withTrailingSlash } from "./deps.ts";
+import { emptyDirSync, ensureDirSync } from "$std/fs/mod.ts";
+import { basename, dirname, join, relative } from "$std/path/mod.ts";
+import { parse as parseFlags } from "$std/flags/mod.ts";
 
-import {
-  getContentEntries,
-  getStaticEntries,
-  INDEX_FILENAME,
-} from "./entries.ts";
-
+import { getHelp, INDEX_FILENAME } from "./constants.ts";
+import { getContentEntries, getStaticEntries } from "./entries.ts";
 import {
   generateContentPage,
+  generateCrumbs,
   generateIndexPageFromDir,
   generateIndexPageFromFile,
-  getAllTags,
-  getPagesByTag,
-  isDeadLink,
-  Page,
-  TagPage,
+  getBacklinkPages,
+  getChildPages,
+  getDeadlinks,
+  getPagesByTags,
+  getRelatedPages,
+  getTags,
 } from "./pages.ts";
 
-import {
-  buildContentFiles,
-  buildFeedFile,
-  buildTagFiles,
-  copyFiles,
-  getStaticFiles,
-  writeFiles,
-} from "./files.ts";
-
-import { BuildConfig, createConfig } from "./config.ts";
+import { createConfig } from "./config.ts";
 import { serve } from "./serve.ts";
+
+import { BuildConfig, Page } from "./types.d.ts";
+import { renderPage } from "./render.tsx";
+import { generateFeed } from "./feed.ts";
 
 export interface GenerateSiteOpts {
   config: BuildConfig;
-  quiet: boolean;
-  includeRefresh: boolean;
+  includeRefresh?: boolean;
+  logLevel?: 0 | 1 | 2;
 }
 
 interface BuildStats {
@@ -44,148 +36,174 @@ interface BuildStats {
   buildMillisecs: number;
 }
 
-const MOD_URL = new URL("https://deno.land/x/ter/");
-const BASE_VIEW_PATH = "views/base.eta";
-const BASE_STYLE_PATH = "assets/ter.css";
-const FEED_VIEW_PATH = "views/feed.xml.eta";
-
-async function getHeadInclude(viewsPath: string): Promise<string | undefined> {
-  try {
-    const decoder = new TextDecoder("utf-8");
-    const headPath = join(viewsPath, "head.eta");
-    return decoder.decode(await Deno.readFile(headPath));
-  } catch {
-    return undefined;
-  }
-}
-
-async function getRemoteAsset(url: URL) {
-  const fileResponse = await fetch(url.toString()).catch((err) => {
-    console.error(`Error fetching file: ${url}, ${err}`);
-    Deno.exit(1);
-  });
-  if (fileResponse.ok && fileResponse.body) {
-    return await fileResponse.text();
-  } else {
-    console.error(`Fetch response error: ${url}`);
-    Deno.exit(1);
-  }
-}
-
 async function generateSite(opts: GenerateSiteOpts) {
   const {
     inputPath,
     outputPath,
-    pageView,
-    feedView,
-    style,
-    viewsPath,
     staticExts,
     userConfig,
     renderDrafts,
   } = opts.config;
 
-  const START = performance.now();
+  const logLevel = opts.logLevel || 0;
 
-  opts.quiet || console.log(`scan\t${inputPath}`);
+  performance.mark("total:start");
 
+  /**
+   * SCAN
+   * scan the input directory for content and static files
+   */
+
+  performance.mark("scan:start");
+
+  console.log(`scan\t${inputPath}`);
   const [contentEntries, staticEntries] = await Promise.all([
-    getContentEntries(inputPath),
-    getStaticEntries(inputPath, outputPath, staticExts),
-  ]);
-  const headInclude = await getHeadInclude(viewsPath) ?? "";
-  const pages: Page[] = [];
-
-  for (const entry of contentEntries) {
-    opts.quiet || console.log(`render\t${relative(inputPath, entry.path)}`);
-    const isIndex = entry.isDirectory || entry.name === INDEX_FILENAME;
-
-    let page: Page | void;
-
-    if (!isIndex) {
-      page = await generateContentPage({
-        entry: entry,
-        inputPath: inputPath,
-        ignoreKeys: opts.config.ignoreKeys,
-        siteUrl: new URL(userConfig.site.url),
-      }).catch(
-        (reason: string) =>
-          console.error(`Can not render ${entry.path}\n\t${reason}`),
-      );
-    } else if (isIndex && entry.isFile) {
-      page = await generateIndexPageFromFile({
-        entry: entry,
-        inputPath: inputPath,
-        ignoreKeys: opts.config.ignoreKeys,
-        siteUrl: new URL(userConfig.site.url),
-      }).catch(
-        (reason: string) =>
-          console.error(`Can not render ${entry.path}\n\t${reason}`),
-      );
-    } else if (isIndex && entry.isDirectory) {
-      page = generateIndexPageFromDir({
-        entry: entry,
-        inputPath: inputPath,
-        ignoreKeys: opts.config.ignoreKeys,
-        siteUrl: new URL(userConfig.site.url),
-      });
-    }
-
-    if (renderDrafts) {
-      page && pages.push(page);
-    } else {
-      page && !page.ignored && pages.push(page);
-    }
-  }
-
-  const tagPages: TagPage[] = [];
-  for (const tag of getAllTags(pages)) {
-    const pagesWithTag = getPagesByTag(pages, tag);
-    tagPages.push({ name: tag, pages: pagesWithTag });
-  }
-
-  const [contentFiles, tagFiles, staticFiles, feedFile] = await Promise.all([
-    buildContentFiles(pages, {
-      outputPath,
-      view: pageView,
-      head: headInclude,
-      includeRefresh: opts.includeRefresh,
-      userConfig,
-      style,
-    }),
-
-    buildTagFiles(tagPages, {
-      outputPath,
-      view: pageView,
-      head: headInclude,
-      includeRefresh: opts.includeRefresh,
-      userConfig,
-      style,
-    }),
-
-    getStaticFiles(staticEntries, inputPath, outputPath),
-    buildFeedFile(pages, feedView, join(outputPath, "feed.xml"), userConfig),
+    getContentEntries({ path: inputPath }),
+    getStaticEntries({ path: inputPath, exts: staticExts }),
   ]);
 
-  await emptyDir(outputPath);
-  await writeFiles([...contentFiles, ...tagFiles], opts.quiet);
-  await copyFiles(staticFiles, opts.quiet);
+  const [indexDirEntries, indexFileEntries, nonIndexEntries] = [
+    contentEntries.filter((entry) => entry.isDirectory),
+    contentEntries.filter((entry) =>
+      entry.isFile && entry.name === INDEX_FILENAME
+    ),
+    contentEntries.filter((entry) =>
+      entry.isFile && entry.name !== INDEX_FILENAME
+    ),
+  ];
 
-  if (feedFile && feedFile.fileContent) {
-    await Deno.writeTextFile(feedFile.filePath, feedFile.fileContent);
-  }
+  performance.mark("scan:end");
 
-  const END = performance.now();
-  const BUILD_SECS = (END - START);
+  /**
+   * PARSE
+   * parse file attributes and generate pages
+   */
 
-  const deadLinks: [from: URL, to: URL][] = [];
-  for (const page of pages) {
-    if (page.links) {
-      page.links.forEach((link: URL) =>
-        isDeadLink(pages, link) && deadLinks.push([page.url, link])
-      );
-    }
-  }
+  performance.mark("parse:start");
+
+  const [indexPages, contentPages] = [
+    [
+      ...indexDirEntries.map((entry) =>
+        generateIndexPageFromDir({
+          entry: entry,
+          inputPath: inputPath,
+          ignoreKeys: opts.config.ignoreKeys,
+          siteUrl: new URL(userConfig.url),
+        })
+      ),
+      ...indexFileEntries.map((entry) =>
+        generateIndexPageFromFile({
+          entry: entry,
+          inputPath: inputPath,
+          ignoreKeys: opts.config.ignoreKeys,
+          siteUrl: new URL(userConfig.url),
+        })
+      ),
+    ],
+
+    nonIndexEntries.map((entry) =>
+      generateContentPage({
+        entry: entry,
+        inputPath: inputPath,
+        ignoreKeys: opts.config.ignoreKeys,
+        siteUrl: new URL(userConfig.url),
+      })
+    ),
+  ];
+
+  const tagIndex: Page = {
+    url: new URL("/tags", userConfig.url),
+    tags: getTags(contentPages),
+    title: "Tags",
+    index: "tag",
+    unlisted: true,
+  };
+
+  const pages = [
+    ...indexPages,
+    ...contentPages,
+    tagIndex,
+  ].filter((page) => renderDrafts ? true : !page.ignored);
+
+  performance.mark("parse:end");
+
+  /**
+   * RENDER
+   * render markdown to html
+   */
+
+  performance.mark("render:start");
+
+  const files: { writePath: string; content: string }[] = [
+    ...pages.map((page) => {
+      const writePath = join(outputPath, page.url.pathname, "index.html");
+      const listedPages = pages.filter((p) => !p.unlisted);
+      const childPages = getChildPages(listedPages, page);
+      const allChildPages = getChildPages(listedPages, page, true);
+      const backlinkPages = getBacklinkPages(listedPages, page);
+      const childTags = getTags(allChildPages);
+      const childPagesByTag = getPagesByTags(listedPages, childTags);
+      const allPagesByTag = getPagesByTags(listedPages, getTags(listedPages));
+      const crumbs = generateCrumbs(page, userConfig.rootCrumb);
+      const relatedPages = getRelatedPages(listedPages, page);
+
+      logLevel > 1 && console.log(`render\t${relative(Deno.cwd(), writePath)}`);
+
+      return {
+        writePath,
+        content: renderPage({
+          page: page,
+          crumbs: crumbs,
+          childPages: childPages,
+          relatedPages: relatedPages,
+          backlinkPages: backlinkPages,
+          pagesByTag: page.index === "tag" ? allPagesByTag : childPagesByTag,
+          userConfig: userConfig,
+          dev: opts.includeRefresh,
+        }),
+      };
+    }),
+    {
+      writePath: join(outputPath, "feed.xml"),
+      content: generateFeed({ userConfig: userConfig, pages: pages }).atom1(),
+    },
+  ];
+
+  performance.mark("render:end");
+
+  /**
+   * WRITE
+   * write rendered files and copy static files to output directory
+   */
+
+  performance.mark("write:start");
+
+  emptyDirSync(outputPath);
+
+  files.forEach(({ writePath, content }) => {
+    logLevel > 1 && console.log(`write\t${relative(Deno.cwd(), writePath)}`);
+    ensureDirSync(dirname(writePath));
+    Deno.writeTextFileSync(writePath, content);
+  });
+
+  staticEntries.forEach(({ path }) => {
+    const relPath = relative(inputPath, path);
+    const writePath = join(outputPath, dirname(relPath), basename(relPath));
+    logLevel > 1 && console.log(`copy\t${relative(Deno.cwd(), writePath)}`);
+    ensureDirSync(dirname(writePath));
+    Deno.copyFileSync(path, writePath);
+  });
+
+  performance.mark("write:end");
+
+  /**
+   * PERF & STATS
+   */
+
+  performance.mark("total:end");
+  console.log("done", "\t", relative(Deno.cwd(), outputPath));
+
+  const deadLinks = getDeadlinks(pages);
 
   if (deadLinks.length > 0) {
     console.log("---");
@@ -198,55 +216,67 @@ async function generateSite(opts: GenerateSiteOpts) {
     });
   }
 
-  if (!opts.quiet) {
+  if (logLevel > 1) {
+    console.log("---");
+    console.log("Build stats:");
+    performance.measure("scan", "scan:start", "scan:end");
+    performance.measure("parse", "parse:start", "parse:end");
+    performance.measure("render", "render:start", "render:end");
+    performance.measure("write", "write:start", "write:end");
+    performance.measure("total", "total:start", "total:end");
+    performance.getEntriesByType("measure").forEach((entry) => {
+      console.log("=>", entry.name, "(ms)", "\t", Math.floor(entry.duration));
+    });
+
     const stats: BuildStats = {
-      pageFiles: contentFiles.length + tagFiles.length,
-      staticFiles: staticFiles.length,
-      buildMillisecs: Math.floor(BUILD_SECS),
+      pageFiles: files.length,
+      staticFiles: staticEntries.length,
+      buildMillisecs: Math.floor(
+        performance.getEntriesByName("total")[0].duration,
+      ),
     };
 
-    console.log(
-      `---\n${stats.pageFiles} pages\n${stats.staticFiles} static files\nDone in ${stats.buildMillisecs}ms`,
-    );
+    console.log("=> pages", "\t", stats.pageFiles);
+    console.log("=> assets", "\t", stats.staticFiles);
+    console.log("---");
   }
+
+  performance.getEntries().forEach((entry) => {
+    performance.clearMarks(entry.name);
+    performance.clearMeasures(entry.name);
+  });
 }
 
 async function main(args: string[]) {
   const flags = parseFlags(args, {
-    boolean: ["serve", "help", "quiet", "local", "drafts"],
-    string: ["config", "input", "output", "port", "modurl"],
+    boolean: ["serve", "help", "debug", "drafts"],
+    string: ["config", "input", "output", "port"],
+    unknown: (flag) => {
+      console.error(`%cUnknown flag: ${flag}`, "color: red");
+      Deno.exit(1);
+    },
+    alias: {
+      "s": "serve",
+      "h": "help",
+      "d": "debug",
+    },
   });
 
   if (flags.help) {
-    printHelp();
+    console.log(getHelp(import.meta.url));
     Deno.exit();
   }
-
-  const moduleUrl = withTrailingSlash(
-    flags.local
-      ? toFileUrl(flags.modurl ? flags.modurl : Deno.cwd()).toString()
-      : MOD_URL.toString(),
-  );
-
-  const [pageView, baseStyle, feedView] = await Promise.all([
-    getRemoteAsset(new URL(BASE_VIEW_PATH, moduleUrl)),
-    getRemoteAsset(new URL(BASE_STYLE_PATH, moduleUrl)),
-    getRemoteAsset(new URL(FEED_VIEW_PATH, moduleUrl)),
-  ]);
 
   const config = await createConfig({
     configPath: flags.config,
     inputPath: flags.input,
     outputPath: flags.output,
     renderDrafts: flags.drafts,
-    pageView: pageView,
-    feedView: feedView,
-    style: baseStyle,
   });
 
   await generateSite({
     config: config,
-    quiet: flags.quiet,
+    logLevel: flags.debug ? 2 : 0,
     includeRefresh: flags.serve,
   });
 
@@ -255,23 +285,9 @@ async function main(args: string[]) {
       port: flags.port ? Number(flags.port) : null,
       runner: generateSite,
       config,
+      logLevel: flags.debug ? 2 : 0,
     });
   }
-}
-
-function printHelp() {
-  console.log(`Ter -- tiny wiki-style site builder.\n
-USAGE:
-  ter [options]\n
-OPTIONS:
-  --input\t\tSource directory (default: .)
-  --output\t\tOutput directory (default: _site)
-  --config\t\tPath to config file (default: .ter/config.json)
-  --local\t\tUse local assets (default: false)
-  --serve\t\tServe locally and watch for changes (default: false)
-  --port\t\tServe port (default: 8000)
-  --drafts\t\tRender pages marked as drafts (default: false)
-  --quiet\t\tSuppress output (default: false)`);
 }
 
 main(Deno.args);

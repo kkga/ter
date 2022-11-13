@@ -1,175 +1,12 @@
-import { WalkEntry } from "./deps.ts";
-import { basename, dirname, extname, join, relative } from "./deps.ts";
-import { frontmatter } from "./deps.ts";
-import { slugify } from "./deps.ts";
-import { render } from "./render.ts";
+import { WalkEntry } from "$std/fs/mod.ts";
+import { basename, dirname, extname, join, relative } from "$std/path/mod.ts";
+import * as frontmatter from "$std/encoding/front_matter.ts";
+import { default as slugify } from "slugify";
+
+import { parseMarkdown } from "./markdown.ts";
 import * as attributes from "./attributes.ts";
-const decoder = new TextDecoder("utf-8");
 
-export interface Heading {
-  text: string;
-  level: number;
-  slug: string;
-}
-
-export interface Page {
-  url: URL;
-  isIndex: boolean;
-  pinned: boolean;
-  ignored: boolean;
-  showToc: boolean;
-  logLayout: boolean;
-  hideTitle: boolean;
-  title?: string;
-  body?: string;
-  path?: string;
-  description?: string;
-  attrs?: attributes.PageAttributes;
-  links?: Array<URL>;
-  datePublished?: Date;
-  dateUpdated?: Date;
-  html?: string;
-  tags?: Array<string>;
-  headings?: Array<Heading>;
-}
-
-export interface TagPage {
-  name: string;
-  pages: Array<Page>;
-}
-
-export function isDeadLink(allPages: Array<Page>, linkUrl: URL): boolean {
-  for (const page of allPages) {
-    if (page.url.pathname === linkUrl.pathname) return false;
-    else continue;
-  }
-  return true;
-}
-
-const getTitleFromHeadings = (headings: Array<Heading>): string | undefined => {
-  for (const h of headings) {
-    if (h.level === 1) return h.text;
-  }
-};
-
-const getTitleFromFilename = (filePath: string): string => {
-  return basename(filePath).replace(extname(filePath), "");
-};
-
-export function getAllTags(pages: Array<Page>): Array<string> {
-  const allTags: Set<string> = new Set();
-  pages.forEach((page) => {
-    if (page.attrs) {
-      const tags = attributes.getTags(page.attrs);
-      if (tags) tags.forEach((tag: string) => allTags.add(tag));
-    }
-  });
-  return [...allTags];
-}
-
-export function getPagesByTag(allPages: Array<Page>, tag: string): Array<Page> {
-  const filtered = allPages.filter((page) => {
-    if (page.attrs) {
-      const pageTags = attributes.getTags(page.attrs);
-      return pageTags && pageTags.includes(tag);
-    }
-  });
-  return filtered;
-}
-
-export function getBacklinkPages(
-  allPages: Array<Page>,
-  current: Page,
-): Array<Page> {
-  const pages: Set<Page> = new Set();
-
-  for (const outPage of allPages) {
-    if (outPage.links) {
-      for (const url of outPage.links) {
-        if (
-          outPage.url.pathname !== current.url.pathname &&
-          url.pathname === current.url.pathname
-        ) {
-          pages.add(outPage);
-        }
-      }
-    }
-  }
-
-  return [...pages];
-}
-
-export function getChildPages(
-  allPages: Array<Page>,
-  current: Page,
-): Array<Page> {
-  const pages = allPages.filter((p) =>
-    current.url.pathname !== p.url.pathname &&
-    current.url.pathname === dirname(p.url.pathname)
-  );
-
-  return pages;
-}
-
-export function getChildTags(
-  allPages: Array<Page>,
-  current: Page,
-): Array<string> {
-  const tags: Set<string> = new Set();
-
-  allPages.forEach((page) => {
-    if (page.url.pathname.startsWith(current.url.pathname)) {
-      page.tags?.forEach((tag) => tags.add(tag));
-    }
-  });
-
-  return [...tags];
-}
-
-interface PageData {
-  body?: string;
-  attrs?: attributes.PageAttributes;
-  datePublished?: Date;
-  title?: string;
-  description?: string;
-  tags?: string[];
-  pinned?: boolean;
-  ignored?: boolean;
-  logLayout?: boolean;
-}
-
-const extractPageData = (raw: string, ignoreKeys: string[]): PageData => {
-  const fm = frontmatter.extract(raw);
-  const pageAttrs = fm.attrs as attributes.PageAttributes;
-  const title = attributes.getTitle(pageAttrs);
-  const datePublished = attributes.getDate(pageAttrs);
-  const description = attributes.getDescription(pageAttrs);
-  const tags = attributes.getTags(pageAttrs);
-  const pinned = attributes.hasKey(pageAttrs, ["pinned"]);
-  const ignored = attributes.hasKey(pageAttrs, ignoreKeys);
-  const showToc = attributes.hasKey(pageAttrs, ["toc"]);
-  const logLayout = attributes.hasKey(pageAttrs, ["log"]);
-  const hideTitle = attributes.hasKey(pageAttrs, ["hideTitle"]);
-
-  const data: PageData = {};
-
-  return Object.assign(
-    data,
-    {
-      attrs: pageAttrs,
-      body: fm.body,
-    },
-    title ? { title: title } : {},
-    datePublished ? { datePublished: datePublished } : {},
-    description ? { description: description } : {},
-    tags ? { tags: tags } : {},
-    ignored ? { ignored: ignored } : {},
-    pinned ? { pinned: pinned } : {},
-    showToc ? { showToc: showToc } : {},
-    logLayout ? { logLayout: logLayout } : {},
-    hideTitle ? { hideTitle: hideTitle } : {},
-  );
-};
+import type { Crumb, Heading, JSONValue, Page } from "./types.d.ts";
 
 interface GeneratePageOpts {
   entry: WalkEntry;
@@ -178,33 +15,221 @@ interface GeneratePageOpts {
   ignoreKeys: string[];
 }
 
-export async function generateContentPage(
+interface PageData {
+  body?: string;
+  attrs?: JSONValue;
+  datePublished?: Date;
+  dateUpdated?: Date;
+  title?: string;
+  description?: string;
+  tags?: string[];
+  pinned?: boolean;
+  ignored?: boolean;
+  unlisted?: boolean;
+  layout?: "log";
+  showHeader: boolean;
+  showTitle: boolean;
+  showDescription: boolean;
+  showMeta: boolean;
+  showToc: boolean;
+}
+
+const decoder = new TextDecoder("utf-8");
+
+function generateCrumbs(page: Page, rootCrumb?: string): Crumb[] {
+  const dir = dirname(page.url.pathname);
+  const chunks: string[] = dir.split("/").filter((ch) => !!ch);
+  const slug = basename(page.url.pathname);
+
+  let crumbs: Crumb[] = chunks.map((chunk, i) => {
+    const url = join("/", ...chunks.slice(0, i + 1));
+    return {
+      slug: chunk,
+      url,
+      current: false,
+    };
+  });
+
+  crumbs = [{
+    slug: rootCrumb ?? "index",
+    url: "/",
+    current: false,
+  }, ...crumbs];
+
+  if (slug !== "") crumbs = [...crumbs, { slug, url: "", current: true }];
+
+  return crumbs;
+}
+
+function getTitleFromHeadings(headings: Array<Heading>): string | undefined {
+  return headings.find((h) => h.level === 1)?.text;
+}
+
+function getTitleFromFilename(filePath: string): string {
+  return basename(filePath).replace(extname(filePath), "");
+}
+
+function getBacklinkPages(pages: Page[], current: Page): Page[] {
+  const pageSet: Set<Page> = new Set();
+
+  for (const outPage of pages) {
+    if (outPage.links) {
+      for (const url of outPage.links) {
+        if (
+          outPage.url.pathname !== current.url.pathname &&
+          url.pathname === current.url.pathname
+        ) {
+          pageSet.add(outPage);
+        }
+      }
+    }
+  }
+
+  return [...pageSet];
+}
+
+function getTags(pages: Page[]): string[] {
+  const tagSet: Set<string> = new Set();
+  pages.forEach((p) => p.tags && p.tags.forEach((tag) => tagSet.add(tag)));
+  return [...tagSet];
+}
+
+function getPagesWithTag(pages: Page[], tag: string, exclude?: Page[]): Page[] {
+  return pages.filter(
+    (page) => page.tags && page.tags.includes(tag) && !exclude?.includes(page),
+  );
+}
+
+function getRelatedPages(pages: Page[], current: Page): Page[] {
+  return pages.filter((page) =>
+    page.url.pathname !== current.url.pathname &&
+    page?.tags?.some((tag) => current?.tags?.includes(tag))
+  );
+}
+
+function getChildPages(pages: Page[], current: Page, deep?: boolean): Page[] {
+  return pages.filter((p) =>
+    current.url.pathname !== p.url.pathname &&
+    (deep
+      ? p.url.pathname.startsWith(current.url.pathname)
+      : current.url.pathname === dirname(p.url.pathname))
+  );
+}
+
+function getPagesByTags(
+  pages: Page[],
+  tags: string[],
+  exclude?: Page[],
+): Record<string, Page[]> {
+  const pageMap: Record<string, Page[]> = {};
+  tags.forEach((tag) => {
+    pageMap[tag] = getPagesWithTag(pages, tag, exclude);
+  });
+  return pageMap;
+}
+
+function sortPages(pages: Page[]): Page[] {
+  return pages
+    .sort((a, b) => {
+      if (a.datePublished && b.datePublished) {
+        return b.datePublished.valueOf() - a.datePublished.valueOf();
+      } else return 0;
+    })
+    .sort((page) => (page.index === "dir" ? -1 : 0))
+    .sort((page) => (page.pinned ? -1 : 0));
+}
+
+function sortTaggedPages(
+  taggedPages: Record<string, Page[]>,
+): Record<string, Page[]> {
+  return Object.keys(taggedPages)
+    .sort((a, b) => taggedPages[b].length - taggedPages[a].length)
+    .reduce((acc: Record<string, Page[]>, key) => {
+      acc[key] = taggedPages[key];
+      return acc;
+    }, {});
+}
+
+function extractPageData(raw: string, ignoreKeys: string[]): PageData {
+  const fm = frontmatter.extract(raw);
+  const attrs = fm.attrs as JSONValue;
+  const {
+    getTitle,
+    getDescription,
+    getDate,
+    getDateUpdated,
+    getBool,
+    getTags,
+    hasKey,
+  } = attributes;
+
+  return {
+    attrs: attrs,
+    body: fm.body,
+    title: getTitle(attrs),
+    datePublished: getDate(attrs),
+    dateUpdated: getDateUpdated(attrs),
+    description: getDescription(attrs),
+    tags: getTags(attrs),
+    pinned: getBool(attrs, "pinned") ?? false,
+    ignored: hasKey(attrs, ignoreKeys),
+    unlisted: getBool(attrs, "unlisted") ?? false,
+    layout: getBool(attrs, "log") ? "log" : undefined,
+    showHeader: getBool(attrs, "showHeader") ?? true,
+    showTitle: getBool(attrs, "showTitle") ?? true,
+    showDescription: getBool(attrs, "showDescription") ?? true,
+    showMeta: getBool(attrs, "showMeta") ?? true,
+    showToc: getBool(attrs, "toc") ?? false,
+  };
+}
+
+function getDeadlinks(pages: Page[]): [from: URL, to: URL][] {
+  return pages.reduce((deadlinks: [from: URL, to: URL][], page) => {
+    if (page.links) {
+      page.links.forEach((link) => {
+        !pages.some((page) => page.url.pathname === link.pathname) &&
+          deadlinks.push([page.url, link]);
+      });
+    }
+    return deadlinks;
+  }, []);
+}
+
+function generateIndexPageFromDir(
+  { entry, inputPath, siteUrl }: GeneratePageOpts,
+): Page {
+  const relPath = relative(inputPath, entry.path) || ".";
+  const slug = relPath === "." ? "." : slugify(entry.name);
+  const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
+
+  return {
+    title: entry.name,
+    url: pageUrl,
+    index: "dir",
+  };
+}
+
+function generateContentPage(
   { entry, inputPath, siteUrl, ignoreKeys }: GeneratePageOpts,
-): Promise<Page> {
+): Page {
   const relPath = relative(inputPath, entry.path);
-  const raw = decoder.decode(await Deno.readFile(entry.path));
+  const raw = decoder.decode(Deno.readFileSync(entry.path));
   const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
   const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
 
   let page: Page = {
     url: pageUrl,
-    isIndex: false,
-    pinned: false,
-    ignored: false,
-    showToc: false,
-    logLayout: false,
-    hideTitle: false,
   };
 
   if (frontmatter.test(raw)) {
     page = { ...page, ...extractPageData(raw, ignoreKeys) };
   }
 
-  const { html, links, headings } = render({
+  const { html, links, headings } = parseMarkdown({
     text: page.body ?? raw,
     currentPath: relPath,
-    isIndex: false,
     baseUrl: new URL(siteUrl),
+    isDirIndex: page.index === "dir",
   });
 
   page = { ...page, html, links, headings };
@@ -215,33 +240,27 @@ export async function generateContentPage(
   return page;
 }
 
-export async function generateIndexPageFromFile(
+function generateIndexPageFromFile(
   { entry, inputPath, siteUrl, ignoreKeys }: GeneratePageOpts,
-): Promise<Page> {
+): Page {
   const relPath = relative(inputPath, dirname(entry.path)) || ".";
-  const raw = decoder.decode(await Deno.readFile(entry.path));
+  const raw = decoder.decode(Deno.readFileSync(entry.path));
   const dirName = basename(dirname(entry.path));
   const slug = relPath === "." ? "." : slugify(dirName);
   const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
 
   let page: Page = {
     url: pageUrl,
-    isIndex: true,
-    pinned: false,
-    ignored: false,
-    showToc: false,
-    logLayout: false,
-    hideTitle: false,
+    index: "dir",
   };
 
   if (frontmatter.test(raw)) {
     page = { ...page, ...extractPageData(raw, ignoreKeys) };
   }
 
-  const { html, links, headings } = render({
+  const { html, links, headings } = parseMarkdown({
     text: page.body ?? raw,
     currentPath: relPath,
-    isIndex: false,
     baseUrl: new URL(siteUrl),
   });
 
@@ -253,23 +272,18 @@ export async function generateIndexPageFromFile(
   return page;
 }
 
-export function generateIndexPageFromDir(
-  { entry, inputPath, siteUrl }: GeneratePageOpts,
-): Page {
-  const relPath = relative(inputPath, entry.path) || ".";
-  const slug = relPath === "." ? "." : slugify(entry.name);
-  const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
-
-  const page: Page = {
-    title: entry.name,
-    url: pageUrl,
-    isIndex: true,
-    pinned: false,
-    ignored: false,
-    showToc: false,
-    logLayout: false,
-    hideTitle: false,
-  };
-
-  return page;
-}
+export {
+  generateContentPage,
+  generateCrumbs,
+  generateIndexPageFromDir,
+  generateIndexPageFromFile,
+  getBacklinkPages,
+  getChildPages,
+  getDeadlinks,
+  getPagesByTags,
+  getPagesWithTag,
+  getRelatedPages,
+  getTags,
+  sortPages,
+  sortTaggedPages,
+};

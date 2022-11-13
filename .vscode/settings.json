@@ -3,5 +3,6 @@
   "deno.lint": true,
   "deno.unstable": true,
   "typescript.format.enable": true,
-  "editor.defaultFormatter": "denoland.vscode-deno"
+  "editor.defaultFormatter": "denoland.vscode-deno",
+  "deno.importMap": "import_map.json"
 }

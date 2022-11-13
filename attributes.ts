@@ -1,10 +1,9 @@
-export type PageAttributes = Record<string, unknown>;
+import { JSONValue } from "./types.d.ts";
 
-export const hasKey = (data: PageAttributes, keys: Array<string>): boolean => {
+export const hasKey = (data: JSONValue, keys: Array<string>): boolean => {
   if (data) {
     for (const key of Object.keys(data)) {
-      const keyTyped = key as keyof typeof data;
-      if (keys.includes(keyTyped) && data[keyTyped] === true) {
+      if (keys.includes(key) && data[key] === true) {
         return true;
       }
     }
@@ -12,26 +11,25 @@ export const hasKey = (data: PageAttributes, keys: Array<string>): boolean => {
   return false;
 };
 
-export const getTitle = (data: PageAttributes): string | undefined => {
-  if (typeof data.title === "string") {
-    return data.title;
-  }
-};
+export const getVal = (data: JSONValue, key: string): unknown | undefined =>
+  data[key] !== undefined && data[key] !== null ? data[key] : undefined;
 
-export const getDescription = (data: PageAttributes): string | undefined => {
-  if (typeof data.description === "string") {
-    return data.description;
-  }
-};
+export const getBool = (data: JSONValue, key: string): boolean | undefined =>
+  (data[key] !== undefined && typeof data[key] === "boolean")
+    ? data[key] as boolean
+    : undefined;
 
-export const getTags = (data: PageAttributes): Array<string> | undefined => {
-  if (Array.isArray(data.tags)) {
-    return data.tags;
-  }
-};
+export const getTitle = (data: JSONValue): string | undefined =>
+  typeof data.title === "string" ? data.title : undefined;
 
-export const getDate = (data: PageAttributes): Date | undefined => {
-  if (data.date instanceof Date) {
-    return data.date;
-  }
-};
+export const getDescription = (data: JSONValue): string | undefined =>
+  typeof data.description === "string" ? data.description : undefined;
+
+export const getDate = (data: JSONValue): Date | undefined =>
+  data.date instanceof Date ? data.date : undefined;
+
+export const getDateUpdated = (data: JSONValue): Date | undefined =>
+  data.dateUpdated instanceof Date ? data.dateUpdated : undefined;
+
+export const getTags = (data: JSONValue): Array<string> | undefined =>
+  Array.isArray(data.tags) ? data.tags.map((t) => t.toString()) : undefined;

@@ -1,8 +1,22 @@
 {
   "tasks": {
-    "build": "deno run -A --unstable main.ts --input docs --local",
-    "serve": "deno run -A --unstable main.ts --input docs --local  --serve",
-    "dev": "deno run -A --unstable --watch=assets/,views/ main.ts --input docs --local --serve",
+    "build": "deno run -A --unstable main.ts --input docs",
+    "serve": "deno run -A --unstable main.ts --input docs --serve",
+    "dev": "deno run -A --unstable --watch main.ts --input docs --serve --debug",
     "clean": "rm -rf _site"
+  },
+  "importMap": "./import_map.json",
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "dom.asynciterable",
+      "deno.ns"
+    ],
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true
   }
 }

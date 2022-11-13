@@ -1,13 +1,14 @@
-import { join, relative } from "./deps.ts";
-import { readableStreamFromReader } from "./deps.ts";
-import { serve as httpServe } from "./deps.ts";
-import { BuildConfig } from "./config.ts";
-import { RE_HIDDEN_OR_UNDERSCORED } from "./entries.ts";
+import { join, relative } from "$std/path/mod.ts";
+import { readableStreamFromReader } from "$std/streams/mod.ts";
+import { serve as httpServe } from "$std/http/server.ts";
 import { GenerateSiteOpts } from "./main.ts";
+import { RE_HIDDEN_OR_UNDERSCORED } from "./constants.ts";
+import type { BuildConfig } from "./types.d.ts";
 
 interface WatchOpts {
   runner: (opts: GenerateSiteOpts) => Promise<void>;
   config: BuildConfig;
+  logLevel: 0 | 1 | 2;
 }
 
 interface ServeOpts extends WatchOpts {
@@ -48,13 +49,13 @@ async function watch(opts: WatchOpts) {
     );
     await opts.runner({
       config: opts.config,
-      quiet: true,
       includeRefresh: true,
+      logLevel: opts.logLevel,
     });
 
     sockets.forEach((socket) => {
       clearTimeout(timer);
-      timer = setTimeout(() => socket.send("refresh"), 100);
+      timer = setTimeout(() => socket.send("refresh"), 1000);
     });
   }
 }

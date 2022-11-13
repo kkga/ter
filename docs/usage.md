@@ -2,8 +2,9 @@
 title: Usage
 description: How to use and configure Ter.
 date: 2022-09-26
-toc: true
+dateUpdated: 2022-11-13
 pinned: true
+toc: true
 ---
 
 ## Quick start
@@ -21,27 +22,32 @@ Navigate to a directory with some markdown files and run Ter to build a site.
 This command will recursively search for all `*.md` files in the current
 directory and generate a site into the `_site` directory:
 
-```
+```sh
 deno run -A --unstable https://deno.land/x/ter/main.ts
+```
+
+If your markdown files are not in root directory, or if you want a different
+name for the output directory, adjust accordingy, for example:
+
+```sh
+deno run -A --unstable https://deno.land/x/ter/main.ts --input pages --output _dist
 ```
 
 To start a local server with live refresh, pass the `--serve` flag:
 
-```
+```sh
 deno run -A --unstable https://deno.land/x/ter/main.ts --serve
 ```
-
----
 
 ## Command line usage
 
 Run Ter with the `--help` flag to see usage reference.
 
-```
+```sh
 deno run https://deno.land/x/ter/main.ts --help
 ```
 
-```
+```sh
 Ter -- tiny wiki-style site builder
 
 USAGE:
@@ -57,31 +63,6 @@ OPTIONS:
   --quiet     Do not list generated files (default: false)
 ```
 
-### Changing input and output paths
-
-Ter takes 2 optional arguments:
-
-- `--input` (default: `.`)
-- `--output` (default: `_site`)
-
-If your markdown files are in some other directory, or if you want a different
-name for the output directory, adjust accordingy, for example:
-
-```
-deno run -A --unstable https://deno.land/x/ter/main.ts --input pages --output _dist
-```
-
-### Local server with live refresh
-
-Passing `--serve` flag will start a local server. Ter will automatically rebuild
-the site and refresh the browser on any file changes.
-
-```
-deno run -A --unstable https://deno.land/x/ter/main.ts --serve
-```
-
----
-
 ## Configuration
 
 Configuration options can be specified in `.ter/config.json` from the root
@@ -92,44 +73,37 @@ building.
 
 ### Options
 
-| Key                | Description                                                    |
-| ------------------ | -------------------------------------------------------------- |
-| `site.title`       | Title of your site.                                            |
-| `site.description` | Description of your site.                                      |
-| `site.url`         | Published URL address of your site.                            |
-| `site.rootCrumb`   | Label used for root crumb label (default: "index").            |
-| `author.name`      | Your name.                                                     |
-| `author.email`     | Your email.                                                    |
-| `author.url`       | Your home page.                                                |
-| `navigation`       | Optional. Object of navigation items in form of `label: path`. |
-| `locale.date`      | Optional. Locale used for formatting dates.                    |
+| Key            | Description                                                           |
+| -------------- | --------------------------------------------------------------------- |
+| `title`        | Title of your site.                                                   |
+| `description`  | Description of your site.                                             |
+| `url`          | Published URL address of your site.                                   |
+| `rootCrumb`    | Label used for root crumb label (default: "index").                   |
+| `author_name`  | Your name.                                                            |
+| `author_email` | Your email.                                                           |
+| `author_url`   | Your home page.                                                       |
+| `lang`         | Optional. [Locale][locale] used for formatting dates.                 |
+| `nav_links`    | Optional. Object of navigation links in form of `{label: path, ...}`. |
+| `head`         | Optional. String to inject at the bottom of `<head>` tag.             |
+
+[locale]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl#locales_argument
 
 ### Example
 
 ```json
 {
-  "site": {
-    "title": "Your Blog Name",
-    "description": "I am writing about my experiences as a naval navel-gazer",
-    "url": "https://example.com/",
-    "rootCrumb": "index"
-  },
-  "author": {
-    "name": "Your Name Here",
-    "email": "youremailaddress@example.com",
-    "url": "https://example.com/about-me/"
-  },
-  "navigation": {
-    "about": "/about",
-    "contact": "/contact"
-  },
-  "locale": {
-    "date": "en-US"
-  }
+  title: "Your Blog Name",
+  description: "I am writing about my experiences as a naval navel-gazer",
+  url: "https://example.com/",
+  rootCrumb: "index",
+  author_name: "Your Name Here",
+  author_email: "youremailaddress@example.com",
+  author_url: "https://example.com/about-me/",
+  lang: "en",
+  nav_links: { "about": "/about", "contact": "/contact" },
+  head: "<script src='https://microanalytics.io/js/script.js' id='XXXXXXXX'></script>"
 }
 ```
-
----
 
 ## Index pages
 
@@ -158,21 +132,17 @@ Items in the index are sorted in the following order:
 2. directories (child index pages);
 3. rest of markdown files, sorted by [date](#dates).
 
-### Markdown in index files
-
 If the source directory contains an `index.md` file, its content will be
 injected into the rendered `index.html` above the index list. This can be useful
 for describing what the directory content is about or calling out individual
 pages.
-
----
 
 ## Markdown frontmatter
 
 Ter extracts [YAML frontmatter](https://jekyllrb.com/docs/front-matter/)
 delimited by `---` from markdown files. Here’s an example:
 
-```
+```markdown
 ---
 title: My page
 description: Here’s my description
@@ -184,26 +154,28 @@ property: value
 ---
 
 ## My content
+
+...
 ```
 
-Some properties are utilized when building a site.
+Some properties are utilized when building a site. All of them are optional.
 
-| Property      | Description                                                                  |
-| ------------- | ---------------------------------------------------------------------------- |
-| `title`       | used for page title                                                          |
-| `description` | used for page description                                                    |
-| `tags`        | used for tags                                                                |
-| `date`        | date in YYYY-MM-DD format                                                    |
-| `pinned`      | if `true`, page is listed at the top of [index lists](#index-pages)          |
-| `draft`       | if `true`, file is [ignored](#ignoring-files) during site generation         |
-| `toc`         | if `true`, page renders table of contents at the top                         |
-| `hideTitle`   | if `true`, the page title heading is not displayed                           |
-| `log`         | if `true` on an index page (`index.md`), all child pages are rendered inline |
-
-All other properties are ignored but can be used in
-[templates](customization.md#templates).
-
----
+| Property          | Default | Description                                                               |
+| ----------------- | ------- | ------------------------------------------------------------------------- |
+| `title`           |         | page title                                                                |
+| `description`     |         | page description                                                          |
+| `tags`            |         | page tags                                                                 |
+| `date`            |         | page publish date in YYYY-MM-DD format                                    |
+| `dateUpdated`     |         | page last update date in YYYY-MM-DD format                                |
+| `pinned`          | `false` | page is listed at the top of [index lists](#index-pages)                  |
+| `unlisted`        | `false` | page is excluded from all index lists                                     |
+| `draft`           | `false` | file is [ignored](#ignoring-files) during site generation                 |
+| `log`             | `false` | if set on an index page (`index.md`), all child pages are rendered inline |
+| `toc`             | `false` | affects rending of table of contents                                      |
+| `showHeader`      | `true`  | affects rendering of page header with title, description, date and tags   |
+| `showTitle`       | `true`  | affects rendering of page title                                           |
+| `showDescription` | `true`  | affects rendering of page description                                     |
+| `showMeta`        | `true`  | affects rendering of page date and tags                                   |
 
 ## Ignoring files
 
@@ -211,35 +183,25 @@ Any files and folders that start with an `_` or `.` (hidden) are ignored. For
 example, if there is a `_drafts` folder in the content directory, it will be
 skipped during site generation.
 
-### Draft pages
-
 In addition, any markdown file with `draft: true` in the
-[frontmatter](#markdown-frontmatter) will be ignored.
+[frontmatter](#markdown-frontmatter) will be ignored. To render files with
+`draft: true`, pass `--drafts` flag to the main command. For example:
 
-### Rendering draft pages
-
-To render files with `draft: true`, pass `--drafts` flag to the main command.
-For example:
-
-```
+```sh
 deno run -A --unstable https://deno.land/x/ter/main.ts --serve --drafts
 ```
-
----
 
 ## Dead internal links
 
 Ter automatically finds non-working internal links and lets you know about them
 after building a site. Here's an example output:
 
-```
+```sh
 [...]
 Dead links:
 /overview -> /non-existent-page-name
 /overview -> /some-dead-link
 ```
-
----
 
 ## Deploy
 
@@ -280,7 +242,7 @@ the repository, and use the production branch. For deployment mode, select
 Next, create a `.github/workflows/deno-deploy.yml` file in the repository and
 make changes according to your setup.
 
-##### GitHub Action (deno-deploy.yml)
+GitHub Action (deno-deploy.yml):
 
 ```yaml
 name: Deploy to Deno Deploy
