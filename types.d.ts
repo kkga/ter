@@ -3,10 +3,10 @@ export interface UserConfig {
   description: string;
   url: string;
   rootCrumb: string;
-  lang: Intl.LocalesArgument;
   author_name: string;
   author_email: string;
   author_url: string;
+  lang?: Intl.LocalesArgument;
   nav_links?: Record<string, string>;
   head?: string;
 }

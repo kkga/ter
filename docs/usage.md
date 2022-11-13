@@ -2,7 +2,7 @@
 title: Usage
 description: How to use and configure Ter.
 date: 2022-09-26
-dateUpdated: 2022-10-30
+dateUpdated: 2022-11-13
 pinned: true
 toc: true
 ---
@@ -73,40 +73,35 @@ building.
 
 ### Options
 
-| Key                | Description                                                    |
-| ------------------ | -------------------------------------------------------------- |
-| `site.title`       | Title of your site.                                            |
-| `site.description` | Description of your site.                                      |
-| `site.url`         | Published URL address of your site.                            |
-| `site.rootCrumb`   | Label used for root crumb label (default: "index").            |
-| `author.name`      | Your name.                                                     |
-| `author.email`     | Your email.                                                    |
-| `author.url`       | Your home page.                                                |
-| `navigation`       | Optional. Object of navigation items in form of `label: path`. |
-| `locale.date`      | Optional. Locale used for formatting dates.                    |
+| Key            | Description                                                           |
+| -------------- | --------------------------------------------------------------------- |
+| `title`        | Title of your site.                                                   |
+| `description`  | Description of your site.                                             |
+| `url`          | Published URL address of your site.                                   |
+| `rootCrumb`    | Label used for root crumb label (default: "index").                   |
+| `author_name`  | Your name.                                                            |
+| `author_email` | Your email.                                                           |
+| `author_url`   | Your home page.                                                       |
+| `lang`         | Optional. [Locale][locale] used for formatting dates.                 |
+| `nav_links`    | Optional. Object of navigation links in form of `{label: path, ...}`. |
+| `head`         | Optional. String to in the `<head>` tag for each page.                |
+
+[locale]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl#locales_argument
 
 ### Example
 
 ```json
 {
-  "site": {
-    "title": "Your Blog Name",
-    "description": "I am writing about my experiences as a naval navel-gazer",
-    "url": "https://example.com/",
-    "rootCrumb": "index"
-  },
-  "author": {
-    "name": "Your Name Here",
-    "email": "youremailaddress@example.com",
-    "url": "https://example.com/about-me/"
-  },
-  "navigation": {
-    "about": "/about",
-    "contact": "/contact"
-  },
-  "locale": {
-    "date": "en-US"
-  }
+  title: "Your Blog Name",
+  description: "I am writing about my experiences as a naval navel-gazer",
+  url: "https://example.com/",
+  rootCrumb: "index",
+  author_name: "Your Name Here",
+  author_email: "youremailaddress@example.com",
+  author_url: "https://example.com/about-me/",
+  lang: "en",
+  nav_links: { "about": "/about", "contact": "/contact" },
+  head: "<script src='https://microanalytics.io/js/script.js' id='XXXXXXXX'></script>"
 }
 ```
 
