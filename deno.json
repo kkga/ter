@@ -2,7 +2,7 @@
   "tasks": {
     "build": "deno run -A --unstable main.ts --input docs",
     "serve": "deno run -A --unstable main.ts --input docs --serve",
-    "dev": "deno run -A --unstable --watch main.ts --input docs --serve",
+    "dev": "deno run -A --unstable --watch main.ts --input docs --serve --debug",
     "clean": "rm -rf _site"
   },
   "importMap": "./import_map.json",

@@ -56,7 +56,7 @@ async function generateSite(opts: GenerateSiteOpts) {
 
   performance.mark("scan:start");
 
-  console.log(`scan:\t${inputPath}`);
+  console.log(`scan\t${inputPath}`);
   const [contentEntries, staticEntries] = await Promise.all([
     getContentEntries({ path: inputPath }),
     getStaticEntries({ path: inputPath, exts: staticExts }),
@@ -147,6 +147,8 @@ async function generateSite(opts: GenerateSiteOpts) {
       const crumbs = generateCrumbs(page, userConfig.rootCrumb);
       const relatedPages = getRelatedPages(listedPages, page);
 
+      logLevel > 1 && console.log(`render\t${relative(Deno.cwd(), writePath)}`);
+
       return {
         writePath,
         content: renderPage({
@@ -199,7 +201,7 @@ async function generateSite(opts: GenerateSiteOpts) {
    */
 
   performance.mark("total:end");
-  console.log("Done:", "\t", relative(Deno.cwd(), outputPath));
+  console.log("done", "\t", relative(Deno.cwd(), outputPath));
 
   const deadLinks = getDeadlinks(pages);
 
@@ -236,6 +238,7 @@ async function generateSite(opts: GenerateSiteOpts) {
 
     console.log("=> pages", "\t", stats.pageFiles);
     console.log("=> assets", "\t", stats.staticFiles);
+    console.log("---");
   }
 
   performance.getEntries().forEach((entry) => {
