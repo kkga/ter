@@ -163,8 +163,8 @@ const Header: FunctionComponent<HeaderProps> = ({
       <h1
         class={tw`
           mt-0
-          ${size === "small" ? "text" : "text-2xl md:(text-3xl)"}
           font-semibold tracking-tight
+          ${size === "small" ? "text(lg)" : "text(2xl md:3xl)"}
         `}
       >
         {title}
