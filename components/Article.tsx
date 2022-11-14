@@ -50,6 +50,9 @@ const contentStyles = css({
   h6: apply`
     text-base mt-6 mb-2 font-semibold
   `,
+  ":is(h1,h2,h3,h4,h5,h6):not(:hover) > .anchor": apply`
+    hidden
+  `,
   "a[rel~='external']": css(
     apply`text-current underline`,
     { "&:not(:hover)": { textDecorationStyle: "dotted" } },
