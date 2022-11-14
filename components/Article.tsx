@@ -93,9 +93,9 @@ const contentStyles = css({
         first-child:my-0
         last-child:mb-0
       )
-      bg(green-100 dark:green-900)
-      text(green-800 dark:green-300)
-      border(l green-500)
+      bg(green-100 opacity-50 dark:(green-900 opacity-50))
+      text(green-700 dark:green-400)
+      border(l green-400 dark:(green-700))
     `,
     {
       "summary": apply`font-semibold`,
