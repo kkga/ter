@@ -207,7 +207,7 @@ async function generateSite(opts: GenerateSiteOpts) {
    */
 
   performance.mark("total:end");
-  console.log("done", "\t", relative(Deno.cwd(), outputPath));
+  console.log(`done\t${relative(Deno.cwd(), outputPath)}`);
 
   const deadLinks = getDeadlinks(pages);
 
