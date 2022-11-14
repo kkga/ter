@@ -79,10 +79,10 @@ const contentStyles = css({
     overflow-x-scroll
     text(xs md:sm)
     font-mono
-    py-2 px-4
+    py-0 px-4
     leading-snug
     text(pink-700 dark:pink-300)
-    border(l gray-300 dark:gray-800)
+    border(l pink-700 opacity-30 dark:(pink-300 opacity-40))
   `,
   details: css(
     apply`
@@ -209,13 +209,12 @@ const Header: FunctionComponent<HeaderProps> = ({
       <details
         class={tw`
           pl-4
-          border(l gray-300)
+          border(l gray-300 dark:(gray-700))
           mt-4
-          text-sm
-          text-gray-500
+          text(sm gray-500)
         `}
       >
-        <summary class={tw`text-current`}>Contents</summary>
+        <summary class={tw`text-current font-medium`}>Contents</summary>
         <ol class={tw`mt-2`}>
           {headings
             .filter((h) => h.level < 4)
