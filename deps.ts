@@ -36,7 +36,7 @@ export {
   withLeadingSlash,
   withoutLeadingSlash,
   withoutTrailingSlash,
-} from "https://esm.sh/ufo@0.8.6/";
+} from "https://esm.sh/ufo@1.0.0/";
 
 export { Feed } from "https://esm.sh/feed@4.2.2";
 export { deepmerge } from "https://deno.land/x/deepmergets@v4.2.2/dist/deno/index.ts";
