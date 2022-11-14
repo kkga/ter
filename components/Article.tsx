@@ -1,9 +1,8 @@
 /** @jsxImportSource https://esm.sh/preact */
 
+import { Heading, Page } from "../types.d.ts";
 import { apply, css, tw } from "../deps.ts";
 import { styleUtils } from "./styleUtils.ts";
-import { Heading, Page } from "../types.d.ts";
-import { FunctionComponent } from "https://esm.sh/v96/preact@10.11.2/src/index.d.ts";
 
 interface HeaderProps {
   title?: string;
@@ -134,7 +133,7 @@ const contentStyles = css({
   ".cols-4": apply`grid grid(cols-2 md:cols-4) gap-4`,
 });
 
-const Header: FunctionComponent<HeaderProps> = ({
+function Header({
   title,
   description,
   datePublished,
@@ -148,9 +147,10 @@ const Header: FunctionComponent<HeaderProps> = ({
   showMeta,
   showToc,
   size = "default",
-}) => (
-  <header
-    class={tw`
+}: HeaderProps) {
+  return (
+    <header
+      class={tw`
       ${size === "small" ? "mb-4" : "mb-16"}
       flex flex-col ${size === "small" ? "gap-0.5" : "gap-2"}
       only-child:(m-0)
@@ -158,117 +158,117 @@ const Header: FunctionComponent<HeaderProps> = ({
       tracking-tight
       ${styleUtils.linkDimmer}
     `}
-  >
-    {showTitle && (
-      <h1
-        class={tw`
+    >
+      {showTitle && (
+        <h1
+          class={tw`
           mt-0
           font-semibold tracking-tight
           ${size === "small" ? "text(lg)" : "text(2xl md:3xl)"}
         `}
-      >
-        {title}
-      </h1>
-    )}
+        >
+          {title}
+        </h1>
+      )}
 
-    {showMeta && (datePublished || tags) && (
-      <div
-        class={tw`flex items-baseline text(sm gray-500) ${styleUtils.childrenDivider}`}
-      >
-        {datePublished && (
-          <div>
-            <time dateTime={datePublished.toString()}>
-              {datePublished.toLocaleDateString(lang, dateFormat)}
-            </time>
-          </div>
-        )}
-        {dateUpdated && (
-          <div>
-            Updated:{" "}
-            <time dateTime={dateUpdated.toString()}>
-              {dateUpdated.toLocaleDateString(lang, dateFormat)}
-            </time>
-          </div>
-        )}
-        {tags && (
-          <ul class={tw`space-x-2`}>
-            {tags.map((tag) => (
-              <li class={tw`inline`}>
-                <a href={`/tags##${tag}`}>#{tag}</a>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    )}
-    {showDescription && description && (
-      <p class={tw`text(sm gray-500)`}>{description}</p>
-    )}
+      {showMeta && (datePublished || tags) && (
+        <div
+          class={tw`flex items-baseline text(sm gray-500) ${styleUtils.childrenDivider}`}
+        >
+          {datePublished && (
+            <div>
+              <time dateTime={datePublished.toString()}>
+                {datePublished.toLocaleDateString(lang, dateFormat)}
+              </time>
+            </div>
+          )}
+          {dateUpdated && (
+            <div>
+              Updated:{" "}
+              <time dateTime={dateUpdated.toString()}>
+                {dateUpdated.toLocaleDateString(lang, dateFormat)}
+              </time>
+            </div>
+          )}
+          {tags && (
+            <ul class={tw`space-x-2`}>
+              {tags.map((tag) => (
+                <li class={tw`inline`}>
+                  <a href={`/tags##${tag}`}>#{tag}</a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+      {showDescription && description && (
+        <p class={tw`text(sm gray-500)`}>{description}</p>
+      )}
 
-    {showToc && headings?.some((h) => h.level > 2) && (
-      <details
-        class={tw`
+      {showToc && headings?.some((h) => h.level > 2) && (
+        <details
+          class={tw`
           pl-4
           border(l gray-300 dark:(gray-700))
           mt-4
           text(sm gray-500)
         `}
-      >
-        <summary class={tw`text-current font-medium`}>Contents</summary>
-        <ol class={tw`mt-2`}>
-          {headings
-            .filter((h) => h.level < 4)
-            .map((h: Heading) => {
-              return (
-                <li class={h.level > 2 ? tw`pl-3` : tw`font-medium`}>
-                  <a href={`#${h.slug}`}>{h.text}</a>
-                </li>
-              );
-            })}
-        </ol>
-      </details>
-    )}
-  </header>
-);
+        >
+          <summary class={tw`text-current font-medium`}>Contents</summary>
+          <ol class={tw`mt-2`}>
+            {headings
+              .filter((h) => h.level < 4)
+              .map((h: Heading) => {
+                return (
+                  <li class={h.level > 2 ? tw`pl-3` : tw`font-medium`}>
+                    <a href={`#${h.slug}`}>{h.text}</a>
+                  </li>
+                );
+              })}
+          </ol>
+        </details>
+      )}
+    </header>
+  );
+}
 
-const Article = ({
+export default function Article({
   page,
   dateFormat,
   lang,
   children,
   headerSize = "default",
-}: ArticleProps) => (
-  <article
-    class={tw`sibling:(
-      mt-6 pt-6 border(t dashed gray-300)
-      dark:(border(gray-700))
-    )`}
-  >
-    {page.showHeader && (
-      <Header
-        title={page.title}
-        description={page.description}
-        datePublished={page.datePublished}
-        dateUpdated={page.dateUpdated}
-        tags={page.tags}
-        headings={page.headings}
-        dateFormat={dateFormat}
-        lang={lang}
-        size={headerSize}
-        showTitle={page.showTitle}
-        showMeta={page.showMeta}
-        showDescription={page.showDescription}
-        showToc={page.showToc}
-      />
-    )}
-    {page.html && (
-      <div
-        class={tw`${contentStyles}`}
-        dangerouslySetInnerHTML={{ __html: page.html }}
-      />
-    )}
-    {children}
-  </article>
-);
-
-export default Article;
+}: ArticleProps) {
+  return (
+    <article
+      class={tw`sibling:(
+        mt-6 pt-6 border(t dashed gray-300 dark:gray-700)
+      )`}
+    >
+      {page.showHeader && (
+        <Header
+          title={page.title}
+          description={page.description}
+          datePublished={page.datePublished}
+          dateUpdated={page.dateUpdated}
+          tags={page.tags}
+          headings={page.headings}
+          dateFormat={dateFormat}
+          lang={lang}
+          size={headerSize}
+          showTitle={page.showTitle}
+          showMeta={page.showMeta}
+          showDescription={page.showDescription}
+          showToc={page.showToc}
+        />
+      )}
+      {page.html && (
+        <div
+          class={tw(contentStyles)}
+          dangerouslySetInnerHTML={{ __html: page.html }}
+        />
+      )}
+      {children}
+    </article>
+  );
+}
