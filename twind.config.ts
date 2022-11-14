@@ -1,6 +1,4 @@
-import { virtualSheet } from "twind/sheets";
-import { apply, Configuration } from "twind/";
-import { css } from "twind/css";
+import { apply, css, TwindConfiguration, virtualSheet } from "./deps.ts";
 
 export const sheet = virtualSheet();
 
@@ -24,4 +22,4 @@ export default {
     ),
   },
   sheet,
-} as Configuration;
+} as TwindConfiguration;

@@ -1,12 +1,13 @@
-import { FunctionComponent as FC } from "preact";
-import { tw } from "twind/";
-import { styleUtils } from "@components/styleUtils.ts";
+/** @jsxImportSource https://esm.sh/preact */
+
+import { tw } from "../deps.ts";
+import { styleUtils } from "./styleUtils.ts";
 
 interface FooterProps {
   author?: { name: string; email: string; url: string };
 }
 
-const Footer: FC<FooterProps> = ({ author }) => {
+function Footer({ author }: FooterProps) {
   let items = [
     ["Feed", "/feed.xml"],
     ["Made with Ter", "https://ter.kkga.me"],
@@ -32,5 +33,5 @@ const Footer: FC<FooterProps> = ({ author }) => {
       </ul>
     </footer>
   );
-};
+}
 export default Footer;

@@ -1,10 +1,11 @@
-import { FunctionComponent as FC } from "preact";
-import { tw } from "twind";
+/** @jsxImportSource https://esm.sh/preact */
 
-import Article from "@components/Article.tsx";
-import IndexList from "@components/IndexList.tsx";
-import Header from "@components/Header.tsx";
-import Footer from "@components/Footer.tsx";
+import { tw } from "../deps.ts";
+
+import Article from "./Article.tsx";
+import IndexList from "./IndexList.tsx";
+import Header from "./Header.tsx";
+import Footer from "./Footer.tsx";
 
 import { Crumb, Page } from "../types.d.ts";
 
@@ -21,7 +22,7 @@ interface BodyProps {
   navItems?: Record<string, string>;
 }
 
-const Body: FC<BodyProps> = ({
+export default function Body({
   page,
   crumbs,
   childPages,
@@ -32,7 +33,7 @@ const Body: FC<BodyProps> = ({
   author,
   dateFormat,
   lang,
-}) => {
+}: BodyProps) {
   return (
     <body
       class={tw`
@@ -127,6 +128,4 @@ const Body: FC<BodyProps> = ({
       <Footer author={author} />
     </body>
   );
-};
-
-export default Body;
+}

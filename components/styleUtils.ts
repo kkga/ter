@@ -1,5 +1,4 @@
-import { css } from "twind/css";
-import { apply } from "twind/";
+import { apply, css } from "../deps.ts";
 
 export const styleUtils = {
   childrenDivider: css({

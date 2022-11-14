@@ -1,6 +1,4 @@
-import { common, join } from "$std/path/mod.ts";
-import { walk, WalkEntry } from "$std/fs/mod.ts";
-import { withoutTrailingSlash } from "ufo";
+import { common, join, walk, WalkEntry, withoutTrailingSlash } from "./deps.ts";
 import { INDEX_FILENAME, RE_HIDDEN_OR_UNDERSCORED } from "./constants.ts";
 
 export async function getStaticEntries(opts: {

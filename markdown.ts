@@ -1,13 +1,15 @@
-import { dirname, extname, isAbsolute, join } from "$std/path/mod.ts";
-// import hljs from "hljs";
-import { marked } from "marked";
 import {
+  dirname,
+  extname,
+  isAbsolute,
+  join,
+  marked,
   ParsedURL,
   parseURL,
   withLeadingSlash,
   withoutLeadingSlash,
   withoutTrailingSlash,
-} from "ufo";
+} from "./deps.ts";
 
 import { Heading } from "./types.d.ts";
 
@@ -79,7 +81,7 @@ const toInternalLink = (opts: {
 };
 
 export const parseMarkdown = (
-  { text, currentPath, isDirIndex, baseUrl, highlightCode }: ParseOpts,
+  { text, currentPath, isDirIndex, baseUrl }: ParseOpts,
 ): { html: string; links: Array<URL>; headings: Array<Heading> } => {
   const internalLinks: Set<URL> = new Set();
   const headings: Array<Heading> = [];

@@ -1,4 +1,4 @@
-import { Feed } from "feed";
+import { Feed } from "./deps.ts";
 import { Page, UserConfig } from "./types.d.ts";
 
 interface FeedOpts {

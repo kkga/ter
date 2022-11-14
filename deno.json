@@ -5,10 +5,7 @@
     "dev": "deno run -A --unstable --watch main.ts --input docs --serve --debug",
     "clean": "rm -rf _site"
   },
-  "importMap": "./import_map.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "jsxImportSource": "preact",
     "lib": [
       "dom",
       "dom.iterable",

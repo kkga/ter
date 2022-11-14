@@ -1,9 +1,10 @@
-import { FunctionComponent as FC, VNode } from "preact";
-import { tw } from "twind/";
-import { Page } from "../types.d.ts";
-import { styleUtils } from "@components/styleUtils.ts";
+/** @jsxImportSource https://esm.sh/preact */
 
-const ArrowRightIcon: FC = () => {
+import { tw } from "../deps.ts";
+import { styleUtils } from "./styleUtils.ts";
+import { Page } from "../types.d.ts";
+
+const ArrowRightIcon = () => {
   return (
     <svg
       width="15"
@@ -23,7 +24,7 @@ const ArrowRightIcon: FC = () => {
   );
 };
 
-const ArrowLeftIcon: FC = () => {
+const ArrowLeftIcon = () => {
   return (
     <svg
       width="15"
@@ -43,7 +44,7 @@ const ArrowLeftIcon: FC = () => {
   );
 };
 
-const StarIcon: FC = () => {
+const StarIcon = () => {
   return (
     <svg
       width="15"
@@ -72,10 +73,10 @@ interface ItemProps {
   date?: Date;
   dateFormat?: Intl.DateTimeFormatOptions;
   lang?: Intl.LocalesArgument;
-  icon?: VNode;
+  icon?: preact.VNode;
 }
 
-const Item: FC<ItemProps> = ({
+function Item({
   title,
   description,
   url,
@@ -85,7 +86,7 @@ const Item: FC<ItemProps> = ({
   dateFormat = { year: "2-digit", day: "2-digit", month: "short" },
   lang,
   icon,
-}) => {
+}: ItemProps) {
   return (
     <li>
       <a
@@ -139,14 +140,16 @@ const Item: FC<ItemProps> = ({
       </a>
     </li>
   );
-};
+}
 
-const IndexList: FC<{
+interface IndexListProps {
   title: string;
   items: Page[] | Record<string, Page[]>;
   type: "pages" | "tags" | "backlinks";
   lang: Intl.LocalesArgument;
-}> = ({ title, items, type, lang }) => {
+}
+
+export default function IndexList(props: IndexListProps) {
   const renderItem = (item: Page | [string, Page[]]) => {
     if (typeof item === "object" && "url" in item) {
       return (
@@ -157,8 +160,10 @@ const IndexList: FC<{
           isDirIndex={item.index === "dir"}
           pinned={item.pinned}
           date={item.datePublished}
-          lang={lang}
-          icon={type === "backlinks" ? <ArrowLeftIcon /> : <ArrowRightIcon />}
+          lang={props.lang}
+          icon={props.type === "backlinks"
+            ? <ArrowLeftIcon />
+            : <ArrowRightIcon />}
         />
       );
     } else {
@@ -185,7 +190,7 @@ const IndexList: FC<{
 
   return (
     <section
-      id={title}
+      id={props.title}
       class={tw`
         text(sm) tracking-tight leading-4
         target:(
@@ -204,9 +209,9 @@ const IndexList: FC<{
           )
         `}
       >
-        {title}
+        {props.title}
         <span class={tw`font-normal opacity-60`}>
-          {" "}: {Object.keys(items).length}
+          {" "}: {Object.keys(props.items).length}
         </span>
       </h6>
       <ul
@@ -214,19 +219,17 @@ const IndexList: FC<{
           flex
           tracking-tight
           ${
-          (type === "backlinks" || type === "pages") &&
+          (props.type === "backlinks" || props.type === "pages") &&
           "flex-col divide-y divide-gray-200 dark:(divide-gray-800)"
         }
-          ${type === "tags" && `flex-wrap pt-1`}
-          ${type === "tags" && styleUtils.childrenDivider}
+          ${props.type === "tags" && `flex-wrap pt-1`}
+          ${props.type === "tags" && styleUtils.childrenDivider}
         `}
       >
-        {Array.isArray(items)
-          ? items.map((item) => renderItem(item))
-          : Object.entries(items).map((item) => renderItem(item))}
+        {Array.isArray(props.items)
+          ? props.items.map((item) => renderItem(item))
+          : Object.entries(props.items).map((item) => renderItem(item))}
       </ul>
     </section>
   );
-};
-
-export default IndexList;
+}

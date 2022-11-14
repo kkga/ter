@@ -1,8 +1,9 @@
-import { FunctionComponent as FC } from "preact";
-import { apply, tw } from "twind";
-import { css } from "twind/css";
-import { styleUtils } from "@components/styleUtils.ts";
+/** @jsxImportSource https://esm.sh/preact */
+
+import { apply, css, tw } from "../deps.ts";
+import { styleUtils } from "./styleUtils.ts";
 import { Heading, Page } from "../types.d.ts";
+import { FunctionComponent } from "https://esm.sh/v96/preact@10.11.2/src/index.d.ts";
 
 interface HeaderProps {
   title?: string;
@@ -25,6 +26,7 @@ interface ArticleProps {
   dateFormat?: Intl.DateTimeFormatOptions;
   lang?: Intl.LocalesArgument;
   headerSize?: "small" | "default";
+  children?: preact.ComponentChildren;
 }
 
 const contentStyles = css({
@@ -132,7 +134,7 @@ const contentStyles = css({
   ".cols-4": apply`grid grid(cols-2 md:cols-4) gap-4`,
 });
 
-const Header: FC<HeaderProps> = ({
+const Header: FunctionComponent<HeaderProps> = ({
   title,
   description,
   datePublished,
@@ -230,13 +232,13 @@ const Header: FC<HeaderProps> = ({
   </header>
 );
 
-const Article: FC<ArticleProps> = ({
+const Article = ({
   page,
   dateFormat,
   lang,
   children,
   headerSize = "default",
-}) => (
+}: ArticleProps) => (
   <article
     class={tw`sibling:(
       mt-6 pt-6 border(t dashed gray-300)

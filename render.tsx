@@ -1,14 +1,14 @@
-import { renderToString } from "preact-render-to-string";
-import { setup as twSetup } from "twind/";
-import { getStyleTag } from "twind/sheets";
+/** @jsxImportSource https://esm.sh/preact */
 
+import { getStyleTag, renderToString, twindSetup } from "./deps.ts";
 import twindConfig, { sheet } from "./twind.config.ts";
 import { HMR_CLIENT } from "./constants.ts";
 import { Crumb, Page, UserConfig } from "./types.d.ts";
-import Body from "@components/Body.tsx";
+
+import Body from "./components/Body.tsx";
 import { sortPages, sortTaggedPages } from "./pages.ts";
 
-twSetup(twindConfig);
+twindSetup(twindConfig);
 
 interface RenderOpts {
   page: Page;

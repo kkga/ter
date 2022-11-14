@@ -1,6 +1,4 @@
-import { deepmerge } from "deepmerge";
-import { ensureDir } from "$std/fs/ensure_dir.ts";
-import { dirname, isAbsolute, join } from "$std/path/mod.ts";
+import { deepmerge, dirname, ensureDirSync, isAbsolute, join } from "./deps.ts";
 import { BuildConfig, UserConfig } from "./types.d.ts";
 
 const defaultUserConfig: UserConfig = {
@@ -40,9 +38,9 @@ async function checkUserConfig(path: string): Promise<boolean> {
   return Promise.resolve(true);
 }
 
-async function initUserConfig(config: UserConfig, configPath: string) {
-  await ensureDir(dirname(configPath));
-  await Deno.writeTextFile(configPath, JSON.stringify(config, null, 2));
+function initUserConfig(config: UserConfig, configPath: string) {
+  ensureDirSync(dirname(configPath));
+  Deno.writeTextFileSync(configPath, JSON.stringify(config, null, 2));
 }
 
 interface CreateConfigOpts {

@@ -1,13 +1,16 @@
-import { FunctionComponent as FC } from "preact";
-import { tw } from "twind/";
-import { Crumb } from "../types.d.ts";
-import { styleUtils } from "@components/styleUtils.ts";
+/** @jsxImportSource https://esm.sh/preact */
 
-const PageHeader: FC<{
+import { tw } from "../deps.ts";
+import { Crumb } from "../types.d.ts";
+import { styleUtils } from "./styleUtils.ts";
+
+interface PageHeaderProps {
   currentPath: string;
   crumbs?: Crumb[];
   navItems?: Record<string, string>;
-}> = ({ currentPath, crumbs, navItems }) => {
+}
+
+function PageHeader({ currentPath, crumbs, navItems }: PageHeaderProps) {
   return (
     <header
       class={tw`
@@ -43,6 +46,6 @@ const PageHeader: FC<{
       )}
     </header>
   );
-};
+}
 
 export default PageHeader;

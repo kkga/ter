@@ -1,7 +1,14 @@
-import { WalkEntry } from "$std/fs/mod.ts";
-import { basename, dirname, extname, join, relative } from "$std/path/mod.ts";
-import * as frontmatter from "$std/encoding/front_matter.ts";
-import { default as slugify } from "slugify";
+import {
+  basename,
+  dirname,
+  extname,
+  fmExtract,
+  fmTest,
+  join,
+  relative,
+  slugify,
+  WalkEntry,
+} from "./deps.ts";
 
 import { parseMarkdown } from "./markdown.ts";
 import * as attributes from "./attributes.ts";
@@ -151,7 +158,7 @@ function sortTaggedPages(
 }
 
 function extractPageData(raw: string, ignoreKeys: string[]): PageData {
-  const fm = frontmatter.extract(raw);
+  const fm = fmExtract(raw);
   const attrs = fm.attrs as JSONValue;
   const {
     getTitle,
@@ -221,7 +228,7 @@ function generateContentPage(
     url: pageUrl,
   };
 
-  if (frontmatter.test(raw)) {
+  if (fmTest(raw)) {
     page = { ...page, ...extractPageData(raw, ignoreKeys) };
   }
 
@@ -254,7 +261,7 @@ function generateIndexPageFromFile(
     index: "dir",
   };
 
-  if (frontmatter.test(raw)) {
+  if (fmTest(raw)) {
     page = { ...page, ...extractPageData(raw, ignoreKeys) };
   }
 

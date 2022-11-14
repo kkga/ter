@@ -1,6 +1,12 @@
-import { emptyDirSync, ensureDirSync } from "$std/fs/mod.ts";
-import { basename, dirname, join, relative } from "$std/path/mod.ts";
-import { parse as parseFlags } from "$std/flags/mod.ts";
+import {
+  basename,
+  dirname,
+  emptyDirSync,
+  ensureDirSync,
+  flagsParse,
+  join,
+  relative,
+} from "./deps.ts";
 
 import { getHelp, INDEX_FILENAME } from "./constants.ts";
 import { getContentEntries, getStaticEntries } from "./entries.ts";
@@ -248,7 +254,7 @@ async function generateSite(opts: GenerateSiteOpts) {
 }
 
 async function main(args: string[]) {
-  const flags = parseFlags(args, {
+  const flags = flagsParse(args, {
     boolean: ["serve", "help", "debug", "drafts"],
     string: ["config", "input", "output", "port"],
     unknown: (flag) => {
