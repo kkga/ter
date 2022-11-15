@@ -12,8 +12,8 @@ toc: true
 ### Install deno
 
 Ter is built with [Deno](https://deno.land/), so you'll need to have it
-installed. Once the `deno` command is available to run in your terminal, follow
-along.
+[installed](https://deno.land/manual/getting_started/installation). Once the
+`deno` command is available to run in your terminal, follow along.
 
 ### Build a site
 
@@ -39,6 +39,8 @@ To start a local server with live refresh, pass the `--serve` flag:
 deno run -A --unstable https://deno.land/x/ter/main.ts --serve
 ```
 
+---
+
 ## Command line usage
 
 Run Ter with the `--help` flag to see usage reference.
@@ -60,7 +62,7 @@ OPTIONS:
   --serve     Serve locally and watch for changes (default: false)
   --port      Serve port (default: 8080)
   --drafts    Render pages marked as drafts (default: false)
-  --quiet     Do not list generated files (default: false)
+  --debug     Verbose output and statistics (default: false)
 ```
 
 ## Configuration
