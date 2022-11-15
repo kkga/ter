@@ -13,9 +13,9 @@ export function generateFeed(opts: FeedOpts): Feed {
     description,
     url,
     lang,
-    author_name,
-    author_email,
-    author_url,
+    authorName,
+    authorEmail,
+    authorUrl,
   } = userConfig;
 
   const feed = new Feed({
@@ -31,9 +31,9 @@ export function generateFeed(opts: FeedOpts): Feed {
       atom: `${url}/feed`,
     },
     author: {
-      name: author_name,
-      email: author_email,
-      link: author_url,
+      name: authorName,
+      email: authorEmail,
+      link: authorUrl,
     },
   });
 

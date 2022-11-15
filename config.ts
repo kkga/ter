@@ -6,9 +6,10 @@ const defaultUserConfig: UserConfig = {
   description: "I am writing about my experiences as a naval navel-gazer",
   url: "https://example.com/",
   rootCrumb: "index",
-  author_name: "Your Name Here",
-  author_email: "youremailaddress@example.com",
-  author_url: "https://example.com/about-me/",
+  authorName: "Your Name Here",
+  authorEmail: "youremailaddress@example.com",
+  authorUrl: "https://example.com/about-me/",
+  codeHighlight: false,
   lang: "en",
 };
 
@@ -76,11 +77,11 @@ export async function createConfig(
   conf.renderDrafts = opts.renderDrafts;
 
   await checkUserConfig(conf.userConfigPath)
-    .catch(async () => {
+    .catch(() => {
       console.warn(
         `Config file missing, initializing default config at ${conf.userConfigPath}`,
       );
-      await initUserConfig(conf.userConfig, conf.userConfigPath);
+      initUserConfig(conf.userConfig, conf.userConfigPath);
     });
 
   try {

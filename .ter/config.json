@@ -2,12 +2,8 @@
   "title": "Ter",
   "description": "A tiny wiki-style site builder with Zettelkasten flavor",
   "url": "https://ter.kkga.me/",
-  "author_name": "Gadzhi Kharkharov",
-  "author_email": "x@kkga.me",
-  "author_url": "https://kkga.me/",
-  "nav_links": {
-    "Usage": "/usage",
-    "Source": "https://github.com/kkga/ter"
-  },
+  "authorName": "Gadzhi Kharkharov",
+  "authorEmail": "x@kkga.me",
+  "authorUrl": "https://kkga.me/",
   "head": "<script data-host='https://microanalytics.io' data-dnt='false' src='https://microanalytics.io/js/script.js' id='ZwSg9rf6GA' async defer></script>"
 }

@@ -1,6 +1,7 @@
 import {
   dirname,
   extname,
+  highlight,
   isAbsolute,
   join,
   marked,
@@ -17,8 +18,8 @@ interface ParseOpts {
   text: string;
   currentPath: string;
   baseUrl: URL;
+  codeHighlight: boolean;
   isDirIndex?: boolean;
-  highlightCode?: boolean;
 }
 
 const toExternalLink = (href: string, title: string, text: string): string =>
@@ -81,7 +82,7 @@ const toInternalLink = (opts: {
 };
 
 export const parseMarkdown = (
-  { text, currentPath, isDirIndex, baseUrl }: ParseOpts,
+  { text, currentPath, isDirIndex, baseUrl, codeHighlight }: ParseOpts,
 ): { html: string; links: Array<URL>; headings: Array<Heading> } => {
   const internalLinks: Set<URL> = new Set();
   const headings: Array<Heading> = [];
@@ -155,11 +156,13 @@ export const parseMarkdown = (
     }
   };
 
-  // renderer.code = (code: string, lang: string): string => {
-  //   const language = hljs.getLanguage(lang) ? lang : "plaintext";
-  //   const html = hljs.highlight(code, { language }).value;
-  //   return `<pre class="hljs language-${language}">${html}</pre>`;
-  // };
+  if (codeHighlight) {
+    renderer.code = (code: string, lang: string): string => {
+      const language = highlight.getLanguage(lang) ? lang : "plaintext";
+      const html = highlight.highlight(code, { language }).value;
+      return `<pre class="hljs language-${language}">${html}</pre>`;
+    };
+  }
 
   marked.use({
     renderer,
@@ -167,7 +170,7 @@ export const parseMarkdown = (
     gfm: true,
     breaks: false,
     smartLists: true,
-    smartypants: false,
+    smartypants: true,
     xhtml: false,
   });
 

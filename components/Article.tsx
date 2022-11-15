@@ -72,19 +72,33 @@ const contentStyles = css({
   ol: apply`
     list(inside decimal)
   `,
+  "ul ul, ol ol": apply`
+    pl-4
+  `,
   hr: apply`
     my-8
     border(gray-200)
     dark:(border(gray-800))
   `,
+  code: apply`
+    font-mono
+    text-sm
+  `,
+  ":not(pre) code": apply`
+    px-1 py-px
+    bg(pink-50 dark:(pink-300 opacity-20))
+    rounded-sm
+  `,
   pre: apply`
     overflow-x-scroll
     text(xs md:sm)
     font-mono
-    py-0 px-4
+    py-2 px-4
     leading-snug
-    text(pink-700 dark:pink-300)
     border(l pink-700 opacity-30 dark:(pink-300 opacity-40))
+  `,
+  "pre:not(.hljs)": apply`
+    text(pink-700 dark:pink-300)
   `,
   details: css(
     apply`
@@ -126,6 +140,12 @@ const contentStyles = css({
     border(b gray-200 dark:gray-800)
     py-1 pr-3
     align-baseline
+  `,
+  dt: apply`
+    font-semibold
+  `,
+  dd: apply`
+    pl-4
   `,
   ".full-bleed": apply`
     lg:(-mx-24)

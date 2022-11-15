@@ -13,12 +13,12 @@ import {
 import { parseMarkdown } from "./markdown.ts";
 import * as attributes from "./attributes.ts";
 
-import type { Crumb, Heading, JSONValue, Page } from "./types.d.ts";
+import type { Crumb, Heading, JSONValue, Page, UserConfig } from "./types.d.ts";
 
 interface GeneratePageOpts {
   entry: WalkEntry;
   inputPath: string;
-  siteUrl: URL;
+  userConfig: UserConfig;
   ignoreKeys: string[];
 }
 
@@ -203,11 +203,12 @@ function getDeadlinks(pages: Page[]): [from: URL, to: URL][] {
 }
 
 function generateIndexPageFromDir(
-  { entry, inputPath, siteUrl }: GeneratePageOpts,
+  { entry, inputPath, userConfig }: GeneratePageOpts,
 ): Page {
+  const { url } = userConfig;
   const relPath = relative(inputPath, entry.path) || ".";
   const slug = relPath === "." ? "." : slugify(entry.name);
-  const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
+  const pageUrl = new URL(join(dirname(relPath), slug), url);
 
   return {
     title: entry.name,
@@ -217,12 +218,13 @@ function generateIndexPageFromDir(
 }
 
 function generateContentPage(
-  { entry, inputPath, siteUrl, ignoreKeys }: GeneratePageOpts,
+  { entry, inputPath, userConfig, ignoreKeys }: GeneratePageOpts,
 ): Page {
+  const { url } = userConfig;
   const relPath = relative(inputPath, entry.path);
   const raw = decoder.decode(Deno.readFileSync(entry.path));
   const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
-  const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
+  const pageUrl = new URL(join(dirname(relPath), slug), url);
 
   let page: Page = {
     url: pageUrl,
@@ -235,8 +237,9 @@ function generateContentPage(
   const { html, links, headings } = parseMarkdown({
     text: page.body ?? raw,
     currentPath: relPath,
-    baseUrl: new URL(siteUrl),
+    baseUrl: new URL(url),
     isDirIndex: page.index === "dir",
+    codeHighlight: userConfig.codeHighlight,
   });
 
   page = { ...page, html, links, headings };
@@ -248,13 +251,14 @@ function generateContentPage(
 }
 
 function generateIndexPageFromFile(
-  { entry, inputPath, siteUrl, ignoreKeys }: GeneratePageOpts,
+  { entry, inputPath, userConfig, ignoreKeys }: GeneratePageOpts,
 ): Page {
+  const { url } = userConfig;
   const relPath = relative(inputPath, dirname(entry.path)) || ".";
   const raw = decoder.decode(Deno.readFileSync(entry.path));
   const dirName = basename(dirname(entry.path));
   const slug = relPath === "." ? "." : slugify(dirName);
-  const pageUrl = new URL(join(dirname(relPath), slug), siteUrl);
+  const pageUrl = new URL(join(dirname(relPath), slug), url);
 
   let page: Page = {
     url: pageUrl,
@@ -268,7 +272,8 @@ function generateIndexPageFromFile(
   const { html, links, headings } = parseMarkdown({
     text: page.body ?? raw,
     currentPath: relPath,
-    baseUrl: new URL(siteUrl),
+    baseUrl: new URL(url),
+    codeHighlight: userConfig.codeHighlight,
   });
 
   page = { ...page, html, links, headings };

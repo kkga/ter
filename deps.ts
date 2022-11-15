@@ -46,6 +46,9 @@ export { renderToString } from "https://esm.sh/preact-render-to-string@5.2.6^";
 
 export { marked } from "https://esm.sh/marked@4.2.2/";
 
+// export { default as highlight } from "https://esm.sh/highlight.js@11.6.0";
+export { default as highlight } from "npm:highlight.js@11.6.0";
+
 export {
   apply,
   type Configuration as TwindConfiguration,
