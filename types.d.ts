@@ -3,11 +3,12 @@ export interface UserConfig {
   description: string;
   url: string;
   rootCrumb: string;
-  author_name: string;
-  author_email: string;
-  author_url: string;
+  authorName: string;
+  authorEmail: string;
+  authorUrl: string;
+  codeHighlight: boolean;
+  navLinks?: Record<string, string>;
   lang?: Intl.LocalesArgument;
-  nav_links?: Record<string, string>;
   head?: string;
 }
 

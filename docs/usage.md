@@ -22,20 +22,20 @@ Navigate to a directory with some markdown files and run Ter to build a site.
 This command will recursively search for all `*.md` files in the current
 directory and generate a site into the `_site` directory:
 
-```sh
+```
 deno run -A --unstable https://deno.land/x/ter/main.ts
 ```
 
 If your markdown files are not in root directory, or if you want a different
 name for the output directory, adjust accordingy, for example:
 
-```sh
+```
 deno run -A --unstable https://deno.land/x/ter/main.ts --input pages --output _dist
 ```
 
 To start a local server with live refresh, pass the `--serve` flag:
 
-```sh
+```
 deno run -A --unstable https://deno.land/x/ter/main.ts --serve
 ```
 
@@ -43,11 +43,11 @@ deno run -A --unstable https://deno.land/x/ter/main.ts --serve
 
 Run Ter with the `--help` flag to see usage reference.
 
-```sh
+```
 deno run https://deno.land/x/ter/main.ts --help
 ```
 
-```sh
+```
 Ter -- tiny wiki-style site builder
 
 USAGE:
@@ -73,18 +73,19 @@ building.
 
 ### Options
 
-| Key            | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `title`        | Title of your site.                                                   |
-| `description`  | Description of your site.                                             |
-| `url`          | Published URL address of your site.                                   |
-| `rootCrumb`    | Label used for root crumb label (default: "index").                   |
-| `author_name`  | Your name.                                                            |
-| `author_email` | Your email.                                                           |
-| `author_url`   | Your home page.                                                       |
-| `lang`         | Optional. [Locale][locale] used for formatting dates.                 |
-| `nav_links`    | Optional. Object of navigation links in form of `{label: path, ...}`. |
-| `head`         | Optional. String to inject at the bottom of `<head>` tag.             |
+| Key           | Description                                                           |
+| ------------- | --------------------------------------------------------------------- |
+| title         | Title of your site.                                                   |
+| description   | Description of your site.                                             |
+| url           | Published URL address of your site.                                   |
+| rootCrumb     | Label used for root crumb label (default: "index").                   |
+| authorName    | Your name.                                                            |
+| authorEmail   | Your email.                                                           |
+| authorUrl     | Your home page.                                                       |
+| lang          | Optional. [Locale][locale] used for formatting dates.                 |
+| navLinks      | Optional. Object of navigation links in form of `{label: path, ...}`. |
+| codeHighlight | Optional. Use syntax highlighting in code blocks (default: false).    |
+| head          | Optional. String to inject at the bottom of `<head>` tag.             |
 
 [locale]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl#locales_argument
 
@@ -92,16 +93,17 @@ building.
 
 ```json
 {
-  title: "Your Blog Name",
-  description: "I am writing about my experiences as a naval navel-gazer",
-  url: "https://example.com/",
-  rootCrumb: "index",
-  author_name: "Your Name Here",
-  author_email: "youremailaddress@example.com",
-  author_url: "https://example.com/about-me/",
-  lang: "en",
-  nav_links: { "about": "/about", "contact": "/contact" },
-  head: "<script src='https://microanalytics.io/js/script.js' id='XXXXXXXX'></script>"
+  "title": "Your Blog Name",
+  "description": "I am writing about my experiences as a naval navel-gazer",
+  "url": "https://example.com/",
+  "rootCrumb": "index",
+  "authorName": "Your Name Here",
+  "authorEmail": "youremailaddress@example.com",
+  "authorUrl": "https://example.com/about-me/",
+  "lang": "en",
+  "navLinks": { "about": "/about", "contact": "/contact" },
+  "codeHighlight": true,
+  "head": "<script src='https://microanalytics.io/js/script.js' id='XXXXXXXX'></script>"
 }
 ```
 
@@ -142,7 +144,7 @@ pages.
 Ter extracts [YAML frontmatter](https://jekyllrb.com/docs/front-matter/)
 delimited by `---` from markdown files. Here’s an example:
 
-```markdown
+```yaml
 ---
 title: My page
 description: Here’s my description
@@ -154,28 +156,26 @@ property: value
 ---
 
 ## My content
-
-...
 ```
 
 Some properties are utilized when building a site. All of them are optional.
 
-| Property          | Default | Description                                                               |
-| ----------------- | ------- | ------------------------------------------------------------------------- |
-| `title`           |         | page title                                                                |
-| `description`     |         | page description                                                          |
-| `tags`            |         | page tags                                                                 |
-| `date`            |         | page publish date in YYYY-MM-DD format                                    |
-| `dateUpdated`     |         | page last update date in YYYY-MM-DD format                                |
-| `pinned`          | `false` | page is listed at the top of [index lists](#index-pages)                  |
-| `unlisted`        | `false` | page is excluded from all index lists                                     |
-| `draft`           | `false` | file is [ignored](#ignoring-files) during site generation                 |
-| `log`             | `false` | if set on an index page (`index.md`), all child pages are rendered inline |
-| `toc`             | `false` | affects rending of table of contents                                      |
-| `showHeader`      | `true`  | affects rendering of page header with title, description, date and tags   |
-| `showTitle`       | `true`  | affects rendering of page title                                           |
-| `showDescription` | `true`  | affects rendering of page description                                     |
-| `showMeta`        | `true`  | affects rendering of page date and tags                                   |
+| Property        | Default | Description                                                             |
+| --------------- | ------- | ----------------------------------------------------------------------- |
+| title           |         | page title                                                              |
+| description     |         | page description                                                        |
+| tags            |         | page tags                                                               |
+| date            |         | page publish date in YYYY-MM-DD format                                  |
+| dateUpdated     |         | page last update date in YYYY-MM-DD format                              |
+| pinned          | false   | page is listed at the top of [index lists](#index-pages)                |
+| unlisted        | false   | page is excluded from all index lists                                   |
+| draft           | false   | file is [ignored](#ignoring-files) during site generation               |
+| log             | false   | if set on an index page (index.md), all child pages are rendered inline |
+| toc             | false   | affects rending of table of contents                                    |
+| showHeader      | true    | affects rendering of page header with title, description, date and tags |
+| showTitle       | true    | affects rendering of page title                                         |
+| showDescription | true    | affects rendering of page description                                   |
+| showMeta        | true    | affects rendering of page date and tags                                 |
 
 ## Ignoring files
 
@@ -196,7 +196,7 @@ deno run -A --unstable https://deno.land/x/ter/main.ts --serve --drafts
 Ter automatically finds non-working internal links and lets you know about them
 after building a site. Here's an example output:
 
-```sh
+```
 [...]
 Dead links:
 /overview -> /non-existent-page-name
