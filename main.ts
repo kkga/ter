@@ -94,7 +94,7 @@ async function generateSite(opts: GenerateSiteOpts) {
           entry: entry,
           inputPath: inputPath,
           ignoreKeys: opts.config.ignoreKeys,
-          siteUrl: new URL(userConfig.url),
+          userConfig: userConfig,
         })
       ),
       ...indexFileEntries.map((entry) =>
@@ -102,7 +102,7 @@ async function generateSite(opts: GenerateSiteOpts) {
           entry: entry,
           inputPath: inputPath,
           ignoreKeys: opts.config.ignoreKeys,
-          siteUrl: new URL(userConfig.url),
+          userConfig: userConfig,
         })
       ),
     ],
@@ -112,7 +112,7 @@ async function generateSite(opts: GenerateSiteOpts) {
         entry: entry,
         inputPath: inputPath,
         ignoreKeys: opts.config.ignoreKeys,
-        siteUrl: new URL(userConfig.url),
+        userConfig: userConfig,
       })
     ),
   ];

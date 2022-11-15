@@ -2,7 +2,7 @@
 
 import { getStyleTag, renderToString, twindSetup } from "./deps.ts";
 import twindConfig, { sheet } from "./twind.config.ts";
-import { HMR_CLIENT } from "./constants.ts";
+import { HIGHLIGHT_STYLE, HMR_CLIENT } from "./constants.ts";
 import { Crumb, Page, UserConfig } from "./types.d.ts";
 
 import Body from "./components/Body.tsx";
@@ -40,15 +40,19 @@ export function renderPage({
       backlinkPages={backlinkPages && sortPages(backlinkPages)}
       relatedPages={relatedPages && sortPages(relatedPages)}
       pagesByTag={pagesByTag && sortTaggedPages(pagesByTag)}
-      navItems={userConfig.nav_links}
+      navItems={userConfig.navLinks}
       lang={userConfig.lang}
       author={{
-        name: userConfig.author_name,
-        email: userConfig.author_email,
-        url: userConfig.author_url,
+        name: userConfig.authorName,
+        email: userConfig.authorEmail,
+        url: userConfig.authorUrl,
       }}
     />,
   );
+
+  if (userConfig.codeHighlight) {
+    sheet.insert(HIGHLIGHT_STYLE, 999);
+  }
 
   const styleTag = getStyleTag(sheet);
   const pageTitle = page.title === userConfig.title
