@@ -260,6 +260,7 @@
     "https://esm.sh/twind@0.16.17^/css": "df6a4865b488c07b8adc1a3a411481cea74477dc737e93e26f85f11a9ea28e5b",
     "https://esm.sh/twind@0.16.17^/sheets": "58535757e0fbc01b9d6122cbd8e9bd02faa793f5fb5aef9619fb8d8fd0469bde",
     "https://esm.sh/ufo@0.8.6/": "394529ee7d9be66e77529fda4c8cbe74f5682298a5948d3c9abb96cc687c7ffa",
+    "https://esm.sh/ufo@1.0.0/": "e0ab60b9712a82a11d327b2c252412d052838427f24affb45dc40ac885c97689",
     "https://esm.sh/v96/preact@10.11.2/jsx-runtime/src/index.d.ts": "e153460ed2b3fe2ad8b93696ecd48fbf73cd628b0b0ea6692b71804a3af69dfd",
     "https://esm.sh/v96/preact@10.11.2/src/index.d.ts": "76842a9d103548261ee001f2aee5fa5cacc8b1b4b4032af537ed84603c8f4a31",
     "https://esm.sh/v96/preact@10.11.2/src/jsx.d.ts": "77ce5bd7324455c9f6dc85bfc3c94b733acb92cc98fdf82e4b1059c8bca7866d",
@@ -483,6 +484,8 @@
     "https://esm.sh/v98/twind@0.16.17/twind.d.ts": "795f4921b74adee8a90dfeb4e71e524f83b1822a307692e2c36874120629ebd9",
     "https://esm.sh/v98/ufo@0.8.6/deno/ufo.js": "c220badd66c162b92260e3e370a89eb1f9dba1df3f879bb65f5fffbd8cd34169",
     "https://esm.sh/v98/ufo@0.8.6/dist/index.d.ts": "c4591e29773354617e1955af9e055a0070e73e70ec25a0bcedfeeca06692e6f3",
+    "https://esm.sh/v98/ufo@1.0.0/deno/ufo.js": "e4f0516710532a1e24dc9194e7b9d6dd6d7fe0ffc22e6386e4228cc74397f304",
+    "https://esm.sh/v98/ufo@1.0.0/dist/index.d.ts": "d42d0b6bb5024028da6112897d8b1779cc2ccd7aea131553d09bff731fd4bbd6",
     "https://esm.sh/v98/xml-js@1.6.11/deno/xml-js.js": "7cc22400680005b03e28f77b84bd87bc5c613c15424852992261dd23fcd7ec3e"
   },
   "npm": {
