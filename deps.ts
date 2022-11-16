@@ -3,11 +3,11 @@ export {
   ensureDirSync,
   walk,
   type WalkEntry,
-} from "https://deno.land/std@0.164.0/fs/mod.ts";
+} from "https://deno.land/std@0.165.0/fs/mod.ts";
 
 export {
   readableStreamFromReader,
-} from "https://deno.land/std@0.164.0/streams/mod.ts";
+} from "https://deno.land/std@0.165.0/streams/mod.ts";
 
 export {
   basename,
@@ -17,18 +17,18 @@ export {
   isAbsolute,
   join,
   relative,
-} from "https://deno.land/std@0.164.0/path/mod.ts";
+} from "https://deno.land/std@0.165.0/path/mod.ts";
 
 export {
   parse as flagsParse,
-} from "https://deno.land/std@0.164.0/flags/mod.ts";
+} from "https://deno.land/std@0.165.0/flags/mod.ts";
 
 export {
   extract as fmExtract,
   test as fmTest,
-} from "https://deno.land/std@0.164.0/encoding/front_matter.ts";
+} from "https://deno.land/std@0.165.0/encoding/front_matter.ts";
 
-export { serve as httpServe } from "https://deno.land/std@0.164.0/http/server.ts";
+export { serve as httpServe } from "https://deno.land/std@0.165.0/http/server.ts";
 
 export {
   type ParsedURL,
@@ -46,8 +46,8 @@ export { renderToString } from "https://esm.sh/preact-render-to-string@5.2.6^";
 
 export { marked } from "https://esm.sh/marked@4.2.2/";
 
-// export { default as highlight } from "https://esm.sh/highlight.js@11.6.0";
-export { default as highlight } from "npm:highlight.js@11.6.0";
+export { default as highlight } from "https://jspm.dev/highlight.js@11.6.0";
+// export { default as highlight } from "npm:highlight.js@11.6.0";
 
 export {
   apply,
