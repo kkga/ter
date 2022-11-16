@@ -65,15 +65,17 @@ OPTIONS:
   --debug     Verbose output and statistics (default: false)
 ```
 
+---
+
 ## Configuration
 
-Configuration options can be specified in `.ter/config.json` from the root
-directory or in any `json` file specified with `--config` flag when running Ter.
+Ter reads a JSON configuration file at `.ter/config.json` before building a
+site.
 
-If the file does not exist, an example configuration file is created before
-building.
+Alternative location can be specified with with the `--config` CLI flag. If the
+file does not exist, Ter will create it with default options on first build.
 
-### Options
+#### Options
 
 | Key           | Description                                                           |
 | ------------- | --------------------------------------------------------------------- |
@@ -91,7 +93,7 @@ building.
 
 [locale]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl#locales_argument
 
-### Example
+#### Example
 
 ```json
 {
@@ -109,7 +111,11 @@ building.
 }
 ```
 
-## Index pages
+---
+
+## Content
+
+### Index pages
 
 Ter recursively recreates the source file system on the rendered site and each
 directory gets an index file listing its content. For example, if the source
@@ -127,7 +133,11 @@ content
 ... the `life` directory will get an `life/index.html` page with an index of its
 content.
 
-### Index sorting
+If a directory contains an `index.md` file, its content will be injected into
+the rendered `index.html` above the index list. This can be useful for
+describing what the directory content is about or calling out individual pages.
+
+#### Index sorting
 
 Items in the index are sorted in the following order:
 
@@ -136,12 +146,7 @@ Items in the index are sorted in the following order:
 2. directories (child index pages);
 3. rest of markdown files, sorted by [date](#dates).
 
-If the source directory contains an `index.md` file, its content will be
-injected into the rendered `index.html` above the index list. This can be useful
-for describing what the directory content is about or calling out individual
-pages.
-
-## Markdown frontmatter
+### Markdown frontmatter
 
 Ter extracts [YAML frontmatter](https://jekyllrb.com/docs/front-matter/)
 delimited by `---` from markdown files. Here’s an example:
@@ -179,7 +184,7 @@ Some properties are utilized when building a site. All of them are optional.
 | showDescription | true    | affects rendering of page description                                   |
 | showMeta        | true    | affects rendering of page date and tags                                 |
 
-## Ignoring files
+### Ignoring files
 
 Any files and folders that start with an `_` or `.` (hidden) are ignored. For
 example, if there is a `_drafts` folder in the content directory, it will be
@@ -193,7 +198,7 @@ In addition, any markdown file with `draft: true` in the
 deno run -A --unstable https://deno.land/x/ter/main.ts --serve --drafts
 ```
 
-## Dead internal links
+### Dead internal links
 
 Ter automatically finds non-working internal links and lets you know about them
 after building a site. Here's an example output:
@@ -205,14 +210,11 @@ Dead links:
 /overview -> /some-dead-link
 ```
 
+---
+
 ## Deploy
 
 Ter generates a static site which can be deployed anywhere.
-
-### Vercel
-
-To deploy on [Vercel](https://vercel.com), use the following build and output
-configuration.
 
 <details open>
 <summary>Note</summary>
@@ -220,16 +222,22 @@ If using non-default input and output folders, update the build command
 and output directory accordingly.
 </details>
 
-```sh
-# Build command
-deno run -A --unstable https://deno.land/x/ter/main.ts
+### Vercel
 
-# Output directory
-_site
+To deploy on [Vercel](https://vercel.com), use the following build and output
+configuration.
 
-# Install command
-curl -fsSL https://deno.land/x/install/install.sh | DENO_INSTALL=/usr/local sh
-```
+#### Build command
+
+`deno run -A --unstable https://deno.land/x/ter/main.ts`
+
+#### Output directory
+
+`_site`
+
+#### Install command
+
+`curl -fsSL https://deno.land/x/install/install.sh | DENO_INSTALL=/usr/local sh`
 
 ### Deno Deploy
 
@@ -244,7 +252,7 @@ the repository, and use the production branch. For deployment mode, select
 Next, create a `.github/workflows/deno-deploy.yml` file in the repository and
 make changes according to your setup.
 
-GitHub Action (deno-deploy.yml):
+#### GitHub Action (deno-deploy.yml)
 
 ```yaml
 name: Deploy to Deno Deploy
