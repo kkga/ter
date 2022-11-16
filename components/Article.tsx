@@ -39,19 +39,16 @@ const contentStyles = css({
     text-xl mt-12 font-semibold tracking-tight
   `,
   h3: apply`
-    text-base mt-6 mb-2 font-semibold tracking-tight
+    text-base mt-8 mb-2 font-semibold tracking-tight
   `,
-  h4: apply`
-    text-base mt-6 mb-2 font-semibold tracking-tight
-  `,
-  h5: apply`
-    text-base mt-6 mb-2 font-semibold
-  `,
-  h6: apply`
-    text-base mt-6 mb-2 font-semibold
+  "h4, h5, h6": apply`
+    text-sm mt-8 mb-2 font-medium text(gray-500) tracking-tight
   `,
   ":is(h1,h2,h3,h4,h5,h6):not(:hover) > .anchor": apply`
     hidden
+  `,
+  "hr + *": apply`
+    mt-0
   `,
   "a[rel~='external']": css(
     apply`text-current underline`,
@@ -194,9 +191,13 @@ function Header({
         </h1>
       )}
 
+      {showDescription && description && (
+        <p class={tw`text(gray-500)`}>{description}</p>
+      )}
+
       {showMeta && (datePublished || tags) && (
         <div
-          class={tw`flex items-baseline text(sm gray-500) ${styleUtils.childrenDivider}`}
+          class={tw`flex items-baseline text(xs gray-500) ${styleUtils.childrenDivider}`}
         >
           {datePublished && (
             <div>
@@ -224,20 +225,15 @@ function Header({
           )}
         </div>
       )}
-      {showDescription && description && (
-        <p class={tw`text(sm gray-500)`}>{description}</p>
-      )}
 
       {showToc && headings?.some((h) => h.level > 2) && (
         <details
           class={tw`
-          pl-4
-          border(l gray-300 dark:(gray-700))
-          mt-4
+          mt-8
           text(sm gray-500)
         `}
         >
-          <summary class={tw`text-current font-medium`}>Contents</summary>
+          <summary class={tw`text-current`}>Contents</summary>
           <ol class={tw`mt-2`}>
             {headings
               .filter((h) => h.level < 4)
