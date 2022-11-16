@@ -95,7 +95,7 @@ function Item({
           relative
           no-underline!
           flex flex-row items-center gap-2
-          py-2
+          py-1.5
           not-hover:(
             text(gray-600 dark:gray-400)
           )
@@ -104,7 +104,7 @@ function Item({
         {pinned && (
           <div
             class={tw`
-              md:(absolute top-[9px] left-[-20px])
+              md:(absolute my-auto -left-6)
             `}
           >
             <StarIcon />
@@ -170,10 +170,9 @@ export default function IndexList(props: IndexListProps) {
       const tag = item[0];
       const count = item[1].length;
       return (
-        <li>
+        <li class={tw`py-0.5`}>
           <a
             class={tw`
-              leading-6
                 no-underline!
                 not-hover:(
                   text(gray-600 dark:gray-400)
@@ -192,7 +191,7 @@ export default function IndexList(props: IndexListProps) {
     <section
       id={props.title}
       class={tw`
-        text(sm) tracking-tight leading-4
+        text(sm)
         target:(
           ring ring-pink-200 ring-offset-8
           dark:(ring-pink-900 ring-offset-black)
@@ -201,26 +200,19 @@ export default function IndexList(props: IndexListProps) {
     >
       <h6
         class={tw`
+          text(xs gray-500)
+          uppercase font-semibold tracking-wide
           pb-2
-          text(gray-500)
-          border(b gray-200)
-          dark:(
-            border(gray-800)
-          )
         `}
       >
         {props.title}
-        <span class={tw`font-normal opacity-60`}>
-          {" "}: {Object.keys(props.items).length}
-        </span>
       </h6>
       <ul
         class={tw`
           flex
-          tracking-tight
           ${
           (props.type === "backlinks" || props.type === "pages") &&
-          "flex-col divide-y divide-gray-200 dark:(divide-gray-800)"
+          "flex-col divide-y divide-gray-100 dark:(divide-gray-900)"
         }
           ${props.type === "tags" && `flex-wrap pt-1`}
           ${props.type === "tags" && styleUtils.childrenDivider}

@@ -41,7 +41,7 @@ export default function Body({
         tracking-[-0.01em]
         min-h-screen
         mx-auto max-w-3xl
-        px-4
+        p-4
         flex flex-col gap-16
         text-sm md:(text-base)
         bg-white text-gray-900
@@ -88,7 +88,7 @@ export default function Body({
 
         {page.index !== "tag" && relatedPages && relatedPages.length > 0 && (
           <IndexList
-            title={`Related (${page.tags?.join(", ")})`}
+            title={`Related`}
             items={relatedPages}
             type={"pages"}
             lang={lang}

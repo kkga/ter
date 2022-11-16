@@ -14,15 +14,15 @@ function PageHeader({ currentPath, crumbs, navItems }: PageHeaderProps) {
   return (
     <header
       class={tw`
-        flex flex-col md:(flex-row)
-        justify-between items-baseline gap-2 md:(gap-4)
-        py-4
+        flex flex(col md:row) 
+        divide(y md:none gray-100 dark:gray-900) 
+        justify-between md:(items-baseline) 
         text(sm gray-500)
         ${styleUtils.linkDimmer}
       `}
     >
       {crumbs && (
-        <ul class={tw`flex ${styleUtils.childrenBreadcrumbDivider}`}>
+        <ul class={tw`pb(2 md:0) flex ${styleUtils.childrenBreadcrumbDivider}`}>
           {crumbs.map((crumb) => (
             <li>
               {crumb.current && crumb.slug}
@@ -33,7 +33,7 @@ function PageHeader({ currentPath, crumbs, navItems }: PageHeaderProps) {
       )}
       {navItems && (
         <ul
-          class={tw`order-first md:(order-last place-self-end) flex ${styleUtils.childrenDivider}`}
+          class={tw`pt(2 md:0) md:(place-self-end) flex ${styleUtils.childrenDivider}`}
         >
           {Object.entries(navItems).map(([label, path]) => (
             <li>

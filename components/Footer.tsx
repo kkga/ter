@@ -18,7 +18,7 @@ function Footer({ author }: FooterProps) {
   return (
     <footer
       class={tw`
-        mt-auto py-4
+        mt-auto
         flex items-baseline
         text(xs gray-500)
         ${styleUtils.linkDimmer}

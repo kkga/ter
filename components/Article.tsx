@@ -39,10 +39,10 @@ const contentStyles = css({
     text-xl mt-12 font-semibold tracking-tight
   `,
   h3: apply`
-    text-base mt-8 mb-2 font-semibold tracking-tight
+    text-base mt-8 mb-4 font-semibold tracking-tight
   `,
   "h4, h5, h6": apply`
-    text-sm mt-8 mb-2 font-medium text(gray-500) tracking-tight
+    text-base mt-6 mb-2 font-medium text(gray-500) tracking-tight
   `,
   ":is(h1,h2,h3,h4,h5,h6):not(:hover) > .anchor": apply`
     hidden
@@ -128,13 +128,13 @@ const contentStyles = css({
     overflow-scroll
   `,
   th: apply`
-    border(b gray-300 dark:gray-700)
+    border(b gray-200 dark:gray-800)
     text(gray-500)
     font(medium)
     py-1
   `,
   td: apply`
-    border(b gray-200 dark:gray-800)
+    border(b gray-100 dark:gray-900)
     py-1 pr-3
     align-baseline
   `,
@@ -197,7 +197,7 @@ function Header({
 
       {showMeta && (datePublished || tags) && (
         <div
-          class={tw`flex items-baseline text(xs gray-500) ${styleUtils.childrenDivider}`}
+          class={tw`flex items-baseline text(sm gray-500) ${styleUtils.childrenDivider}`}
         >
           {datePublished && (
             <div>
@@ -208,7 +208,7 @@ function Header({
           )}
           {dateUpdated && (
             <div>
-              Updated:{" "}
+              <span>Upd:</span>{" "}
               <time dateTime={dateUpdated.toString()}>
                 {dateUpdated.toLocaleDateString(lang, dateFormat)}
               </time>

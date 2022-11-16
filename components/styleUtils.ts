@@ -2,7 +2,7 @@ import { apply, css } from "../deps.ts";
 
 export const styleUtils = {
   childrenDivider: css({
-    "& > * + *::before": {
+    "& > *:not(:last-child)::after": {
       content: '"·"',
       margin: "0 0.5em",
       opacity: 0.6,
