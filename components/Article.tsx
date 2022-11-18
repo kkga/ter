@@ -162,7 +162,7 @@ function Toc({ headings }: { headings: Heading[] }) {
         ${screen("sm", css`columns: 2`)}
       `;
 
-  const tocHeadings = headings.filter((h) => h.level <= 3);
+  const tocHeadings = headings.filter((h) => h.level <= 2);
 
   return (
     <ol class={tw`mt-8 ${getColumnsCss(tocHeadings.length)}`}>
