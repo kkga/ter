@@ -1,30 +1,29 @@
 /** @jsxImportSource https://esm.sh/preact */
 
 import { Heading, Page } from "../types.d.ts";
-import { apply, css, tw } from "../deps.ts";
+import { apply, css, screen, tw } from "../deps.ts";
 import { styleUtils } from "./styleUtils.ts";
 
 interface HeaderProps {
   title?: string;
   description?: string;
   datePublished?: Date;
+  url: URL;
   dateUpdated?: Date;
   tags?: string[];
   headings?: Heading[];
-  dateFormat?: Intl.DateTimeFormatOptions;
-  lang?: Intl.LocalesArgument;
-  size?: "small" | "default";
-  showTitle?: boolean;
-  showMeta?: boolean;
-  showDescription?: boolean;
-  showToc?: boolean;
+  lang: Intl.LocalesArgument;
+  size: "small" | "default";
+  showTitle: boolean;
+  showMeta: boolean;
+  showDescription: boolean;
+  showToc: boolean;
 }
 
 interface ArticleProps {
   page: Page;
-  dateFormat?: Intl.DateTimeFormatOptions;
-  lang?: Intl.LocalesArgument;
-  headerSize?: "small" | "default";
+  lang: Intl.LocalesArgument;
+  isInLog?: boolean;
   children?: preact.ComponentChildren;
 }
 
@@ -33,19 +32,22 @@ const contentStyles = css({
     mb-4 first-child:(mt-0)
   `,
   h1: apply`
-    text-3xl mt-12 font-semibold tracking-tight
+    text-3xl mt-12 mb-6 font-semibold tracking-tight
   `,
   h2: apply`
-    text-xl mt-12 font-semibold tracking-tight
+    text-2xl mt-12 mb-6 font-semibold tracking-tight
   `,
   h3: apply`
-    text-base mt-8 mb-4 font-semibold tracking-tight
+    text-base mt-8 font-semibold tracking-tight
   `,
   "h4, h5, h6": apply`
-    text-base mt-6 mb-2 font-medium text(gray-500) tracking-tight
+    text-xs uppercase mt-6 mb-2 font-semibold tracking-wide
   `,
-  ":is(h1,h2,h3,h4,h5,h6):not(:hover) > .anchor": apply`
+  ":is(h1,h2,h3,h4,h5,h6):not(:hover) > a.anchor": apply`
     hidden
+  `,
+  ":is(h1,h2,h3,h4,h5,h6) > a.anchor:hover": apply`
+    no-underline
   `,
   "hr + *": apply`
     mt-0
@@ -73,7 +75,7 @@ const contentStyles = css({
     pl-4
   `,
   hr: apply`
-    my-8
+    my-10
     border(gray-200)
     dark:(border(gray-800))
   `,
@@ -83,32 +85,27 @@ const contentStyles = css({
   `,
   ":not(pre) code": apply`
     px-1 py-px
-    bg(pink-50 dark:(pink-300 opacity-20))
+    bg(gray-50 dark:(gray-900))
     rounded-sm
   `,
   pre: apply`
     overflow-x-scroll
     text(xs md:sm)
     font-mono
-    py-2 px-4
     leading-snug
-    border(l pink-700 opacity-30 dark:(pink-300 opacity-40))
   `,
   "pre:not(.hljs)": apply`
-    text(pink-700 dark:pink-300)
+    text(green-700 dark:green-600)
   `,
   details: css(
     apply`
-      px-4 py-3
       text-sm leading-snug
       children:(
         my-2
         first-child:my-0
         last-child:mb-0
       )
-      bg(green-100 opacity-50 dark:(green-900 opacity-50))
-      text(green-700 dark:green-400)
-      border(l green-400 dark:(green-700))
+      text(gray-500 dark:gray-400)
     `,
     {
       "summary": apply`font-semibold`,
@@ -128,10 +125,11 @@ const contentStyles = css({
     overflow-scroll
   `,
   th: apply`
-    border(b gray-200 dark:gray-800)
-    text(gray-500)
+    border(b gray-100 dark:gray-900)
+    text(xs gray-500)
+    uppercase
     font(medium)
-    py-1
+    py-1 pr-4
   `,
   td: apply`
     border(b gray-100 dark:gray-900)
@@ -153,26 +151,77 @@ const contentStyles = css({
   ".cols-4": apply`grid grid(cols-2 md:cols-4) gap-4`,
 });
 
+function Toc({ headings }: { headings: Heading[] }) {
+  const getColumnsCss = (hCount: number) =>
+    hCount > 4
+      ? css`
+        ${screen("sm", css`columns: 2`)}
+        ${screen("md", css`columns: 3`)}
+      `
+      : css`
+        ${screen("sm", css`columns: 2`)}
+      `;
+
+  const tocHeadings = headings.filter((h) => h.level <= 2);
+
+  return (
+    <ol class={tw`mt-8 ${getColumnsCss(tocHeadings.length)}`}>
+      {tocHeadings
+        .map((h: Heading, i) => {
+          return (
+            <li
+              class={tw`
+                text-xs font-medium
+                uppercase tracking-wide
+              `}
+            >
+              <a
+                href={`#${h.slug}`}
+                class={tw`
+                  block truncate
+                  py-1.5 px-2
+                  border(t dark:gray-900 )
+                  hover:(no-underline bg(pink-400 opacity-10))
+                `}
+              >
+                <span class={tw`font-mono mr-4 no-underline!`}>
+                  {i + 1}
+                </span>
+                {h.text}
+              </a>
+            </li>
+          );
+        })}
+    </ol>
+  );
+}
+
 function Header({
   title,
   description,
+  url,
   datePublished,
   dateUpdated,
   tags,
   headings,
   lang,
-  dateFormat = { year: "numeric", month: "short", day: "numeric" },
   showTitle,
   showDescription,
   showMeta,
   showToc,
   size = "default",
 }: HeaderProps) {
+  const dateFormat: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  };
+
   return (
     <header
       class={tw`
       ${size === "small" ? "mb-4" : "mb-16"}
-      flex flex-col ${size === "small" ? "gap-0.5" : "gap-2"}
+      flex flex-col ${size === "small" ? "gap-1" : "gap-2"}
       only-child:(m-0)
       empty:hidden
       tracking-tight
@@ -201,9 +250,11 @@ function Header({
         >
           {datePublished && (
             <div>
-              <time dateTime={datePublished.toString()}>
-                {datePublished.toLocaleDateString(lang, dateFormat)}
-              </time>
+              <a href={url.pathname}>
+                <time dateTime={datePublished.toString()}>
+                  {datePublished.toLocaleDateString(lang, dateFormat)}
+                </time>
+              </a>
             </div>
           )}
           {dateUpdated && (
@@ -227,25 +278,7 @@ function Header({
       )}
 
       {showToc && headings?.some((h) => h.level > 2) && (
-        <details
-          class={tw`
-          mt-8
-          text(sm gray-500)
-        `}
-        >
-          <summary class={tw`text-current`}>Contents</summary>
-          <ol class={tw`mt-2`}>
-            {headings
-              .filter((h) => h.level < 4)
-              .map((h: Heading) => {
-                return (
-                  <li class={h.level > 2 ? tw`pl-3` : tw`font-medium`}>
-                    <a href={`#${h.slug}`}>{h.text}</a>
-                  </li>
-                );
-              })}
-          </ol>
-        </details>
+        <Toc headings={headings} />
       )}
     </header>
   );
@@ -253,28 +286,29 @@ function Header({
 
 export default function Article({
   page,
-  dateFormat,
-  lang,
   children,
-  headerSize = "default",
+  lang,
+  isInLog = false,
 }: ArticleProps) {
   return (
     <article
-      class={tw`sibling:(
-        mt-6 pt-6 border(t dashed gray-300 dark:gray-700)
-      )`}
+      class={tw`
+        sibling:(
+          mt-8 pt-8
+          border(t dashed gray-200 dark:gray-800)
+        )`}
     >
       {page.showHeader && (
         <Header
+          url={page.url}
           title={page.title}
           description={page.description}
           datePublished={page.datePublished}
           dateUpdated={page.dateUpdated}
           tags={page.tags}
           headings={page.headings}
-          dateFormat={dateFormat}
           lang={lang}
-          size={headerSize}
+          size={isInLog ? "small" : "default"}
           showTitle={page.showTitle}
           showMeta={page.showMeta}
           showDescription={page.showDescription}

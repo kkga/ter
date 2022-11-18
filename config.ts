@@ -9,8 +9,10 @@ const defaultUserConfig: UserConfig = {
   authorName: "Your Name Here",
   authorEmail: "youremailaddress@example.com",
   authorUrl: "https://example.com/about-me/",
-  codeHighlight: false,
   lang: "en",
+  codeHighlight: false,
+  navLinks: {},
+  head: "",
 };
 
 const defaultBuildConfig: BuildConfig = {

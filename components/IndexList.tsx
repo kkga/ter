@@ -64,34 +64,39 @@ const StarIcon = () => {
   );
 };
 
-interface ItemProps {
+interface PageItemProps {
   url: URL;
   title: string;
   description?: string;
   pinned?: boolean;
   isDirIndex?: boolean;
   date?: Date;
-  dateFormat?: Intl.DateTimeFormatOptions;
   lang?: Intl.LocalesArgument;
   icon?: preact.VNode;
 }
 
-function Item({
+function PageItem({
   title,
   description,
   url,
   pinned,
   isDirIndex,
   date,
-  dateFormat = { year: "2-digit", day: "2-digit", month: "short" },
   lang,
   icon,
-}: ItemProps) {
+}: PageItemProps) {
+  const dateFormat: Intl.DateTimeFormatOptions = {
+    year: "2-digit",
+    day: "2-digit",
+    month: "short",
+  };
+
   return (
     <li>
       <a
         href={url.pathname}
         class={tw`
+          transition-colors
           relative
           no-underline!
           flex flex-row items-center gap-2
@@ -142,6 +147,30 @@ function Item({
   );
 }
 
+interface TagItemProps {
+  name: string;
+  pageCount: number;
+}
+
+function TagItem({ name, pageCount }: TagItemProps) {
+  return (
+    <li class={tw`py-0.5`}>
+      <a
+        href={`/tags##${name}`}
+        class={tw`
+          transition-colors
+          no-underline!
+          not-hover:(
+            text(gray-600 dark:gray-400)
+          )
+        `}
+      >
+        {name} <span class={tw`opacity-60`}>{pageCount}</span>
+      </a>
+    </li>
+  );
+}
+
 interface IndexListProps {
   title: string;
   items: Page[] | Record<string, Page[]>;
@@ -150,43 +179,6 @@ interface IndexListProps {
 }
 
 export default function IndexList(props: IndexListProps) {
-  const renderItem = (item: Page | [string, Page[]]) => {
-    if (typeof item === "object" && "url" in item) {
-      return (
-        <Item
-          title={item.title || ""}
-          description={item.description}
-          url={item.url}
-          isDirIndex={item.index === "dir"}
-          pinned={item.pinned}
-          date={item.datePublished}
-          lang={props.lang}
-          icon={props.type === "backlinks"
-            ? <ArrowLeftIcon />
-            : <ArrowRightIcon />}
-        />
-      );
-    } else {
-      const tag = item[0];
-      const count = item[1].length;
-      return (
-        <li class={tw`py-0.5`}>
-          <a
-            class={tw`
-                no-underline!
-                not-hover:(
-                  text(gray-600 dark:gray-400)
-                )
-            `}
-            href={`/tags##${tag}`}
-          >
-            {item} <span class={tw`opacity-60`}>{count}</span>
-          </a>
-        </li>
-      );
-    }
-  };
-
   return (
     <section
       id={props.title}
@@ -207,21 +199,37 @@ export default function IndexList(props: IndexListProps) {
       >
         {props.title}
       </h6>
-      <ul
-        class={tw`
-          flex
-          ${
-          (props.type === "backlinks" || props.type === "pages") &&
-          "flex-col divide-y divide-gray-100 dark:(divide-gray-900)"
-        }
-          ${props.type === "tags" && `flex-wrap pt-1`}
-          ${props.type === "tags" && styleUtils.childrenDivider}
-        `}
-      >
-        {Array.isArray(props.items)
-          ? props.items.map((item) => renderItem(item))
-          : Object.entries(props.items).map((item) => renderItem(item))}
-      </ul>
+      {(props.type === "pages" || props.type === "backlinks") &&
+        Array.isArray(props.items) &&
+        (
+          <ul
+            class={tw`flex flex-col divide-y divide-gray-100 dark:(divide-gray-900)`}
+          >
+            {props.items.map((item) => (
+              <PageItem
+                title={item.title || ""}
+                description={item.description}
+                url={item.url}
+                isDirIndex={item.index === "dir"}
+                pinned={item.pinned}
+                date={item.datePublished}
+                lang={props.lang}
+                icon={props.type === "backlinks"
+                  ? <ArrowLeftIcon />
+                  : <ArrowRightIcon />}
+              />
+            ))}
+          </ul>
+        )}
+      {props.type === "tags" && (
+        <ul
+          class={tw`flex flex-wrap pt-1 ${styleUtils.childrenDivider}`}
+        >
+          {Object.entries(props.items).map((item) => (
+            <TagItem name={item[0]} pageCount={item[1].length} />
+          ))}
+        </ul>
+      )}
     </section>
   );
 }

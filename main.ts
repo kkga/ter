@@ -123,6 +123,13 @@ async function generateSite(opts: GenerateSiteOpts) {
     title: "Tags",
     index: "tag",
     unlisted: true,
+    ignored: false,
+    pinned: false,
+    showHeader: false,
+    showTitle: false,
+    showDescription: false,
+    showToc: false,
+    showMeta: false,
   };
 
   const pages = [

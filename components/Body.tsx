@@ -1,7 +1,6 @@
 /** @jsxImportSource https://esm.sh/preact */
 
-import { tw } from "../deps.ts";
-
+import { apply, css, tw } from "../deps.ts";
 import Article from "./Article.tsx";
 import IndexList from "./IndexList.tsx";
 import Header from "./Header.tsx";
@@ -17,10 +16,13 @@ interface BodyProps {
   relatedPages?: Page[];
   pagesByTag?: Record<string, Page[]>;
   author?: { name: string; email: string; url: string };
-  dateFormat?: Intl.DateTimeFormatOptions;
   lang: Intl.LocalesArgument;
-  navItems?: Record<string, string>;
+  navItems: Record<string, string>;
 }
+
+const mainStyle = css({
+  "&:has(article:empty)": apply`hidden`,
+});
 
 export default function Body({
   page,
@@ -31,7 +33,6 @@ export default function Body({
   pagesByTag,
   navItems,
   author,
-  dateFormat,
   lang,
 }: BodyProps) {
   return (
@@ -57,8 +58,11 @@ export default function Body({
         />
       )}
 
-      <main>
-        <Article page={page} dateFormat={dateFormat} lang={lang}>
+      <main class={tw`${mainStyle}`}>
+        <Article
+          lang={lang}
+          page={page}
+        >
           {page.layout === "log" &&
             childPages &&
             childPages?.length > 0 &&
@@ -67,16 +71,20 @@ export default function Body({
                 p.html && (
                   <Article
                     page={p}
-                    dateFormat={dateFormat}
                     lang={lang}
-                    headerSize={"small"}
+                    isInLog={true}
                   />
                 ),
             )}
         </Article>
       </main>
 
-      <aside class={tw`flex flex-col gap-12`}>
+      <aside
+        class={tw`
+        empty:hidden
+        flex flex-col gap-12
+      `}
+      >
         {childPages && childPages.length > 0 && (
           <IndexList
             title="Pages"
