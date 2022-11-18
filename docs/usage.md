@@ -229,15 +229,21 @@ configuration.
 
 #### Build command
 
-`deno run -A --unstable https://deno.land/x/ter/main.ts`
+```
+deno run -A --unstable https://deno.land/x/ter/main.ts
+```
 
 #### Output directory
 
-`_site`
+```
+_site
+```
 
 #### Install command
 
-`curl -fsSL https://deno.land/x/install/install.sh | DENO_INSTALL=/usr/local sh`
+```
+curl -fsSL https://deno.land/x/install/install.sh | DENO_INSTALL=/usr/local sh
+```
 
 ### Deno Deploy
 
