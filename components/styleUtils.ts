@@ -21,5 +21,6 @@ export const styleUtils = {
     "&:not(:hover)": {
       a: apply`text-gray-500!`,
     },
+    a: apply`transition-colors`,
   }),
 };

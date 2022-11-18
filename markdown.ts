@@ -1,7 +1,7 @@
 import {
   dirname,
   extname,
-  highlight,
+  HighlightJS,
   isAbsolute,
   join,
   marked,
@@ -138,7 +138,7 @@ export const parseMarkdown = (
     slugger: marked.Slugger,
   ): string => {
     const slug = slugger.slug(text);
-    return `<h${level} id="${slug}">${text}&nbsp;&nbsp;<a class="anchor" href="#${slug}">#</a></h${level}>`;
+    return `<h${level} id="${slug}">${text}<a class="anchor" href="#${slug}">&nbsp;&nbsp;#</a></h${level}>`;
   };
 
   renderer.image = (href: string, title: string, text: string) => {
@@ -158,8 +158,8 @@ export const parseMarkdown = (
 
   if (codeHighlight) {
     renderer.code = (code: string, lang: string): string => {
-      const language = highlight.getLanguage(lang) ? lang : "plaintext";
-      const html = highlight.highlight(code, { language }).value;
+      const language = HighlightJS.getLanguage(lang) ? lang : "plaintext";
+      const html = HighlightJS.highlight(code, { language }).value;
       return `<pre class="hljs language-${language}">${html}</pre>`;
     };
   }

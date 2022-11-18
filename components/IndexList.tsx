@@ -71,7 +71,6 @@ interface PageItemProps {
   pinned?: boolean;
   isDirIndex?: boolean;
   date?: Date;
-  dateFormat?: Intl.DateTimeFormatOptions;
   lang?: Intl.LocalesArgument;
   icon?: preact.VNode;
 }
@@ -83,15 +82,21 @@ function PageItem({
   pinned,
   isDirIndex,
   date,
-  dateFormat = { year: "2-digit", day: "2-digit", month: "short" },
   lang,
   icon,
 }: PageItemProps) {
+  const dateFormat: Intl.DateTimeFormatOptions = {
+    year: "2-digit",
+    day: "2-digit",
+    month: "short",
+  };
+
   return (
     <li>
       <a
         href={url.pathname}
         class={tw`
+          transition-colors
           relative
           no-underline!
           flex flex-row items-center gap-2
@@ -151,13 +156,14 @@ function TagItem({ name, pageCount }: TagItemProps) {
   return (
     <li class={tw`py-0.5`}>
       <a
-        class={tw`
-                no-underline!
-                not-hover:(
-                  text(gray-600 dark:gray-400)
-                )
-            `}
         href={`/tags##${name}`}
+        class={tw`
+          transition-colors
+          no-underline!
+          not-hover:(
+            text(gray-600 dark:gray-400)
+          )
+        `}
       >
         {name} <span class={tw`opacity-60`}>{pageCount}</span>
       </a>

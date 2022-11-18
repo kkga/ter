@@ -214,6 +214,14 @@ function generateIndexPageFromDir(
     title: entry.name,
     url: pageUrl,
     index: "dir",
+    pinned: false,
+    ignored: false,
+    unlisted: false,
+    showHeader: true,
+    showTitle: true,
+    showDescription: true,
+    showMeta: true,
+    showToc: false,
   };
 }
 
@@ -228,6 +236,14 @@ function generateContentPage(
 
   let page: Page = {
     url: pageUrl,
+    pinned: false,
+    ignored: false,
+    unlisted: false,
+    showHeader: true,
+    showTitle: true,
+    showDescription: true,
+    showMeta: true,
+    showToc: false,
   };
 
   if (fmTest(raw)) {
@@ -263,6 +279,14 @@ function generateIndexPageFromFile(
   let page: Page = {
     url: pageUrl,
     index: "dir",
+    pinned: false,
+    ignored: false,
+    unlisted: false,
+    showHeader: true,
+    showTitle: true,
+    showDescription: true,
+    showMeta: true,
+    showToc: false,
   };
 
   if (fmTest(raw)) {

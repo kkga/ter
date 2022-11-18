@@ -7,9 +7,9 @@ export interface UserConfig {
   authorEmail: string;
   authorUrl: string;
   codeHighlight: boolean;
-  navLinks?: Record<string, string>;
-  lang?: Intl.LocalesArgument;
-  head?: string;
+  lang: Intl.LocalesArgument;
+  navLinks: Record<string, string>;
+  head: string;
 }
 
 export interface BuildConfig {
@@ -49,14 +49,14 @@ export interface Page {
   headings?: Heading[];
   index?: "dir" | "tag";
   layout?: "log";
-  pinned?: boolean;
-  ignored?: boolean;
-  unlisted?: boolean;
-  showHeader?: boolean;
-  showToc?: boolean;
-  showTitle?: boolean;
-  showMeta?: boolean;
-  showDescription?: boolean;
+  pinned: boolean;
+  ignored: boolean;
+  unlisted: boolean;
+  showHeader: boolean;
+  showToc: boolean;
+  showTitle: boolean;
+  showMeta: boolean;
+  showDescription: boolean;
 }
 
 export interface JSONValue {

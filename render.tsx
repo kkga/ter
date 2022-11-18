@@ -40,8 +40,8 @@ export function renderPage({
       backlinkPages={backlinkPages && sortPages(backlinkPages)}
       relatedPages={relatedPages && sortPages(relatedPages)}
       pagesByTag={pagesByTag && sortTaggedPages(pagesByTag)}
-      navItems={userConfig.navLinks}
       lang={userConfig.lang}
+      navItems={userConfig.navLinks}
       author={{
         name: userConfig.authorName,
         email: userConfig.authorEmail,
