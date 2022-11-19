@@ -1,3 +1,5 @@
+/** @jsxImportSource https://esm.sh/preact */
+
 import { apply, css, tw } from "../deps.ts";
 import Article from "./Article.tsx";
 import IndexList from "./IndexList.tsx";

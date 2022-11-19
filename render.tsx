@@ -1,3 +1,5 @@
+/** @jsxImportSource https://esm.sh/preact */
+
 import { getStyleTag, renderToString, twindSetup } from "./deps.ts";
 import twindConfig, { sheet } from "./twind.config.ts";
 import { HIGHLIGHT_STYLE, HMR_CLIENT } from "./constants.ts";

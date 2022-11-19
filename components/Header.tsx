@@ -1,3 +1,5 @@
+/** @jsxImportSource https://esm.sh/preact */
+
 import { tw } from "../deps.ts";
 import { Crumb } from "../types.d.ts";
 import { styleUtils } from "./styleUtils.ts";

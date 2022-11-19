@@ -1,3 +1,5 @@
+/** @jsxImportSource https://esm.sh/preact */
+
 import { Heading, Page } from "../types.d.ts";
 import { apply, css, screen, tw } from "../deps.ts";
 import { styleUtils } from "./styleUtils.ts";
