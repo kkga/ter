@@ -38,7 +38,7 @@ export {
   withoutTrailingSlash,
 } from "https://esm.sh/ufo@1.0.0/";
 
-export { Feed } from "https://esm.sh/feed@4.2.2";
+export { Feed } from "https://esm.sh/feed";
 export { deepmerge } from "https://deno.land/x/deepmergets@v4.2.2/dist/deno/index.ts";
 export { default as slugify } from "https://esm.sh/slugify@1.6.5/";
 
