@@ -12,22 +12,18 @@ toc: true
 ### Install deno
 
 Ter is built with [Deno](https://deno.land/), so you'll need to have it
-[installed](https://deno.land/manual/getting_started/installation). Once the
-`deno` command is available to run in your terminal, follow along.
+[installed](https://deno.land/manual/getting_started/installation).
 
 ### Build a site
 
-Navigate to a directory with some markdown files and run Ter to build a site.
-
-This command will recursively search for all `*.md` files in the current
-directory and generate a site into the `_site` directory:
+This command will recursively search for `*.md` files in the current directory
+and generate a site into the `_site` directory:
 
 ```
 deno run -A --unstable https://deno.land/x/ter/main.ts
 ```
 
-If your markdown files are not in root directory, or if you want a different
-name for the output directory, adjust accordingy, for example:
+Use `--input`/`--output` flags for custom source/destination directories:
 
 ```
 deno run -A --unstable https://deno.land/x/ter/main.ts --input pages --output _dist
