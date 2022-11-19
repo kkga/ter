@@ -185,8 +185,8 @@ export default function IndexList(props: IndexListProps) {
       class={tw`
         text(sm)
         target:(
-          ring ring-pink-200 ring-offset-8
-          dark:(ring-pink-900 ring-offset-black)
+          ring ring-blue-200 ring-offset-8
+          dark:(ring-blue-900 ring-offset-black)
         )
       `}
     >

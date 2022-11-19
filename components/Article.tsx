@@ -41,7 +41,7 @@ const contentStyles = css({
     text-base mt-8 font-semibold tracking-tight
   `,
   "h4, h5, h6": apply`
-    text-xs uppercase mt-6 mb-2 font-semibold tracking-wide
+    text(xs gray-700 dark:(gray-400)) uppercase mt-6 mb-2 font-semibold tracking-wide
   `,
   ":is(h1,h2,h3,h4,h5,h6):not(:hover) > a.anchor": apply`
     hidden
@@ -181,7 +181,7 @@ function Toc({ headings }: { headings: Heading[] }) {
                   block truncate
                   py-1.5 px-2
                   border(t dark:gray-900 )
-                  hover:(no-underline bg(pink-400 opacity-10))
+                  hover:(no-underline bg(blue-400 opacity-10))
                 `}
               >
                 <span class={tw`font-mono mr-4 no-underline!`}>

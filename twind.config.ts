@@ -12,8 +12,8 @@ export default {
   preflight: {
     a: css(
       apply`
+        text(blue-600 dark:blue-300)
         no-underline
-        text(pink-600 dark:pink-300)
         hover:(underline)
       `,
       {
