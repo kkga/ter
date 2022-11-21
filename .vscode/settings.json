@@ -2,5 +2,6 @@
   "deno.enable": true,
   "deno.lint": true,
   "deno.codeLens.test": true,
-  "editor.defaultFormatter": "denoland.vscode-deno"
+  "editor.defaultFormatter": "denoland.vscode-deno",
+  "deno.unstable": true
 }
