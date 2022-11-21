@@ -1,14 +1,14 @@
 /** @jsxImportSource https://esm.sh/preact */
 
-import { getStyleTag, renderToString, twindSetup } from "./deps.ts";
-import twindConfig, { sheet } from "./twind.config.ts";
+import { inline, renderToString, twindSetup } from "./deps.ts";
+import { twindConfig } from "./twind.config.ts";
 import { HIGHLIGHT_STYLE, HMR_CLIENT } from "./constants.ts";
 import { Crumb, Page, UserConfig } from "./types.d.ts";
 
 import Body from "./components/Body.tsx";
 import { sortPages, sortTaggedPages } from "./pages.ts";
 
-twindSetup(twindConfig);
+const tw = twindSetup(twindConfig);
 
 interface RenderOpts {
   page: Page;
@@ -31,7 +31,6 @@ export function renderPage({
   pagesByTag,
   userConfig,
 }: RenderOpts): string {
-  sheet.reset();
   const body = renderToString(
     <Body
       page={page}
@@ -50,17 +49,17 @@ export function renderPage({
     />,
   );
 
-  if (userConfig.codeHighlight) {
-    sheet.insert(HIGHLIGHT_STYLE, 999);
-  }
+  // if (userConfig.codeHighlight) {
+  //   tw(HIGHLIGHT_STYLE, 999);
+  // }
 
-  const styleTag = getStyleTag(sheet);
   const pageTitle = page.title === userConfig.title
     ? page.title
     : `${page.title} &middot; ${userConfig.title}`;
   const pageDescription = `${page.description || userConfig.description}`;
 
-  return `
+  return inline(
+    `
 <!doctype html>
 <html lang="${userConfig.lang || "en"}">
 <head>
@@ -77,9 +76,11 @@ export function renderPage({
   <meta property="og:url" content="${page.url}">
   <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
   <link rel="alternate" type="application/atom+xml" href="/feed.xml" title="${userConfig.title}" />
-  ${styleTag}
   ${userConfig.head || ""}
   ${dev ? `<script>${HMR_CLIENT}</script>` : ""}
+</head>
   ${body}
-</html>`;
+</html>`,
+    tw,
+  );
 }

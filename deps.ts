@@ -38,7 +38,7 @@ export {
   withoutTrailingSlash,
 } from "https://esm.sh/ufo@1.0.0/";
 
-export { Feed } from "https://esm.sh/feed";
+export { Feed } from "https://esm.sh/feed@4.2.2";
 export { deepmerge } from "https://deno.land/x/deepmergets@v4.2.2/dist/deno/index.ts";
 export { default as slugify } from "https://esm.sh/slugify@1.6.5/";
 
@@ -49,14 +49,20 @@ export { marked } from "https://esm.sh/marked@4.2.2/";
 export { HighlightJS } from "https://cdn.skypack.dev/highlight.js";
 
 export {
-  type Configuration as TwindConfiguration,
+  apply,
+  css,
+  cx,
+  defineConfig,
+  extract,
+  inline,
+  install,
   setup as twindSetup,
+  stringify,
   tw,
-} from "https://esm.sh/twind@0.16.17^";
+  twind,
+  tx,
+  virtual,
+} from "https://esm.sh/@twind/core@1.0.1";
 
-export {
-  getStyleTag,
-  virtualSheet,
-} from "https://esm.sh/twind@0.16.17^/sheets";
-
-export { apply, css, screen } from "https://esm.sh/twind@0.16.17^/css";
+export { default as presetTailwind } from "https://esm.sh/@twind/preset-tailwind@1.0.1";
+export { default as presetExt } from "https://esm.sh/@twind/preset-ext@1.0.1";

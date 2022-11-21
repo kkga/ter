@@ -1,7 +1,5 @@
 /** @jsxImportSource https://esm.sh/preact */
 
-import { tw } from "../deps.ts";
-import { styleUtils } from "./styleUtils.ts";
 import { Page } from "../types.d.ts";
 
 const ArrowRightIcon = () => {
@@ -95,39 +93,27 @@ function PageItem({
     <li>
       <a
         href={url.pathname}
-        class={tw`
+        class="
           transition-colors
           relative
-          no-underline!
           flex flex-row items-center gap-2
           py-1.5
-          not-hover:(
-            text(gray-600 dark:gray-400)
-          )
-        `}
+          not-hover:(text(gray-600 dark:gray-400))
+          hover:(no-underline)
+        "
       >
         {pinned && (
-          <div
-            class={tw`
-              md:(absolute my-auto -left-6)
-            `}
-          >
+          <div class="md:(absolute my-auto -left-6)">
             <StarIcon />
           </div>
         )}
-        <div
-          class={tw`flex-1 flex overflow-hidden whitespace-nowrap font-medium ${styleUtils.childrenDivider}`}
-        >
-          <span class={tw`flex-shrink-0 truncate`}>
+        <div class="divide-dot flex-1 flex overflow-hidden whitespace-nowrap font-medium">
+          <span class="flex-shrink-0 truncate">
             {title}
-            {isDirIndex && <span class={tw`select-none`}>/..</span>}
+            {isDirIndex && <span class="select-none">/..</span>}
           </span>
           {description && (
-            <span
-              class={tw`
-                truncate font-normal opacity-70
-              `}
-            >
+            <span class="truncate font-normal opacity-70">
               {description}
             </span>
           )}
@@ -135,13 +121,13 @@ function PageItem({
 
         {date && (
           <time
-            class={tw`text(xs) tabular-nums slashed-zero flex-shrink-0`}
+            class="text(xs) tabular-nums slashed-zero flex-shrink-0"
             dateTime={date.toString()}
           >
             {date.toLocaleDateString(lang, dateFormat)}
           </time>
         )}
-        <div class={tw`flex-shrink-0`}>{icon}</div>
+        <div class="flex-shrink-0">{icon}</div>
       </a>
     </li>
   );
@@ -154,18 +140,16 @@ interface TagItemProps {
 
 function TagItem({ name, pageCount }: TagItemProps) {
   return (
-    <li class={tw`py-0.5`}>
+    <li class="py-0.5">
       <a
         href={`/tags##${name}`}
-        class={tw`
+        class="
           transition-colors
-          no-underline!
-          not-hover:(
-            text(gray-600 dark:gray-400)
-          )
-        `}
+          hover:no-underline
+          not-hover:( text(gray-600 dark:gray-400) )
+        "
       >
-        {name} <span class={tw`opacity-60`}>{pageCount}</span>
+        {name} <span class="opacity-60">{pageCount}</span>
       </a>
     </li>
   );
@@ -182,29 +166,21 @@ export default function IndexList(props: IndexListProps) {
   return (
     <section
       id={props.title}
-      class={tw`
+      class="
         text(sm)
         target:(
           ring ring-blue-200 ring-offset-8
           dark:(ring-blue-900 ring-offset-black)
         )
-      `}
+      "
     >
-      <h6
-        class={tw`
-          text(xs gray-500)
-          uppercase font-semibold tracking-wide
-          pb-2
-        `}
-      >
+      <h6 class="text(xs gray-500) uppercase font-semibold tracking-wide pb-2">
         {props.title}
       </h6>
       {(props.type === "pages" || props.type === "backlinks") &&
         Array.isArray(props.items) &&
         (
-          <ul
-            class={tw`flex flex-col divide-y divide-gray-100 dark:(divide-gray-900)`}
-          >
+          <ul class="flex flex-col divide-y divide-gray-100 dark:(divide-gray-900)">
             {props.items.map((item) => (
               <PageItem
                 title={item.title || ""}
@@ -222,9 +198,7 @@ export default function IndexList(props: IndexListProps) {
           </ul>
         )}
       {props.type === "tags" && (
-        <ul
-          class={tw`flex flex-wrap pt-1 ${styleUtils.childrenDivider}`}
-        >
+        <ul class="divide-dot flex flex-wrap pt-1">
           {Object.entries(props.items).map((item) => (
             <TagItem name={item[0]} pageCount={item[1].length} />
           ))}

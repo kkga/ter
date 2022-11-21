@@ -20,10 +20,6 @@ interface BodyProps {
   navItems: Record<string, string>;
 }
 
-const mainStyle = css({
-  "&:has(article:empty)": apply`hidden`,
-});
-
 export default function Body({
   page,
   crumbs,
@@ -36,20 +32,16 @@ export default function Body({
   lang,
 }: BodyProps) {
   return (
-    <body
-      class={tw`
-        antialiased
-        tracking-[-0.01em]
-        min-h-screen
-        mx-auto max-w-3xl
-        p-4
-        flex flex-col gap-16
-        text-sm md:(text-base)
-        bg-white text-gray-900
-        dark:(
-          bg-black text-gray-300
-        )`}
-    >
+    <body class="
+      antialiased
+      tracking-[-0.01em]
+      min-h-screen
+      mx-auto max-w-3xl
+      p-4
+      flex flex-col gap-16
+      text(gray-900 dark:gray-300)
+      bg(white dark:black) 
+    ">
       {crumbs && (
         <Header
           currentPath={page.url.pathname}
@@ -58,7 +50,7 @@ export default function Body({
         />
       )}
 
-      <main class={tw`${mainStyle}`}>
+      <main class="[&:has(article:empty)]:hidden">
         <Article
           lang={lang}
           page={page}
@@ -79,12 +71,7 @@ export default function Body({
         </Article>
       </main>
 
-      <aside
-        class={tw`
-        empty:hidden
-        flex flex-col gap-12
-      `}
-      >
+      <aside class="empty:hidden flex flex-col gap-12">
         {childPages && childPages.length > 0 && (
           <IndexList
             title="Pages"

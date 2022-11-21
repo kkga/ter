@@ -1,8 +1,6 @@
 /** @jsxImportSource https://esm.sh/preact */
 
-import { tw } from "../deps.ts";
 import { Crumb } from "../types.d.ts";
-import { styleUtils } from "./styleUtils.ts";
 
 interface PageHeaderProps {
   currentPath: string;
@@ -12,17 +10,15 @@ interface PageHeaderProps {
 
 function PageHeader({ currentPath, crumbs, navItems }: PageHeaderProps) {
   return (
-    <header
-      class={tw`
+    <header class="
         flex flex(col md:row) 
         divide(y md:none gray-100 dark:gray-900) 
         justify-between md:(items-baseline) 
         text(sm gray-500)
-        ${styleUtils.linkDimmer}
-      `}
-    >
+        dim-links
+      ">
       {crumbs && (
-        <ul class={tw`pb(2 md:0) flex ${styleUtils.childrenBreadcrumbDivider}`}>
+        <ul class="divide-slash pb(2 md:0) flex">
           {crumbs.map((crumb) => (
             <li>
               {crumb.current && crumb.slug}
@@ -32,9 +28,7 @@ function PageHeader({ currentPath, crumbs, navItems }: PageHeaderProps) {
         </ul>
       )}
       {navItems && (
-        <ul
-          class={tw`pt(2 md:0) md:(place-self-end) flex ${styleUtils.childrenDivider}`}
-        >
+        <ul class="divide-dot pt(2 md:0) md:(place-self-end) flex">
           {Object.entries(navItems).map(([label, path]) => (
             <li>
               {currentPath === path

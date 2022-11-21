@@ -1,8 +1,5 @@
 /** @jsxImportSource https://esm.sh/preact */
 
-import { tw } from "../deps.ts";
-import { styleUtils } from "./styleUtils.ts";
-
 interface FooterProps {
   author?: { name: string; email: string; url: string };
 }
@@ -16,15 +13,8 @@ function Footer({ author }: FooterProps) {
   if (author) items = [[author.name, author.url], ...items];
 
   return (
-    <footer
-      class={tw`
-        mt-auto
-        flex items-baseline
-        text(xs gray-500)
-        ${styleUtils.linkDimmer}
-      `}
-    >
-      <ul class={tw`flex items-baseline ${styleUtils.childrenDivider}`}>
+    <footer class="dim-links mt-auto flex items-baseline text(xs gray-500)">
+      <ul class="flex items-baseline space-x-4">
         {items.map(([label, path]) => (
           <li>
             <a href={path}>{label}</a>
