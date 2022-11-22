@@ -28,8 +28,14 @@ export const twindConfig = defineConfig({
       },
       extend: {
         "a": {
-          "@apply": "text(teal-600 dark:teal-400) font-normal no-underline",
-          "&:hover": { "@apply": "underline" },
+          "@apply": `
+            text(sky-600 dark:sky-400)
+            no-underline
+            font-normal
+          `,
+          "&:hover": {
+            "@apply": "underline decoration-dashed",
+          },
         },
         "a[rel~='external']": {
           "@apply":
