@@ -138,7 +138,7 @@ export const parseMarkdown = (
     slugger: marked.Slugger,
   ): string => {
     const slug = slugger.slug(text);
-    return `<h${level} id="${slug}">${text}<a class="anchor" href="#${slug}">&nbsp;&nbsp;#</a></h${level}>`;
+    return `<h${level} id="${slug}"><a class="h-anchor" href="#${slug}">#</a>${text}</h${level}>`;
   };
 
   renderer.image = (href: string, title: string, text: string) => {

@@ -49,18 +49,13 @@ export function renderPage({
     />,
   );
 
-  // if (userConfig.codeHighlight) {
-  //   tw(HIGHLIGHT_STYLE, 999);
-  // }
-
   const pageTitle = page.title === userConfig.title
     ? page.title
     : `${page.title} &middot; ${userConfig.title}`;
   const pageDescription = `${page.description || userConfig.description}`;
 
   return inline(
-    `
-<!doctype html>
+    `<!doctype html>
 <html lang="${userConfig.lang || "en"}">
 <head>
   <meta charset="UTF-8">
@@ -77,9 +72,10 @@ export function renderPage({
   <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
   <link rel="alternate" type="application/atom+xml" href="/feed.xml" title="${userConfig.title}" />
   ${userConfig.head || ""}
-  ${dev ? `<script>${HMR_CLIENT}</script>` : ""}
+  ${userConfig.codeHighlight && `<style>${HIGHLIGHT_STYLE}</style>`}
 </head>
-  ${body}
+${dev ? `<script>${HMR_CLIENT}</script>` : ""}
+${body}
 </html>`,
     tw,
   );

@@ -44,7 +44,7 @@ export { default as slugify } from "https://esm.sh/slugify@1.6.5/";
 
 export { renderToString } from "https://esm.sh/preact-render-to-string@5.2.6^";
 
-export { marked } from "https://esm.sh/marked@4.2.2/";
+export { marked } from "https://esm.sh/marked@4.2.3/";
 
 export { HighlightJS } from "https://cdn.skypack.dev/highlight.js";
 
@@ -66,3 +66,5 @@ export {
 
 export { default as presetTailwind } from "https://esm.sh/@twind/preset-tailwind@1.0.1";
 export { default as presetExt } from "https://esm.sh/@twind/preset-ext@1.0.1";
+export { default as presetTypography } from "https://esm.sh/@twind/preset-typography@1.0.1";
+export { default as presetAutoprefix } from "https://esm.sh/@twind/preset-autoprefix@1.0.1";
