@@ -94,12 +94,11 @@ function PageItem({
       <a
         href={url.pathname}
         class="
-          transition-colors
           relative
           flex flex-row items-center gap-2
           py-1.5
-          not-hover:(text(gray-600 dark:gray-400))
-          hover:(no-underline)
+          ring-offset-4 ring-offset-black
+          text(gray-600 dark:(gray-400) hover:(black) dark:(hover:white))
         "
       >
         {pinned && (
@@ -144,9 +143,7 @@ function TagItem({ name, pageCount }: TagItemProps) {
       <a
         href={`/tags##${name}`}
         class="
-          transition-colors
-          hover:no-underline
-          not-hover:( text(gray-600 dark:gray-400) )
+         text(gray-600 dark:gray-400 hover:(black dark:white))
         "
       >
         {name} <span class="opacity-60">{pageCount}</span>
@@ -169,8 +166,8 @@ export default function IndexList(props: IndexListProps) {
       class="
         text(sm)
         target:(
-          ring ring-blue-200 ring-offset-8
-          dark:(ring-blue-900 ring-offset-black)
+          ring ring-primary-500 ring-offset-8 ring-offset-white
+          dark:(ring-primary-700 ring-offset-gray-800)
         )
       "
     >
@@ -180,7 +177,7 @@ export default function IndexList(props: IndexListProps) {
       {(props.type === "pages" || props.type === "backlinks") &&
         Array.isArray(props.items) &&
         (
-          <ul class="flex flex-col divide-y divide-gray-100 dark:(divide-gray-900)">
+          <ul class="flex flex-col divide-y divide-gray-100 dark:(divide-gray-700)">
             {props.items.map((item) => (
               <PageItem
                 title={item.title || ""}

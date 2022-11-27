@@ -34,13 +34,13 @@ export default function Body({
   return (
     <body class="
       antialiased
-      tracking-[-0.01em]
+      tracking-[-0.015em]
       min-h-screen
       mx-auto max-w-3xl
       p-4
       flex flex-col gap-16
       text(gray-900 dark:gray-300)
-      bg(white dark:black) 
+      bg(white dark:gray-800) 
     ">
       {crumbs && (
         <Header

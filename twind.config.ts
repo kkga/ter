@@ -1,4 +1,5 @@
 import {
+  colors,
   defineConfig,
   presetAutoprefix,
   presetExt,
@@ -11,6 +12,14 @@ export const twindConfig = defineConfig({
     fontFamily: {
       sans: ["system-ui", "-apple-system", "sans-serif"],
       mono: ["monospace", "ui-monospace", "Menlo", "Monaco"],
+    },
+    colors: {
+      gray: colors.stone,
+      transparent: "transparent",
+      white: colors.white,
+      black: colors.black,
+      primary: colors.sky,
+      current: "currentColor",
     },
   },
   presets: [
@@ -29,23 +38,18 @@ export const twindConfig = defineConfig({
       extend: {
         "a": {
           "@apply": `
-            text(sky-600 dark:sky-400)
-            no-underline
+            text(primary-600 dark:(primary-300))
             font-normal
+            no-underline
+            hover:(bg(primary-100 dark:primary-900))
           `,
-          "&:hover": {
-            "@apply": "underline decoration-dashed",
-          },
         },
         "a[rel~='external']": {
-          "@apply":
-            "text(current dark:current) underline decoration(dotted hover:solid)",
+          "@apply": "hover:(bg(transparent dark:transparent) underline)",
         },
         "h1,h2,h3,h4,h5,h6": {
-          "@apply": "relative -ml-4 pl-4 hover:([&>.h-anchor]:opacity-100)",
-        },
-        ".h-anchor": {
-          "@apply": `
+          "& > .h-anchor": {
+            "@apply": `
               -ml-9
               transition-opacity
               absolute my-auto top-0 bottom-0
@@ -57,7 +61,17 @@ export const twindConfig = defineConfig({
               opacity(0 hover:100)) 
               bg(hover:(gray-200 dark:gray-800))
             `,
+          },
+          "del": { "@apply": "text-gray-500" },
+          "@apply": "relative -ml-4 pl-4 hover:([&>.h-anchor]:opacity-100)",
         },
+
+        "& dt": { "@apply": "font-semibold" },
+
+        "& .full-bleed": { "@apply": "lg:(-mx-24) xl:(-mx-32)" },
+        "& .cols-2": { "@apply": "sm:grid grid(cols-2) gap-x-4" },
+        "& .cols-3": { "@apply": "sm:grid grid(cols-3) gap-x-4" },
+        "& .cols-4": { "@apply": "grid grid(cols-2 md:cols-4) gap-x-4" },
       },
     }),
   ],
@@ -90,8 +104,8 @@ export const twindConfig = defineConfig({
   // preflight: {
   //   "& a": {
   //     "@apply": `
-  //       text(blue-600 dark:blue-300)
-  //       decoration(blue-400 dark:blue-600)
+  //       text(primary-600 dark:primary-300)
+  //       decoration(primary-400 dark:primary-600)
   //       hover:(underline decoration-current)
   //     `,
   //   },

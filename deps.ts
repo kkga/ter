@@ -64,6 +64,7 @@ export {
   virtual,
 } from "https://esm.sh/@twind/core@1.0.1";
 
+export * as colors from "https://esm.sh/@twind/preset-tailwind@1.0.1/colors";
 export { default as presetTailwind } from "https://esm.sh/@twind/preset-tailwind@1.0.1";
 export { default as presetExt } from "https://esm.sh/@twind/preset-ext@1.0.1";
 export { default as presetTypography } from "https://esm.sh/@twind/preset-typography@1.0.1";

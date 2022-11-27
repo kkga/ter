@@ -72,7 +72,7 @@ export function renderPage({
   <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
   <link rel="alternate" type="application/atom+xml" href="/feed.xml" title="${userConfig.title}" />
   ${userConfig.head || ""}
-  ${userConfig.codeHighlight && `<style>${HIGHLIGHT_STYLE}</style>`}
+  ${userConfig.codeHighlight ? `<style>${HIGHLIGHT_STYLE}</style>` : ""}
 </head>
 ${dev ? `<script>${HMR_CLIENT}</script>` : ""}
 ${body}
