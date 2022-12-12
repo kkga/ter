@@ -22,7 +22,14 @@ function PageHeader({ currentPath, crumbs, navItems }: PageHeaderProps) {
           {crumbs.map((crumb) => (
             <li>
               {crumb.current && crumb.slug}
-              {!crumb.current && <a href={crumb.url}>{crumb.slug}</a>}
+              {!crumb.current && (
+                <a
+                  class="hover:(text-black dark:(text-white))"
+                  href={crumb.url}
+                >
+                  {crumb.slug}
+                </a>
+              )}
             </li>
           ))}
         </ul>
@@ -33,7 +40,7 @@ function PageHeader({ currentPath, crumbs, navItems }: PageHeaderProps) {
             <li>
               {currentPath === path
                 ? <span>{label}</span>
-                : <a href={path}>{label}</a>}
+                : <a class="" href={path}>{label}</a>}
             </li>
           ))}
         </ul>

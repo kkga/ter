@@ -43,13 +43,8 @@ interface BuildStats {
 }
 
 async function generateSite(opts: GenerateSiteOpts) {
-  const {
-    inputPath,
-    outputPath,
-    staticExts,
-    userConfig,
-    renderDrafts,
-  } = opts.config;
+  const { inputPath, outputPath, staticExts, userConfig, renderDrafts } =
+    opts.config;
 
   const logLevel = opts.logLevel || 0;
 
@@ -70,11 +65,11 @@ async function generateSite(opts: GenerateSiteOpts) {
 
   const [indexDirEntries, indexFileEntries, nonIndexEntries] = [
     contentEntries.filter((entry) => entry.isDirectory),
-    contentEntries.filter((entry) =>
-      entry.isFile && entry.name === INDEX_FILENAME
+    contentEntries.filter(
+      (entry) => entry.isFile && entry.name === INDEX_FILENAME
     ),
-    contentEntries.filter((entry) =>
-      entry.isFile && entry.name !== INDEX_FILENAME
+    contentEntries.filter(
+      (entry) => entry.isFile && entry.name !== INDEX_FILENAME
     ),
   ];
 
@@ -132,11 +127,9 @@ async function generateSite(opts: GenerateSiteOpts) {
     showMeta: false,
   };
 
-  const pages = [
-    ...indexPages,
-    ...contentPages,
-    tagIndex,
-  ].filter((page) => renderDrafts ? true : !page.ignored);
+  const pages = [...indexPages, ...contentPages, tagIndex].filter((page) =>
+    renderDrafts ? true : !page.ignored
+  );
 
   performance.mark("parse:end");
 
@@ -222,10 +215,7 @@ async function generateSite(opts: GenerateSiteOpts) {
     console.log("---");
     console.log("%cDead links:", "font-weight: bold; color: red");
     deadLinks.forEach(([pageUrl, linkUrl]) => {
-      console.log(
-        `${pageUrl.pathname} -> %c${linkUrl.pathname}`,
-        "color:red",
-      );
+      console.log(`${pageUrl.pathname} -> %c${linkUrl.pathname}`, "color:red");
     });
   }
 
@@ -245,7 +235,7 @@ async function generateSite(opts: GenerateSiteOpts) {
       pageFiles: files.length,
       staticFiles: staticEntries.length,
       buildMillisecs: Math.floor(
-        performance.getEntriesByName("total")[0].duration,
+        performance.getEntriesByName("total")[0].duration
       ),
     };
 
@@ -269,9 +259,9 @@ async function main(args: string[]) {
       Deno.exit(1);
     },
     alias: {
-      "s": "serve",
-      "h": "help",
-      "d": "debug",
+      s: "serve",
+      h: "help",
+      d: "debug",
     },
   });
 

@@ -1,6 +1,5 @@
 /** @jsxImportSource https://esm.sh/preact */
 
-import { apply, css, tw } from "../deps.ts";
 import Article from "./Article.tsx";
 import IndexList from "./IndexList.tsx";
 import Header from "./Header.tsx";
@@ -40,7 +39,7 @@ export default function Body({
       p-4
       flex flex-col gap-16
       text(gray-900 dark:gray-300)
-      bg(white dark:gray-800) 
+      bg(white dark:gray-900) 
     ">
       {crumbs && (
         <Header

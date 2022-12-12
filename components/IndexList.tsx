@@ -177,7 +177,7 @@ export default function IndexList(props: IndexListProps) {
       {(props.type === "pages" || props.type === "backlinks") &&
         Array.isArray(props.items) &&
         (
-          <ul class="flex flex-col divide-y divide-gray-100 dark:(divide-gray-700)">
+          <ul class="flex flex-col divide-y divide-gray-100 dark:(divide-gray-800)">
             {props.items.map((item) => (
               <PageItem
                 title={item.title || ""}

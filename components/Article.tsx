@@ -12,11 +12,10 @@ function Toc({ headings }: { headings: Heading[] }) {
               <a
                 href={`#${h.slug}`}
                 class="
-                  text(xs hover:(primary-600)) 
+                  text(xs hover:(black dark:white)) 
                   block truncate
                   py-1.5 px-2
-                  border(t dark:gray-700)
-                  hover:(no-underline bg(primary-50 dark:primary-900/25))
+                  border(t dark:gray-800)
                 "
               >
                 <span class="font-mono mr-2">{i + 1}</span>
@@ -73,7 +72,7 @@ function Header({
       {showDescription && description && <p class="lead my-4">{description}</p>}
 
       {showMeta && (datePublished || tags) && (
-        <div class="divide-dot flex justify-end items-baseline text(sm gray-500)">
+        <div class="divide-dot not-prose flex justify-end items-baseline text(sm gray-500)">
           {datePublished && (
             <div>
               <a href={url.pathname}>

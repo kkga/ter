@@ -31,12 +31,12 @@ export const twindConfig = defineConfig({
         "pre-bg": "50",
         "pre-code": "900",
         dark: {
-          "pre-bg": "900",
+          "pre-bg": "800",
           "pre-code": "100",
         },
       },
       extend: {
-        "a": {
+        a: {
           "@apply": `
             text(primary-600 dark:(primary-300))
             font-normal
@@ -62,7 +62,7 @@ export const twindConfig = defineConfig({
               bg(hover:(gray-200 dark:gray-800))
             `,
           },
-          "del": { "@apply": "text-gray-500" },
+          del: { "@apply": "text-gray-500" },
           "@apply": "relative -ml-4 pl-4 hover:([&>.h-anchor]:opacity-100)",
         },
 
@@ -86,7 +86,7 @@ export const twindConfig = defineConfig({
       "divide-dot",
       {
         "& > *:not(:last-child)::after": {
-          "content": "'•'",
+          content: "'•'",
           "@apply": "mx-1.5 text(gray-400 dark:gray-600",
         },
       },
@@ -95,7 +95,7 @@ export const twindConfig = defineConfig({
       "divide-slash",
       {
         "& > *:not(:last-child)::after": {
-          "content": "'/'",
+          content: "'/'",
           "@apply": "mx-1.5 text(gray-400 dark:gray-600)",
         },
       },
