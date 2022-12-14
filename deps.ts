@@ -62,10 +62,10 @@ export {
   twind,
   tx,
   virtual,
-} from "https://esm.sh/@twind/core@1.0.3";
+} from "https://esm.sh/@twind/core@1.1.0-next-20221214220313";
 
-export * as colors from "https://esm.sh/@twind/preset-tailwind@1.0.3/colors";
-export { default as presetTailwind } from "https://esm.sh/@twind/preset-tailwind@1.0.3";
-export { default as presetExt } from "https://esm.sh/@twind/preset-ext@1.0.3";
-export { default as presetTypography } from "https://esm.sh/@twind/preset-typography@1.0.3";
-export { default as presetAutoprefix } from "https://esm.sh/@twind/preset-autoprefix@1.0.3";
+export * as colors from "https://esm.sh/@twind/preset-tailwind@2.0.0-next-20221213150400/colors";
+export { default as presetTailwind } from "https://esm.sh/@twind/preset-tailwind@2.0.0-next-20221213150400";
+export { default as presetExt } from "https://esm.sh/@twind/preset-ext@2.0.0-next-20221213150400";
+export { default as presetTypography } from "https://esm.sh/@twind/preset-typography@2.0.0-next-20221213150400";
+export { default as presetAutoprefix } from "https://esm.sh/@twind/preset-autoprefix@2.0.0-next-20221213150400";
