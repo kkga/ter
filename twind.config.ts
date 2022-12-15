@@ -14,7 +14,7 @@ export const twindConfig = defineConfig({
       mono: ["monospace", "ui-monospace", "Menlo", "Monaco"],
     },
     colors: {
-      gray: colors.stone,
+      gray: colors.neutral,
       transparent: "transparent",
       white: colors.white,
       black: colors.black,
@@ -28,17 +28,17 @@ export const twindConfig = defineConfig({
     presetExt(),
     presetTypography({
       colors: {
-        "pre-bg": "50",
-        "pre-code": "900",
+        "pre-bg": "100",
+        "pre-code": "700",
         dark: {
           "pre-bg": "800",
-          "pre-code": "100",
+          "pre-code": "300",
         },
       },
       extend: {
         a: {
           "@apply": `
-            text(primary-600 dark:(primary-300))
+            text(primary-700 dark:(primary-300))
             font-normal
             no-underline
             hover:(bg(primary-100 dark:primary-900))
@@ -67,6 +67,7 @@ export const twindConfig = defineConfig({
         },
 
         "& dt": { "@apply": "font-semibold" },
+        "& *:last-child": { "@apply": "mb-0" },
 
         "& .full-bleed": { "@apply": "lg:(-mx-24) xl:(-mx-32)" },
         "& .cols-2": { "@apply": "sm:grid grid(cols-2) gap-x-4" },
@@ -75,7 +76,25 @@ export const twindConfig = defineConfig({
       },
     }),
   ],
+  preflight: {
+    a: { "@apply": "text(hover:(primary-700 dark:primary-300))" },
+  },
   rules: [
+    [
+      "box",
+      {
+        "@apply": `
+          block
+          border(x y gray-200 dark:gray-800) 
+          bg(gray-50 dark:gray-900 )
+          shadow-sm 
+          rounded-sm
+        `,
+        "&:is(a)": {
+          "@apply": "bg(hover:(gray-100 dark:gray-800))",
+        },
+      },
+    ],
     [
       "dim-links",
       {

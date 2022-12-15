@@ -48,7 +48,7 @@ export interface Page {
   links?: URL[];
   headings?: Heading[];
   index?: "dir" | "tag";
-  layout?: "log";
+  layout?: "log" | "grid" | "list";
   pinned: boolean;
   ignored: boolean;
   unlisted: boolean;

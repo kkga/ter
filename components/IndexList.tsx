@@ -94,15 +94,14 @@ function PageItem({
       <a
         href={url.pathname}
         class="
-          relative
+          box
+          px-2 py-1.5
           flex flex-row items-center gap-2
-          py-1.5
           ring-offset-4 ring-offset-black
-          text(gray-600 dark:(gray-400) hover:(black) dark:(hover:white))
         "
       >
         {pinned && (
-          <div class="md:(absolute my-auto -left-6)">
+          <div class="">
             <StarIcon />
           </div>
         )}
@@ -139,12 +138,10 @@ interface TagItemProps {
 
 function TagItem({ name, pageCount }: TagItemProps) {
   return (
-    <li class="py-0.5">
+    <li>
       <a
         href={`/tags##${name}`}
-        class="
-         text(gray-600 dark:gray-400 hover:(black dark:white))
-        "
+        class="box px-1.5 py-0.5"
       >
         {name} <span class="opacity-60">{pageCount}</span>
       </a>
@@ -171,13 +168,13 @@ export default function IndexList(props: IndexListProps) {
         )
       "
     >
-      <h6 class="text(xs gray-500) uppercase font-semibold tracking-wide pb-2">
+      <h6 class="text(xs gray-500) uppercase font-semibold tracking-wide mb-3">
         {props.title}
       </h6>
       {(props.type === "pages" || props.type === "backlinks") &&
         Array.isArray(props.items) &&
         (
-          <ul class="flex flex-col divide-y divide-gray-100 dark:(divide-gray-800)">
+          <ul class="flex flex-col gap-1.5">
             {props.items.map((item) => (
               <PageItem
                 title={item.title || ""}
@@ -195,7 +192,7 @@ export default function IndexList(props: IndexListProps) {
           </ul>
         )}
       {props.type === "tags" && (
-        <ul class="divide-dot flex flex-wrap pt-1">
+        <ul class="flex flex-wrap gap-1.5">
           {Object.entries(props.items).map((item) => (
             <TagItem name={item[0]} pageCount={item[1].length} />
           ))}

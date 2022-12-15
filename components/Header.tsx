@@ -16,17 +16,15 @@ function PageHeader({ currentPath, crumbs, navItems }: PageHeaderProps) {
         justify-between md:(items-baseline) 
         text(sm gray-500)
         dim-links
+        empty:hidden
       ">
-      {crumbs && (
+      {crumbs && crumbs.length > 1 && (
         <ul class="divide-slash pb(2 md:0) flex">
           {crumbs.map((crumb) => (
             <li>
               {crumb.current && crumb.slug}
               {!crumb.current && (
-                <a
-                  class="hover:(text-black dark:(text-white))"
-                  href={crumb.url}
-                >
+                <a href={crumb.url}>
                   {crumb.slug}
                 </a>
               )}
@@ -34,7 +32,7 @@ function PageHeader({ currentPath, crumbs, navItems }: PageHeaderProps) {
           ))}
         </ul>
       )}
-      {navItems && (
+      {navItems && Object.entries(navItems).length > 1 && (
         <ul class="divide-dot pt(2 md:0) md:(place-self-end) flex">
           {Object.entries(navItems).map(([label, path]) => (
             <li>

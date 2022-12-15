@@ -33,7 +33,7 @@ interface PageData {
   pinned?: boolean;
   ignored?: boolean;
   unlisted?: boolean;
-  layout?: "log";
+  layout?: "log" | "grid" | "list";
   showHeader: boolean;
   showTitle: boolean;
   showDescription: boolean;
@@ -48,7 +48,7 @@ function generateCrumbs(page: Page, rootCrumb?: string): Crumb[] {
   const chunks: string[] = dir.split("/").filter((ch) => !!ch);
   const slug = basename(page.url.pathname);
 
-  let crumbs: Crumb[] = chunks.map((chunk, i) => {
+  const crumbs: Crumb[] = chunks.map((chunk, i) => {
     const url = join("/", ...chunks.slice(0, i + 1));
     return {
       slug: chunk,
@@ -57,13 +57,14 @@ function generateCrumbs(page: Page, rootCrumb?: string): Crumb[] {
     };
   });
 
-  crumbs = [{
+  crumbs.unshift({
     slug: rootCrumb ?? "index",
     url: "/",
     current: false,
-  }, ...crumbs];
+  });
 
-  if (slug !== "") crumbs = [...crumbs, { slug, url: "", current: true }];
+  if (slug !== "") crumbs.push({ slug, url: "", current: true });
+  if (crumbs.length === 1) crumbs.pop();
 
   return crumbs;
 }
@@ -103,30 +104,32 @@ function getTags(pages: Page[]): string[] {
 
 function getPagesWithTag(pages: Page[], tag: string, exclude?: Page[]): Page[] {
   return pages.filter(
-    (page) => page.tags && page.tags.includes(tag) && !exclude?.includes(page),
+    (page) => page.tags && page.tags.includes(tag) && !exclude?.includes(page)
   );
 }
 
 function getRelatedPages(pages: Page[], current: Page): Page[] {
-  return pages.filter((page) =>
-    page.url.pathname !== current.url.pathname &&
-    page?.tags?.some((tag) => current?.tags?.includes(tag))
+  return pages.filter(
+    (page) =>
+      page.url.pathname !== current.url.pathname &&
+      page?.tags?.some((tag) => current?.tags?.includes(tag))
   );
 }
 
 function getChildPages(pages: Page[], current: Page, deep?: boolean): Page[] {
-  return pages.filter((p) =>
-    current.url.pathname !== p.url.pathname &&
-    (deep
-      ? p.url.pathname.startsWith(current.url.pathname)
-      : current.url.pathname === dirname(p.url.pathname))
+  return pages.filter(
+    (p) =>
+      current.url.pathname !== p.url.pathname &&
+      (deep
+        ? p.url.pathname.startsWith(current.url.pathname)
+        : current.url.pathname === dirname(p.url.pathname))
   );
 }
 
 function getPagesByTags(
   pages: Page[],
   tags: string[],
-  exclude?: Page[],
+  exclude?: Page[]
 ): Record<string, Page[]> {
   const pageMap: Record<string, Page[]> = {};
   tags.forEach((tag) => {
@@ -147,7 +150,7 @@ function sortPages(pages: Page[]): Page[] {
 }
 
 function sortTaggedPages(
-  taggedPages: Record<string, Page[]>,
+  taggedPages: Record<string, Page[]>
 ): Record<string, Page[]> {
   return Object.keys(taggedPages)
     .sort((a, b) => taggedPages[b].length - taggedPages[a].length)
@@ -167,6 +170,7 @@ function extractPageData(raw: string, ignoreKeys: string[]): PageData {
     getDateUpdated,
     getBool,
     getTags,
+    getVal,
     hasKey,
   } = attributes;
 
@@ -181,7 +185,7 @@ function extractPageData(raw: string, ignoreKeys: string[]): PageData {
     pinned: getBool(attrs, "pinned") ?? false,
     ignored: hasKey(attrs, ignoreKeys),
     unlisted: getBool(attrs, "unlisted") ?? false,
-    layout: getBool(attrs, "log") ? "log" : undefined,
+    layout: (getVal(attrs, "layout") as "log" | "grid" | "list") || undefined,
     showHeader: getBool(attrs, "showHeader") ?? true,
     showTitle: getBool(attrs, "showTitle") ?? true,
     showDescription: getBool(attrs, "showDescription") ?? true,
@@ -202,9 +206,11 @@ function getDeadlinks(pages: Page[]): [from: URL, to: URL][] {
   }, []);
 }
 
-function generateIndexPageFromDir(
-  { entry, inputPath, userConfig }: GeneratePageOpts,
-): Page {
+function generateIndexPageFromDir({
+  entry,
+  inputPath,
+  userConfig,
+}: GeneratePageOpts): Page {
   const { url } = userConfig;
   const relPath = relative(inputPath, entry.path) || ".";
   const slug = relPath === "." ? "." : slugify(entry.name);
@@ -225,9 +231,12 @@ function generateIndexPageFromDir(
   };
 }
 
-function generateContentPage(
-  { entry, inputPath, userConfig, ignoreKeys }: GeneratePageOpts,
-): Page {
+function generateContentPage({
+  entry,
+  inputPath,
+  userConfig,
+  ignoreKeys,
+}: GeneratePageOpts): Page {
   const { url } = userConfig;
   const relPath = relative(inputPath, entry.path);
   const raw = decoder.decode(Deno.readFileSync(entry.path));
@@ -260,15 +269,18 @@ function generateContentPage(
 
   page = { ...page, html, links, headings };
 
-  page.title ??= getTitleFromHeadings(headings) ||
-    getTitleFromFilename(relPath);
+  page.title ??=
+    getTitleFromHeadings(headings) || getTitleFromFilename(relPath);
 
   return page;
 }
 
-function generateIndexPageFromFile(
-  { entry, inputPath, userConfig, ignoreKeys }: GeneratePageOpts,
-): Page {
+function generateIndexPageFromFile({
+  entry,
+  inputPath,
+  userConfig,
+  ignoreKeys,
+}: GeneratePageOpts): Page {
   const { url } = userConfig;
   const relPath = relative(inputPath, dirname(entry.path)) || ".";
   const raw = decoder.decode(Deno.readFileSync(entry.path));
@@ -302,8 +314,8 @@ function generateIndexPageFromFile(
 
   page = { ...page, html, links, headings };
 
-  page.title ??= getTitleFromHeadings(headings) ||
-    getTitleFromFilename(dirName);
+  page.title ??=
+    getTitleFromHeadings(headings) || getTitleFromFilename(dirName);
 
   return page;
 }

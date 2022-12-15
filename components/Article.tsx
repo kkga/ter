@@ -1,6 +1,7 @@
 /** @jsxImportSource https://esm.sh/preact */
 
 import { Heading, Page } from "../types.d.ts";
+import { cx } from "../deps.ts";
 
 function Toc({ headings }: { headings: Heading[] }) {
   return (
@@ -12,7 +13,7 @@ function Toc({ headings }: { headings: Heading[] }) {
               <a
                 href={`#${h.slug}`}
                 class="
-                  text(xs hover:(black dark:white)) 
+                  text(xs) 
                   block truncate
                   py-1.5 px-2
                   border(t dark:gray-800)
@@ -37,7 +38,7 @@ interface HeaderProps {
   tags?: string[];
   headings?: Heading[];
   lang: Intl.LocalesArgument;
-  size: "small" | "default";
+  compact: boolean;
   showTitle: boolean;
   showMeta: boolean;
   showDescription: boolean;
@@ -57,7 +58,7 @@ function Header({
   showDescription,
   showMeta,
   showToc,
-  size = "default",
+  compact,
 }: HeaderProps) {
   const dateFormat: Intl.DateTimeFormatOptions = {
     year: "numeric",
@@ -66,13 +67,27 @@ function Header({
   };
 
   return (
-    <header class="dim-links mb-12 only-child:(m-0) empty:hidden">
-      {showTitle && <h1 class="tracking-tight mb-8">{title}</h1>}
+    <header
+      class={cx(
+        "dim-links empty:hidden only-child:(m-0)",
+        !compact && "mb-12",
+      )}
+    >
+      {showTitle && (
+        <h1 class={cx("tracking-tight", compact ? "text-xl mb-1" : "mb-8")}>
+          {title}
+        </h1>
+      )}
 
-      {showDescription && description && <p class="lead my-4">{description}</p>}
+      {showDescription && description && <p class="lead">{description}</p>}
 
       {showMeta && (datePublished || tags) && (
-        <div class="divide-dot not-prose flex justify-end items-baseline text(sm gray-500)">
+        <div
+          class={cx(
+            "divide-dot not-prose flex items-baseline justify-end text(sm gray-500 dark:gray-400)",
+            compact && "justify-start",
+          )}
+        >
           {datePublished && (
             <div>
               <a href={url.pathname}>
@@ -102,7 +117,7 @@ function Header({
         </div>
       )}
 
-      {showToc && headings?.some((h) => h.level > 2) && (
+      {!compact && showToc && headings?.some((h) => h.level > 2) && (
         <Toc headings={headings.filter((h) => h.level <= 2)} />
       )}
     </header>
@@ -114,22 +129,17 @@ interface Props {
   lang: Intl.LocalesArgument;
   isInLog?: boolean;
   children?: preact.ComponentChildren;
+  compact?: boolean;
 }
 
 export default function Article({
   page,
   children,
   lang,
-  isInLog = false,
+  compact = false,
 }: Props) {
   return (
-    <article class="
-        prose prose-sm md:prose-base dark:prose-invert
-        max-w-none
-        sibling:(
-          mt-8 pt-8
-          border(t dashed gray-200 dark:gray-800)
-        )">
+    <article class="prose prose-sm md:prose-base dark:prose-invert max-w-none">
       {page.showHeader && (
         <Header
           url={page.url}
@@ -140,7 +150,7 @@ export default function Article({
           tags={page.tags}
           headings={page.headings}
           lang={lang}
-          size={isInLog ? "small" : "default"}
+          compact={compact}
           showTitle={page.showTitle}
           showMeta={page.showMeta}
           showDescription={page.showDescription}
@@ -148,12 +158,7 @@ export default function Article({
         />
       )}
 
-      {page.html && (
-        <div
-          // class={contentStyle}
-          dangerouslySetInnerHTML={{ __html: page.html }}
-        />
-      )}
+      {page.html && <div dangerouslySetInnerHTML={{ __html: page.html }} />}
 
       {children}
     </article>
