@@ -31,9 +31,15 @@ export default function IndexGrid(props: IndexGridProps) {
             {props.items.map((item) => (
               <a
                 href={item.url.pathname}
-                class="box px-2 py-1.5"
+                class="box px-2 py-2"
               >
-                <span class="block mb-1.5 text-sm font-semibold">
+                {item.thumbnailUrl && (
+                  <img
+                    class="mb-2 w-full object-cover aspect-[4/3]"
+                    src={item.thumbnailUrl.toString()}
+                  />
+                )}
+                <span class="block leading-tight mb-1.5 text-sm font-semibold">
                   {item.title}
                 </span>
 

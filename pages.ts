@@ -39,6 +39,7 @@ interface PageData {
   showDescription: boolean;
   showMeta: boolean;
   showToc: boolean;
+  thumbnailUrl?: URL;
 }
 
 const decoder = new TextDecoder("utf-8");
@@ -191,6 +192,7 @@ function extractPageData(raw: string, ignoreKeys: string[]): PageData {
     showDescription: getBool(attrs, "showDescription") ?? true,
     showMeta: getBool(attrs, "showMeta") ?? true,
     showToc: getBool(attrs, "toc") ?? false,
+    thumbnailUrl: getVal(attrs, "thumbnailUrl") as URL | undefined,
   };
 }
 

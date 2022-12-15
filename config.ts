@@ -25,6 +25,7 @@ const defaultBuildConfig: BuildConfig = {
     "jpg",
     "jpeg",
     "gif",
+    "svg",
     "webp",
     "pdf",
     "ico",
@@ -54,7 +55,7 @@ interface CreateConfigOpts {
 }
 
 export async function createConfig(
-  opts: CreateConfigOpts,
+  opts: CreateConfigOpts
 ): Promise<BuildConfig> {
   const conf = defaultBuildConfig;
 
@@ -78,13 +79,12 @@ export async function createConfig(
 
   conf.renderDrafts = opts.renderDrafts;
 
-  await checkUserConfig(conf.userConfigPath)
-    .catch(() => {
-      console.warn(
-        `Config file missing, initializing default config at ${conf.userConfigPath}`,
-      );
-      initUserConfig(conf.userConfig, conf.userConfigPath);
-    });
+  await checkUserConfig(conf.userConfigPath).catch(() => {
+    console.warn(
+      `Config file missing, initializing default config at ${conf.userConfigPath}`
+    );
+    initUserConfig(conf.userConfig, conf.userConfigPath);
+  });
 
   try {
     const parsedConf = JSON.parse(await Deno.readTextFile(conf.userConfigPath));
