@@ -95,7 +95,7 @@ function PageItem({
         href={url.pathname}
         class="
           box
-          px-2 py-1.5
+          px-2 py-1
           flex flex-row items-center gap-2
           ring-offset-4 ring-offset-black
         "
@@ -111,7 +111,7 @@ function PageItem({
             {isDirIndex && <span class="select-none">/..</span>}
           </span>
           {description && (
-            <span class="truncate font-normal opacity-70">
+            <span class="truncate font-normal opacity-60">
               {description}
             </span>
           )}
@@ -119,13 +119,13 @@ function PageItem({
 
         {date && (
           <time
-            class="text(xs) tabular-nums slashed-zero flex-shrink-0"
+            class="opacity-50 text(xs) tabular-nums slashed-zero flex-shrink-0"
             dateTime={date.toString()}
           >
             {date.toLocaleDateString(lang, dateFormat)}
           </time>
         )}
-        <div class="flex-shrink-0">{icon}</div>
+        <div class="opacity-60 flex-shrink-0">{icon}</div>
       </a>
     </li>
   );
@@ -141,7 +141,7 @@ function TagItem({ name, pageCount }: TagItemProps) {
     <li>
       <a
         href={`/tags##${name}`}
-        class="box px-1.5 py-0.5"
+        class="box px-2 py-1"
       >
         {name} <span class="opacity-60">{pageCount}</span>
       </a>
@@ -164,7 +164,7 @@ export default function IndexList(props: IndexListProps) {
         text(sm)
         target:(
           ring ring-primary-500 ring-offset-8 ring-offset-white
-          dark:(ring-primary-700 ring-offset-gray-800)
+          dark:(ring-primary-700 ring-offset-black)
         )
       "
     >

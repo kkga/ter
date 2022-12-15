@@ -43,7 +43,7 @@ export default function IndexGrid(props: IndexGridProps) {
                   {item.title}
                 </span>
 
-                <p class="leading-tight text(gray-500 dark:gray-400)">
+                <p class="leading-tight opacity-60">
                   {item.description}
                 </p>
               </a>
