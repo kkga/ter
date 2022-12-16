@@ -73,8 +73,8 @@ export default function Body({
       mx-auto max-w-3xl
       p-4
       flex flex-col gap-16
-      text(gray-900 dark:gray-300)
-      bg(white dark:black) 
+      text(neutral-12)
+      bg(neutral-3) 
     ">
       {crumbs && (
         <Header
@@ -88,23 +88,7 @@ export default function Body({
         <Article
           lang={lang}
           page={page}
-        >
-          {
-            /* {page.layout === "log" &&
-            childPages &&
-            childPages?.length > 0 &&
-            childPages.map(
-              (p: Page) =>
-                p.html && (
-                  <Article
-                    page={p}
-                    lang={lang}
-                    isInLog={true}
-                  />
-                ),
-            )} */
-          }
-        </Article>
+        />
       </main>
 
       <aside class="empty:hidden flex flex-col gap-12">

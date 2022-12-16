@@ -5,7 +5,7 @@ import { cx } from "../deps.ts";
 
 function Toc({ headings }: { headings: Heading[] }) {
   return (
-    <ol class="not-prose dim-links text-gray-500 p-0 list-none mt-12 mb-0 gap-4 columns-3xs">
+    <ol class="not-prose dim-links text-neutral-9 p-0 list-none mb-0 mt-12 gap-4 columns-3xs">
       {headings
         .map((h: Heading, i) => {
           return (
@@ -13,10 +13,10 @@ function Toc({ headings }: { headings: Heading[] }) {
               <a
                 href={`#${h.slug}`}
                 class="
-                  text(xs) 
+                  text(xs hover:accent-12) 
                   block truncate
-                  py-1.5 px-2
-                  border(t dark:gray-800)
+                  py-2 
+                  border(t neutral-6)
                 "
               >
                 <span class="font-mono mr-2">{i + 1}</span>
@@ -74,23 +74,22 @@ function Header({
       )}
     >
       {showTitle && (
-        <h1 class={cx("tracking-tight", compact ? "text-xl mb-1" : "mb-8")}>
+        <h1 class={cx("tracking-tight", compact ? "text-xl mb-1" : "mb-12")}>
           {title}
         </h1>
       )}
 
-      {showDescription && description && <p class="lead">{description}</p>}
+      {showDescription && description && (
+        <p class="text(sm neutral-11) font-medium m-0">
+          {description}
+        </p>
+      )}
 
       {showMeta && (datePublished || tags) && (
-        <div
-          class={cx(
-            "divide-dot not-prose flex items-baseline justify-end text(sm gray-500 dark:gray-400)",
-            compact && "justify-start",
-          )}
-        >
+        <div class="mt-1 divide-dot not-prose flex items-baseline text(sm neutral-9)">
           {datePublished && (
             <div>
-              <a href={url.pathname}>
+              <a class="hover:text-accent-12" href={url.pathname}>
                 <time dateTime={datePublished.toString()}>
                   {datePublished.toLocaleDateString(lang, dateFormat)}
                 </time>
@@ -109,7 +108,9 @@ function Header({
             <ul class="m-0 p-0 space-x-2">
               {tags.map((tag) => (
                 <li class="p-0 m-0 inline">
-                  <a href={`/tags##${tag}`}>#{tag}</a>
+                  <a class="hover:text-accent-12" href={`/tags##${tag}`}>
+                    #{tag}
+                  </a>
                 </li>
               ))}
             </ul>
@@ -139,7 +140,7 @@ export default function Article({
   compact = false,
 }: Props) {
   return (
-    <article class="prose prose-sm md:prose-base dark:prose-invert max-w-none">
+    <article class="prose prose-neutral prose-sm md:prose-base max-w-none">
       {page.showHeader && (
         <Header
           url={page.url}

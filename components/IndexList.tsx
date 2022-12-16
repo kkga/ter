@@ -95,7 +95,7 @@ function PageItem({
         href={url.pathname}
         class="
           box
-          px-2 py-1
+          px-2 py-1.5
           flex flex-row items-center gap-2
           ring-offset-4 ring-offset-black
         "
@@ -141,7 +141,7 @@ function TagItem({ name, pageCount }: TagItemProps) {
     <li>
       <a
         href={`/tags##${name}`}
-        class="box px-2 py-1"
+        class="box px-2 py-0.5"
       >
         {name} <span class="opacity-60">{pageCount}</span>
       </a>
@@ -163,12 +163,12 @@ export default function IndexList(props: IndexListProps) {
       class="
         text(sm)
         target:(
-          ring ring-primary-500 ring-offset-8 ring-offset-white
-          dark:(ring-primary-700 ring-offset-black)
+          ring ring-accent-9 ring-offset-8 ring-offset-accent-1
+          bg-accent-1
         )
       "
     >
-      <h6 class="text(xs gray-500) uppercase font-semibold tracking-wide mb-3">
+      <h6 class="text(xs neutral-9) uppercase font-semibold tracking-wide mb-3">
         {props.title}
       </h6>
       {(props.type === "pages" || props.type === "backlinks") &&

@@ -1,5 +1,4 @@
 import {
-  colors,
   defineConfig,
   presetAutoprefix,
   presetExt,
@@ -7,45 +6,67 @@ import {
   presetTypography,
 } from "./deps.ts";
 
+import { neutral, neutralDark, accent, accentDark, darkColor } from "./deps.ts";
+
 export const twindConfig = defineConfig({
   theme: {
     fontFamily: {
       sans: ["system-ui", "-apple-system", "sans-serif"],
       mono: ["monospace", "ui-monospace", "Menlo", "Monaco"],
     },
-    colors: {
-      gray: colors.neutral,
-      transparent: "transparent",
-      white: colors.white,
-      black: colors.black,
-      primary: colors.sky,
-      current: "currentColor",
-    },
+  },
+  preflight: {
+    a: { "@apply": "hover:text-accent-12)" },
   },
   presets: [
     presetAutoprefix(),
-    presetTailwind(),
+    presetTailwind({
+      colors: {
+        neutral,
+        neutralDark,
+        accent,
+        accentDark,
+      },
+    }),
     presetExt(),
     presetTypography({
+      defaultColor: "neutral",
       colors: {
-        "pre-bg": "100",
-        "pre-code": "700",
-        dark: {
-          "pre-bg": "800",
-          "pre-code": "300",
-        },
+        body: "12",
+        headings: "12",
+        lead: "10",
+        links: "12",
+        bold: "12",
+        counters: "9",
+        bullets: "9",
+        hr: "6",
+        quotes: "12",
+        "quote-borders": "6",
+        captions: "11",
+        code: "11",
+        "pre-code": "11",
+        "pre-bg": "2",
+        "th-borders": "6",
+        "td-borders": "5",
+        // invert colors (dark mode) — default to auto dark color
+        // dark: null,
       },
       extend: {
+        ".lead": { "@apply": "m-0" },
         a: {
           "@apply": `
-            text(primary-700 dark:(primary-300))
+            px-0.5
+            -mx-0.5
             font-normal
             no-underline
-            hover:(bg(primary-100 dark:primary-900))
+            text-accent-11
+            rounded-sm
+            hover:(bg-accent-6 text-accent-12 decoration-current)
           `,
         },
         "a[rel~='external']": {
-          "@apply": "hover:(bg(transparent dark:transparent) underline)",
+          "@apply":
+            "after:(content-['↗'] no-underline text-xs ml-0.5 align-text-top)",
         },
         "h1,h2,h3,h4,h5,h6": {
           "& > .h-anchor": {
@@ -56,15 +77,14 @@ export const twindConfig = defineConfig({
               hidden sm:flex
               justify-center items-center
               w-6 h-6 rounded
-              text(base gray-600 dark:gray-400) !no-underline
-              border(1 solid gray-300 dark:gray-700)
+              text(base neutral-9 hover:(accent-12)) !no-underline
               opacity(0 hover:100)) 
-              bg(hover:(gray-200 dark:gray-800))
             `,
           },
-          del: { "@apply": "text-gray-500" },
           "@apply": "relative -ml-4 pl-4 hover:([&>.h-anchor]:opacity-100)",
         },
+        del: { "@apply": "opacity-60" },
+        small: { "@apply": "text-neutral-11" },
 
         "& dt": { "@apply": "font-semibold" },
         "& *:last-child": { "@apply": "mb-0" },
@@ -76,22 +96,19 @@ export const twindConfig = defineConfig({
       },
     }),
   ],
-  preflight: {
-    a: { "@apply": "text(hover:(primary-700 dark:primary-300))" },
-  },
   rules: [
     [
       "box",
       {
         "@apply": `
           block
-          border(x y gray-200 dark:gray-800) 
-          bg(gray-50 dark:gray-900 )
-          shadow-sm 
+          bg(neutral-1)
           rounded-sm
+          shadow-sm
         `,
         "&:is(a)": {
-          "@apply": "bg(hover:(gray-100 dark:gray-800))",
+          "@apply":
+            "text(neutral-11) hover:(bg(accent-2) shadow text-accent-12)",
         },
       },
     ],
@@ -106,7 +123,7 @@ export const twindConfig = defineConfig({
       {
         "& > *:not(:last-child)::after": {
           content: "'•'",
-          "@apply": "mx-1.5 text(gray-400 dark:gray-600",
+          "@apply": "mx-1.5 text(neutral-9)",
         },
       },
     ],
@@ -115,18 +132,10 @@ export const twindConfig = defineConfig({
       {
         "& > *:not(:last-child)::after": {
           content: "'/'",
-          "@apply": "mx-1.5 text(gray-400 dark:gray-600)",
+          "@apply": "mx-1.5 text(neutral-9)",
         },
       },
     ],
   ],
-  // preflight: {
-  //   "& a": {
-  //     "@apply": `
-  //       text(primary-600 dark:primary-300)
-  //       decoration(primary-400 dark:primary-600)
-  //       hover:(underline decoration-current)
-  //     `,
-  //   },
-  // },
+  darkColor,
 });

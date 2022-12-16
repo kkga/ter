@@ -14,9 +14,7 @@ function PageHeader({ currentPath, crumbs, navItems }: PageHeaderProps) {
         flex flex(col md:row) 
         divide(y md:none gray-100 dark:gray-900) 
         justify-between md:(items-baseline) 
-        text(sm gray-500)
-        dim-links
-        empty:hidden
+        text(sm neutral-9)
       ">
       {crumbs && crumbs.length > 1 && (
         <ul class="divide-slash pb(2 md:0) flex">
@@ -24,7 +22,7 @@ function PageHeader({ currentPath, crumbs, navItems }: PageHeaderProps) {
             <li>
               {crumb.current && crumb.slug}
               {!crumb.current && (
-                <a href={crumb.url}>
+                <a class="text(hover:accent-12)" href={crumb.url}>
                   {crumb.slug}
                 </a>
               )}

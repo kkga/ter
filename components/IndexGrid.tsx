@@ -15,14 +15,8 @@ export default function IndexGrid(props: IndexGridProps) {
     month: "short",
   };
   return (
-    <section class="
-        text(sm)
-        target:(
-          ring ring-primary-500 ring-offset-8 ring-offset-white
-          dark:(ring-primary-700 ring-offset-gray-800)
-        )
-      ">
-      <h6 class="text(xs gray-500) uppercase font-semibold tracking-wide mb-3">
+    <section class="text(sm)">
+      <h6 class="text(xs neutral-9)  uppercase font-semibold tracking-wide mb-3">
         Pages
       </h6>
       {Array.isArray(props.items) &&
@@ -31,7 +25,7 @@ export default function IndexGrid(props: IndexGridProps) {
             {props.items.map((item) => (
               <a
                 href={item.url.pathname}
-                class="box px-2 py-2"
+                class="box p-2"
               >
                 {item.thumbnailUrl && (
                   <img

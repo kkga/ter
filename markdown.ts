@@ -24,7 +24,7 @@ interface ParseOpts {
 
 const toExternalLink = (href: string, title: string, text: string): string =>
   `<a href="${href}" rel="external noopener noreferrer" title="${
-    title || text
+    title || ""
   }">${text}</a>`;
 
 const toInternalLink = (opts: {
@@ -36,9 +36,12 @@ const toInternalLink = (opts: {
   currentPath: string;
   isDirIndex?: boolean;
 }): string => {
-  const cleanPathname = opts.parsed.pathname === "" ? "" : withoutTrailingSlash(
-    opts.parsed.pathname.replace(extname(opts.parsed.pathname), ""),
-  );
+  const cleanPathname =
+    opts.parsed.pathname === ""
+      ? ""
+      : withoutTrailingSlash(
+          opts.parsed.pathname.replace(extname(opts.parsed.pathname), "")
+        );
   let internalHref: string;
 
   if (isAbsolute(cleanPathname)) {
@@ -56,13 +59,14 @@ const toInternalLink = (opts: {
       resolved = withoutTrailingSlash(joined.replace(/\/index$/i, ""));
     }
 
-    internalHref = resolved === ""
-      ? resolved + opts.parsed.hash
-      : withLeadingSlash(resolved) + opts.parsed.hash;
+    internalHref =
+      resolved === ""
+        ? resolved + opts.parsed.hash
+        : withLeadingSlash(resolved) + opts.parsed.hash;
 
     if (resolved !== "") {
       opts.internalLinks.add(
-        new URL(withoutLeadingSlash(internalHref), opts.baseUrl),
+        new URL(withoutLeadingSlash(internalHref), opts.baseUrl)
       );
     }
   }
@@ -74,16 +78,22 @@ const toInternalLink = (opts: {
 
   // console.log(prefixedHref);
 
-  return (
-    `<a href="${internalHref}" title="${
-      opts.title || opts.text
-    }">${opts.text}</a>`
-  );
+  return `<a href="${internalHref}" title="${opts.title || ""}">${
+    opts.text
+  }</a>`;
 };
 
-export const parseMarkdown = (
-  { text, currentPath, isDirIndex, baseUrl, codeHighlight }: ParseOpts,
-): { html: string; links: Array<URL>; headings: Array<Heading> } => {
+export const parseMarkdown = ({
+  text,
+  currentPath,
+  isDirIndex,
+  baseUrl,
+  codeHighlight,
+}: ParseOpts): {
+  html: string;
+  links: Array<URL>;
+  headings: Array<Heading>;
+} => {
   const internalLinks: Set<URL> = new Set();
   const headings: Array<Heading> = [];
   const renderer = new marked.Renderer();
@@ -114,9 +124,7 @@ export const parseMarkdown = (
 
   renderer.link = (href: string, title: string, text: string) => {
     const parsed = parseURL(href);
-    if (
-      parsed.protocol !== undefined || parsed.pathname.startsWith("mailto")
-    ) {
+    if (parsed.protocol !== undefined || parsed.pathname.startsWith("mailto")) {
       return toExternalLink(href, title, text);
     } else {
       return toInternalLink({
@@ -135,7 +143,7 @@ export const parseMarkdown = (
     text: string,
     level: 1 | 2 | 3 | 4 | 5 | 6,
     _raw: string,
-    slugger: marked.Slugger,
+    slugger: marked.Slugger
   ): string => {
     const slug = slugger.slug(text);
     return `<h${level} id="${slug}"><a class="h-anchor" href="#${slug}">#</a>${text}</h${level}>`;
