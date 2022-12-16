@@ -162,8 +162,8 @@ export default function IndexList(props: IndexListProps) {
       class="
         text(sm)
         target:(
-          ring ring-accent-9 ring-offset-8 ring-offset-accent-1
-          bg-accent-1
+          ring ring-accent-9 ring-offset-8 ring-offset-accent-3
+          bg-accent-3
         )
       "
     >

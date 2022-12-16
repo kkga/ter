@@ -118,7 +118,7 @@ export const twindConfig = defineConfig({
       "divide-dot",
       {
         "& > *:not(:last-child)::after": {
-          content: "'•'",
+          content: "'·'",
           "@apply": "mx-1.5 text(neutral-9)",
         },
       },
