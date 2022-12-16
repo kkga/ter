@@ -15,9 +15,6 @@ export const twindConfig = defineConfig({
       mono: ["monospace", "ui-monospace", "Menlo", "Monaco"],
     },
   },
-  preflight: {
-    a: { "@apply": "hover:text-accent-12)" },
-  },
   presets: [
     presetAutoprefix(),
     presetTailwind({
@@ -39,17 +36,15 @@ export const twindConfig = defineConfig({
         bold: "12",
         counters: "9",
         bullets: "9",
-        hr: "6",
+        hr: "7",
         quotes: "12",
         "quote-borders": "6",
         captions: "11",
         code: "11",
         "pre-code": "11",
         "pre-bg": "2",
-        "th-borders": "6",
-        "td-borders": "5",
-        // invert colors (dark mode) — default to auto dark color
-        // dark: null,
+        "th-borders": "7",
+        "td-borders": "6",
       },
       extend: {
         ".lead": { "@apply": "m-0" },
@@ -85,6 +80,7 @@ export const twindConfig = defineConfig({
         },
         del: { "@apply": "opacity-60" },
         small: { "@apply": "text-neutral-11" },
+        details: { "@apply": "text-neutral-11" },
 
         "& dt": { "@apply": "font-semibold" },
         "& *:last-child": { "@apply": "mb-0" },
@@ -137,5 +133,8 @@ export const twindConfig = defineConfig({
       },
     ],
   ],
+  preflight: {
+    a: { "@apply": "hover:text-accent-12)" },
+  },
   darkColor,
 });

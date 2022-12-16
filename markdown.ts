@@ -1,7 +1,7 @@
 import {
   dirname,
   extname,
-  HighlightJS,
+  hljs,
   isAbsolute,
   join,
   marked,
@@ -166,8 +166,8 @@ export const parseMarkdown = ({
 
   if (codeHighlight) {
     renderer.code = (code: string, lang: string): string => {
-      const language = HighlightJS.getLanguage(lang) ? lang : "plaintext";
-      const html = HighlightJS.highlight(code, { language }).value;
+      const language = hljs.getLanguage(lang) ? lang : "plaintext";
+      const html = hljs.highlight(code, { language }).value;
       return `<pre class="hljs language-${language}">${html}</pre>`;
     };
   }

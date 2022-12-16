@@ -12,20 +12,15 @@ function PageHeader({ currentPath, crumbs, navItems }: PageHeaderProps) {
   return (
     <header class="
         flex flex(col md:row) 
-        divide(y md:none gray-100 dark:gray-900) 
         justify-between md:(items-baseline) 
-        text(sm neutral-9)
+        text(sm neutral-10)
       ">
       {crumbs && crumbs.length > 1 && (
         <ul class="divide-slash pb(2 md:0) flex">
           {crumbs.map((crumb) => (
             <li>
               {crumb.current && crumb.slug}
-              {!crumb.current && (
-                <a class="text(hover:accent-12)" href={crumb.url}>
-                  {crumb.slug}
-                </a>
-              )}
+              {!crumb.current && <a href={crumb.url}>{crumb.slug}</a>}
             </li>
           ))}
         </ul>

@@ -10,19 +10,13 @@ interface IndexLogProps {
 
 export default function IndexList(props: IndexLogProps) {
   return (
-    <section class="
-        text(sm)
-        target:(
-          ring ring-primary-500 ring-offset-8 ring-offset-white
-          dark:(ring-primary-700 ring-offset-gray-800)
-        )
-      ">
+    <section class="text(sm)">
       {Array.isArray(props.items) &&
         (
           <ul class="flex flex-col gap-4">
             {props.items.map((item) => (
               <div class="box p-4">
-                <Article page={item} compact={true} />
+                <Article page={item} lang={props.lang} compact={true} />
               </div>
             ))}
           </ul>

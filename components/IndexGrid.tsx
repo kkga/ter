@@ -16,7 +16,7 @@ export default function IndexGrid(props: IndexGridProps) {
   };
   return (
     <section class="text(sm)">
-      <h6 class="text(xs neutral-9)  uppercase font-semibold tracking-wide mb-3">
+      <h6 class="text(xs neutral-10) uppercase font-semibold tracking-wide mb-3">
         Pages
       </h6>
       {Array.isArray(props.items) &&
@@ -37,7 +37,7 @@ export default function IndexGrid(props: IndexGridProps) {
                   {item.title}
                 </span>
 
-                <p class="leading-tight opacity-60">
+                <p class="leading-tight text-neutral-9">
                   {item.description}
                 </p>
               </a>

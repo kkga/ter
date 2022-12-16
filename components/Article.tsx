@@ -5,19 +5,14 @@ import { cx } from "../deps.ts";
 
 function Toc({ headings }: { headings: Heading[] }) {
   return (
-    <ol class="not-prose dim-links text-neutral-9 p-0 list-none mb-0 mt-12 gap-4 columns-3xs">
+    <ol class="not-prose dim-links text-neutral-10 p-0 list-none mb-0 mt-12 gap-4 columns-3xs">
       {headings
         .map((h: Heading, i) => {
           return (
             <li class="font-medium uppercase tracking-wide">
               <a
                 href={`#${h.slug}`}
-                class="
-                  text(xs hover:accent-12) 
-                  block truncate
-                  py-2 
-                  border(t neutral-6)
-                "
+                class="text-xs block truncate py-2 border(t neutral-7)"
               >
                 <span class="font-mono mr-2">{i + 1}</span>
                 {h.text}
@@ -80,13 +75,13 @@ function Header({
       )}
 
       {showDescription && description && (
-        <p class="text(sm neutral-11) font-medium m-0">
+        <p class="text(sm neutral-10) font-medium m-0">
           {description}
         </p>
       )}
 
       {showMeta && (datePublished || tags) && (
-        <div class="mt-1 divide-dot not-prose flex items-baseline text(sm neutral-9)">
+        <div class="mt-1 divide-dot not-prose flex items-baseline text(sm neutral-10)">
           {datePublished && (
             <div>
               <a class="hover:text-accent-12" href={url.pathname}>

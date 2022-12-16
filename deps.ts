@@ -42,7 +42,7 @@ export { renderToString } from "https://esm.sh/preact-render-to-string@5.2.6^";
 
 export { marked } from "https://esm.sh/marked@4.2.4/";
 
-export { HighlightJS } from "npm:highlight.js";
+export { default as hljs } from "npm:highlight.js@11.7.0";
 
 export {
   apply,
@@ -71,5 +71,4 @@ export {
   mauve as neutral,
   mauveDark as neutralDark,
 } from "npm:@twind/preset-radix-ui@1.0.4/colors";
-
 export { default as darkColor } from "npm:@twind/preset-radix-ui@1.0.4/darkColor";

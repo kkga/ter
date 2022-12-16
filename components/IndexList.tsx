@@ -97,21 +97,20 @@ function PageItem({
           box
           px-2 py-1.5
           flex flex-row items-center gap-2
-          ring-offset-4 ring-offset-black
+          ring-offset-4 ring-offset-neutral-3
         "
       >
-        {pinned && (
-          <div class="">
-            <StarIcon />
-          </div>
-        )}
-        <div class="divide-dot flex-1 flex overflow-hidden whitespace-nowrap font-medium">
-          <span class="flex-shrink-0 truncate">
+        {pinned && <StarIcon />}
+
+        <div class="divide-dot flex-1 flex overflow-hidden whitespace-nowrap">
+          <span class="flex-shrink-0 font-semibold truncate">
             {title}
-            {isDirIndex && <span class="select-none">/..</span>}
+            {isDirIndex && (
+              <span class="ml-0.5 text-neutral-9 select-none">/..</span>
+            )}
           </span>
           {description && (
-            <span class="truncate font-normal opacity-60">
+            <span class="truncate text-neutral-10">
               {description}
             </span>
           )}
@@ -119,13 +118,13 @@ function PageItem({
 
         {date && (
           <time
-            class="opacity-50 text(xs) tabular-nums slashed-zero flex-shrink-0"
+            class="text-neutral-10 text(xs) tabular-nums slashed-zero flex-shrink-0"
             dateTime={date.toString()}
           >
             {date.toLocaleDateString(lang, dateFormat)}
           </time>
         )}
-        <div class="opacity-60 flex-shrink-0">{icon}</div>
+        <div class="text-neutral-9 flex-shrink-0">{icon}</div>
       </a>
     </li>
   );
@@ -143,7 +142,7 @@ function TagItem({ name, pageCount }: TagItemProps) {
         href={`/tags##${name}`}
         class="box px-2 py-0.5"
       >
-        {name} <span class="opacity-60">{pageCount}</span>
+        {name} <span class="text-neutral-9">{pageCount}</span>
       </a>
     </li>
   );
@@ -168,7 +167,7 @@ export default function IndexList(props: IndexListProps) {
         )
       "
     >
-      <h6 class="text(xs neutral-9) uppercase font-semibold tracking-wide mb-3">
+      <h6 class="text(xs neutral-10) uppercase font-semibold tracking-wide mb-3">
         {props.title}
       </h6>
       {(props.type === "pages" || props.type === "backlinks") &&
