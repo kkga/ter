@@ -2,17 +2,18 @@
 
 import { Heading, Page } from "../types.d.ts";
 import { cx } from "../deps.ts";
+import { VNode } from "https://esm.sh/v99/preact@10.11.3/src/index";
 
 function Toc({ headings }: { headings: Heading[] }) {
   return (
-    <ol class="not-prose dim-links text-neutral-10 p-0 list-none mb-0 mt-12 gap-4 columns-3xs">
+    <ol class="not-prose p-0 list-none m-0 gap-4 columns-3xs">
       {headings
         .map((h: Heading, i) => {
           return (
             <li class="font-medium uppercase tracking-wide">
               <a
                 href={`#${h.slug}`}
-                class="text-xs block truncate py-2 border(t neutral-7)"
+                class="text(xs neutral-11) block truncate py-2 border(t neutral-7)"
               >
                 <span class="font-mono mr-2">{i + 1}</span>
                 {h.text}
@@ -21,6 +22,15 @@ function Toc({ headings }: { headings: Heading[] }) {
           );
         })}
     </ol>
+  );
+}
+
+function Metadata({ label, children }: { label: string; children: VNode }) {
+  return (
+    <div class="flex flex-col">
+      <span class="text(neutral-9) font-medium">{label}</span>
+      <div class="text-neutral-11">{children}</div>
+    </div>
   );
 }
 
@@ -64,51 +74,54 @@ function Header({
   return (
     <header
       class={cx(
-        "dim-links empty:hidden only-child:(m-0)",
-        !compact && "mb-12",
+        "flex flex-col gap-6 empty:hidden only-child:(m-0)",
+        { "mb-12": !compact },
       )}
     >
       {showTitle && (
-        <h1 class={cx("tracking-tight", compact ? "text-xl mb-1" : "mb-12")}>
+        <h1
+          class={cx("tracking-tight my-0", {
+            "text-xl": compact,
+          })}
+        >
           {title}
         </h1>
       )}
 
       {showDescription && description && (
-        <p class="text(sm neutral-10) font-medium m-0">
+        <p class="text(lg neutral-11) m-0">
           {description}
         </p>
       )}
 
       {showMeta && (datePublished || tags) && (
-        <div class="mt-1 divide-dot not-prose flex items-baseline text(sm neutral-10)">
+        <div class="not-prose flex gap-8 items-baseline text(sm neutral-10)">
           {datePublished && (
-            <div>
-              <a class="hover:text-accent-12" href={url.pathname}>
-                <time dateTime={datePublished.toString()}>
+            <Metadata label="Published">
+              <a href={url}>
+                <time dateTime={datePublished.toISOString()}>
                   {datePublished.toLocaleDateString(lang, dateFormat)}
                 </time>
               </a>
-            </div>
+            </Metadata>
           )}
           {dateUpdated && (
-            <div>
-              <span>Upd:</span>{" "}
-              <time dateTime={dateUpdated.toString()}>
+            <Metadata label="Updated">
+              <time dateTime={dateUpdated.toISOString()}>
                 {dateUpdated.toLocaleDateString(lang, dateFormat)}
               </time>
-            </div>
+            </Metadata>
           )}
           {tags && (
-            <ul class="m-0 p-0 space-x-2">
-              {tags.map((tag) => (
-                <li class="p-0 m-0 inline">
-                  <a class="hover:text-accent-12" href={`/tags##${tag}`}>
-                    #{tag}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <Metadata label="Tags">
+              <ul class="m-0 p-0 space-x-2">
+                {tags.map((tag) => (
+                  <li class="p-0 m-0 inline">
+                    <a href={`/tags##${tag}`}>#{tag}</a>
+                  </li>
+                ))}
+              </ul>
+            </Metadata>
           )}
         </div>
       )}
