@@ -58,17 +58,17 @@ export {
   twind,
   tx,
   virtual,
-} from "npm:@twind/core";
+} from "https://esm.sh/@twind/core@1.0.3";
 
-export { default as presetTailwind } from "npm:@twind/preset-tailwind@1.1.0/base";
-export { default as presetExt } from "npm:@twind/preset-ext@1.0.4";
-export { default as presetTypography } from "npm:@twind/preset-typography@1.0.4";
-export { default as presetAutoprefix } from "npm:@twind/preset-autoprefix@1.0.4";
+export { default as presetTailwind } from "https://esm.sh/@twind/preset-tailwind@1.1.0/base";
+export { default as presetExt } from "https://esm.sh/@twind/preset-ext@1.0.4";
+export { default as presetTypography } from "https://esm.sh/@twind/preset-typography@1.0.4";
+export { default as presetAutoprefix } from "https://esm.sh/@twind/preset-autoprefix@1.0.4";
 
 export {
   mauve as neutral,
   mauveDark as neutralDark,
   violet as accent,
   violetDark as accentDark,
-} from "npm:@twind/preset-radix-ui@1.0.4/colors";
-export { default as darkColor } from "npm:@twind/preset-radix-ui@1.0.4/darkColor";
+} from "https://esm.sh/@twind/preset-radix-ui@1.0.4/colors";
+export { default as darkColor } from "https://esm.sh/@twind/preset-radix-ui@1.0.4/darkColor";
