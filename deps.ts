@@ -42,7 +42,7 @@ export { renderToString } from "https://esm.sh/preact-render-to-string@5.2.6^";
 
 export { marked } from "https://esm.sh/marked@4.2.4/";
 
-export { default as hljs } from "npm:highlight.js@11.7.0";
+export { default as hljs } from "https://cdn.skypack.dev/highlight.js?dts";
 
 export {
   apply,
@@ -66,9 +66,9 @@ export { default as presetTypography } from "npm:@twind/preset-typography@1.0.4"
 export { default as presetAutoprefix } from "npm:@twind/preset-autoprefix@1.0.4";
 
 export {
-  violet as accent,
-  violetDark as accentDark,
   mauve as neutral,
   mauveDark as neutralDark,
+  violet as accent,
+  violetDark as accentDark,
 } from "npm:@twind/preset-radix-ui@1.0.4/colors";
 export { default as darkColor } from "npm:@twind/preset-radix-ui@1.0.4/darkColor";
