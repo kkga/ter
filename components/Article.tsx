@@ -98,7 +98,7 @@ function Header({
         <div class="not-prose flex gap-8 items-baseline text(sm neutral-10)">
           {datePublished && (
             <Metadata label="Published">
-              <a href={url}>
+              <a href={url.toString()}>
                 <time dateTime={datePublished.toISOString()}>
                   {datePublished.toLocaleDateString(lang, dateFormat)}
                 </time>
