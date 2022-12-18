@@ -40,7 +40,6 @@ export function renderPage({
       relatedPages={relatedPages && sortPages(relatedPages)}
       pagesByTag={pagesByTag && sortTaggedPages(pagesByTag)}
       lang={userConfig.lang}
-      navItems={userConfig.navLinks}
       author={{
         name: userConfig.authorName,
         email: userConfig.authorEmail,

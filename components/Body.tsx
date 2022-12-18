@@ -18,7 +18,6 @@ interface BodyProps {
   pagesByTag?: Record<string, Page[]>;
   author?: { name: string; email: string; url: string };
   lang: Intl.LocalesArgument;
-  navItems: Record<string, string>;
 }
 
 function renderPageIndex(
@@ -61,7 +60,6 @@ export default function Body({
   backlinkPages,
   relatedPages,
   pagesByTag,
-  navItems,
   author,
   lang,
 }: BodyProps) {
@@ -79,7 +77,6 @@ export default function Body({
       {crumbs && (
         <Header
           currentPath={page.url.pathname}
-          navItems={navItems}
           crumbs={crumbs}
         />
       )}

@@ -73,19 +73,18 @@ file does not exist, Ter will create it with default options on first build.
 
 #### Options
 
-| Key           | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| title         | Title of your site.                                                   |
-| description   | Description of your site.                                             |
-| url           | Published URL address of your site.                                   |
-| rootCrumb     | Label used for root crumb label (default: "index").                   |
-| authorName    | Your name.                                                            |
-| authorEmail   | Your email.                                                           |
-| authorUrl     | Your home page.                                                       |
-| lang          | Optional. [Locale][locale] used for formatting dates.                 |
-| navLinks      | Optional. Object of navigation links in form of `{label: path, ...}`. |
-| codeHighlight | Optional. Use syntax highlighting in code blocks (default: false).    |
-| head          | Optional. String to inject at the bottom of `<head>` tag.             |
+| Key           | Description                                                        |
+| ------------- | ------------------------------------------------------------------ |
+| title         | Title of your site.                                                |
+| description   | Description of your site.                                          |
+| url           | Published URL address of your site.                                |
+| rootCrumb     | Label used for root crumb label (default: "index").                |
+| authorName    | Your name.                                                         |
+| authorEmail   | Your email.                                                        |
+| authorUrl     | Your home page.                                                    |
+| lang          | Optional. [Locale][locale] used for formatting dates.              |
+| codeHighlight | Optional. Use syntax highlighting in code blocks (default: false). |
+| head          | Optional. String to inject at the bottom of `<head>` tag.          |
 
 [locale]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl#locales_argument
 
@@ -101,7 +100,6 @@ file does not exist, Ter will create it with default options on first build.
   "authorEmail": "youremailaddress@example.com",
   "authorUrl": "https://example.com/about-me/",
   "lang": "en",
-  "navLinks": { "about": "/about", "contact": "/contact" },
   "codeHighlight": true,
   "head": "<script src='https://microanalytics.io/js/script.js' id='XXXXXXXX'></script>"
 }

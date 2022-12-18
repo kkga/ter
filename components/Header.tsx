@@ -5,10 +5,9 @@ import { Crumb } from "../types.d.ts";
 interface PageHeaderProps {
   currentPath: string;
   crumbs?: Crumb[];
-  navItems?: Record<string, string>;
 }
 
-function PageHeader({ currentPath, crumbs, navItems }: PageHeaderProps) {
+function PageHeader({ crumbs }: PageHeaderProps) {
   return (
     <header class="
         flex flex(col md:row) 
@@ -21,17 +20,6 @@ function PageHeader({ currentPath, crumbs, navItems }: PageHeaderProps) {
             <li>
               {crumb.current && crumb.slug}
               {!crumb.current && <a href={crumb.url}>{crumb.slug}</a>}
-            </li>
-          ))}
-        </ul>
-      )}
-      {navItems && Object.entries(navItems).length > 1 && (
-        <ul class="divide-dot pt(2 md:0) md:(place-self-end) flex">
-          {Object.entries(navItems).map(([label, path]) => (
-            <li>
-              {currentPath === path
-                ? <span>{label}</span>
-                : <a class="" href={path}>{label}</a>}
             </li>
           ))}
         </ul>

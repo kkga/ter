@@ -8,7 +8,6 @@ export interface UserConfig {
   authorUrl: string;
   codeHighlight: boolean;
   lang: Intl.LocalesArgument;
-  navLinks: Record<string, string>;
   head: string;
 }
 

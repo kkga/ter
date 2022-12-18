@@ -11,7 +11,6 @@ const defaultUserConfig: UserConfig = {
   authorUrl: "https://example.com/about-me/",
   lang: "en",
   codeHighlight: false,
-  navLinks: {},
   head: "",
 };
 
