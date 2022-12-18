@@ -7,8 +7,6 @@ pinned: true
 layout: grid
 ---
 
-## Quick start
-
 ### Install deno
 
 Ter is built with [Deno](https://deno.land/), so you'll need to have it
@@ -16,14 +14,14 @@ Ter is built with [Deno](https://deno.land/), so you'll need to have it
 
 ### Build a site
 
-This command will recursively search for `*.md` files in the current directory
-and generate a site into the `_site` directory:
+Default command will recursively search for `*.md` files in the current
+directory and generate a site into the `_site` directory:
 
 ```
 deno run -A --unstable https://deno.land/x/ter/main.ts
 ```
 
-Use `--input`/`--output` flags for custom source/destination directories:
+Use `--input` and `--output` flags for custom source/destination directories:
 
 ```
 deno run -A --unstable https://deno.land/x/ter/main.ts --input pages --output _dist
