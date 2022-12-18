@@ -1,7 +1,6 @@
 /** @jsxImportSource https://esm.sh/preact */
 
 import { Page } from "../types.d.ts";
-import Article from "./Article.tsx";
 
 interface IndexGridProps {
   items: Page[];
@@ -9,7 +8,7 @@ interface IndexGridProps {
 }
 
 export default function IndexGrid(props: IndexGridProps) {
-  const dateFormat: Intl.DateTimeFormatOptions = {
+  const _dateFormat: Intl.DateTimeFormatOptions = {
     year: "2-digit",
     day: "2-digit",
     month: "short",
@@ -25,7 +24,7 @@ export default function IndexGrid(props: IndexGridProps) {
             {props.items.map((item) => (
               <a
                 href={item.url.pathname}
-                class="box p-2"
+                class="box p-2 flex flex-col gap-1.5"
               >
                 {item.thumbnailUrl && (
                   <img
@@ -33,13 +32,15 @@ export default function IndexGrid(props: IndexGridProps) {
                     src={item.thumbnailUrl.toString()}
                   />
                 )}
-                <span class="block leading-tight mb-1.5 text-sm font-semibold">
+                <span class="block leading-tight text-sm font-semibold">
                   {item.title}
                 </span>
 
-                <p class="leading-tight text-neutral-9">
-                  {item.description}
-                </p>
+                {item.description && (
+                  <span class="leading-tight text-neutral-9">
+                    {item.description}
+                  </span>
+                )}
               </a>
             ))}
           </ul>

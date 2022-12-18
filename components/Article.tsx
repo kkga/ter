@@ -148,7 +148,7 @@ export default function Article({
   compact = false,
 }: Props) {
   return (
-    <article class="prose prose-neutral prose-sm md:prose-base max-w-none">
+    <article class="prose prose-neutral max-w-none">
       {page.showHeader && (
         <Header
           url={page.url}

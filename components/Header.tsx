@@ -9,13 +9,9 @@ interface PageHeaderProps {
 
 function PageHeader({ crumbs }: PageHeaderProps) {
   return (
-    <header class="
-        flex flex(col md:row) 
-        justify-between md:(items-baseline) 
-        text(sm neutral-10)
-      ">
+    <header class="text(sm neutral-10)">
       {crumbs && crumbs.length > 1 && (
-        <ul class="divide-slash pb(2 md:0) flex">
+        <ul class="divide-slash flex">
           {crumbs.map((crumb) => (
             <li>
               {crumb.current && crumb.slug}
