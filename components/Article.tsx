@@ -2,22 +2,15 @@
 
 import { Heading, Page } from "../types.d.ts";
 import { cx } from "../deps.ts";
-import { VNode } from "https://esm.sh/v99/preact@10.11.3/src/index";
 
 function Toc({ headings }: { headings: Heading[] }) {
   return (
-    <ol class="not-prose p-0 list-none m-0 gap-4 columns-3xs">
+    <ol class="hidden sm:block float-right max-w-xs px-3 py-2 ml-4 my-0 rounded-sm border border(neutral-6) text(sm neutral-11) font-medium list(disc inside) not-prose">
       {headings
-        .map((h: Heading, i) => {
+        .map((h: Heading) => {
           return (
-            <li class="font-medium uppercase tracking-wide">
-              <a
-                href={`#${h.slug}`}
-                class="text(xs neutral-11) block truncate py-2 border(t neutral-7)"
-              >
-                <span class="font-mono mr-2">{i + 1}</span>
-                {h.text}
-              </a>
+            <li class="truncate">
+              <a href={`#${h.slug}`}>{h.text}</a>
             </li>
           );
         })}
@@ -25,7 +18,9 @@ function Toc({ headings }: { headings: Heading[] }) {
   );
 }
 
-function Metadata({ label, children }: { label: string; children: VNode }) {
+function Metadata(
+  { label, children }: { label: string; children: preact.ComponentChildren },
+) {
   return (
     <div class="flex flex-col">
       <span class="text(neutral-9) font-medium">{label}</span>
@@ -41,13 +36,11 @@ interface HeaderProps {
   url: URL;
   dateUpdated?: Date;
   tags?: string[];
-  headings?: Heading[];
   lang: Intl.LocalesArgument;
   compact: boolean;
   showTitle: boolean;
   showMeta: boolean;
   showDescription: boolean;
-  showToc: boolean;
 }
 
 function Header({
@@ -57,12 +50,10 @@ function Header({
   datePublished,
   dateUpdated,
   tags,
-  headings,
   lang,
   showTitle,
   showDescription,
   showMeta,
-  showToc,
   compact,
 }: HeaderProps) {
   const dateFormat: Intl.DateTimeFormatOptions = {
@@ -74,8 +65,8 @@ function Header({
   return (
     <header
       class={cx(
-        "flex flex-col gap-6 empty:hidden only-child:(m-0)",
-        { "mb-12": !compact },
+        "flex flex-col gap-2 empty:hidden only-child:(m-0)",
+        { "gap-6 mb-12": !compact },
       )}
     >
       {showTitle && (
@@ -125,10 +116,6 @@ function Header({
           )}
         </div>
       )}
-
-      {!compact && showToc && headings?.some((h) => h.level > 2) && (
-        <Toc headings={headings.filter((h) => h.level <= 2)} />
-      )}
     </header>
   );
 }
@@ -157,14 +144,16 @@ export default function Article({
           datePublished={page.datePublished}
           dateUpdated={page.dateUpdated}
           tags={page.tags}
-          headings={page.headings}
           lang={lang}
           compact={compact}
           showTitle={page.showTitle}
           showMeta={page.showMeta}
           showDescription={page.showDescription}
-          showToc={page.showToc}
         />
+      )}
+
+      {!compact && page.showToc && page.headings?.some((h) => h.level > 2) && (
+        <Toc headings={page.headings.filter((h) => h.level <= 2)} />
       )}
 
       {page.html && <div dangerouslySetInnerHTML={{ __html: page.html }} />}
