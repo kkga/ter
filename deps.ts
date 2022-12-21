@@ -60,10 +60,10 @@ export {
   virtual,
 } from "https://esm.sh/@twind/core@1.1.1";
 
-export { default as presetTailwind } from "https://esm.sh/@twind/preset-tailwind@1.1.1/base";
-export { default as presetExt } from "https://esm.sh/@twind/preset-ext@1.0.5";
-export { default as presetTypography } from "https://esm.sh/@twind/preset-typography@1.0.5";
-export { default as presetAutoprefix } from "https://esm.sh/@twind/preset-autoprefix@1.0.5";
+export { default as presetTailwind } from "https://esm.sh/@twind/preset-tailwind@2.0.0-next-20221213150400/base";
+export { default as presetExt } from "https://esm.sh/@twind/preset-ext@2.0.0-next-20221213150400";
+export { default as presetTypography } from "https://esm.sh/@twind/preset-typography@2.0.0-next-20221213150400";
+export { default as presetAutoprefix } from "https://esm.sh/@twind/preset-autoprefix@2.0.0-next-20221213150400";
 
 export {
   mauve as neutral,
