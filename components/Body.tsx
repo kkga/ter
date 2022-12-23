@@ -72,7 +72,7 @@ export default function Body({
       p-4
       flex flex-col gap-16
       text(neutral-12)
-      bg(neutral-3) 
+      bg(neutral-2 dark:neutralDark-1)) 
     ">
       {crumbs && (
         <Header

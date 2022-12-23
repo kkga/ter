@@ -20,7 +20,7 @@ export default function IndexGrid(props: IndexGridProps) {
       </h6>
       {Array.isArray(props.items) &&
         (
-          <ul class="grid sm:grid-cols-2 md:grid-cols-3 gap-1.5">
+          <ul class="-mx-2 grid grid-cols-2 sm:grid-cols-3 gap-1.5">
             {props.items.map((item) => (
               <a
                 href={item.url.pathname}

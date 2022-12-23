@@ -161,10 +161,7 @@ export default function IndexList(props: IndexListProps) {
       id={props.title}
       class="
         text(sm)
-        target:(
-          ring ring-accent-9 ring-offset-8 ring-offset-accent-3
-          bg-accent-3
-        )
+        target:([&>h6]:(text-accent-10))))
       "
     >
       <h6 class="text(xs neutral-10) uppercase font-semibold tracking-wide mb-3">
@@ -173,7 +170,7 @@ export default function IndexList(props: IndexListProps) {
       {(props.type === "pages" || props.type === "backlinks") &&
         Array.isArray(props.items) &&
         (
-          <ul class="flex flex-col gap-1.5">
+          <ul class="-mx-2 flex flex-col gap-1.5">
             {props.items.map((item) => (
               <PageItem
                 title={item.title || ""}
@@ -191,7 +188,7 @@ export default function IndexList(props: IndexListProps) {
           </ul>
         )}
       {props.type === "tags" && (
-        <ul class="flex flex-wrap gap-1.5">
+        <ul class="-mx-2 flex flex-wrap gap-1.5">
           {Object.entries(props.items).map((item) => (
             <TagItem name={item[0]} pageCount={item[1].length} />
           ))}

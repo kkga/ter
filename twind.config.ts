@@ -36,15 +36,15 @@ export const twindConfig = defineConfig({
         bold: "12",
         counters: "9",
         bullets: "9",
-        hr: "7",
         quotes: "12",
-        "quote-borders": "6",
         captions: "11",
         code: "11",
         "pre-code": "11",
-        "pre-bg": "1",
-        "th-borders": "7",
-        "td-borders": "6",
+        "pre-bg": "2",
+        "quote-borders": "6",
+        hr: "6",
+        "th-borders": "6",
+        "td-borders": "5",
       },
       extend: {
         ".lead": { "@apply": "m-0" },
@@ -78,7 +78,9 @@ export const twindConfig = defineConfig({
           },
           "@apply": "relative -ml-4 pl-4 hover:([&>.h-anchor]:opacity-100)",
         },
-        pre: { "@apply": "border border(neutral-7) bg-transparent rounded-sm" },
+        pre: {
+          "@apply": "border border(neutral-6) bg-transparent rounded-sm",
+        },
         del: { "@apply": "opacity-60" },
         small: { "@apply": "text-neutral-11" },
         details: { "@apply": "text-neutral-11" },
@@ -99,20 +101,14 @@ export const twindConfig = defineConfig({
       {
         "@apply": `
           block
-          bg(neutral-1)
-          rounded-sm
+          bg(neutral-1 dark:neutralDark-2)
           shadow-sm
+          rounded-sm
         `,
         "&:is(a)": {
           "@apply":
-            "text(neutral-11) hover:(bg(accent-2) shadow text-accent-12)",
+            "text(neutral-11) hover:(bg(accent-3 dark:accentDark-3) shadow text-accent-12)",
         },
-      },
-    ],
-    [
-      "dim-links",
-      {
-        "&:not(:hover) a": { "@apply": "text-current" },
       },
     ],
     [

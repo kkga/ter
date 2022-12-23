@@ -13,7 +13,7 @@ export default function IndexList(props: IndexLogProps) {
     <section class="text(sm)">
       {Array.isArray(props.items) &&
         (
-          <ul class="flex flex-col gap-4">
+          <ul class="-mx-2 flex flex-col gap-4">
             {props.items.map((item) => (
               <div class="box p-4">
                 <Article page={item} lang={props.lang} compact={true} />
