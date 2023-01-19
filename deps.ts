@@ -3,9 +3,9 @@ export {
   ensureDirSync,
   walk,
   type WalkEntry,
-} from "https://deno.land/std@0.171.0/fs/mod.ts";
+} from "https://deno.land/std@0.173.0/fs/mod.ts";
 
-export { readableStreamFromReader } from "https://deno.land/std@0.171.0/streams/mod.ts";
+export { readableStreamFromReader } from "https://deno.land/std@0.173.0/streams/mod.ts";
 
 export {
   basename,
@@ -15,16 +15,16 @@ export {
   isAbsolute,
   join,
   relative,
-} from "https://deno.land/std@0.171.0/path/mod.ts";
+} from "https://deno.land/std@0.173.0/path/mod.ts";
 
-export { parse as flagsParse } from "https://deno.land/std@0.171.0/flags/mod.ts";
+export { parse as flagsParse } from "https://deno.land/std@0.173.0/flags/mod.ts";
 
 export {
   extract as fmExtract,
   test as fmTest,
-} from "https://deno.land/std@0.171.0/encoding/front_matter.ts";
+} from "https://deno.land/std@0.173.0/encoding/front_matter.ts";
 
-export { serve as httpServe } from "https://deno.land/std@0.171.0/http/server.ts";
+export { serve as httpServe } from "https://deno.land/std@0.173.0/http/server.ts";
 
 export { deepmerge } from "https://deno.land/x/deepmergets@v4.2.2/dist/deno/index.ts";
 
@@ -42,7 +42,7 @@ export { default as slugify } from "npm:slugify@1.6.5";
 
 export { renderToString } from "npm:preact-render-to-string@5.2.6";
 
-export { marked } from "npm:marked@4.2.5";
+export { marked } from "npm:marked@4.2.12";
 
 export { default as hljs } from "npm:highlight.js@11.7.0";
 
