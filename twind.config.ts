@@ -56,7 +56,7 @@ export const twindConfig = defineConfig({
             no-underline
             text-accent-11
             rounded-sm
-            hover:(bg-accent-6 text-accent-12 decoration-current)
+            hover:(bg-accent-3 decoration-current)
           `,
         },
         "a[rel~='external']": {
@@ -101,13 +101,12 @@ export const twindConfig = defineConfig({
       {
         "@apply": `
           block
-          bg(neutral-1 dark:neutralDark-2)
-          shadow-sm
-          rounded-sm
+          bg(neutral-2 dark:neutralDark-1)
+          rounded
         `,
         "&:is(a)": {
           "@apply":
-            "text(neutral-11) hover:(bg(accent-3 dark:accentDark-3) shadow text-accent-12)",
+            "text(neutral-11) hover:(bg(accent-3 dark:accentDark-2) text-neutral-12)",
         },
       },
     ],
