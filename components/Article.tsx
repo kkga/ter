@@ -19,11 +19,16 @@ function Toc({ headings }: { headings: Heading[] }) {
 }
 
 function Metadata(
-  { label, children }: { label: string; children: preact.ComponentChildren },
+  { label, children, row }: {
+    label: string;
+    children: preact.ComponentChildren;
+    row?: boolean;
+  },
 ) {
   return (
-    <div class="flex flex-col">
-      <span class="text(neutral-9) font-medium">{label}</span>
+    <div class={cx("flex flex-col", { "flex-row": row })}>
+      <span class="text-neutral-9">{label}</span>
+      {row && <span>&nbsp;</span>}
       <div class="text-neutral-11">{children}</div>
     </div>
   );
@@ -88,7 +93,7 @@ function Header({
       {showMeta && (datePublished || tags) && (
         <div class="not-prose flex gap-8 items-baseline text(sm neutral-10)">
           {datePublished && (
-            <Metadata label="Published">
+            <Metadata row={compact} label="Published">
               <a href={url.toString()}>
                 <time dateTime={datePublished.toISOString()}>
                   {datePublished.toLocaleDateString(lang, dateFormat)}
