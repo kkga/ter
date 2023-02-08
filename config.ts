@@ -88,8 +88,9 @@ export async function createConfig(
   try {
     const parsedConf = JSON.parse(await Deno.readTextFile(conf.userConfigPath));
     conf.userConfig = deepmerge(conf.userConfig, parsedConf);
-  } catch {
-    console.error("Configuration file error in", conf.userConfigPath);
+  } catch (err) {
+    console.error("Possibly error in config file:", conf.userConfigPath);
+    console.error(err);
     Deno.exit(1);
   }
 
