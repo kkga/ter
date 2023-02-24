@@ -1,35 +1,34 @@
 /** @jsxImportSource https://esm.sh/preact */
 
-import { Heading, Page } from "../types.d.ts";
 import { cx } from "../deps.ts";
+import { Heading, Page } from "../types.d.ts";
 
 function Toc({ headings }: { headings: Heading[] }) {
   return (
     <ol class="hidden sm:block float-right max-w-xs px-3 py-2 ml-4 my-0 rounded-sm border border(neutral-6) text(sm neutral-11) font-medium list(disc inside) not-prose">
-      {headings
-        .map((h: Heading) => {
-          return (
-            <li class="truncate">
-              <a href={`#${h.slug}`}>{h.text}</a>
-            </li>
-          );
-        })}
+      {headings.map((h: Heading) => {
+        return (
+          <li class="truncate">
+            <a href={`#${h.slug}`}>{h.text}</a>
+          </li>
+        );
+      })}
     </ol>
   );
 }
 
-function Metadata(
-  { label, children, row }: {
-    label: string;
-    children: preact.ComponentChildren;
-    row?: boolean;
-  },
-) {
+function Metadata({
+  label,
+  children,
+}: {
+  label: string;
+  children: preact.ComponentChildren;
+}) {
   return (
-    <div class={cx("flex flex-col", { "flex-row": row })}>
-      <span class="text-neutral-9">{label}</span>
-      {row && <span>&nbsp;</span>}
-      <div class="text-neutral-11">{children}</div>
+    <div class={cx("flex flex-row text-neutral-9")}>
+      <span>{label}:</span>
+      <span>&nbsp;</span>
+      <div>{children}</div>
     </div>
   );
 }
@@ -69,10 +68,9 @@ function Header({
 
   return (
     <header
-      class={cx(
-        "flex flex-col gap-2 empty:hidden only-child:(m-0)",
-        { "gap-6 mb-12": !compact },
-      )}
+      class={cx("flex flex-col gap-2 empty:hidden only-child:(m-0)", {
+        "gap-6 mb-12": !compact,
+      })}
     >
       {showTitle && (
         <h1
@@ -85,15 +83,13 @@ function Header({
       )}
 
       {showDescription && description && (
-        <p class="text(lg neutral-11) m-0">
-          {description}
-        </p>
+        <p class="text(lg neutral-11) m-0">{description}</p>
       )}
 
       {showMeta && (datePublished || tags) && (
-        <div class="not-prose flex gap-8 items-baseline text(sm neutral-10)">
+        <div class="not-prose flex gap-6 items-baseline text(sm neutral-10)">
           {datePublished && (
-            <Metadata row={compact} label="Published">
+            <Metadata label="Published">
               <a href={url.toString()}>
                 <time dateTime={datePublished.toISOString()}>
                   {datePublished.toLocaleDateString(lang, dateFormat)}
