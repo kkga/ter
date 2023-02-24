@@ -10,8 +10,8 @@ import {
   WalkEntry,
 } from "./deps.ts";
 
-import { parseMarkdown } from "./markdown.ts";
 import * as attributes from "./attributes.ts";
+import { parseMarkdown } from "./markdown.ts";
 
 import type { Crumb, Heading, JSONValue, Page, UserConfig } from "./types.d.ts";
 
@@ -64,7 +64,7 @@ function generateCrumbs(page: Page, rootCrumb?: string): Crumb[] {
     current: false,
   });
 
-  if (slug !== "") crumbs.push({ slug, url: "", current: true });
+  if (slug !== "/") crumbs.push({ slug, url: "", current: true });
   if (crumbs.length === 1) crumbs.pop();
 
   return crumbs;
