@@ -18,11 +18,9 @@ function PageItem({
   url,
   pinned,
   isDirIndex,
-  date,
-  lang,
   icon,
 }: PageItemProps) {
-  const dateFormat: Intl.DateTimeFormatOptions = {
+  const _dateFormat: Intl.DateTimeFormatOptions = {
     year: "2-digit",
     day: "2-digit",
     month: "short",
@@ -34,14 +32,18 @@ function PageItem({
         href={url.pathname}
         class="
           box
-          px-2 py-1.5
-          flex flex-row items-center gap-2
+          px-2 py-1
+          flex flex-row items-baseline gap-2
           ring-offset-4 ring-offset-neutral-3
         "
       >
-        {pinned && <Star />}
+        {pinned && (
+          <div class="self-center">
+            <Star />
+          </div>
+        )}
 
-        <div class="divide-dot flex-1 flex overflow-hidden whitespace-nowrap">
+        <div class="divide-dot flex-1 flex items-baseline overflow-hidden whitespace-nowrap">
           <span class="flex-shrink-0 font-semibold truncate">
             {title}
             {isDirIndex && (
@@ -53,15 +55,7 @@ function PageItem({
           )}
         </div>
 
-        {date && (
-          <time
-            class="text-neutral-10 text(xs) tabular-nums slashed-zero flex-shrink-0"
-            dateTime={date.toString()}
-          >
-            {date.toLocaleDateString(lang, dateFormat)}
-          </time>
-        )}
-        <div class="text-neutral-9 flex-shrink-0">{icon}</div>
+        <div class="self-center text-neutral-9 flex-shrink-0">{icon}</div>
       </a>
     </li>
   );
@@ -75,7 +69,7 @@ interface TagItemProps {
 function TagItem({ name, pageCount }: TagItemProps) {
   return (
     <li>
-      <a href={`/tags##${name}`} class="box px-2 py-0.5">
+      <a href={`/tags##${name}`} class="box px-2 py-1">
         {name} <span class="text-neutral-9">{pageCount}</span>
       </a>
     </li>
@@ -103,7 +97,7 @@ export default function IndexList(props: IndexListProps) {
       </h6>
       {(props.type === "pages" || props.type === "backlinks") &&
         Array.isArray(props.items) && (
-          <ul class="-mx-2 flex flex-col gap-1">
+          <ul class="-mx-2 flex flex-col items-start gap-1">
             {props.items.map((item) => (
               <PageItem
                 title={item.title || ""}

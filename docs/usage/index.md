@@ -4,7 +4,7 @@ description: How to use and configure Ter.
 date: 2022-09-26
 dateUpdated: 2022-12-18
 pinned: true
-layout: grid
+# layout: grid
 ---
 
 ### Install deno

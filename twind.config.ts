@@ -6,7 +6,7 @@ import {
   presetTypography,
 } from "./deps.ts";
 
-import { neutral, neutralDark, accent, accentDark, darkColor } from "./deps.ts";
+import { accent, accentDark, darkColor, neutral, neutralDark } from "./deps.ts";
 
 export const twindConfig = defineConfig({
   theme: {
