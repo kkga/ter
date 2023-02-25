@@ -1,5 +1,3 @@
-/** @jsxImportSource https://esm.sh/preact */
-
 import { cx } from "../deps.ts";
 import { Heading, Page } from "../types.d.ts";
 
@@ -21,13 +19,12 @@ function Metadata({
   label,
   children,
 }: {
-  label: string;
+  label?: string;
   children: preact.ComponentChildren;
 }) {
   return (
     <div class={cx("flex flex-row text-neutral-9")}>
-      <span>{label}:</span>
-      <span>&nbsp;</span>
+      {label && <span>{label}&nbsp;</span>}
       <div>{children}</div>
     </div>
   );
@@ -89,7 +86,7 @@ function Header({
       {showMeta && (datePublished || tags) && (
         <div class="not-prose flex gap-6 items-baseline text(sm neutral-10)">
           {datePublished && (
-            <Metadata label="Published">
+            <Metadata>
               <a href={url.toString()}>
                 <time dateTime={datePublished.toISOString()}>
                   {datePublished.toLocaleDateString(lang, dateFormat)}
@@ -98,14 +95,14 @@ function Header({
             </Metadata>
           )}
           {dateUpdated && (
-            <Metadata label="Updated">
+            <Metadata label="Upd:">
               <time dateTime={dateUpdated.toISOString()}>
                 {dateUpdated.toLocaleDateString(lang, dateFormat)}
               </time>
             </Metadata>
           )}
           {tags && (
-            <Metadata label="Tags">
+            <Metadata>
               <ul class="m-0 p-0 space-x-2">
                 {tags.map((tag) => (
                   <li class="p-0 m-0 inline">

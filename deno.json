@@ -1,16 +1,13 @@
 {
   "tasks": {
-    "build": "deno run -A --unstable main.ts --input docs",
-    "serve": "deno run -A --unstable main.ts --input docs --serve",
     "dev": "deno run -A --unstable --watch main.ts --input docs --serve --debug",
+    "serve": "deno run -A --unstable main.ts --input docs --serve",
+    "build": "deno run -A --unstable main.ts --input docs",
     "clean": "rm -rf _site"
   },
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "dom.asynciterable",
-      "deno.ns"
-    ]
+    "lib": ["dom", "dom.iterable", "dom.asynciterable", "deno.ns"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "https://esm.sh/preact"
   }
 }
