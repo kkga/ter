@@ -29,7 +29,7 @@ function PageItem({
   };
 
   return (
-    <li>
+    <li class="max-w-full">
       <a
         href={url.pathname}
         class="
@@ -70,7 +70,7 @@ interface TagItemProps {
 
 function TagItem({ name, pageCount }: TagItemProps) {
   return (
-    <li>
+    <li class="max-w-full">
       <a href={`/tags##${name}`} class="box px-2 py-1">
         {name} <span class="text-neutral-9">{pageCount}</span>
       </a>
