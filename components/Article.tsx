@@ -1,3 +1,5 @@
+/** @jsxImportSource https://esm.sh/preact */
+
 import { cx } from "../deps.ts";
 import { Heading, Page } from "../types.d.ts";
 
