@@ -2,7 +2,7 @@ import {
   basename,
   dirname,
   emptyDirSync,
-  ensureDirSync,
+  ensureDir,
   flagsParse,
   join,
   relative,
@@ -185,21 +185,27 @@ async function generateSite(opts: GenerateSiteOpts) {
   performance.mark("write:start");
 
   emptyDirSync(outputPath);
+  const writeTasks: Promise<void>[] = [];
 
   files.forEach(({ writePath, content }) => {
-    logLevel > 1 && console.log(`write\t${relative(Deno.cwd(), writePath)}`);
-    ensureDirSync(dirname(writePath));
-    Deno.writeTextFileSync(writePath, content);
+    writeTasks.push((async () => {
+      logLevel > 1 && console.log(`write\t${relative(Deno.cwd(), writePath)}`);
+      await ensureDir(dirname(writePath));
+      await Deno.writeTextFile(writePath, content);
+    })());
   });
 
   staticEntries.forEach(({ path }) => {
-    const relPath = relative(inputPath, path);
-    const writePath = join(outputPath, dirname(relPath), basename(relPath));
-    logLevel > 1 && console.log(`copy\t${relative(Deno.cwd(), writePath)}`);
-    ensureDirSync(dirname(writePath));
-    Deno.copyFileSync(path, writePath);
+    writeTasks.push((async () => {
+      const relPath = relative(inputPath, path);
+      const writePath = join(outputPath, dirname(relPath), basename(relPath));
+      logLevel > 1 && console.log(`copy\t${relative(Deno.cwd(), writePath)}`);
+      await ensureDir(dirname(writePath));
+      await Deno.copyFile(path, writePath);
+    })())
   });
-
+  
+  await Promise.all(writeTasks);
   performance.mark("write:end");
 
   /**

@@ -5,6 +5,7 @@ export {
 export { parse as flagsParse } from "https://deno.land/std@0.178.0/flags/mod.ts";
 export {
   emptyDirSync,
+  ensureDir,
   ensureDirSync,
   walk,
   type WalkEntry,
