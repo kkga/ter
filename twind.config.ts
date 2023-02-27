@@ -70,12 +70,14 @@ export const twindConfig = defineConfig({
               absolute my-auto top-0 bottom-0
               hidden sm:flex
               justify-center items-center
-              w-6 h-6 rounded
+              w-6 h-6 rounded-sm
               text(base neutral-9 hover:(accent-12)) !no-underline
               opacity(0 hover:100))
             `,
           },
-          "@apply": "relative -ml-4 pl-4 hover:([&>.h-anchor]:opacity-100)",
+          "font-stretch": "condensed",
+          "@apply":
+            "relative tracking-tight -ml-4 pl-4 hover:([&>.h-anchor]:opacity-100)",
         },
         pre: {
           "@apply":
