@@ -50,18 +50,17 @@ export const twindConfig = defineConfig({
         ".lead": { "@apply": "m-0" },
         a: {
           "@apply": `
-            px-0.5
-            -mx-0.5
+            underline
+            decoration-accent-8
             font-normal
-            no-underline
-            text-accent-11
-            rounded-sm
-            hover:(bg-accent-3 decoration-current)
+            hover:(decoration-solid decoration-accent-10 bg-accent-4)
           `,
         },
         "a[rel~='external']": {
-          "@apply":
-            "after:(content-['↗'] no-underline text-xs ml-0.5 align-text-top)",
+          "@apply": `
+            text-current decoration-neutral-8
+            hover:(decoration-neutral-10 bg-neutral-4),
+          `,
         },
         "h1,h2,h3,h4,h5,h6": {
           "& > .h-anchor": {
@@ -73,13 +72,14 @@ export const twindConfig = defineConfig({
               justify-center items-center
               w-6 h-6 rounded
               text(base neutral-9 hover:(accent-12)) !no-underline
-              opacity(0 hover:100)) 
+              opacity(0 hover:100))
             `,
           },
           "@apply": "relative -ml-4 pl-4 hover:([&>.h-anchor]:opacity-100)",
         },
         pre: {
-          "@apply": "border border(neutral-6) bg-transparent rounded-sm",
+          "@apply":
+            "leading-snug border border(neutral-6) bg-transparent rounded-sm",
         },
         del: { "@apply": "opacity-60" },
         small: { "@apply": "text-neutral-11" },
@@ -101,8 +101,8 @@ export const twindConfig = defineConfig({
       {
         "@apply": `
           block
-          bg(neutral-2 dark:neutralDark-1)
-          rounded
+          bg(transparent)
+          rounded-sm
         `,
         "&:is(a)": {
           "@apply":

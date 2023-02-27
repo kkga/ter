@@ -99,29 +99,25 @@ export default function IndexList(props: IndexListProps) {
       </h6>
       {(props.type === "pages" || props.type === "backlinks") &&
         Array.isArray(props.items) && (
-          <ul class="-mx-2 flex flex-col items-start gap-1">
-            {props.items.map((item) => (
-              <PageItem
-                title={item.title || ""}
-                description={item.description}
-                url={item.url}
-                isDirIndex={item.index === "dir"}
-                pinned={item.pinned}
-                date={item.datePublished}
-                lang={props.lang}
-                icon={
-                  props.type === "backlinks" ? (
-                    <ChevronLeft />
-                  ) : (
-                    <ChevronRight />
-                  )
-                }
-              />
-            ))}
-          </ul>
-        )}
+        <ul class="-mx-2 flex flex-col items-start">
+          {props.items.map((item) => (
+            <PageItem
+              title={item.title || ""}
+              description={item.description}
+              url={item.url}
+              isDirIndex={item.index === "dir"}
+              pinned={item.pinned}
+              date={item.datePublished}
+              lang={props.lang}
+              icon={props.type === "backlinks"
+                ? <ChevronLeft />
+                : <ChevronRight />}
+            />
+          ))}
+        </ul>
+      )}
       {props.type === "tags" && (
-        <ul class="-mx-2 flex flex-wrap gap-1.5">
+        <ul class="-mx-2 flex flex-wrap">
           {Object.entries(props.items).map((item) => (
             <TagItem name={item[0]} pageCount={item[1].length} />
           ))}
