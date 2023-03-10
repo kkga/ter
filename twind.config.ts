@@ -81,7 +81,7 @@ export const twindConfig = defineConfig({
         },
         pre: {
           "@apply":
-            "leading-snug border border(neutral-6) bg-transparent rounded-sm",
+            "leading-normal border border(neutral-6) bg-transparent rounded-sm",
         },
         del: { "@apply": "opacity-60" },
         small: { "@apply": "text-neutral-11" },

@@ -380,7 +380,10 @@
     "https://esm.sh/v106/preact@10.12.0/src/jsx.d.ts": "e9ef3c29d93668f42e0a8094384d5f76fcf6426b80922dd7f489c95925946a30",
     "https://esm.sh/v107/preact@10.13.0/jsx-runtime/src/index.d.ts": "e153460ed2b3fe2ad8b93696ecd48fbf73cd628b0b0ea6692b71804a3af69dfd",
     "https://esm.sh/v107/preact@10.13.0/src/index.d.ts": "65398710de6aa0a07412da79784e05e6e96763f51c7c91b77344d2d0af06385c",
-    "https://esm.sh/v107/preact@10.13.0/src/jsx.d.ts": "fde41cfb4944bcc5005e653c989ef8f85deb1cbb5364a1726654993937cd08d0"
+    "https://esm.sh/v107/preact@10.13.0/src/jsx.d.ts": "fde41cfb4944bcc5005e653c989ef8f85deb1cbb5364a1726654993937cd08d0",
+    "https://esm.sh/v108/preact@10.13.0/jsx-runtime/src/index.d.ts": "e153460ed2b3fe2ad8b93696ecd48fbf73cd628b0b0ea6692b71804a3af69dfd",
+    "https://esm.sh/v108/preact@10.13.0/src/index.d.ts": "65398710de6aa0a07412da79784e05e6e96763f51c7c91b77344d2d0af06385c",
+    "https://esm.sh/v108/preact@10.13.0/src/jsx.d.ts": "fde41cfb4944bcc5005e653c989ef8f85deb1cbb5364a1726654993937cd08d0"
   },
   "npm": {
     "specifiers": {
