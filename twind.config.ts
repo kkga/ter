@@ -51,16 +51,14 @@ export const twindConfig = defineConfig({
         a: {
           "@apply": `
             underline
-            decoration-accent-8
-          decoration-2
-          underline-offset-2
+            decoration-accent-9
             font-normal
             hover:(decoration-solid decoration-accent-10 bg-accent-4)
           `,
         },
         "a[rel~='external']": {
           "@apply": `
-            text-current decoration-neutral-8
+            text-current decoration-neutral-9
             hover:(decoration-neutral-10 bg-neutral-4),
           `,
         },
@@ -129,6 +127,13 @@ export const twindConfig = defineConfig({
           content: "'/'",
           "@apply": "mx-1.5 text(neutral-9)",
         },
+      },
+    ],
+    [
+      "section-heading",
+      {
+        "@apply": "flex gap-2 items-baseline",
+        "&::after": { content: "", "@apply": "flex-1 h-px bg-neutral-4" },
       },
     ],
   ],

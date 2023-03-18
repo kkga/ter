@@ -1,16 +1,16 @@
 export {
   extract as fmExtract,
   test as fmTest,
-} from "https://deno.land/std@0.178.0/encoding/front_matter/any.ts";
-export { parse as flagsParse } from "https://deno.land/std@0.178.0/flags/mod.ts";
+} from "https://deno.land/std@0.180.0/encoding/front_matter/any.ts";
+export { parse as flagsParse } from "https://deno.land/std@0.180.0/flags/mod.ts";
 export {
   emptyDirSync,
   ensureDir,
   ensureDirSync,
   walk,
   type WalkEntry,
-} from "https://deno.land/std@0.178.0/fs/mod.ts";
-export { serve as httpServe } from "https://deno.land/std@0.178.0/http/server.ts";
+} from "https://deno.land/std@0.180.0/fs/mod.ts";
+export { serve as httpServe } from "https://deno.land/std@0.180.0/http/server.ts";
 export {
   basename,
   common,
@@ -19,9 +19,9 @@ export {
   isAbsolute,
   join,
   relative,
-} from "https://deno.land/std@0.178.0/path/mod.ts";
-export { readableStreamFromReader } from "https://deno.land/std@0.178.0/streams/mod.ts";
-export { deepmerge } from "https://deno.land/x/deepmergets@v4.3.0/dist/deno/index.ts";
+} from "https://deno.land/std@0.180.0/path/mod.ts";
+export { readableStreamFromReader } from "https://deno.land/std@0.180.0/streams/mod.ts";
+export { deepmerge } from "https://deno.land/x/deepmergets@v5.0.0/dist/deno/index.ts";
 export { slug as slugify } from "https://deno.land/x/slug@v1.1.0/mod.ts";
 export {
   apply,
@@ -59,4 +59,4 @@ export {
   withoutLeadingSlash,
   withoutTrailingSlash,
   type ParsedURL,
-} from "npm:ufo@1.1.0";
+} from "npm:ufo@1.1.1";

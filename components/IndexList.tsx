@@ -94,7 +94,7 @@ export default function IndexList(props: IndexListProps) {
         target:([&>h6]:(text-accent-10))))
       "
     >
-      <h6 class="text(xs neutral-10) uppercase font-semibold tracking-wide mb-3">
+      <h6 class="section-heading text(xs neutral-10) uppercase font-semibold tracking-wide mb-3">
         {props.title}
       </h6>
       {(props.type === "pages" || props.type === "backlinks") &&

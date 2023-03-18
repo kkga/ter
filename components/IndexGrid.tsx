@@ -15,7 +15,7 @@ export default function IndexGrid(props: IndexGridProps) {
   };
   return (
     <section class="text(sm)">
-      <h6 class="text(xs neutral-10) uppercase font-semibold tracking-wide mb-3">
+      <h6 class="section-heading text(xs neutral-10) uppercase font-semibold tracking-wide mb-3">
         Pages
       </h6>
       {Array.isArray(props.items) && (
