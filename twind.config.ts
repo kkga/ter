@@ -52,6 +52,8 @@ export const twindConfig = defineConfig({
           "@apply": `
             underline
             decoration-accent-8
+          decoration-2
+          underline-offset-2
             font-normal
             hover:(decoration-solid decoration-accent-10 bg-accent-4)
           `,
@@ -81,7 +83,7 @@ export const twindConfig = defineConfig({
         },
         pre: {
           "@apply":
-            "leading-normal border border(neutral-6) bg-transparent rounded-sm",
+            "leading-normal border border(neutral-4) bg-neutral-2 rounded-md",
         },
         del: { "@apply": "opacity-60" },
         small: { "@apply": "text-neutral-11" },
@@ -104,11 +106,10 @@ export const twindConfig = defineConfig({
         "@apply": `
           block
           bg(transparent)
-          rounded-sm
+          rounded
         `,
         "&:is(a)": {
-          "@apply":
-            "text(neutral-11) hover:(bg(accent-3 dark:accentDark-2) text-neutral-12)",
+          "@apply": "text(neutral-11) hover:(bg(accent-3) text-neutral-12)",
         },
       },
     ],
