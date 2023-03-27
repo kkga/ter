@@ -36,9 +36,9 @@ export const twindConfig = defineConfig({
         bold: "12",
         counters: "9",
         bullets: "9",
-        quotes: "12",
+        quotes: "11",
         captions: "11",
-        code: "11",
+        code: "12",
         "pre-code": "11",
         "pre-bg": "2",
         "quote-borders": "6",
@@ -81,13 +81,14 @@ export const twindConfig = defineConfig({
         },
         pre: {
           "@apply":
-            "leading-normal border border(neutral-4) bg-neutral-2 rounded-md",
+            "leading-normal border border-dashed border(neutral-4) rounded-md",
         },
         del: { "@apply": "opacity-60" },
         small: { "@apply": "text-neutral-11" },
         details: { "@apply": "text-neutral-11" },
 
         "& dt": { "@apply": "font-semibold" },
+        "& dd": { "@apply": "ml-4 text-neutral-11" },
         "& *:last-child": { "@apply": "mb-0" },
 
         "& .full-bleed": { "@apply": "lg:(-mx-24) xl:(-mx-32)" },
@@ -116,7 +117,7 @@ export const twindConfig = defineConfig({
       {
         "& > *:not(:last-child)::after": {
           content: "'·'",
-          "@apply": "mx-1.5 text(neutral-9)",
+          "@apply": "mx-1.5 text(neutral-8)",
         },
       },
     ],

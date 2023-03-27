@@ -86,7 +86,7 @@ function Header({
       )}
 
       {showMeta && (datePublished || tags) && (
-        <div class="not-prose flex gap-6 items-baseline text(sm neutral-10)">
+        <div class="divide-dot not-prose flex items-baseline text(sm neutral-10)">
           {datePublished && (
             <Metadata>
               <a href={url.toString()}>

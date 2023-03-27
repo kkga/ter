@@ -14,7 +14,7 @@ function Footer({ author }: FooterProps) {
 
   return (
     <footer class="mt-auto flex items-baseline text(xs neutral-10)">
-      <ul class="flex items-baseline space-x-4">
+      <ul class="divide-dot flex items-baseline">
         {items.map(([label, path]) => (
           <li>
             <a href={path}>{label}</a>
