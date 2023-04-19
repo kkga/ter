@@ -117,7 +117,7 @@ function getRelatedPages(pages: Page[], current: Page): Page[] {
   );
 }
 
-function getChildPages(pages: Page[], current: Page): {childPages: Page[], allChildPages: Page[]} {
+function getChildPages(pages: Page[], current: Page): { childPages: Page[], allChildPages: Page[] } {
   const childPages: Page[] = [];
   const allChildPages: Page[] = [];
   pages.forEach(p => {
