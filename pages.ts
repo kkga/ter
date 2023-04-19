@@ -117,14 +117,19 @@ function getRelatedPages(pages: Page[], current: Page): Page[] {
   );
 }
 
-function getChildPages(pages: Page[], current: Page, deep?: boolean): Page[] {
-  return pages.filter(
-    (p) =>
-      current.url.pathname !== p.url.pathname &&
-      (deep
-        ? p.url.pathname.startsWith(current.url.pathname)
-        : current.url.pathname === dirname(p.url.pathname))
-  );
+function getChildPages(pages: Page[], current: Page): {childPages: Page[], allChildPages: Page[]} {
+  const childPages: Page[] = [];
+  const allChildPages: Page[] = [];
+  pages.forEach(p => {
+    if (current.url.pathname !== p.url.pathname) {
+      if (current.url.pathname === dirname(p.url.pathname)) {
+        childPages.push(p)
+      } else if (p.url.pathname.startsWith(current.url.pathname)) {
+        allChildPages.push(p)
+      }
+    }
+  });
+  return { childPages, allChildPages }
 }
 
 function getPagesByTags(
