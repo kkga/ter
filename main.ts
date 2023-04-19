@@ -144,8 +144,7 @@ async function generateSite(opts: GenerateSiteOpts) {
     ...pages.map((page) => {
       const writePath = join(outputPath, page.url.pathname, "index.html");
       const listedPages = pages.filter((p) => !p.unlisted);
-      const childPages = getChildPages(listedPages, page);
-      const allChildPages = getChildPages(listedPages, page, true);
+      const { childPages, allChildPages } = getChildPages(listedPages, page);
       const backlinkPages = getBacklinkPages(listedPages, page);
       const childTags = getTags(allChildPages);
       const childPagesByTag = getPagesByTags(listedPages, childTags);
