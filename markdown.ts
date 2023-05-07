@@ -178,7 +178,6 @@ export const parseMarkdown = ({
     gfm: true,
     breaks: false,
     smartLists: true,
-    smartypants: true,
     xhtml: false,
   });
 

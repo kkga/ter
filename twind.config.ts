@@ -51,15 +51,15 @@ export const twindConfig = defineConfig({
         a: {
           "@apply": `
             underline
-            decoration-accent-9
+            decoration-accent-8
             font-normal
-            hover:(decoration-solid decoration-accent-10 bg-accent-4)
+            hover:(decoration-solid decoration-accent-9 bg-accent-4)
           `,
         },
         "a[rel~='external']": {
           "@apply": `
-            text-current decoration-neutral-9
-            hover:(decoration-neutral-10 bg-neutral-4),
+            text-current decoration-neutral-8
+            hover:(decoration-neutral-9 bg-neutral-4),
           `,
         },
         "h1,h2,h3,h4,h5,h6": {
@@ -80,8 +80,7 @@ export const twindConfig = defineConfig({
             "relative tracking-tight -ml-4 pl-4 hover:([&>.h-anchor]:opacity-100)",
         },
         pre: {
-          "@apply":
-            "leading-normal border border-dashed border(neutral-4) rounded-md",
+          "@apply": "leading-normal rounded-md",
         },
         del: { "@apply": "opacity-60" },
         small: { "@apply": "text-neutral-11" },
@@ -139,7 +138,7 @@ export const twindConfig = defineConfig({
     ],
   ],
   preflight: {
-    a: { "@apply": "hover:text-accent-12)" },
+    a: { "@apply": "hover:text-accent-12" },
   },
   darkColor,
 });
