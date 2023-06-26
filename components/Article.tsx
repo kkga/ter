@@ -5,7 +5,8 @@ import { Heading, Page } from "../types.d.ts";
 
 function Toc({ headings }: { headings: Heading[] }) {
   return (
-    <ol class="hidden sm:block float-right max-w-xs px-3 py-2 ml-4 my-0 rounded-sm border border(neutral-6) text(sm neutral-11) font-medium list(none inside) not-prose">
+    <ol class="hidden sm:block float-right w-1/3 px-3 py-2 ml-4 my-0 rounded-sm bg-neutral-2 text(sm neutral-11) font-medium list(inside) not-prose">
+      <span class="block text-xs text-neutral-10 mb-2">Contents</span>
       {headings.map((h: Heading) => {
         return (
           <li class="truncate">
