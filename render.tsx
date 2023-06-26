@@ -1,5 +1,3 @@
-/** @jsxImportSource https://esm.sh/preact */
-
 import { HIGHLIGHT_STYLE, HMR_CLIENT } from "./constants.ts";
 import { inline, render, twindSetup } from "./deps.ts";
 import { twindConfig } from "./twind.config.ts";
@@ -45,13 +43,12 @@ export function renderPage({
         email: userConfig.authorEmail,
         url: userConfig.authorUrl,
       }}
-    />
+    />,
   );
 
-  const pageTitle =
-    page.title === userConfig.title
-      ? page.title
-      : `${page.title} &middot; ${userConfig.title}`;
+  const pageTitle = page.title === userConfig.title
+    ? page.title
+    : `${page.title} &middot; ${userConfig.title}`;
   const pageDescription = `${page.description || userConfig.description}`;
 
   return inline(
@@ -70,15 +67,13 @@ export function renderPage({
   <meta property="og:description" content="$${pageDescription}">
   <meta property="og:url" content="${page.url}">
   <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
-  <link rel="alternate" type="application/atom+xml" href="/feed.xml" title="${
-    userConfig.title
-  }" />
+  <link rel="alternate" type="application/atom+xml" href="/feed.xml" title="${userConfig.title}" />
   ${userConfig.head || ""}
   ${userConfig.codeHighlight ? `<style>${HIGHLIGHT_STYLE}</style>` : ""}
 </head>
 ${dev ? `<script>${HMR_CLIENT}</script>` : ""}
 ${body}
 </html>`,
-    tw
+    tw,
   );
 }

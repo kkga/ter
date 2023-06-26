@@ -1,5 +1,3 @@
-/** @jsxImportSource https://esm.sh/preact */
-
 export const ChevronRight = () => (
   <svg
     width="15"
@@ -13,7 +11,8 @@ export const ChevronRight = () => (
       fill="currentColor"
       fill-rule="evenodd"
       clip-rule="evenodd"
-    ></path>
+    >
+    </path>
   </svg>
 );
 
@@ -30,7 +29,8 @@ export const ChevronLeft = () => (
       fill="currentColor"
       fill-rule="evenodd"
       clip-rule="evenodd"
-    ></path>
+    >
+    </path>
   </svg>
 );
 
@@ -47,6 +47,7 @@ export const Star = () => (
       fill="currentColor"
       fill-rule="evenodd"
       clip-rule="evenodd"
-    ></path>
+    >
+    </path>
   </svg>
 );

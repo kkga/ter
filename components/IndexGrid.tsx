@@ -1,5 +1,3 @@
-/** @jsxImportSource https://esm.sh/preact */
-
 import { Page } from "../types.d.ts";
 
 interface IndexGridProps {

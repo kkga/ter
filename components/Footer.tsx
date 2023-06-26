@@ -1,5 +1,3 @@
-/** @jsxImportSource https://esm.sh/preact */
-
 interface FooterProps {
   author?: { name: string; email: string; url: string };
 }
