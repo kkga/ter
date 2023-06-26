@@ -1,16 +1,16 @@
-export { parse as flagsParse } from "https://deno.land/std@0.191.0/flags/mod.ts";
+export { parse as flagsParse } from "https://deno.land/std@0.192.0/flags/mod.ts";
 export {
   extract as fmExtract,
   test as fmTest,
-} from "https://deno.land/std@0.191.0/front_matter/any.ts";
+} from "https://deno.land/std@0.192.0/front_matter/any.ts";
 export {
   emptyDirSync,
   ensureDir,
   ensureDirSync,
   walk,
   type WalkEntry,
-} from "https://deno.land/std@0.191.0/fs/mod.ts";
-export { serve as httpServe } from "https://deno.land/std@0.191.0/http/server.ts";
+} from "https://deno.land/std@0.192.0/fs/mod.ts";
+export { serve as httpServe } from "https://deno.land/std@0.192.0/http/server.ts";
 export {
   basename,
   common,
@@ -19,8 +19,8 @@ export {
   isAbsolute,
   join,
   relative,
-} from "https://deno.land/std@0.191.0/path/mod.ts";
-export { readableStreamFromReader } from "https://deno.land/std@0.191.0/streams/mod.ts";
+} from "https://deno.land/std@0.192.0/path/mod.ts";
+export { readableStreamFromReader } from "https://deno.land/std@0.192.0/streams/mod.ts";
 export { deepmerge } from "https://deno.land/x/deepmergets@v5.1.0/dist/deno/index.ts";
 export { slug as slugify } from "https://deno.land/x/slug@v1.1.0/mod.ts";
 export {
@@ -51,7 +51,7 @@ export { default as presetTailwind } from "npm:@twind/preset-tailwind@1.1.4/base
 export { default as presetTypography } from "npm:@twind/preset-typography@1.0.7";
 export { Feed } from "npm:feed@4.2.2";
 export { default as hljs } from "npm:highlight.js@11.8.0";
-export { marked } from "npm:marked@5.0.5";
+export { marked } from "npm:marked@5.1.0";
 export { render } from "npm:preact-render-to-string@6.1.0";
 export {
   parseURL,
