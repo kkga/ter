@@ -19,7 +19,9 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup Deno
-        uses: denoland/setup-deno@v1.1.0
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
 
       - name: Build site
         run: deno task build
