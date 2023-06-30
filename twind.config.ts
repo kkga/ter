@@ -51,15 +51,15 @@ export const twindConfig = defineConfig({
         a: {
           "@apply": `
             underline
-            decoration-accent-8
+            underline-offset-2
+            decoration-neutral-9
             font-normal
-            hover:(decoration-solid decoration-accent-9 bg-accent-4)
+            hover:(decoration-current)
           `,
         },
         "a[rel~='external']": {
           "@apply": `
-            text-current decoration-neutral-8
-            hover:(decoration-neutral-9 bg-neutral-4),
+            after:content-[' ↗']
           `,
         },
         "h1,h2,h3,h4,h5,h6": {
