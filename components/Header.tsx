@@ -1,3 +1,5 @@
+/** @jsxImportSource https://esm.sh/preact */
+
 import { Crumb } from "../types.d.ts";
 
 interface PageHeaderProps {

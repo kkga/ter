@@ -1,3 +1,5 @@
+/** @jsxImportSource https://esm.sh/preact */
+
 export const ChevronRight = () => (
   <svg
     width="15"

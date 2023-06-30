@@ -7,7 +7,5 @@
   },
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "dom.asynciterable", "deno.ns"],
-    "jsx": "react-jsx",
-    "jsxImportSource": "https://esm.sh/preact"
   }
 }

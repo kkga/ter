@@ -1,3 +1,5 @@
+/** @jsxImportSource https://esm.sh/preact */
+
 import Article from "./Article.tsx";
 import Footer from "./Footer.tsx";
 import Header from "./Header.tsx";
