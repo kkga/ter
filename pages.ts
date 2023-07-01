@@ -105,7 +105,7 @@ function getTags(pages: Page[]): string[] {
 
 function getPagesWithTag(pages: Page[], tag: string, exclude?: Page[]): Page[] {
   return pages.filter(
-    (page) => page.tags && page.tags.includes(tag) && !exclude?.includes(page)
+    (page) => page.tags && page.tags.includes(tag) && !exclude?.includes(page),
   );
 }
 
@@ -113,29 +113,32 @@ function getRelatedPages(pages: Page[], current: Page): Page[] {
   return pages.filter(
     (page) =>
       page.url.pathname !== current.url.pathname &&
-      page?.tags?.some((tag) => current?.tags?.includes(tag))
+      page?.tags?.some((tag) => current?.tags?.includes(tag)),
   );
 }
 
-function getChildPages(pages: Page[], current: Page): { childPages: Page[], allChildPages: Page[] } {
+function getChildPages(
+  pages: Page[],
+  current: Page,
+): { childPages: Page[]; allChildPages: Page[] } {
   const childPages: Page[] = [];
   const allChildPages: Page[] = [];
-  pages.forEach(p => {
+  pages.forEach((p) => {
     if (current.url.pathname !== p.url.pathname) {
       if (current.url.pathname === dirname(p.url.pathname)) {
-        childPages.push(p)
+        childPages.push(p);
       } else if (p.url.pathname.startsWith(current.url.pathname)) {
-        allChildPages.push(p)
+        allChildPages.push(p);
       }
     }
   });
-  return { childPages, allChildPages }
+  return { childPages, allChildPages };
 }
 
 function getPagesByTags(
   pages: Page[],
   tags: string[],
-  exclude?: Page[]
+  exclude?: Page[],
 ): Record<string, Page[]> {
   const pageMap: Record<string, Page[]> = {};
   tags.forEach((tag) => {
@@ -156,7 +159,7 @@ function sortPages(pages: Page[]): Page[] {
 }
 
 function sortTaggedPages(
-  taggedPages: Record<string, Page[]>
+  taggedPages: Record<string, Page[]>,
 ): Record<string, Page[]> {
   return Object.keys(taggedPages)
     .sort((a, b) => taggedPages[b].length - taggedPages[a].length)
@@ -276,8 +279,8 @@ function generateContentPage({
 
   page = { ...page, html, links, headings };
 
-  page.title ??=
-    getTitleFromHeadings(headings) || getTitleFromFilename(relPath);
+  page.title ??= getTitleFromHeadings(headings) ||
+    getTitleFromFilename(relPath);
 
   return page;
 }
@@ -321,8 +324,8 @@ function generateIndexPageFromFile({
 
   page = { ...page, html, links, headings };
 
-  page.title ??=
-    getTitleFromHeadings(headings) || getTitleFromFilename(dirName);
+  page.title ??= getTitleFromHeadings(headings) ||
+    getTitleFromFilename(dirName);
 
   return page;
 }

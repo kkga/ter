@@ -66,10 +66,10 @@ async function generateSite(opts: GenerateSiteOpts) {
   const [indexDirEntries, indexFileEntries, nonIndexEntries] = [
     contentEntries.filter((entry) => entry.isDirectory),
     contentEntries.filter(
-      (entry) => entry.isFile && entry.name === INDEX_FILENAME
+      (entry) => entry.isFile && entry.name === INDEX_FILENAME,
     ),
     contentEntries.filter(
-      (entry) => entry.isFile && entry.name !== INDEX_FILENAME
+      (entry) => entry.isFile && entry.name !== INDEX_FILENAME,
     ),
   ];
 
@@ -201,9 +201,9 @@ async function generateSite(opts: GenerateSiteOpts) {
       logLevel > 1 && console.log(`copy\t${relative(Deno.cwd(), writePath)}`);
       await ensureDir(dirname(writePath));
       await Deno.copyFile(path, writePath);
-    })())
+    })());
   });
-  
+
   await Promise.all(writeTasks);
   performance.mark("write:end");
 
@@ -240,7 +240,7 @@ async function generateSite(opts: GenerateSiteOpts) {
       pageFiles: files.length,
       staticFiles: staticEntries.length,
       buildMillisecs: Math.floor(
-        performance.getEntriesByName("total")[0].duration
+        performance.getEntriesByName("total")[0].duration,
       ),
     };
 

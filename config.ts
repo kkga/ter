@@ -54,7 +54,7 @@ interface CreateConfigOpts {
 }
 
 export async function createConfig(
-  opts: CreateConfigOpts
+  opts: CreateConfigOpts,
 ): Promise<BuildConfig> {
   const conf = defaultBuildConfig;
 
@@ -80,7 +80,7 @@ export async function createConfig(
 
   await checkUserConfig(conf.userConfigPath).catch(() => {
     console.warn(
-      `Config file missing, initializing default config at ${conf.userConfigPath}`
+      `Config file missing, initializing default config at ${conf.userConfigPath}`,
     );
     initUserConfig(conf.userConfig, conf.userConfigPath);
   });

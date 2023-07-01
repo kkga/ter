@@ -36,12 +36,9 @@ const toInternalLink = (opts: {
   currentPath: string;
   isDirIndex?: boolean;
 }): string => {
-  const cleanPathname =
-    opts.parsed.pathname === ""
-      ? ""
-      : withoutTrailingSlash(
-          opts.parsed.pathname.replace(extname(opts.parsed.pathname), "")
-        );
+  const cleanPathname = opts.parsed.pathname === "" ? "" : withoutTrailingSlash(
+    opts.parsed.pathname.replace(extname(opts.parsed.pathname), ""),
+  );
   let internalHref: string;
 
   if (isAbsolute(cleanPathname)) {
@@ -59,14 +56,13 @@ const toInternalLink = (opts: {
       resolved = withoutTrailingSlash(joined.replace(/\/index$/i, ""));
     }
 
-    internalHref =
-      resolved === ""
-        ? resolved + opts.parsed.hash
-        : withLeadingSlash(resolved) + opts.parsed.hash;
+    internalHref = resolved === ""
+      ? resolved + opts.parsed.hash
+      : withLeadingSlash(resolved) + opts.parsed.hash;
 
     if (resolved !== "") {
       opts.internalLinks.add(
-        new URL(withoutLeadingSlash(internalHref), opts.baseUrl)
+        new URL(withoutLeadingSlash(internalHref), opts.baseUrl),
       );
     }
   }
@@ -78,9 +74,9 @@ const toInternalLink = (opts: {
 
   // console.log(prefixedHref);
 
-  return `<a href="${internalHref}" title="${opts.title || ""}">${
-    opts.text
-  }</a>`;
+  return `<a href="${internalHref}" title="${
+    opts.title || ""
+  }">${opts.text}</a>`;
 };
 
 export const parseMarkdown = ({
@@ -143,7 +139,7 @@ export const parseMarkdown = ({
     text: string,
     level: 1 | 2 | 3 | 4 | 5 | 6,
     _raw: string,
-    slugger: marked.Slugger
+    slugger: marked.Slugger,
   ): string => {
     const slug = slugger.slug(text);
     return `<h${level} id="${slug}"><a class="h-anchor" href="#${slug}">#</a>${text}</h${level}>`;
