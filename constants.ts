@@ -30,13 +30,13 @@ USAGE:
   deno run --allow-read --allow-write ${mod_url} [options]
 
 OPTIONS:
-  --input\t\tSource directory (default: .)
-  --output\t\tOutput directory (default: _site)
-  --config\t\tPath to config file (default: .ter/config.json)
-  --serve\t\tServe locally and watch for changes (default: false)
+  -i, --input\t\tSource directory (default: .)
+  -o, --output\t\tOutput directory (default: _site)
+  -c, --config\t\tPath to config file (default: .ter/config.json)
+  -s, --serve\t\tServe locally and watch for changes (default: false)
+  -d, --debug\t\tVerbose output and statistics (default: false)
   --port\t\tServe port (default: 8000)
-  --drafts\t\tRender pages marked as drafts (default: false)
-  --debug\t\tVerbose output and statistics (default: false)`;
+  --drafts\t\tRender pages marked as drafts (default: false)`;
 
 // highlight.js syntax highlighting from github primer
 export const HIGHLIGHT_STYLE = `

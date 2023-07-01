@@ -267,6 +267,9 @@ async function main(args: string[]) {
       s: "serve",
       h: "help",
       d: "debug",
+      c: "config",
+      i: "input",
+      o: "output",
     },
   });
 
