@@ -18,17 +18,18 @@ Default command will recursively search for `*.md` files in the current
 directory and generate a site into the `_site` directory:
 
 ```
-deno run -A --unstable https://deno.land/x/ter/main.ts
+deno run -A https://deno.land/x/ter/main.ts
 ```
 
-Use `--input` and `--output` flags for custom source/destination directories:
+Use `--input` and `--output` (or `-i` and `-o`) flags for custom
+source/destination directories:
 
 ```
-deno run -A --unstable https://deno.land/x/ter/main.ts --input pages --output _dist
+deno run -A https://deno.land/x/ter/main.ts -i pages -o _dist
 ```
 
-To start a local server with live refresh, pass the `--serve` flag:
+To start a local server with live refresh, pass the `--serve` (or `-s`) flag:
 
 ```
-deno run -A --unstable https://deno.land/x/ter/main.ts --serve
+deno run -A https://deno.land/x/ter/main.ts -s
 ```

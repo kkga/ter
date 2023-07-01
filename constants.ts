@@ -27,7 +27,7 @@ export const getHelp = (mod_url: string) =>
 Tiny wiki-style site builder.
 
 USAGE:
-  deno run --allow-read --allow-write ${mod_url} [options]
+  deno run -A ${mod_url} [options]
 
 OPTIONS:
   -i, --input\t\tSource directory (default: .)

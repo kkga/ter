@@ -19,11 +19,11 @@ USAGE:
   ter [options]
 
 OPTIONS:
-  --input     Source directory (default: .)
-  --output    Output directory (default: _site)
-  --config    Path to config file (default: .ter/config.json)
-  --serve     Serve locally and watch for changes (default: false)
-  --port      Serve port (default: 8080)
-  --drafts    Render pages marked as drafts (default: false)
-  --debug     Verbose output and statistics (default: false)
+  -i, --input     Source directory (default: .)
+  -o, --output    Output directory (default: _site)
+  -c, --config    Path to config file (default: .ter/config.json)
+  -s, --serve     Serve locally and watch for changes (default: false)
+  -d, --debug     Verbose output and statistics (default: false)
+  --port          Serve port (default: 8000)
+  --drafts        Render pages marked as drafts (default: false)`;
 ```
