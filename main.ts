@@ -6,7 +6,7 @@ import {
   flagsParse,
   join,
   relative,
-} from "./deps.ts";
+} from "./deps/std.ts";
 
 import { getHelp, INDEX_FILENAME } from "./constants.ts";
 import { getContentEntries, getStaticEntries } from "./entries.ts";

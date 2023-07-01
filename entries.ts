@@ -1,4 +1,5 @@
-import { common, join, walk, WalkEntry, withoutTrailingSlash } from "./deps.ts";
+import { common, join, walk, WalkEntry } from "./deps/std.ts";
+import { withoutTrailingSlash } from "./deps/ufo.ts";
 import { INDEX_FILENAME, RE_HIDDEN_OR_UNDERSCORED } from "./constants.ts";
 
 export async function getStaticEntries(opts: {

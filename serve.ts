@@ -1,4 +1,9 @@
-import { httpServe, join, readableStreamFromReader, relative } from "./deps.ts";
+import {
+  httpServe,
+  join,
+  readableStreamFromReader,
+  relative,
+} from "./deps/std.ts";
 import { GenerateSiteOpts } from "./main.ts";
 import { RE_HIDDEN_OR_UNDERSCORED } from "./constants.ts";
 import type { BuildConfig } from "./types.d.ts";

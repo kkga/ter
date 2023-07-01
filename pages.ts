@@ -6,9 +6,10 @@ import {
   fmTest,
   join,
   relative,
-  slugify,
   WalkEntry,
-} from "./deps.ts";
+} from "./deps/std.ts";
+
+import { slug as slugify } from "./deps/slug.ts";
 
 import * as attributes from "./attributes.ts";
 import { parseMarkdown } from "./markdown.ts";

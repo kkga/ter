@@ -4,9 +4,15 @@ import {
   presetExt,
   presetTailwind,
   presetTypography,
-} from "./deps.ts";
+} from "./deps/twind.ts";
 
-import { accent, accentDark, darkColor, neutral, neutralDark } from "./deps.ts";
+import {
+  accent,
+  accentDark,
+  darkColor,
+  neutral,
+  neutralDark,
+} from "./deps/twind.ts";
 
 export const twindConfig = defineConfig({
   theme: {

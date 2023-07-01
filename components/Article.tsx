@@ -1,6 +1,6 @@
 /** @jsxImportSource https://esm.sh/preact */
 
-import { cx } from "../deps.ts";
+import { cx } from "../deps/twind.ts";
 import { Heading, Page } from "../types.d.ts";
 
 function Toc({ headings }: { headings: Heading[] }) {

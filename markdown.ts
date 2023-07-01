@@ -1,16 +1,14 @@
+import { dirname, extname, isAbsolute, join } from "./deps/std.ts";
+import { hljs } from "./deps/hljs.ts";
+import { marked } from "./deps/marked.ts";
+
 import {
-  dirname,
-  extname,
-  hljs,
-  isAbsolute,
-  join,
-  marked,
   ParsedURL,
   parseURL,
   withLeadingSlash,
   withoutLeadingSlash,
   withoutTrailingSlash,
-} from "./deps.ts";
+} from "./deps/ufo.ts";
 
 import { Heading } from "./types.d.ts";
 

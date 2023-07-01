@@ -1,7 +1,8 @@
 /** @jsxImportSource https://esm.sh/preact */
 
 import { HIGHLIGHT_STYLE, HMR_CLIENT } from "./constants.ts";
-import { inline, render, twindSetup } from "./deps.ts";
+import { inline, twindSetup } from "./deps/twind.ts";
+import { render } from "./deps/preact.ts";
 import { twindConfig } from "./twind.config.ts";
 import { Crumb, Page, UserConfig } from "./types.d.ts";
 

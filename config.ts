@@ -1,4 +1,5 @@
-import { deepmerge, dirname, ensureDirSync, isAbsolute, join } from "./deps.ts";
+import { dirname, ensureDirSync, isAbsolute, join } from "./deps/std.ts";
+import { deepmerge } from "./deps/deepmerge.ts";
 import { BuildConfig, UserConfig } from "./types.d.ts";
 
 const defaultUserConfig: UserConfig = {
