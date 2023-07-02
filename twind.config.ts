@@ -57,8 +57,8 @@ export const twindConfig = defineConfig({
         a: {
           "@apply": `
             underline
-            underline-offset-2
-            decoration-neutral-9
+            underline-offset-3
+            decoration-neutral-8
             font-normal
             hover:(decoration-current)
           `,
