@@ -18,7 +18,7 @@ Built with [Deno](https://deno.land/).
 deno run -A https://deno.land/x/ter/main.ts
 ```
 
-This will use all *.md files in the current directory to generate a site into
-the `_site` directory.
+This will recursively compile all *.nd files in the current directory to HTML
+and output a generated site into the `_site` directory.
 
 See [usage docs](https://ter.kkga.me/usage) for more details.
