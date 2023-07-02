@@ -18,7 +18,7 @@ Built with [Deno](https://deno.land/).
 deno run -A https://deno.land/x/ter/main.ts
 ```
 
-This command will recursively search for *.md files in the current directory and
-output a site into the `_site` directory.
+This will use all *.md files in the current directory to generate a site into
+the `_site` directory.
 
 See [usage docs](https://ter.kkga.me/usage) for more details.
