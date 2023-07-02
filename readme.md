@@ -1,6 +1,6 @@
 # Ter
 
-A tiny wiki-style site builder with Zettelkasten flavor. In development.
+A tiny wiki-style site generator with Zettelkasten flavor. In development.
 
 [![deno module](https://shield.deno.dev/x/ter)](https://deno.land/x/ter)
 
