@@ -1,8 +1,8 @@
 {
   "tasks": {
-    "dev": "deno run -A --unstable --watch main.ts --input docs --serve --debug",
-    "serve": "deno run -A --unstable main.ts --input docs --serve",
-    "build": "deno run -A --unstable main.ts --input docs",
+    "dev": "deno run -A --watch main.ts --input docs --serve --debug",
+    "serve": "deno run -A main.ts --input docs --serve",
+    "build": "deno run -A main.ts --input docs",
     "clean": "rm -rf _site",
     "deps-check": "deno run -Ar https://deno.land/x/udd/main.ts --dry-run deps/*.ts",
     "deps-upgrade": "deno run -Ar https://deno.land/x/udd/main.ts deps/*.ts"
