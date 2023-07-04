@@ -56,16 +56,17 @@ export const twindConfig = defineConfig({
         ".lead": { "@apply": "m-0" },
         a: {
           "@apply": `
-            underline
-            underline-offset-3
-            decoration-neutral-8
             font-normal
-            hover:(decoration-current)
+            no-underline
+            text-accent-11
+            hover:text-accent-12
           `,
         },
         "a[rel~='external']": {
           "@apply": `
             after:content-[' ↗']
+            after:text-xs
+            after:align-text-top
           `,
         },
         "h1,h2,h3,h4,h5,h6": {
@@ -93,13 +94,15 @@ export const twindConfig = defineConfig({
         details: { "@apply": "text-neutral-11" },
 
         "& dt": { "@apply": "font-semibold" },
-        "& dd": { "@apply": "ml-4 text-neutral-11" },
+        "& dd": { "@apply": "" },
         "& *:last-child": { "@apply": "mb-0" },
 
         "& .full-bleed": { "@apply": "lg:(-mx-24) xl:(-mx-32)" },
         "& .cols-2": { "@apply": "sm:grid grid(cols-2) gap-x-4" },
         "& .cols-3": { "@apply": "sm:grid grid(cols-3) gap-x-4" },
         "& .cols-4": { "@apply": "grid grid(cols-2 md:cols-4) gap-x-4" },
+        "& .span-2": { "@apply": "sm:col-span-2" },
+        "& .span-3": { "@apply": "sm:col-span-3" },
       },
     }),
   ],
