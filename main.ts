@@ -270,6 +270,11 @@ async function main(args: string[]) {
       c: "config",
       i: "input",
       o: "output",
+      p: "port",
+      D: "drafts",
+    },
+    default: {
+      port: 8000,
     },
   });
 
@@ -293,7 +298,7 @@ async function main(args: string[]) {
 
   if (flags.serve) {
     serve({
-      port: flags.port ? Number(flags.port) : null,
+      port: Number(flags.port),
       runner: generateSite,
       config,
       logLevel: flags.debug ? 2 : 0,
