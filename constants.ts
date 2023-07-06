@@ -30,13 +30,13 @@ USAGE:
   deno run -A ${mod_url} [options]
 
 OPTIONS:
-  -i, --input\t\tSource directory (default: .)
-  -o, --output\t\tOutput directory (default: _site)
-  -c, --config\t\tPath to config file (default: .ter/config.json)
+  -i, --input <DIR>\tSource directory (default: .)
+  -o, --output <DIR>\tOutput directory (default: _site)
+  -c, --config <PATH>\tPath to config file (default: .ter/config.json)
   -s, --serve\t\tServe locally and watch for changes (default: false)
+  -p, --port <NUM>\tServe port (default: 8000)
   -d, --debug\t\tVerbose output and statistics (default: false)
-  --port\t\tServe port (default: 8000)
-  --drafts\t\tRender pages marked as drafts (default: false)`;
+  -D, --drafts\t\tBuild drafts (default: false)`;
 
 // highlight.js syntax highlighting from github primer
 export const HIGHLIGHT_STYLE = `
