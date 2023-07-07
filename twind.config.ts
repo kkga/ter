@@ -15,12 +15,6 @@ import {
 } from "./deps/twind.ts";
 
 export const twindConfig = defineConfig({
-  theme: {
-    fontFamily: {
-      sans: ["system-ui", "-apple-system", "sans-serif"],
-      mono: ["monospace", "ui-monospace", "Menlo", "Monaco"],
-    },
-  },
   presets: [
     presetAutoprefix(),
     presetTailwind({
