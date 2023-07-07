@@ -6,7 +6,7 @@ const defaultUserConfig: UserConfig = {
   title: "Your Blog Name",
   description: "I am writing about my experiences as a naval navel-gazer",
   url: "https://example.com/",
-  rootCrumb: "index",
+  rootCrumb: "~",
   authorName: "Your Name Here",
   authorEmail: "youremailaddress@example.com",
   authorUrl: "https://example.com/about-me/",
