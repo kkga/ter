@@ -33,9 +33,9 @@ describing what the directory content is about or calling out individual pages.
 Items in the index are sorted in the following order:
 
 1. files with `pinned: true` in the [frontmatter](#markdown-frontmatter) are
-   listed at the top and get an ★ symbol;
+   listed at the top with a pin symbol;
 2. directories (child index pages);
-3. rest of markdown files, sorted by [date](#dates).
+3. rest of markdown files, sorted by [date](#markdown-frontmatter).
 
 ### Markdown frontmatter
 
@@ -86,7 +86,7 @@ In addition, any markdown file with `draft: true` in the
 `draft: true`, pass `--drafts` flag to the main command. For example:
 
 ```sh
-deno run -A --unstable https://deno.land/x/ter/main.ts --serve --drafts
+deno run -A https://deno.land/x/ter/main.ts --serve --drafts
 ```
 
 ### Dead internal links
