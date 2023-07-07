@@ -131,6 +131,8 @@
       "feed@4.2.2": "feed@4.2.2",
       "highlight.js@11.8.0": "highlight.js@11.8.0",
       "marked@5.1.0": "marked@5.1.0",
+      "preact": "preact@10.15.1",
+      "preact-render-to-string": "preact-render-to-string@6.1.0_preact@10.15.1",
       "preact-render-to-string@6.1.0": "preact-render-to-string@6.1.0_preact@10.15.1",
       "ufo@1.1.2": "ufo@1.1.2"
     },
