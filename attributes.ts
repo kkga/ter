@@ -12,11 +12,11 @@ export const hasKey = (data: JSONValue, keys: Array<string>): boolean => {
 };
 
 export const getVal = (data: JSONValue, key: string): unknown | undefined =>
-  data[key] !== undefined && data[key] !== null ? data[key] : undefined;
+  data[key] ?? undefined;
 
 export const getBool = (data: JSONValue, key: string): boolean | undefined =>
-  (data[key] !== undefined && typeof data[key] === "boolean")
-    ? data[key] as boolean
+  data[key] !== undefined && typeof data[key] === "boolean"
+    ? (data[key] as boolean)
     : undefined;
 
 export const getTitle = (data: JSONValue): string | undefined =>

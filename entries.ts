@@ -1,6 +1,6 @@
-import { common, join, walk, WalkEntry } from "./deps/std.ts";
-import { withoutTrailingSlash } from "./deps/ufo.ts";
 import { INDEX_FILENAME, RE_HIDDEN_OR_UNDERSCORED } from "./constants.ts";
+import { WalkEntry, common, join, walk } from "./deps/std.ts";
+import { withoutTrailingSlash } from "./deps/ufo.ts";
 
 export async function getStaticEntries(opts: {
   path: string;
@@ -8,13 +8,11 @@ export async function getStaticEntries(opts: {
 }): Promise<Array<WalkEntry>> {
   const entries: Array<WalkEntry> = [];
 
-  for await (
-    const entry of walk(opts.path, {
-      includeDirs: false,
-      skip: [RE_HIDDEN_OR_UNDERSCORED],
-      exts: opts.exts,
-    })
-  ) {
+  for await (const entry of walk(opts.path, {
+    includeDirs: false,
+    skip: [RE_HIDDEN_OR_UNDERSCORED],
+    exts: opts.exts,
+  })) {
     entries.push(entry);
   }
 
@@ -27,23 +25,19 @@ export async function getContentEntries(opts: {
   const fileEntries: Array<WalkEntry> = [];
   let dirEntries: Array<WalkEntry> = [];
 
-  for await (
-    const entry of walk(opts.path, {
-      includeDirs: false,
-      skip: [RE_HIDDEN_OR_UNDERSCORED],
-      exts: ["md"],
-    })
-  ) {
+  for await (const entry of walk(opts.path, {
+    includeDirs: false,
+    skip: [RE_HIDDEN_OR_UNDERSCORED],
+    exts: ["md"],
+  })) {
     fileEntries.push(entry);
   }
 
-  for await (
-    const entry of walk(opts.path, {
-      includeDirs: true,
-      includeFiles: false,
-      skip: [RE_HIDDEN_OR_UNDERSCORED],
-    })
-  ) {
+  for await (const entry of walk(opts.path, {
+    includeDirs: true,
+    includeFiles: false,
+    skip: [RE_HIDDEN_OR_UNDERSCORED],
+  })) {
     dirEntries.push(entry);
   }
 

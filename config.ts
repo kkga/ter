@@ -1,5 +1,5 @@
-import { dirname, ensureDirSync, isAbsolute, join } from "./deps/std.ts";
 import { deepmerge } from "./deps/deepmerge.ts";
+import { dirname, ensureDirSync, isAbsolute, join } from "./deps/std.ts";
 import { BuildConfig, UserConfig } from "./types.d.ts";
 
 const defaultUserConfig: UserConfig = {
@@ -55,45 +55,54 @@ interface CreateConfigOpts {
 }
 
 export async function createConfig(
-  opts: CreateConfigOpts,
+  opts: CreateConfigOpts
 ): Promise<BuildConfig> {
-  const conf = defaultBuildConfig;
-
   if (opts.configPath && opts.configPath != "") {
-    conf.userConfigPath = isAbsolute(opts.configPath)
+    defaultBuildConfig.userConfigPath = isAbsolute(opts.configPath)
       ? opts.configPath
       : join(Deno.cwd(), opts.configPath);
   }
 
   if (opts.inputPath && opts.inputPath != "") {
-    conf.inputPath = isAbsolute(opts.inputPath)
+    defaultBuildConfig.inputPath = isAbsolute(opts.inputPath)
       ? opts.inputPath
       : join(Deno.cwd(), opts.inputPath);
   }
 
   if (opts.outputPath && opts.outputPath != "") {
-    conf.outputPath = isAbsolute(opts.outputPath)
+    defaultBuildConfig.outputPath = isAbsolute(opts.outputPath)
       ? opts.outputPath
       : join(Deno.cwd(), opts.outputPath);
   }
 
-  conf.renderDrafts = opts.renderDrafts;
+  defaultBuildConfig.renderDrafts = opts.renderDrafts;
 
-  await checkUserConfig(conf.userConfigPath).catch(() => {
+  await checkUserConfig(defaultBuildConfig.userConfigPath).catch(() => {
     console.warn(
-      `Config file missing, initializing default config at ${conf.userConfigPath}`,
+      `Config file missing, initializing default config at ${defaultBuildConfig.userConfigPath}`
     );
-    initUserConfig(conf.userConfig, conf.userConfigPath);
+    initUserConfig(
+      defaultBuildConfig.userConfig,
+      defaultBuildConfig.userConfigPath
+    );
   });
 
   try {
-    const parsedConf = JSON.parse(await Deno.readTextFile(conf.userConfigPath));
-    conf.userConfig = deepmerge(conf.userConfig, parsedConf);
+    const parsedConf = JSON.parse(
+      await Deno.readTextFile(defaultBuildConfig.userConfigPath)
+    );
+    defaultBuildConfig.userConfig = deepmerge(
+      defaultBuildConfig.userConfig,
+      parsedConf
+    );
   } catch (err) {
-    console.error("Possibly error in config file:", conf.userConfigPath);
+    console.error(
+      "Possibly error in config file:",
+      defaultBuildConfig.userConfigPath
+    );
     console.error(err);
     Deno.exit(1);
   }
 
-  return conf;
+  return defaultBuildConfig;
 }

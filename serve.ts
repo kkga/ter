@@ -1,3 +1,4 @@
+import { RE_HIDDEN_OR_UNDERSCORED } from "./constants.ts";
 import {
   httpServe,
   join,
@@ -5,7 +6,6 @@ import {
   relative,
 } from "./deps/std.ts";
 import { GenerateSiteOpts } from "./main.ts";
-import { RE_HIDDEN_OR_UNDERSCORED } from "./constants.ts";
 import type { BuildConfig } from "./types.d.ts";
 
 interface WatchOpts {
@@ -33,23 +33,21 @@ async function watch(opts: WatchOpts) {
   // const isInConfigDir = (path: string): boolean =>
   //   relative(join(Deno.cwd(), ".ter"), path).startsWith("..") === false;
 
-  eventLoop:
-  for await (const event of watcher) {
+  eventLoop: for await (const event of watcher) {
     if (["any", "access"].includes(event.kind)) {
       continue;
     }
 
     for (const eventPath of event.paths) {
       if (
-        eventPath.match(RE_HIDDEN_OR_UNDERSCORED) || !isInOutputDir(eventPath)
+        eventPath.match(RE_HIDDEN_OR_UNDERSCORED) ||
+        !isInOutputDir(eventPath)
       ) {
         continue eventLoop;
       }
     }
 
-    console.log(
-      `>>> ${event.kind}: ${relative(Deno.cwd(), event.paths[0])}`,
-    );
+    console.info(`>>> ${event.kind}: ${relative(Deno.cwd(), event.paths[0])}`);
     await opts.runner({
       config: opts.config,
       includeRefresh: true,
@@ -97,13 +95,13 @@ async function requestHandler(request: Request) {
   } catch {
     // TODO: serve the 404.html
     const resp = new Response("404 Not Found", { status: 404 });
-    console.log(`[${resp.status}]\t${url.pathname}`);
+    console.info(`[${resp.status}]\t${url.pathname}`);
     return resp;
   }
 
   const readableStream = readableStreamFromReader(file);
   const resp = new Response(readableStream);
-  console.log(`[${resp.status}]\t${url.pathname}`);
+  console.info(`[${resp.status}]\t${url.pathname}`);
   return resp;
 }
 

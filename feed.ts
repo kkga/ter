@@ -8,19 +8,12 @@ interface FeedOpts {
 
 export function generateFeed(opts: FeedOpts): Feed {
   const { userConfig, pages } = opts;
-  const {
-    title,
-    description,
-    url,
-    lang,
-    authorName,
-    authorEmail,
-    authorUrl,
-  } = userConfig;
+  const { title, description, url, lang, authorName, authorEmail, authorUrl } =
+    userConfig;
 
   const feed = new Feed({
-    title: title,
-    description: description,
+    title,
+    description,
     id: url,
     link: url,
     language: lang?.toString() || "en",

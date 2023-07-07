@@ -1,6 +1,6 @@
-import { dirname, extname, isAbsolute, join } from "./deps/std.ts";
 import { hljs } from "./deps/hljs.ts";
 import { marked } from "./deps/marked.ts";
+import { dirname, extname, isAbsolute, join } from "./deps/std.ts";
 
 import {
   ParsedURL,
@@ -34,9 +34,12 @@ const toInternalLink = (opts: {
   currentPath: string;
   isDirIndex?: boolean;
 }): string => {
-  const cleanPathname = opts.parsed.pathname === "" ? "" : withoutTrailingSlash(
-    opts.parsed.pathname.replace(extname(opts.parsed.pathname), ""),
-  );
+  const cleanPathname =
+    opts.parsed.pathname === ""
+      ? ""
+      : withoutTrailingSlash(
+          opts.parsed.pathname.replace(extname(opts.parsed.pathname), "")
+        );
   let internalHref: string;
 
   if (isAbsolute(cleanPathname)) {
@@ -49,18 +52,19 @@ const toInternalLink = (opts: {
       resolved = "";
     } else {
       const joined = opts.isDirIndex
-        ? join(dirname(opts.currentPath + "/index"), cleanPathname)
+        ? join(dirname(`${opts.currentPath}/index`), cleanPathname)
         : join(dirname(opts.currentPath), cleanPathname);
       resolved = withoutTrailingSlash(joined.replace(/\/index$/i, ""));
     }
 
-    internalHref = resolved === ""
-      ? resolved + opts.parsed.hash
-      : withLeadingSlash(resolved) + opts.parsed.hash;
+    internalHref =
+      resolved === ""
+        ? resolved + opts.parsed.hash
+        : withLeadingSlash(resolved) + opts.parsed.hash;
 
     if (resolved !== "") {
       opts.internalLinks.add(
-        new URL(withoutLeadingSlash(internalHref), opts.baseUrl),
+        new URL(withoutLeadingSlash(internalHref), opts.baseUrl)
       );
     }
   }
@@ -72,9 +76,9 @@ const toInternalLink = (opts: {
 
   // console.log(prefixedHref);
 
-  return `<a href="${internalHref}" title="${
-    opts.title || ""
-  }">${opts.text}</a>`;
+  return `<a href="${internalHref}" title="${opts.title || ""}">${
+    opts.text
+  }</a>`;
 };
 
 export const parseMarkdown = ({
@@ -118,26 +122,24 @@ export const parseMarkdown = ({
 
   renderer.link = (href: string, title: string, text: string) => {
     const parsed = parseURL(href);
-    if (parsed.protocol !== undefined || parsed.pathname.startsWith("mailto")) {
-      return toExternalLink(href, title, text);
-    } else {
-      return toInternalLink({
-        title,
-        text,
-        parsed,
-        baseUrl,
-        internalLinks,
-        currentPath,
-        isDirIndex,
-      });
-    }
+    return parsed.protocol !== undefined || parsed.pathname.startsWith("mailto")
+      ? toExternalLink(href, title, text)
+      : toInternalLink({
+          title,
+          text,
+          parsed,
+          baseUrl,
+          internalLinks,
+          currentPath,
+          isDirIndex,
+        });
   };
 
   renderer.heading = (
     text: string,
     level: 1 | 2 | 3 | 4 | 5 | 6,
     _raw: string,
-    slugger: marked.Slugger,
+    slugger: marked.Slugger
   ): string => {
     const slug = slugger.slug(text);
     return `<h${level} id="${slug}"><a class="h-anchor" href="#${slug}">#</a>${text}</h${level}>`;
@@ -152,7 +154,7 @@ export const parseMarkdown = ({
       }"/>`;
     } else {
       const href = isDirIndex
-        ? join(dirname(currentPath + "/index"), parsed.pathname)
+        ? join(dirname(`${currentPath}/index`), parsed.pathname)
         : join(dirname(currentPath), parsed.pathname);
       return `<img src="${href}" alt="${text || ""}" title="${title || ""}"/>`;
     }

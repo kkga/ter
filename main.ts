@@ -26,9 +26,9 @@ import {
 import { createConfig } from "./config.ts";
 import { serve } from "./serve.ts";
 
-import { BuildConfig, Page } from "./types.d.ts";
-import { renderPage } from "./render.tsx";
 import { generateFeed } from "./feed.ts";
+import { renderPage } from "./render.tsx";
+import { BuildConfig, Page } from "./types.d.ts";
 
 export interface GenerateSiteOpts {
   config: BuildConfig;
@@ -57,7 +57,7 @@ async function generateSite(opts: GenerateSiteOpts) {
 
   performance.mark("scan:start");
 
-  console.log(`scan\t${inputPath}`);
+  console.info(`scan\t${inputPath}`);
   const [contentEntries, staticEntries] = await Promise.all([
     getContentEntries({ path: inputPath }),
     getStaticEntries({ path: inputPath, exts: staticExts }),
@@ -66,10 +66,10 @@ async function generateSite(opts: GenerateSiteOpts) {
   const [indexDirEntries, indexFileEntries, nonIndexEntries] = [
     contentEntries.filter((entry) => entry.isDirectory),
     contentEntries.filter(
-      (entry) => entry.isFile && entry.name === INDEX_FILENAME,
+      (entry) => entry.isFile && entry.name === INDEX_FILENAME
     ),
     contentEntries.filter(
-      (entry) => entry.isFile && entry.name !== INDEX_FILENAME,
+      (entry) => entry.isFile && entry.name !== INDEX_FILENAME
     ),
   ];
 
@@ -86,28 +86,28 @@ async function generateSite(opts: GenerateSiteOpts) {
     [
       ...indexDirEntries.map((entry) =>
         generateIndexPageFromDir({
-          entry: entry,
-          inputPath: inputPath,
+          entry,
+          inputPath,
           ignoreKeys: opts.config.ignoreKeys,
-          userConfig: userConfig,
+          userConfig,
         })
       ),
       ...indexFileEntries.map((entry) =>
         generateIndexPageFromFile({
-          entry: entry,
-          inputPath: inputPath,
+          entry,
+          inputPath,
           ignoreKeys: opts.config.ignoreKeys,
-          userConfig: userConfig,
+          userConfig,
         })
       ),
     ],
 
     nonIndexEntries.map((entry) =>
       generateContentPage({
-        entry: entry,
-        inputPath: inputPath,
+        entry,
+        inputPath,
         ignoreKeys: opts.config.ignoreKeys,
-        userConfig: userConfig,
+        userConfig,
       })
     ),
   ];
@@ -157,20 +157,20 @@ async function generateSite(opts: GenerateSiteOpts) {
       return {
         writePath,
         content: renderPage({
-          page: page,
-          crumbs: crumbs,
-          childPages: childPages,
-          relatedPages: relatedPages,
-          backlinkPages: backlinkPages,
+          page,
+          crumbs,
+          childPages,
+          relatedPages,
+          backlinkPages,
           pagesByTag: page.index === "tag" ? allPagesByTag : childPagesByTag,
-          userConfig: userConfig,
+          userConfig,
           dev: opts.includeRefresh,
         }),
       };
     }),
     {
       writePath: join(outputPath, "feed.xml"),
-      content: generateFeed({ userConfig: userConfig, pages: pages }).atom1(),
+      content: generateFeed({ userConfig, pages }).atom1(),
     },
   ];
 
@@ -187,21 +187,26 @@ async function generateSite(opts: GenerateSiteOpts) {
   const writeTasks: Promise<void>[] = [];
 
   files.forEach(({ writePath, content }) => {
-    writeTasks.push((async () => {
-      logLevel > 1 && console.log(`write\t${relative(Deno.cwd(), writePath)}`);
-      await ensureDir(dirname(writePath));
-      await Deno.writeTextFile(writePath, content);
-    })());
+    writeTasks.push(
+      (async () => {
+        logLevel > 1 &&
+          console.log(`write\t${relative(Deno.cwd(), writePath)}`);
+        await ensureDir(dirname(writePath));
+        await Deno.writeTextFile(writePath, content);
+      })()
+    );
   });
 
   staticEntries.forEach(({ path }) => {
-    writeTasks.push((async () => {
-      const relPath = relative(inputPath, path);
-      const writePath = join(outputPath, dirname(relPath), basename(relPath));
-      logLevel > 1 && console.log(`copy\t${relative(Deno.cwd(), writePath)}`);
-      await ensureDir(dirname(writePath));
-      await Deno.copyFile(path, writePath);
-    })());
+    writeTasks.push(
+      (async () => {
+        const relPath = relative(inputPath, path);
+        const writePath = join(outputPath, dirname(relPath), basename(relPath));
+        logLevel > 1 && console.log(`copy\t${relative(Deno.cwd(), writePath)}`);
+        await ensureDir(dirname(writePath));
+        await Deno.copyFile(path, writePath);
+      })()
+    );
   });
 
   await Promise.all(writeTasks);
@@ -212,41 +217,41 @@ async function generateSite(opts: GenerateSiteOpts) {
    */
 
   performance.mark("total:end");
-  console.log(`done\t${relative(Deno.cwd(), outputPath)}`);
+  console.info(`done\t${relative(Deno.cwd(), outputPath)}`);
 
   const deadLinks = getDeadlinks(pages);
 
   if (deadLinks.length > 0) {
-    console.log("---");
-    console.log("%cDead links:", "font-weight: bold; color: red");
+    console.info("---");
+    console.warn("%cDead links:", "font-weight: bold; color: red");
     deadLinks.forEach(([pageUrl, linkUrl]) => {
-      console.log(`${pageUrl.pathname} -> %c${linkUrl.pathname}`, "color:red");
+      console.warn(`${pageUrl.pathname} -> %c${linkUrl.pathname}`, "color:red");
     });
   }
 
   if (logLevel > 1) {
-    console.log("---");
-    console.log("Build stats:");
+    console.debug("---");
+    console.debug("Build stats:");
     performance.measure("scan", "scan:start", "scan:end");
     performance.measure("parse", "parse:start", "parse:end");
     performance.measure("render", "render:start", "render:end");
     performance.measure("write", "write:start", "write:end");
     performance.measure("total", "total:start", "total:end");
     performance.getEntriesByType("measure").forEach((entry) => {
-      console.log("=>", entry.name, "(ms)", "\t", Math.floor(entry.duration));
+      console.debug("=>", entry.name, "(ms)", "\t", Math.floor(entry.duration));
     });
 
     const stats: BuildStats = {
       pageFiles: files.length,
       staticFiles: staticEntries.length,
       buildMillisecs: Math.floor(
-        performance.getEntriesByName("total")[0].duration,
+        performance.getEntriesByName("total")[0].duration
       ),
     };
 
-    console.log("=> pages", "\t", stats.pageFiles);
-    console.log("=> assets", "\t", stats.staticFiles);
-    console.log("---");
+    console.debug("=> pages", "\t", stats.pageFiles);
+    console.debug("=> assets", "\t", stats.staticFiles);
+    console.debug("---");
   }
 
   performance.getEntries().forEach((entry) => {
@@ -279,7 +284,7 @@ async function main(args: string[]) {
   });
 
   if (flags.help) {
-    console.log(getHelp(import.meta.url));
+    console.info(getHelp(import.meta.url));
     Deno.exit();
   }
 
@@ -291,7 +296,7 @@ async function main(args: string[]) {
   });
 
   await generateSite({
-    config: config,
+    config,
     logLevel: flags.debug ? 2 : 0,
     includeRefresh: flags.serve,
   });
