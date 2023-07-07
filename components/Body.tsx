@@ -1,4 +1,4 @@
-/** @jsxImportSource https://esm.sh/preact */
+/** @jsxImportSource npm:preact */
 
 import Article from "./Article.tsx";
 import Footer from "./Footer.tsx";
@@ -24,7 +24,7 @@ function renderPageIndex(
   pages: Page[],
   title: string,
   layout: Page["layout"],
-  lang: Intl.LocalesArgument,
+  lang: Intl.LocalesArgument
 ) {
   switch (layout) {
     case "log":
@@ -49,16 +49,17 @@ export default function Body({
   lang,
 }: BodyProps) {
   return (
-    <body class="
+    <body
+      class="
         antialiased
-        tracking-[-0.015em]
         min-h-screen
         mx-auto max-w-3xl
         p-4
         flex flex-col gap-16
         text(neutral-12)
         bg(neutral-1)) 
-      ">
+      "
+    >
       {crumbs && <Header currentPath={page.url.pathname} crumbs={crumbs} />}
 
       <main class="[&:has(article:empty)]:hidden">
@@ -94,13 +95,13 @@ export default function Body({
         {page.index === "dir" &&
           pagesByTag &&
           Object.keys(pagesByTag).length > 0 && (
-          <IndexList
-            title="Tags"
-            items={pagesByTag}
-            type={"tags"}
-            lang={lang}
-          />
-        )}
+            <IndexList
+              title="Tags"
+              items={pagesByTag}
+              type={"tags"}
+              lang={lang}
+            />
+          )}
 
         {backlinkPages && backlinkPages.length > 0 && (
           <IndexList

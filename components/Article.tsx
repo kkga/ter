@@ -1,4 +1,4 @@
-/** @jsxImportSource https://esm.sh/preact */
+/** @jsxImportSource npm:preact */
 
 import { cx } from "../deps/twind.ts";
 import { Heading, Page } from "../types.d.ts";

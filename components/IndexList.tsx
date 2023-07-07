@@ -1,4 +1,4 @@
-/** @jsxImportSource https://esm.sh/preact */
+/** @jsxImportSource npm:preact */
 
 import { Page } from "../types.d.ts";
 import { ChevronLeft, ChevronRight, Star } from "./icons.tsx";
@@ -22,12 +22,6 @@ function PageItem({
   isDirIndex,
   icon,
 }: PageItemProps) {
-  const _dateFormat: Intl.DateTimeFormatOptions = {
-    year: "2-digit",
-    day: "2-digit",
-    month: "short",
-  };
-
   return (
     <li class="max-w-full">
       <a
@@ -35,7 +29,7 @@ function PageItem({
         class="
           box
           px-2 py-1
-          flex flex-row items-baseline gap-2
+          flex flex-row items-baseline gap-1.5
           ring-offset-4 ring-offset-neutral-3
         "
       >
@@ -99,23 +93,27 @@ export default function IndexList(props: IndexListProps) {
       </h6>
       {(props.type === "pages" || props.type === "backlinks") &&
         Array.isArray(props.items) && (
-        <ul class="-mx-2 flex flex-col items-start">
-          {props.items.map((item) => (
-            <PageItem
-              title={item.title || ""}
-              description={item.description}
-              url={item.url}
-              isDirIndex={item.index === "dir"}
-              pinned={item.pinned}
-              date={item.datePublished}
-              lang={props.lang}
-              icon={props.type === "backlinks"
-                ? <ChevronLeft />
-                : <ChevronRight />}
-            />
-          ))}
-        </ul>
-      )}
+          <ul class="-mx-2 flex flex-col items-start">
+            {props.items.map((item) => (
+              <PageItem
+                title={item.title || ""}
+                description={item.description}
+                url={item.url}
+                isDirIndex={item.index === "dir"}
+                pinned={item.pinned}
+                date={item.datePublished}
+                lang={props.lang}
+                icon={
+                  props.type === "backlinks" ? (
+                    <ChevronLeft />
+                  ) : (
+                    <ChevronRight />
+                  )
+                }
+              />
+            ))}
+          </ul>
+        )}
       {props.type === "tags" && (
         <ul class="-mx-2 flex flex-wrap">
           {Object.entries(props.items).map((item) => (
