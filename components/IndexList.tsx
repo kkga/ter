@@ -1,7 +1,7 @@
 /** @jsxImportSource npm:preact */
 
 import { Page } from "../types.d.ts";
-import { ChevronLeft, ChevronRight, Star } from "./icons.tsx";
+import { ChevronLeft, ChevronRight } from "./icons.tsx";
 
 interface PageItemProps {
   url: URL;
@@ -33,25 +33,15 @@ function PageItem({
           ring-offset-4 ring-offset-neutral-3
         "
       >
-        {pinned && (
-          <div class="self-center">
-            <Star />
-          </div>
-        )}
-
-        <div class="divide-dot flex-1 flex items-baseline overflow-hidden whitespace-nowrap">
-          <span class="flex-shrink-0 font-semibold truncate">
-            {title}
-            {isDirIndex && (
-              <span class="ml-0.5 text-neutral-9 select-none">/..</span>
-            )}
-          </span>
+        <div class="flex-1 flex items-baseline overflow-hidden whitespace-nowrap">
+          <span class="flex-shrink-0 font-medium truncate">{title}</span>
           {description && (
-            <span class="truncate text-neutral-10">{description}</span>
+            <span class="truncate text-neutral-10">
+              <span class="text-neutral-8 mx-2">&mdash;</span>
+              {description}
+            </span>
           )}
         </div>
-
-        <div class="self-center text-neutral-9 flex-shrink-0">{icon}</div>
       </a>
     </li>
   );

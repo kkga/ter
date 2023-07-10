@@ -69,7 +69,7 @@ function Header({
   return (
     <header
       class={cx("flex flex-col gap-2 empty:hidden only-child:(m-0)", {
-        "gap-6 mb-12": !compact,
+        "gap-2 mb-12": !compact,
       })}
     >
       {showTitle && (
@@ -82,9 +82,7 @@ function Header({
         </h1>
       )}
 
-      {showDescription && description && (
-        <p class="text(lg neutral-11) m-0">{description}</p>
-      )}
+      {showDescription && description && <p class="lead">{description}</p>}
 
       {showMeta && (datePublished || tags) && (
         <div class="divide-dot not-prose flex items-baseline text(sm neutral-10)">

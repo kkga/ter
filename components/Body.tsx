@@ -53,11 +53,12 @@ export default function Body({
       class="
         antialiased
         min-h-screen
-        mx-auto max-w-3xl
+        mx-auto max-w-2xl
         p-4
         flex flex-col gap-16
         text(neutral-12)
         bg(neutral-1)) 
+        tracking-tight
       "
     >
       {crumbs && <Header currentPath={page.url.pathname} crumbs={crumbs} />}
