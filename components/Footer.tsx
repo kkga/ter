@@ -13,7 +13,7 @@ function Footer({ author }: FooterProps) {
   if (author) items = [[author.name, author.url], ...items];
 
   return (
-    <footer class="mt-auto flex items-baseline text(xs neutral-10)">
+    <footer class="mt-auto flex items-baseline text(sm neutral-10)">
       <ul class="divide-dot flex items-baseline">
         {items.map(([label, path]) => (
           <li>

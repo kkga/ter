@@ -14,14 +14,7 @@ interface PageItemProps {
   icon?: preact.VNode;
 }
 
-function PageItem({
-  title,
-  description,
-  url,
-  pinned,
-  isDirIndex,
-  icon,
-}: PageItemProps) {
+function PageItem({ title, description, url }: PageItemProps) {
   return (
     <li class="max-w-full">
       <a
@@ -31,6 +24,7 @@ function PageItem({
           px-2 py-1
           flex flex-row items-baseline gap-1.5
           ring-offset-4 ring-offset-neutral-3
+          leading-tight
         "
       >
         <div class="flex-1 flex items-baseline overflow-hidden whitespace-nowrap">
@@ -55,7 +49,7 @@ interface TagItemProps {
 function TagItem({ name, pageCount }: TagItemProps) {
   return (
     <li class="max-w-full">
-      <a href={`/tags##${name}`} class="box px-2 py-1">
+      <a href={`/tags##${name}`} class="box px-2 py-1 leading-tight">
         {name} <span class="text-neutral-9">{pageCount}</span>
       </a>
     </li>
@@ -74,36 +68,31 @@ export default function IndexList(props: IndexListProps) {
     <section
       id={props.title}
       class="
-        text(sm)
         target:([&>h6]:(text-accent-10))))
       "
     >
-      <h6 class="section-heading text(xs neutral-10) uppercase font-semibold tracking-wide mb-3">
+      <h6 class="section-heading text(xs neutral-10) uppercase font-bold tracking-wide mb-3">
         {props.title}
       </h6>
       {(props.type === "pages" || props.type === "backlinks") &&
         Array.isArray(props.items) && (
-          <ul class="-mx-2 flex flex-col items-start">
-            {props.items.map((item) => (
-              <PageItem
-                title={item.title || ""}
-                description={item.description}
-                url={item.url}
-                isDirIndex={item.index === "dir"}
-                pinned={item.pinned}
-                date={item.datePublished}
-                lang={props.lang}
-                icon={
-                  props.type === "backlinks" ? (
-                    <ChevronLeft />
-                  ) : (
-                    <ChevronRight />
-                  )
-                }
-              />
-            ))}
-          </ul>
-        )}
+        <ul class="-mx-2 flex flex-col items-start">
+          {props.items.map((item) => (
+            <PageItem
+              title={item.title || ""}
+              description={item.description}
+              url={item.url}
+              isDirIndex={item.index === "dir"}
+              pinned={item.pinned}
+              date={item.datePublished}
+              lang={props.lang}
+              icon={props.type === "backlinks"
+                ? <ChevronLeft />
+                : <ChevronRight />}
+            />
+          ))}
+        </ul>
+      )}
       {props.type === "tags" && (
         <ul class="-mx-2 flex flex-wrap">
           {Object.entries(props.items).map((item) => (

@@ -47,7 +47,7 @@ export const twindConfig = defineConfig({
         "td-borders": "5",
       },
       extend: {
-        ".lead": { "@apply": "m-0" },
+        ".lead": { "@apply": "m-0 text-base font-medium" },
         a: {
           "@apply": `
             font-normal
@@ -58,7 +58,7 @@ export const twindConfig = defineConfig({
         },
         "a[rel~='external']": {
           "@apply": `
-            after:content-[' ↗']
+            after:content-['\\0000a↗']
             after:text-xs
             after:align-text-top
           `,
@@ -80,13 +80,17 @@ export const twindConfig = defineConfig({
             "relative tracking-tight font-semibold -ml-4 pl-4 hover:([&>.h-anchor]:opacity-100)",
         },
         pre: {
-          "@apply": "leading-normal rounded-md",
+          "@apply": "leading-normal rounded-md text-sm md:(-mx-4)",
         },
         del: { "@apply": "opacity-60" },
         small: { "@apply": "text-neutral-11" },
         details: { "@apply": "text-neutral-11" },
-        li: { "@apply": "my-0" },
-
+        table: { "@apply": "leading-snug" },
+        li: {
+          "@apply": "my-0 pl-0",
+          "& > ul": { "@apply": "my-0" },
+          "& > ol": { "@apply": "my-0" },
+        },
         "& dt": { "@apply": "font-semibold" },
         "& dd": { "@apply": "" },
         "& *:last-child": { "@apply": "mb-0" },
@@ -110,7 +114,7 @@ export const twindConfig = defineConfig({
           rounded
         `,
         "&:is(a)": {
-          "@apply": "text(neutral-11) hover:(bg(accent-3) text-neutral-12)",
+          "@apply": "text(neutral-12) hover:(bg(accent-3) text-neutral-12)",
         },
       },
     ],

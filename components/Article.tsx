@@ -5,7 +5,7 @@ import { Heading, Page } from "../types.d.ts";
 
 function Toc({ headings }: { headings: Heading[] }) {
   return (
-    <ol class="hidden sm:block float-right w-1/3 px-3 py-2 ml-4 my-0 rounded-sm bg-neutral-2 text(sm neutral-11) font-medium list(inside) not-prose">
+    <ol class="hidden sm:block lg:-mr-12 float-right w-1/3 lg:w-2/5 px-3 py-2 ml-4 my-0 rounded bg-neutral-2 text(sm neutral-11) font-medium list(inside) not-prose list-none">
       <span class="block text-xs text-neutral-10 mb-2">Contents</span>
       {headings.map((h: Heading) => {
         return (
@@ -85,7 +85,7 @@ function Header({
       {showDescription && description && <p class="lead">{description}</p>}
 
       {showMeta && (datePublished || tags) && (
-        <div class="divide-dot not-prose flex items-baseline text(sm neutral-10)">
+        <div class="divide-dot not-prose flex items-baseline text(base neutral-10)">
           {datePublished && (
             <Metadata>
               <a href={url.toString()}>
@@ -134,7 +134,7 @@ export default function Article({
   compact = false,
 }: Props) {
   return (
-    <article class="prose prose-neutral max-w-none">
+    <article class="prose md:prose-lg prose-neutral max-w-none">
       {page.showHeader && (
         <Header
           url={page.url}
