@@ -56,8 +56,8 @@ export default function Body({
         p-4
         flex flex-col gap-16
         text(neutral-12)
+        tracking-[-0.015em]
         bg(neutral-1)) 
-        tracking-tight
       ">
       {crumbs && <Header currentPath={page.url.pathname} crumbs={crumbs} />}
 
