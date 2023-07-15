@@ -6,12 +6,12 @@ dateUpdated: 2022-12-18
 pinned: true
 ---
 
-### Install deno
+## Install deno
 
 Ter is built with [Deno](https://deno.land/), so you'll need to have it
 [installed](https://deno.land/manual/getting_started/installation).
 
-### Build a site
+## Build a site
 
 Default command will recursively search for `*.md` files in the current
 directory and generate a site into the `_site` directory:

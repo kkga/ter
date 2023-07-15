@@ -28,12 +28,10 @@ If a directory contains an `index.md` file, its content will be injected into
 the rendered `index.html` above the index list. This can be useful for
 describing what the directory content is about or calling out individual pages.
 
-### Index sorting
-
 Items in the index are sorted in the following order:
 
 1. files with `pinned: true` in the [frontmatter](#markdown-frontmatter) are
-   listed at the top with a pin symbol;
+   listed at the top;
 2. directories (child index pages);
 3. rest of markdown files, sorted by [date](#markdown-frontmatter).
 

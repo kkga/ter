@@ -93,6 +93,7 @@ export const twindConfig = defineConfig({
         },
         "& dt": { "@apply": "font-semibold" },
         "& dd": { "@apply": "" },
+        "dd + dt": { "@apply": "mt-2" },
         "& *:last-child": { "@apply": "mb-0" },
 
         "& .full-bleed": { "@apply": "lg:(-mx-24) xl:(-mx-32)" },
