@@ -6,7 +6,7 @@ tags:
     - usage
 ---
 
-### Index pages
+## Index pages
 
 Ter recursively recreates the source file system on the rendered site and each
 directory gets an index file listing its content. For example, if the source
@@ -28,7 +28,7 @@ If a directory contains an `index.md` file, its content will be injected into
 the rendered `index.html` above the index list. This can be useful for
 describing what the directory content is about or calling out individual pages.
 
-#### Index sorting
+### Index sorting
 
 Items in the index are sorted in the following order:
 
@@ -37,7 +37,7 @@ Items in the index are sorted in the following order:
 2. directories (child index pages);
 3. rest of markdown files, sorted by [date](#markdown-frontmatter).
 
-### Markdown frontmatter
+## Markdown frontmatter
 
 Ter extracts [YAML frontmatter](https://jekyllrb.com/docs/front-matter/)
 delimited by `---` from markdown files. Here’s an example:
@@ -75,7 +75,7 @@ Some properties are utilized when building a site. All of them are optional.
 | showDescription | `true`   | Page description                                                         |
 | showMeta        | `true`   | Page date and tags                                                       |
 
-### Ignoring files
+## Ignoring files
 
 Any files and folders that start with an `_` or `.` (hidden) are ignored. For
 example, if there is a `_drafts` folder in the content directory, it will be
@@ -89,7 +89,7 @@ In addition, any markdown file with `draft: true` in the
 deno run -A https://deno.land/x/ter/main.ts --serve --drafts
 ```
 
-### Dead internal links
+## Dead internal links
 
 Ter automatically finds non-working internal links and lets you know about them
 after building a site. Here's an example output:
