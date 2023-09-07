@@ -1,1 +1,1 @@
-export { marked } from "npm:marked@7.0.5";
+export { marked } from "npm:marked@8.0.1";

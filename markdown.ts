@@ -1,5 +1,6 @@
 import { hljs } from "./deps/hljs.ts";
 import { marked } from "./deps/marked.ts";
+import { slug as slugify } from "./deps/slug.ts";
 import { dirname, extname, isAbsolute, join } from "./deps/std.ts";
 
 import {
@@ -34,12 +35,9 @@ const toInternalLink = (opts: {
   currentPath: string;
   isDirIndex?: boolean;
 }): string => {
-  const cleanPathname =
-    opts.parsed.pathname === ""
-      ? ""
-      : withoutTrailingSlash(
-          opts.parsed.pathname.replace(extname(opts.parsed.pathname), "")
-        );
+  const cleanPathname = opts.parsed.pathname === "" ? "" : withoutTrailingSlash(
+    opts.parsed.pathname.replace(extname(opts.parsed.pathname), ""),
+  );
   let internalHref: string;
 
   if (isAbsolute(cleanPathname)) {
@@ -57,14 +55,13 @@ const toInternalLink = (opts: {
       resolved = withoutTrailingSlash(joined.replace(/\/index$/i, ""));
     }
 
-    internalHref =
-      resolved === ""
-        ? resolved + opts.parsed.hash
-        : withLeadingSlash(resolved) + opts.parsed.hash;
+    internalHref = resolved === ""
+      ? resolved + opts.parsed.hash
+      : withLeadingSlash(resolved) + opts.parsed.hash;
 
     if (resolved !== "") {
       opts.internalLinks.add(
-        new URL(withoutLeadingSlash(internalHref), opts.baseUrl)
+        new URL(withoutLeadingSlash(internalHref), opts.baseUrl),
       );
     }
   }
@@ -76,9 +73,9 @@ const toInternalLink = (opts: {
 
   // console.log(prefixedHref);
 
-  return `<a href="${internalHref}" title="${opts.title || ""}">${
-    opts.text
-  }</a>`;
+  return `<a href="${internalHref}" title="${
+    opts.title || ""
+  }">${opts.text}</a>`;
 };
 
 export const parseMarkdown = ({
@@ -96,14 +93,13 @@ export const parseMarkdown = ({
   const headings: Array<Heading> = [];
   const renderer = new marked.Renderer();
   const tokens = marked.lexer(text);
-  const slugger = new marked.Slugger();
 
   for (const [_index, token] of tokens.entries()) {
     if (token.type === "heading") {
       headings.push({
         text: token.text,
         level: token.depth,
-        slug: slugger.slug(token.text),
+        slug: slugify(token.text),
       });
     }
   }
@@ -125,23 +121,22 @@ export const parseMarkdown = ({
     return parsed.protocol !== undefined || parsed.pathname.startsWith("mailto")
       ? toExternalLink(href, title, text)
       : toInternalLink({
-          title,
-          text,
-          parsed,
-          baseUrl,
-          internalLinks,
-          currentPath,
-          isDirIndex,
-        });
+        title,
+        text,
+        parsed,
+        baseUrl,
+        internalLinks,
+        currentPath,
+        isDirIndex,
+      });
   };
 
   renderer.heading = (
     text: string,
     level: 1 | 2 | 3 | 4 | 5 | 6,
     _raw: string,
-    slugger: marked.Slugger
   ): string => {
-    const slug = slugger.slug(text);
+    const slug = slugify(text);
     return `<h${level} id="${slug}"><a class="h-anchor" href="#${slug}">#</a>${text}</h${level}>`;
   };
 
@@ -170,11 +165,6 @@ export const parseMarkdown = ({
 
   marked.use({
     renderer,
-    pedantic: false,
-    gfm: true,
-    breaks: false,
-    smartLists: true,
-    xhtml: false,
   });
 
   const html = marked.parser(tokens);
