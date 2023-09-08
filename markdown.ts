@@ -150,7 +150,7 @@ export const parseMarkdown = ({
     } else {
       const href = isDirIndex
         ? join(dirname(`${currentPath}/index`), parsed.pathname)
-        : join(dirname(currentPath), parsed.pathname);
+        : join(dirname(currentPath).replace(/\./, "/"), parsed.pathname);
       return `<img src="${href}" alt="${text || ""}" title="${title || ""}"/>`;
     }
   };
