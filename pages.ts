@@ -106,7 +106,7 @@ function getTags(pages: Page[]): string[] {
 
 function getPagesWithTag(pages: Page[], tag: string, exclude?: Page[]): Page[] {
   return pages.filter(
-    (page) => page.tags?.includes(tag) && !exclude?.includes(page)
+    (page) => page.tags?.includes(tag) && !exclude?.includes(page),
   );
 }
 
@@ -114,13 +114,13 @@ function getRelatedPages(pages: Page[], current: Page): Page[] {
   return pages.filter(
     (page) =>
       page.url.pathname !== current.url.pathname &&
-      page?.tags?.some((tag) => current?.tags?.includes(tag))
+      page?.tags?.some((tag) => current?.tags?.includes(tag)),
   );
 }
 
 function getChildPages(
   pages: Page[],
-  current: Page
+  current: Page,
 ): { childPages: Page[]; allChildPages: Page[] } {
   const childPages: Page[] = [];
   const allChildPages: Page[] = [];
@@ -139,7 +139,7 @@ function getChildPages(
 function getPagesByTags(
   pages: Page[],
   tags: string[],
-  exclude?: Page[]
+  exclude?: Page[],
 ): Record<string, Page[]> {
   const pageMap: Record<string, Page[]> = {};
   tags.forEach((tag) => {
@@ -160,7 +160,7 @@ function sortPages(pages: Page[]): Page[] {
 }
 
 function sortTaggedPages(
-  taggedPages: Record<string, Page[]>
+  taggedPages: Record<string, Page[]>,
 ): Record<string, Page[]> {
   return Object.keys(taggedPages)
     .sort((a, b) => taggedPages[b].length - taggedPages[a].length)
@@ -253,6 +253,7 @@ function generateContentPage({
   const raw = decoder.decode(Deno.readFileSync(entry.path));
   const slug = slugify(entry.name.replace(/\.md$/i, ""), { lower: true });
   const pageUrl = new URL(join(dirname(relPath), slug), url);
+  console.log(relPath);
 
   let page: Page = {
     url: pageUrl,
@@ -280,8 +281,8 @@ function generateContentPage({
 
   page = { ...page, html, links, headings };
 
-  page.title ??=
-    getTitleFromHeadings(headings) || getTitleFromFilename(relPath);
+  page.title ??= getTitleFromHeadings(headings) ||
+    getTitleFromFilename(relPath);
 
   return page;
 }
@@ -325,8 +326,8 @@ function generateIndexPageFromFile({
 
   page = { ...page, html, links, headings };
 
-  page.title ??=
-    getTitleFromHeadings(headings) || getTitleFromFilename(dirName);
+  page.title ??= getTitleFromHeadings(headings) ||
+    getTitleFromFilename(dirName);
 
   return page;
 }
