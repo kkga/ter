@@ -9,7 +9,7 @@ interface PageHeaderProps {
 
 function PageHeader({ crumbs }: PageHeaderProps) {
   return (
-    <header class="text(neutral-10)">
+    <header class="text(neutral-10 xs) font-medium font-mono">
       {crumbs && crumbs.length > 1 && (
         <ul class="divide-slash flex">
           {crumbs.map((crumb) => (
