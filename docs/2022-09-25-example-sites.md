@@ -1,6 +1,5 @@
 ---
 title: Example sites
-date: 2022-09-25
 ---
 
 - <https://kkga.me>

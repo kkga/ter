@@ -1,3 +1,6 @@
+/** @jsx h */
+/** @type {import('twind').Configuration} */
+
 import {
   defineConfig,
   presetAutoprefix,
@@ -12,6 +15,12 @@ import {
   darkColor,
   neutral,
   neutralDark,
+  yellow,
+  yellowDark,
+  blue,
+  blueDark,
+  red,
+  redDark,
 } from "./deps/twind.ts";
 
 export const twindConfig = defineConfig({
@@ -23,6 +32,12 @@ export const twindConfig = defineConfig({
         neutralDark,
         accent,
         accentDark,
+        yellow,
+        yellowDark,
+        blue,
+        blueDark,
+        red,
+        redDark,
       },
     }),
     presetExt(),
@@ -39,8 +54,8 @@ export const twindConfig = defineConfig({
         quotes: "11",
         captions: "11",
         code: "12",
-        "pre-code": "11",
-        "pre-bg": "2",
+        "pre-code": "12",
+        "pre-bg": "1",
         "quote-borders": "6",
         hr: "6",
         "th-borders": "6",
@@ -80,7 +95,8 @@ export const twindConfig = defineConfig({
             "relative tracking-tight font-semibold -ml-4 pl-4 hover:([&>.h-anchor]:opacity-100)",
         },
         pre: {
-          "@apply": "leading-normal rounded-md text-sm md:(-mx-4)",
+          "@apply":
+            "leading-normal text-[13px] pl-4 py-2 border-l border-neutral-8 rounded-none",
         },
         del: { "@apply": "opacity-60" },
         small: { "@apply": "text-neutral-11" },
@@ -102,6 +118,21 @@ export const twindConfig = defineConfig({
         "& .cols-4": { "@apply": "grid grid(cols-2 md:cols-4) gap-x-4" },
         "& .span-2": { "@apply": "sm:col-span-2" },
         "& .span-3": { "@apply": "sm:col-span-3" },
+
+        ".admonition": {
+          "@apply": "leading-normal text-sm text-neutral-11 pl-4 py-2 border-l",
+          "&.admonition-note, &.admonition-info, &.admonition-abstract, &.admonition-example, &.admonition-hint, &.admonition-tip":
+            {
+              "@apply": "border-blue-8 text-blue-11",
+            },
+          "&.admonition-warning, &.admonition-attention, &.admonition-danger": {
+            "@apply": "border-yellow-8 text-yellow-11",
+          },
+          "&.admonition-danger, &.admonition-error, &.admonition-bug": {
+            "@apply": "border-red-8 text-red-11",
+          },
+          "& > .admonition-title": { "@apply": "mt-0 text-current" },
+        },
       },
     }),
   ],

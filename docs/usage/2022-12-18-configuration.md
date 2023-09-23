@@ -1,7 +1,6 @@
 ---
 title: Configuration
 description: How to configure Ter.
-date: 2022-12-18
 tags:
   - usage
 ---

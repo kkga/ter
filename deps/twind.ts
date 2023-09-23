@@ -23,6 +23,12 @@ export {
   mauveDark as neutralDark,
   violet as accent,
   violetDark as accentDark,
+  blue,
+  blueDark,
+  red,
+  redDark,
+  yellow,
+  yellowDark,
 } from "npm:@twind/preset-radix-ui@1.0.7/colors";
 
 export { default as darkColor } from "npm:@twind/preset-radix-ui@1.0.7/darkColor";
