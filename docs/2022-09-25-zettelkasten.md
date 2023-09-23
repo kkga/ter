@@ -1,7 +1,6 @@
 ---
 title: Zettelkasten
 description: Note-taking system.
-date: 2022-09-25
 ---
 
 From [Wikipedia](https://en.wikipedia.org/wiki/Zettelkasten):

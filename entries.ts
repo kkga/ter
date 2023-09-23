@@ -23,7 +23,7 @@ export async function getContentEntries(opts: {
   path: string;
 }): Promise<Array<WalkEntry>> {
   const fileEntries: Array<WalkEntry> = [];
-  let dirEntries: Array<WalkEntry> = [];
+  const dirEntries: Array<WalkEntry> = [];
 
   for await (const entry of walk(opts.path, {
     includeDirs: false,
@@ -33,28 +33,32 @@ export async function getContentEntries(opts: {
     fileEntries.push(entry);
   }
 
+  const filePaths = fileEntries.map((file) => file.path);
+
   for await (const entry of walk(opts.path, {
     includeDirs: true,
     includeFiles: false,
     skip: [RE_HIDDEN_OR_UNDERSCORED],
   })) {
+    const commonPaths = fileEntries.map((file) =>
+      withoutTrailingSlash(common([entry.path, file.path]))
+    );
+
+    // skip dirs that are already in fileEntries as "[2021-01-01-]index.md"
+    if (
+      filePaths.some(
+        (path) =>
+          path.replace(/\d{4}-\d{2}-\d{2}[-_]/, "") ===
+          join(entry.path, INDEX_FILENAME)
+      )
+    )
+      continue;
+
+    // skip dirs that don't have any fileEntries
+    if (!commonPaths.includes(withoutTrailingSlash(entry.path))) continue;
+
     dirEntries.push(entry);
   }
-
-  const filePaths = fileEntries.map((file) => file.path);
-
-  // filter out dirs that are already in fileEntries as "index.md"
-  dirEntries = dirEntries.filter((dir) => {
-    return !filePaths.includes(join(dir.path, INDEX_FILENAME));
-  });
-
-  // filter out dirs that don't have any fileEntries
-  dirEntries = dirEntries.filter((dir) => {
-    const commonPaths = fileEntries.map((file) =>
-      withoutTrailingSlash(common([dir.path, file.path]))
-    );
-    return commonPaths.includes(withoutTrailingSlash(dir.path));
-  });
 
   return [...fileEntries, ...dirEntries];
 }

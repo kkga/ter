@@ -66,10 +66,10 @@ async function generateSite(opts: GenerateSiteOpts) {
   const [indexDirEntries, indexFileEntries, nonIndexEntries] = [
     contentEntries.filter((entry) => entry.isDirectory),
     contentEntries.filter(
-      (entry) => entry.isFile && entry.name === INDEX_FILENAME
+      (entry) => entry.isFile && entry.name.endsWith(INDEX_FILENAME)
     ),
     contentEntries.filter(
-      (entry) => entry.isFile && entry.name !== INDEX_FILENAME
+      (entry) => entry.isFile && !entry.name.endsWith(INDEX_FILENAME)
     ),
   ];
 
