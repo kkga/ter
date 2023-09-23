@@ -1,9 +1,9 @@
-export { parse as flagsParse } from "https://deno.land/std@0.201.0/flags/mod.ts";
+export { parse as flagsParse } from "https://deno.land/std@0.202.0/flags/mod.ts";
 
 export {
   extract as fmExtract,
   test as fmTest,
-} from "https://deno.land/std@0.201.0/front_matter/any.ts";
+} from "https://deno.land/std@0.202.0/front_matter/any.ts";
 
 export {
   emptyDirSync,
@@ -11,9 +11,9 @@ export {
   ensureDirSync,
   walk,
   type WalkEntry,
-} from "https://deno.land/std@0.201.0/fs/mod.ts";
+} from "https://deno.land/std@0.202.0/fs/mod.ts";
 
-export { serve as httpServe } from "https://deno.land/std@0.201.0/http/server.ts";
+export { serve as httpServe } from "https://deno.land/std@0.202.0/http/server.ts";
 
 export {
   basename,
@@ -23,6 +23,6 @@ export {
   isAbsolute,
   join,
   relative,
-} from "https://deno.land/std@0.201.0/path/mod.ts";
+} from "https://deno.land/std@0.202.0/path/mod.ts";
 
-export { readableStreamFromReader } from "https://deno.land/std@0.201.0/streams/mod.ts";
+export { readableStreamFromReader } from "https://deno.land/std@0.202.0/streams/mod.ts";
