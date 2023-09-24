@@ -3,35 +3,31 @@
 import { cx } from "../deps/twind.ts";
 import { Heading, Page } from "../types.d.ts";
 
-function Toc({ headings }: { headings: Heading[] }) {
-  return (
-    <ol class="hidden sm:block lg:-mr-12 float-right w-1/3 lg:w-2/5 px-3 py-2 ml-4 my-0 rounded bg-neutral-2 text(sm neutral-11) font-medium list(inside) not-prose list-none">
-      <span class="block text-xs text-neutral-10 mb-2">Contents</span>
-      {headings.map((h: Heading) => {
-        return (
-          <li class="truncate">
-            <a href={`#${h.slug}`}>{h.text}</a>
-          </li>
-        );
-      })}
-    </ol>
-  );
-}
+const Toc = ({ headings }: { headings: Heading[] }) => (
+  <ol class="hidden sm:block lg:-mr-12 float-right w-1/3 lg:w-2/5 px-3 py-2 ml-4 my-0 rounded text(sm neutral-11) font-medium list(inside) not-prose list-none">
+    <span class="block text-xs text-neutral-10 mb-2">Contents</span>
+    {headings.map((h: Heading) => {
+      return (
+        <li class="truncate">
+          <a href={`#${h.slug}`}>{h.text}</a>
+        </li>
+      );
+    })}
+  </ol>
+);
 
-function Metadata({
+const Metadata = ({
   label,
   children,
 }: {
   label?: string;
   children: preact.ComponentChildren;
-}) {
-  return (
-    <div class={cx("flex flex-row text-neutral-9")}>
-      {label && <span>{label}&nbsp;</span>}
-      <div>{children}</div>
-    </div>
-  );
-}
+}) => (
+  <div class={cx("flex flex-row text-neutral-9")}>
+    {label && <span>{label}&nbsp;</span>}
+    <div>{children}</div>
+  </div>
+);
 
 interface HeaderProps {
   title?: string;
@@ -47,7 +43,7 @@ interface HeaderProps {
   showDescription: boolean;
 }
 
-function Header({
+const Header = ({
   title,
   description,
   url,
@@ -59,7 +55,7 @@ function Header({
   showDescription,
   showMeta,
   compact,
-}: HeaderProps) {
+}: HeaderProps) => {
   const dateFormat: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "short",
@@ -117,47 +113,59 @@ function Header({
       )}
     </header>
   );
-}
+};
 
-interface Props {
+interface ArticleProps {
   page: Page;
   lang: Intl.LocalesArgument;
-  isInLog?: boolean;
   children?: preact.ComponentChildren;
   compact?: boolean;
 }
 
-export default function Article({
-  page,
-  children,
-  lang,
-  compact = false,
-}: Props) {
+const Article = ({ page, children, lang, compact = false }: ArticleProps) => {
+  const {
+    showHeader,
+    url,
+    title,
+    description,
+    datePublished,
+    dateUpdated,
+    tags,
+    showTitle,
+    showDescription,
+    showMeta,
+    headings,
+    showToc,
+    html,
+  } = page;
+
   return (
     <article class="prose prose-neutral max-w-none">
-      {page.showHeader && (
+      {showHeader && (
         <Header
-          url={page.url}
-          title={page.title}
-          description={page.description}
-          datePublished={page.datePublished}
-          dateUpdated={page.dateUpdated}
-          tags={page.tags}
+          url={url}
+          title={title}
+          description={description}
+          datePublished={datePublished}
+          dateUpdated={dateUpdated}
+          tags={tags}
           lang={lang}
           compact={compact}
-          showTitle={page.showTitle}
-          showMeta={page.showMeta}
-          showDescription={page.showDescription}
+          showTitle={showTitle}
+          showMeta={showMeta}
+          showDescription={showDescription}
         />
       )}
 
-      {!compact && page.showToc && page.headings?.some((h) => h.level > 2) && (
-        <Toc headings={page.headings.filter((h) => h.level <= 2)} />
+      {!compact && showToc && headings?.some((h) => h.level >= 2) && (
+        <Toc headings={headings.filter((h) => h.level <= 2)} />
       )}
 
-      {page.html && <div dangerouslySetInnerHTML={{ __html: page.html }} />}
+      {html && <div dangerouslySetInnerHTML={{ __html: html }} />}
 
       {children}
     </article>
   );
-}
+};
+
+export default Article;

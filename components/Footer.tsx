@@ -4,7 +4,7 @@ interface FooterProps {
   author?: { name: string; email: string; url: string };
 }
 
-function Footer({ author }: FooterProps) {
+const Footer = ({ author }: FooterProps) => {
   let items = [
     ["Feed", "/feed.xml"],
     ["Made with Ter", "https://ter.kkga.me"],
@@ -23,5 +23,5 @@ function Footer({ author }: FooterProps) {
       </ul>
     </footer>
   );
-}
+};
 export default Footer;

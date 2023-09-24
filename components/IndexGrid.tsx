@@ -7,15 +7,13 @@ interface IndexGridProps {
   lang: Intl.LocalesArgument;
 }
 
-export default function IndexGrid(props: IndexGridProps) {
+const IndexGrid = ({ items }: IndexGridProps) => {
   return (
-    <section class="text(base)">
-      <h6 class="section-heading text(xs neutral-10) uppercase font-bold tracking-wide mb-3">
-        Pages
-      </h6>
-      {Array.isArray(props.items) && (
+    <section>
+      <h6 class="section-heading">Pages</h6>
+      {Array.isArray(items) ? (
         <ul class="-mx-2 grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-          {props.items.map((item) => (
+          {items.map((item) => (
             <a href={item.url.pathname} class="box p-2 flex flex-col gap-1">
               {item.thumbnailUrl && (
                 <img
@@ -23,19 +21,19 @@ export default function IndexGrid(props: IndexGridProps) {
                   src={item.thumbnailUrl.toString()}
                 />
               )}
-              <span class="block leading-tight font-medium">
-                {item.title}
-              </span>
+              <span class="block leading-tight font-medium">{item.title}</span>
 
               {item.description && (
-                <span class="leading-tight text-neutral-9">
+                <span class="leading-tight text-sm text-neutral-9 hyphens-auto">
                   {item.description}
                 </span>
               )}
             </a>
           ))}
         </ul>
-      )}
+      ) : null}
     </section>
   );
-}
+};
+
+export default IndexGrid;

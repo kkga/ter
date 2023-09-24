@@ -8,18 +8,20 @@ interface IndexLogProps {
   lang: Intl.LocalesArgument;
 }
 
-export default function IndexList(props: IndexLogProps) {
+const IndexLog = ({ items, lang }: IndexLogProps) => {
   return (
-    <section class="text(sm)">
-      {Array.isArray(props.items) && (
+    <section>
+      {Array.isArray(items) && (
         <ul class="-mx-4 flex flex-col gap-4">
-          {props.items.map((item) => (
+          {items.map((item) => (
             <div class="box rounded-xl p-4">
-              <Article page={item} lang={props.lang} compact={true} />
+              <Article page={item} lang={lang} compact={true} />
             </div>
           ))}
         </ul>
       )}
     </section>
   );
-}
+};
+
+export default IndexLog;

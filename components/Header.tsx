@@ -7,7 +7,7 @@ interface PageHeaderProps {
   crumbs?: Crumb[];
 }
 
-function PageHeader({ crumbs }: PageHeaderProps) {
+const PageHeader = ({ crumbs }: PageHeaderProps) => {
   return (
     <header class="text(neutral-10 xs) font-medium font-mono">
       {crumbs && crumbs.length > 1 && (
@@ -22,6 +22,6 @@ function PageHeader({ crumbs }: PageHeaderProps) {
       )}
     </header>
   );
-}
+};
 
 export default PageHeader;
