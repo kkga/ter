@@ -13,8 +13,6 @@ export {
   type WalkEntry,
 } from "https://deno.land/std@0.202.0/fs/mod.ts";
 
-export { serve as httpServe } from "https://deno.land/std@0.202.0/http/server.ts";
-
 export {
   basename,
   common,
@@ -24,5 +22,3 @@ export {
   join,
   relative,
 } from "https://deno.land/std@0.202.0/path/mod.ts";
-
-export { readableStreamFromReader } from "https://deno.land/std@0.202.0/streams/mod.ts";
