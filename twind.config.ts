@@ -112,16 +112,19 @@ export const twindConfig = defineConfig({
         "dd + dt": { "@apply": "mt-2" },
         "& *:last-child": { "@apply": "mb-0" },
 
-        "& .full-bleed": { "@apply": "lg:(-mx-24) xl:(-mx-32)" },
-        "& .cols-2": { "@apply": "sm:grid grid(cols-2) gap-x-4" },
-        "& .cols-3": { "@apply": "sm:grid grid(cols-3) gap-x-4" },
-        "& .cols-4": { "@apply": "grid grid(cols-2 md:cols-4) gap-x-4" },
-        "& .span-2": { "@apply": "sm:col-span-2" },
-        "& .span-3": { "@apply": "sm:col-span-3" },
+        ".full-bleed": { "@apply": "lg:(-mx-24) xl:(-mx-32)" },
+        ".cols-2": { "@apply": "sm:grid grid(cols-2) gap-x-4" },
+        ".cols-3": { "@apply": "sm:grid grid(cols-3) gap-x-4" },
+        ".cols-4": { "@apply": "grid grid(cols-2 md:cols-4) gap-x-4" },
+        ".span-2": { "@apply": "sm:col-span-2" },
+        ".span-3": { "@apply": "sm:col-span-3" },
 
         ".admonition": {
-          "@apply": "leading-normal text-sm text-neutral-11 pl-4 py-2 border-l",
-          "&.admonition-note, &.admonition-info, &.admonition-abstract, &.admonition-example, &.admonition-hint, &.admonition-tip":
+          "@apply": "leading-normal text-sm pl-4 py-2 border-l",
+          "&.admonition-abstract ": {
+            "@apply": "border-neutral-8 text-neutral-11",
+          },
+          "&.admonition-note, &.admonition-info, &.admonition-example, &.admonition-hint, &.admonition-tip":
             {
               "@apply": "border-blue-8 text-blue-11",
             },
@@ -136,6 +139,7 @@ export const twindConfig = defineConfig({
       },
     }),
   ],
+
   rules: [
     [
       "box",
@@ -171,13 +175,16 @@ export const twindConfig = defineConfig({
     [
       "section-heading",
       {
-        "@apply": "flex gap-2 items-baseline",
+        "@apply":
+          "flex gap-2 items-baseline text(xs neutral-10) uppercase font-semibold tracking-wide mb-3",
         "&::after": { content: "", "@apply": "flex-1 h-px bg-neutral-4" },
       },
     ],
   ],
+
   preflight: {
     a: { "@apply": "hover:text-accent-11" },
   },
+
   darkColor,
 });
