@@ -96,7 +96,7 @@ export const twindConfig = defineConfig({
         },
         pre: {
           "@apply":
-            "leading-normal text-[13px] pl-4 py-2 border-l border-neutral-8 rounded-none",
+            "leading-normal text-[13px] px-3 py-2 border bg-neutral-2 border-neutral-4 rounded-sm",
         },
         del: { "@apply": "opacity-60" },
         small: { "@apply": "text-neutral-11" },
