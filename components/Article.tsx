@@ -30,17 +30,17 @@ const Metadata = ({
 );
 
 interface HeaderProps {
+  url: URL;
+  lang: Intl.LocalesArgument;
   title?: string;
   description?: string;
   datePublished?: Date;
-  url: URL;
   dateUpdated?: Date;
   tags?: string[];
-  lang: Intl.LocalesArgument;
-  compact: boolean;
-  showTitle: boolean;
-  showMeta: boolean;
-  showDescription: boolean;
+  compact?: boolean;
+  showTitle?: boolean;
+  showMeta?: boolean;
+  showDescription?: boolean;
 }
 
 const Header = ({
@@ -122,7 +122,7 @@ interface ArticleProps {
   compact?: boolean;
 }
 
-const Article = ({ page, children, lang, compact = false }: ArticleProps) => {
+const Article = ({ page, children, lang, compact }: ArticleProps) => {
   const {
     showHeader,
     url,

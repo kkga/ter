@@ -3,13 +3,12 @@
 import { Crumb } from "../types.d.ts";
 
 interface PageHeaderProps {
-  currentPath: string;
-  crumbs?: Crumb[];
+  crumbs: Crumb[];
 }
 
 const PageHeader = ({ crumbs }: PageHeaderProps) => {
   return (
-    <header class="text(neutral-10 xs) font-medium font-mono">
+    <header class="text(neutral-10) text-[13px] h-5 font(medium mono)">
       {crumbs && crumbs.length > 1 && (
         <ul class="divide-slash flex">
           {crumbs.map((crumb) => (

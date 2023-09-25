@@ -63,7 +63,7 @@ const Body = ({
         bg(neutral-1) 
       "
   >
-    <Header currentPath={page.url.pathname} crumbs={crumbs} />
+    <Header crumbs={crumbs} />
 
     <main class="[&:has(article:empty)]:hidden">
       <Article lang={lang} page={page} />
