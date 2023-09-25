@@ -158,13 +158,19 @@ function getPagesByTags(
 
 function sortPages(pages: Page[]): Page[] {
   return pages
-    .sort((a, b) => {
+    .toSorted((a, b) => {
       if (a.datePublished && b.datePublished) {
         return b.datePublished.valueOf() - a.datePublished.valueOf();
-      } else return 0;
+      } else if (a.datePublished) {
+        return -1;
+      } else if (b.datePublished) {
+        return 1;
+      } else {
+        return 0;
+      }
     })
-    .sort((page) => (page.index === "dir" ? -1 : 0))
-    .sort((page) => (page.pinned ? -1 : 0));
+    .toSorted((page) => (page.pinned ? -1 : 0))
+    .toSorted((page) => (page.index === "dir" ? -1 : 0));
 }
 
 function sortTaggedPages(
@@ -176,6 +182,18 @@ function sortTaggedPages(
       acc[key] = taggedPages[key];
       return acc;
     }, {});
+}
+
+function getDeadlinks(pages: Page[]): [from: URL, to: URL][] {
+  return pages.reduce((deadlinks: [from: URL, to: URL][], page) => {
+    if (page.links) {
+      page.links.forEach((link) => {
+        !pages.some((page) => page.url.pathname === link.pathname) &&
+          deadlinks.push([page.url, link]);
+      });
+    }
+    return deadlinks;
+  }, []);
 }
 
 function extractPageData(raw: string, ignoreKeys: string[]): PageData {
@@ -211,18 +229,6 @@ function extractPageData(raw: string, ignoreKeys: string[]): PageData {
     showToc: getBool(attrs, "toc") ?? false,
     thumbnailUrl: getVal(attrs, "thumbnailUrl") as URL | undefined,
   };
-}
-
-function getDeadlinks(pages: Page[]): [from: URL, to: URL][] {
-  return pages.reduce((deadlinks: [from: URL, to: URL][], page) => {
-    if (page.links) {
-      page.links.forEach((link) => {
-        !pages.some((page) => page.url.pathname === link.pathname) &&
-          deadlinks.push([page.url, link]);
-      });
-    }
-    return deadlinks;
-  }, []);
 }
 
 function generateIndexPageFromDir({
@@ -350,6 +356,8 @@ export {
   generateIndexPageFromDir,
   generateIndexPageFromFile,
   getBacklinkPages,
+  getTitleFromHeadings,
+  getTitleFromFilename,
   getChildPages,
   getDeadlinks,
   getPagesByTags,
@@ -359,4 +367,5 @@ export {
   getTags,
   sortPages,
   sortTaggedPages,
+  extractPageData,
 };
