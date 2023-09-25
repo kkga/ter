@@ -49,14 +49,14 @@ export interface Page {
   index?: "dir" | "tag";
   layout?: "log" | "grid" | "list";
   thumbnailUrl?: URL;
-  pinned: boolean;
-  ignored: boolean;
-  unlisted: boolean;
-  showHeader: boolean;
-  showToc: boolean;
-  showTitle: boolean;
-  showMeta: boolean;
-  showDescription: boolean;
+  pinned?: boolean;
+  ignored?: boolean;
+  unlisted?: boolean;
+  showHeader?: boolean;
+  showToc?: boolean;
+  showTitle?: boolean;
+  showMeta?: boolean;
+  showDescription?: boolean;
 }
 
 export interface JSONValue {

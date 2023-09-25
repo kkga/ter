@@ -46,27 +46,22 @@ interface PageData {
 const decoder = new TextDecoder("utf-8");
 
 function generateCrumbs(page: Page, rootCrumb?: string): Crumb[] {
-  const dir = dirname(page.url.pathname);
-  const chunks: string[] = dir.split("/").filter((ch) => !!ch);
-  const slug = basename(page.url.pathname);
+  const chunks = page.url.pathname.split("/").filter((ch) => !!ch);
 
   const crumbs: Crumb[] = chunks.map((chunk, i) => {
     const url = join("/", ...chunks.slice(0, i + 1));
     return {
       slug: chunk,
       url,
-      current: false,
+      current: url === page.url.pathname,
     };
   });
 
   crumbs.unshift({
     slug: rootCrumb ?? "index",
     url: "/",
-    current: false,
+    current: page.url.pathname === "/",
   });
-
-  if (slug !== "/") crumbs.push({ slug, url: "", current: true });
-  if (crumbs.length === 1) crumbs.pop();
 
   return crumbs;
 }
