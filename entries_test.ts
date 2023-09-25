@@ -1,6 +1,6 @@
-import { assertEquals } from "https://deno.land/std@0.202.0/assert/mod.ts";
 import { getContentEntries, getStaticEntries } from "./entries.ts";
-import { createConfig, defaultBuildConfig } from "./config.ts";
+import { defaultBuildConfig } from "./config.ts";
+import { assertEquals } from "./deps/std.ts";
 
 const testPath = `${Deno.cwd()}/test/entries/`;
 const config = defaultBuildConfig;

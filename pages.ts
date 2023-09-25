@@ -80,8 +80,16 @@ function getTitleFromFilename(filePath: string): string {
 }
 
 function getDateFromFilename(filePath: string): Date | undefined {
-  const date = basename(filePath).match(/\d{4}-\d{2}-\d{2}/)?.[0];
-  return date ? new Date(date) : undefined;
+  const match = basename(filePath).match(/\d{4}-\d{2}-\d{2}/)?.[0];
+  if (!match) {
+    return;
+  }
+  const [year, month, day] = match.split("-");
+  const date = new Date(`${year}-${month}-${day}`);
+
+  if (date instanceof Date && !isNaN(date.valueOf())) {
+    return date;
+  }
 }
 
 function getBacklinkPages(pages: Page[], current: Page): Page[] {
@@ -352,6 +360,7 @@ export {
   getPagesByTags,
   getPagesWithTag,
   getRelatedPages,
+  getDateFromFilename,
   getTags,
   sortPages,
   sortTaggedPages,
