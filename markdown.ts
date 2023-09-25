@@ -17,8 +17,8 @@ interface ParseOpts {
   text: string;
   currentPath: string;
   baseUrl: URL;
-  codeHighlight: boolean;
   isDirIndex?: boolean;
+  codeHighlight?: boolean;
 }
 
 interface InternalLinkOpts {
