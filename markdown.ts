@@ -21,12 +21,7 @@ interface ParseOpts {
   isDirIndex?: boolean;
 }
 
-const toExternalLink = (href: string, title: string, text: string): string =>
-  `<a href="${href}" rel="external noopener noreferrer" title="${
-    title || ""
-  }">${text}</a>`;
-
-const toInternalLink = (opts: {
+interface InternalLinkOpts {
   title: string;
   text: string;
   parsed: ParsedURL;
@@ -34,39 +29,52 @@ const toInternalLink = (opts: {
   internalLinks: Set<URL>;
   currentPath: string;
   isDirIndex?: boolean;
-}): string => {
+}
+
+const toExternalLink = (href: string, title: string, text: string): string =>
+  `<a href="${href}" rel="external noopener noreferrer" title="${
+    title || ""
+  }">${text}</a>`;
+
+const toInternalLink = ({
+  title,
+  text,
+  parsed,
+  baseUrl,
+  internalLinks,
+  currentPath,
+  isDirIndex,
+}: InternalLinkOpts): string => {
   const cleanPathname =
-    opts.parsed.pathname === ""
+    parsed.pathname === ""
       ? ""
       : withoutTrailingSlash(
-          opts.parsed.pathname.replace(extname(opts.parsed.pathname), "")
+          parsed.pathname.replace(extname(parsed.pathname), "")
         );
   let internalHref: string;
 
   if (isAbsolute(cleanPathname)) {
-    internalHref = cleanPathname + opts.parsed.hash;
-    opts.internalLinks.add(new URL(internalHref, opts.baseUrl));
+    internalHref = cleanPathname + parsed.hash;
+    internalLinks.add(new URL(internalHref, baseUrl));
   } else {
     let resolved: string;
 
     if (cleanPathname === "") {
       resolved = "";
     } else {
-      const joined = opts.isDirIndex
-        ? join(dirname(`${opts.currentPath}/index`), cleanPathname)
-        : join(dirname(opts.currentPath), cleanPathname);
+      const joined = isDirIndex
+        ? join(dirname(`${currentPath}/index`), cleanPathname)
+        : join(dirname(currentPath), cleanPathname);
       resolved = withoutTrailingSlash(joined.replace(/\/index$/i, ""));
     }
 
     internalHref =
       resolved === ""
-        ? resolved + opts.parsed.hash
-        : withLeadingSlash(resolved) + opts.parsed.hash;
+        ? resolved + parsed.hash
+        : withLeadingSlash(resolved) + parsed.hash;
 
     if (resolved !== "") {
-      opts.internalLinks.add(
-        new URL(withoutLeadingSlash(internalHref), opts.baseUrl)
-      );
+      internalLinks.add(new URL(withoutLeadingSlash(internalHref), baseUrl));
     }
   }
 
@@ -77,9 +85,7 @@ const toInternalLink = (opts: {
 
   // console.log(prefixedHref);
 
-  return `<a href="${internalHref}" title="${opts.title || ""}">${
-    opts.text
-  }</a>`;
+  return `<a href="${internalHref}" title="${title || ""}">${text}</a>`;
 };
 
 export const parseMarkdown = ({
