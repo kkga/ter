@@ -15,7 +15,7 @@ const defaultUserConfig: UserConfig = {
   head: "",
 };
 
-const defaultBuildConfig: BuildConfig = {
+export const defaultBuildConfig: BuildConfig = {
   inputPath: Deno.cwd(),
   outputPath: join(Deno.cwd(), "_site"),
   userConfigPath: join(Deno.cwd(), ".ter/config.json"),
