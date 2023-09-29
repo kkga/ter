@@ -3,5 +3,8 @@
   "deno.lint": true,
   "deno.codeLens.test": true,
   "editor.defaultFormatter": "denoland.vscode-deno",
-  "deno.unstable": true
+  "deno.unstable": true,
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
