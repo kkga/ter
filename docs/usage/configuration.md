@@ -1,8 +1,6 @@
 ---
 title: Configuration
 description: How to configure Ter.
-tags:
-  - usage
 ---
 
 Ter reads a JSON configuration file at `.ter/config.json` before building a

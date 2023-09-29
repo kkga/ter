@@ -1,8 +1,6 @@
 ---
 title: Command line usage
 description: How to use Ter from the command line.
-tags:
-    - usage
 ---
 
 Run Ter with the `--help` flag to see usage reference.

@@ -2,8 +2,6 @@
 title: Content
 description: How to structure content for Ter.
 toc: true
-tags:
-    - usage
 ---
 
 ## Index pages
@@ -56,22 +54,19 @@ property: value
 
 Some properties are utilized when building a site. All of them are optional.
 
-| Property        | Default  | Description                                                              |
-| --------------- | -------- | ------------------------------------------------------------------------ |
-| title           |          | Page title                                                               |
-| description     |          | Page description                                                         |
-| tags            |          | Page tags                                                                |
-| date            |          | Page publish date in YYYY-MM-DD format                                   |
-| dateUpdated     |          | Page last update date in YYYY-MM-DD format                               |
-| pinned          | `false`  | Page is listed at the top of [index lists](#index-pages)                 |
-| unlisted        | `false`  | Page is excluded from all [index lists](#index-pages)                    |
-| draft           | `false`  | File is [ignored](#ignoring-files) during site generation                |
-| layout          | `"list"` | Layout of the [index list](#index-pages); can be `list`, `log` or `grid` |
-| toc             | `false`  | Table of contents                                                        |
-| showHeader      | `true`   | Page header with title, description, date and tags                       |
-| showTitle       | `true`   | Page title                                                               |
-| showDescription | `true`   | Page description                                                         |
-| showMeta        | `true`   | Page date and tags                                                       |
+| Property    | Default  | Description                                                              |
+| ----------- | -------- | ------------------------------------------------------------------------ |
+| title       |          | Page title                                                               |
+| description |          | Page description                                                         |
+| tags        |          | Page tags                                                                |
+| date        |          | Page publish date in YYYY-MM-DD format                                   |
+| dateUpdated |          | Page last update date in YYYY-MM-DD format                               |
+| pinned      | `false`  | Page is listed at the top of [index lists](#index-pages)                 |
+| unlisted    | `false`  | Page is excluded from all [index lists](#index-pages)                    |
+| draft       | `false`  | File is [ignored](#ignoring-files) during site generation                |
+| layout      | `"list"` | Layout of the [index list](#index-pages); can be `list`, `log` or `grid` |
+| toc         | `false`  | Show table of contents                                                   |
+| showHeader  | `true`   | Show page header with title, description, date and tags                  |
 
 ## Ignoring files
 

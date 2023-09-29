@@ -21,6 +21,10 @@ biltong.
 > pork belly porchetta chuck sausage brisket ham hock rump pig. Chuck kielbasa
 > leberkas, pork bresaola ham hock filet mignon cow shoulder short ribs biltong.
 
+Internal links look like [this](/usage/content.md). External links look like
+[this](https://github.com/kkga/ter). Links to non-html files look like
+[this](/img/img-large.jpg).
+
 # Header 1
 
 This is a normal paragraph following a header. Bacon ipsum dolor sit amet t-bone

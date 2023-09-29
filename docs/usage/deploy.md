@@ -1,8 +1,6 @@
 ---
 title: Deploy
 description: How to deploy Ter sites.
-tags:
-    - usage
 ---
 
 Ter generates a static site which can be deployed anywhere.
