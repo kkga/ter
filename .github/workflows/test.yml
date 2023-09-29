@@ -1,0 +1,18 @@
+name: Run Deno tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: denolib/setup-deno@master
+        with:
+          deno-version: v1.x
+      - name: Run tests
+        run: deno task test
