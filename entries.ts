@@ -1,14 +1,18 @@
-import { INDEX_FILENAME, RE_HIDDEN_OR_UNDERSCORED } from "./constants.ts";
-import { WalkEntry, common, join, walk } from "./deps/std.ts";
+import {
+  INDEX_FILENAME,
+  RE_DATE_PREFIX,
+  RE_HIDDEN_OR_UNDERSCORED,
+} from "./constants.ts";
+import { path, fs } from "./deps/std.ts";
 import { withoutTrailingSlash } from "./deps/ufo.ts";
 
-export async function getStaticEntries(opts: {
+export const getStaticEntries = async (opts: {
   path: string;
-  exts?: Array<string>;
-}): Promise<Array<WalkEntry>> {
-  const entries: Array<WalkEntry> = [];
+  exts?: string[];
+}): Promise<fs.WalkEntry[]> => {
+  const entries: fs.WalkEntry[] = [];
 
-  for await (const entry of walk(opts.path, {
+  for await (const entry of fs.walk(opts.path, {
     includeDirs: false,
     skip: [RE_HIDDEN_OR_UNDERSCORED],
     exts: opts.exts,
@@ -17,15 +21,15 @@ export async function getStaticEntries(opts: {
   }
 
   return entries;
-}
+};
 
-export async function getContentEntries(opts: {
+export const getContentEntries = async (opts: {
   path: string;
-}): Promise<Array<WalkEntry>> {
-  const fileEntries: Array<WalkEntry> = [];
-  const dirEntries: Array<WalkEntry> = [];
+}): Promise<fs.WalkEntry[]> => {
+  const fileEntries: fs.WalkEntry[] = [];
+  const dirEntries: fs.WalkEntry[] = [];
 
-  for await (const entry of walk(opts.path, {
+  for await (const entry of fs.walk(opts.path, {
     includeDirs: false,
     skip: [RE_HIDDEN_OR_UNDERSCORED],
     exts: ["md"],
@@ -35,21 +39,21 @@ export async function getContentEntries(opts: {
 
   const filePaths = fileEntries.map((file) => file.path);
 
-  for await (const entry of walk(opts.path, {
+  for await (const entry of fs.walk(opts.path, {
     includeDirs: true,
     includeFiles: false,
     skip: [RE_HIDDEN_OR_UNDERSCORED],
   })) {
     const commonPaths = fileEntries.map((file) =>
-      withoutTrailingSlash(common([entry.path, file.path]))
+      withoutTrailingSlash(path.common([entry.path, file.path]))
     );
 
     // skip dirs that are already in fileEntries as "[2021-01-01-]index.md"
     if (
       filePaths.some(
-        (path) =>
-          path.replace(/\d{4}-\d{2}-\d{2}[-_]/, "") ===
-          join(entry.path, INDEX_FILENAME)
+        (filepath) =>
+          filepath.replace(RE_DATE_PREFIX, "") ===
+          path.join(entry.path, INDEX_FILENAME)
       )
     )
       continue;
@@ -61,4 +65,4 @@ export async function getContentEntries(opts: {
   }
 
   return [...fileEntries, ...dirEntries];
-}
+};

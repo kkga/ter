@@ -1,5 +1,5 @@
 import { RE_HIDDEN_OR_UNDERSCORED } from "./constants.ts";
-import { join, relative } from "./deps/std.ts";
+import { path } from "./deps/std.ts";
 import { GenerateSiteOpts } from "./main.ts";
 import type { BuildConfig } from "./types.d.ts";
 
@@ -18,12 +18,12 @@ const sockets: Set<WebSocket> = new Set();
 let servePath: string;
 
 async function watch(opts: WatchOpts) {
-  const paths = [opts.config.inputPath, join(Deno.cwd(), ".ter")];
+  const paths = [opts.config.inputPath, path.join(Deno.cwd(), ".ter")];
   const watcher = Deno.watchFs(paths);
   let timer = 0;
 
-  const isInOutputDir = (path: string): boolean =>
-    relative(opts.config.outputPath, path).startsWith("..");
+  const isInOutputDir = (p: string): boolean =>
+    path.relative(opts.config.outputPath, p).startsWith("..");
 
   eventLoop: for await (const event of watcher) {
     if (["any", "access"].includes(event.kind)) {
@@ -39,7 +39,9 @@ async function watch(opts: WatchOpts) {
       }
     }
 
-    console.info(`>>> ${event.kind}: ${relative(Deno.cwd(), event.paths[0])}`);
+    console.info(
+      `>>> ${event.kind}: ${path.relative(Deno.cwd(), event.paths[0])}`
+    );
     await opts.runner({
       config: opts.config,
       includeRefresh: true,
@@ -77,12 +79,12 @@ async function requestHandler(request: Request) {
   let resp: Response;
 
   try {
-    let file = await Deno.open(join(servePath, filepath), { read: true });
+    let file = await Deno.open(path.join(servePath, filepath), { read: true });
     const stat = await file.stat();
 
     if (stat.isDirectory) {
       file.close();
-      const filePath = join(servePath, filepath, "index.html");
+      const filePath = path.join(servePath, filepath, "index.html");
       file = await Deno.open(filePath, { read: true });
     }
     resp = new Response(file.readable);

@@ -6,7 +6,7 @@ interface FeedOpts {
   pages: Page[];
 }
 
-export function generateFeed(opts: FeedOpts): Feed {
+export const generateFeed = (opts: FeedOpts): Feed => {
   const { userConfig, pages } = opts;
   const { title, description, url, lang, authorName, authorEmail, authorUrl } =
     userConfig;
@@ -42,4 +42,4 @@ export function generateFeed(opts: FeedOpts): Feed {
   });
 
   return feed;
-}
+};

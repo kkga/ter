@@ -34,29 +34,29 @@ export interface Heading {
   slug: string;
 }
 
-export interface Page {
-  url: URL;
-  title?: string;
-  description?: string;
+export interface PageData {
+  body?: string;
   attrs?: JSONValue;
   datePublished?: Date;
   dateUpdated?: Date;
+  title?: string;
+  description?: string;
   tags?: string[];
-  body?: string;
-  html?: string;
-  links?: URL[];
-  headings?: Heading[];
-  index?: "dir" | "tag";
-  layout?: "log" | "grid" | "list";
-  thumbnailUrl?: URL;
   pinned?: boolean;
   ignored?: boolean;
   unlisted?: boolean;
+  layout?: "log" | "grid" | "list";
   showHeader?: boolean;
   showToc?: boolean;
-  showTitle?: boolean;
-  showMeta?: boolean;
-  showDescription?: boolean;
+  thumbnailUrl?: URL;
+}
+
+export interface Page extends PageData {
+  url: URL;
+  html?: string;
+  headings?: Heading[];
+  links?: URL[];
+  index?: "dir" | "tag";
 }
 
 export interface JSONValue {

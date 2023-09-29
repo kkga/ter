@@ -1,5 +1,6 @@
 export const INDEX_FILENAME = "index.md";
 export const RE_HIDDEN_OR_UNDERSCORED = /^\.|^\_|\/\.|\/\_/;
+export const RE_DATE_PREFIX = /\d{4}-\d{2}-\d{2}[-_]/;
 
 export const HMR_CLIENT = `((l) => {
   let w, i;

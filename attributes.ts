@@ -1,6 +1,6 @@
 import { JSONValue } from "./types.d.ts";
 
-export const hasKey = (data: JSONValue, keys: Array<string>): boolean => {
+export const hasKey = (data: JSONValue, keys: string[]): boolean => {
   if (data) {
     for (const key of Object.keys(data)) {
       if (keys.includes(key) && data[key] === true) {
@@ -31,5 +31,5 @@ export const getDate = (data: JSONValue): Date | undefined =>
 export const getDateUpdated = (data: JSONValue): Date | undefined =>
   data.dateUpdated instanceof Date ? data.dateUpdated : undefined;
 
-export const getTags = (data: JSONValue): Array<string> | undefined =>
+export const getTags = (data: JSONValue): string[] | undefined =>
   Array.isArray(data.tags) ? data.tags.map((t) => t.toString()) : undefined;

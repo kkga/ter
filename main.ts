@@ -1,12 +1,4 @@
-import {
-  basename,
-  dirname,
-  emptyDirSync,
-  ensureDir,
-  flagsParse,
-  join,
-  relative,
-} from "./deps/std.ts";
+import { fs, path, flags } from "./deps/std.ts";
 
 import { getHelp, INDEX_FILENAME } from "./constants.ts";
 import { getContentEntries, getStaticEntries } from "./entries.ts";
@@ -42,7 +34,10 @@ interface BuildStats {
   buildMillisecs: number;
 }
 
-async function generateSite(opts: GenerateSiteOpts) {
+const generateSite = async (opts: GenerateSiteOpts) => {
+  const { join, relative, dirname, basename } = path;
+  const { ensureDir, emptyDirSync } = fs;
+
   const { inputPath, outputPath, staticExts, userConfig, renderDrafts } =
     opts.config;
 
@@ -118,13 +113,7 @@ async function generateSite(opts: GenerateSiteOpts) {
     title: "Tags",
     index: "tag",
     unlisted: true,
-    ignored: false,
-    pinned: false,
     showHeader: false,
-    showTitle: false,
-    showDescription: false,
-    showToc: false,
-    showMeta: false,
   };
 
   const pages = [...indexPages, ...contentPages, tagIndex].filter((page) =>
@@ -258,10 +247,10 @@ async function generateSite(opts: GenerateSiteOpts) {
     performance.clearMarks(entry.name);
     performance.clearMeasures(entry.name);
   });
-}
+};
 
-async function main(args: string[]) {
-  const flags = flagsParse(args, {
+const main = async (args: string[]) => {
+  const parsedFlags = flags.parse(args, {
     boolean: ["serve", "help", "debug", "drafts"],
     string: ["config", "input", "output", "port"],
     unknown: (flag) => {
@@ -283,32 +272,32 @@ async function main(args: string[]) {
     },
   });
 
-  if (flags.help) {
+  if (parsedFlags.help) {
     console.info(getHelp(import.meta.url));
     Deno.exit();
   }
 
   const config = await createConfig({
-    configPath: flags.config,
-    inputPath: flags.input,
-    outputPath: flags.output,
-    renderDrafts: flags.drafts,
+    configPath: parsedFlags.config,
+    inputPath: parsedFlags.input,
+    outputPath: parsedFlags.output,
+    renderDrafts: parsedFlags.drafts,
   });
 
   await generateSite({
     config,
-    logLevel: flags.debug ? 2 : 0,
-    includeRefresh: flags.serve,
+    logLevel: parsedFlags.debug ? 2 : 0,
+    includeRefresh: parsedFlags.serve,
   });
 
-  if (flags.serve) {
+  if (parsedFlags.serve) {
     serve({
-      port: Number(flags.port),
+      port: Number(parsedFlags.port),
       runner: generateSite,
       config,
-      logLevel: flags.debug ? 2 : 0,
+      logLevel: parsedFlags.debug ? 2 : 0,
     });
   }
-}
+};
 
 main(Deno.args);

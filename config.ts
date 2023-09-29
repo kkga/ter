@@ -1,5 +1,5 @@
 import { deepmerge } from "./deps/deepmerge.ts";
-import { dirname, ensureDirSync, isAbsolute, join } from "./deps/std.ts";
+import { path, fs } from "./deps/std.ts";
 import { BuildConfig, UserConfig } from "./types.d.ts";
 
 const defaultUserConfig: UserConfig = {
@@ -17,8 +17,8 @@ const defaultUserConfig: UserConfig = {
 
 export const defaultBuildConfig: BuildConfig = {
   inputPath: Deno.cwd(),
-  outputPath: join(Deno.cwd(), "_site"),
-  userConfigPath: join(Deno.cwd(), ".ter/config.json"),
+  outputPath: path.join(Deno.cwd(), "_site"),
+  userConfigPath: path.join(Deno.cwd(), ".ter/config.json"),
   ignoreKeys: ["draft"],
   staticExts: [
     "png",
@@ -36,16 +36,18 @@ export const defaultBuildConfig: BuildConfig = {
   renderDrafts: false,
 };
 
-async function checkUserConfig(path: string): Promise<boolean> {
-  const filepath = isAbsolute(path) ? path : join(Deno.cwd(), path);
+const checkUserConfig = async (configPath: string): Promise<boolean> => {
+  const filepath = path.isAbsolute(configPath)
+    ? configPath
+    : path.join(Deno.cwd(), configPath);
   await Deno.stat(filepath).catch(() => Promise.reject(filepath));
   return Promise.resolve(true);
-}
+};
 
-function initUserConfig(config: UserConfig, configPath: string) {
-  ensureDirSync(dirname(configPath));
+const initUserConfig = (config: UserConfig, configPath: string) => {
+  fs.ensureDirSync(path.dirname(configPath));
   Deno.writeTextFileSync(configPath, JSON.stringify(config, null, 2));
-}
+};
 
 interface CreateConfigOpts {
   configPath: string | undefined;
@@ -54,9 +56,11 @@ interface CreateConfigOpts {
   renderDrafts: boolean;
 }
 
-export async function createConfig(
+export const createConfig = async (
   opts: CreateConfigOpts
-): Promise<BuildConfig> {
+): Promise<BuildConfig> => {
+  const { isAbsolute, join } = path;
+
   if (opts.configPath && opts.configPath != "") {
     defaultBuildConfig.userConfigPath = isAbsolute(opts.configPath)
       ? opts.configPath
@@ -105,4 +109,4 @@ export async function createConfig(
   }
 
   return defaultBuildConfig;
-}
+};
