@@ -6,9 +6,10 @@ interface PageItemProps {
   url: URL;
   title: string;
   description?: string;
+  isDirIndex?: boolean;
 }
 
-const PageItem = ({ title, description, url }: PageItemProps) => {
+const PageItem = ({ title, description, url, isDirIndex }: PageItemProps) => {
   return (
     <li class="max-w-full">
       <a
@@ -22,7 +23,10 @@ const PageItem = ({ title, description, url }: PageItemProps) => {
         "
       >
         <div class="flex-1 flex items-baseline overflow-hidden whitespace-nowrap">
-          <span class="flex-shrink-0 font-medium truncate">{title}</span>
+          <span class="flex-shrink-0 font-medium truncate">
+            {title}
+            {isDirIndex && " / .."}
+          </span>
           {description && (
             <span class="truncate text-neutral-10">
               <span class="text-neutral-8 mx-2">&mdash;</span>
@@ -65,6 +69,7 @@ const IndexList = ({ items, title, type }: IndexListProps) => {
         <ul class="-mx-2 flex flex-col items-start">
           {items.map((item) => (
             <PageItem
+              isDirIndex={item.index === "dir"}
               title={item.title || ""}
               description={item.description}
               url={item.url}

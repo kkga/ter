@@ -38,9 +38,6 @@ interface HeaderProps {
   dateUpdated?: Date;
   tags?: string[];
   compact?: boolean;
-  showTitle?: boolean;
-  showMeta?: boolean;
-  showDescription?: boolean;
 }
 
 const Header = ({
@@ -51,9 +48,6 @@ const Header = ({
   dateUpdated,
   tags,
   lang,
-  showTitle,
-  showDescription,
-  showMeta,
   compact,
 }: HeaderProps) => {
   const dateFormat: Intl.DateTimeFormatOptions = {
@@ -68,19 +62,11 @@ const Header = ({
         "gap-2 mb-12": !compact,
       })}
     >
-      {showTitle && (
-        <h1
-          class={cx("tracking-tight my-0", {
-            "text-xl": compact,
-          })}
-        >
-          {title}
-        </h1>
-      )}
+      <h1 class={cx("tracking-tight my-0", { "text-xl": compact })}>{title}</h1>
 
-      {showDescription && description && <p class="lead">{description}</p>}
+      {description && <p class="lead">{description}</p>}
 
-      {showMeta && (datePublished || tags) && (
+      {(datePublished || dateUpdated || tags) && (
         <div class="divide-dot not-prose flex items-baseline text(sm neutral-10)">
           {datePublished && (
             <Metadata>
@@ -131,9 +117,6 @@ const Article = ({ page, children, lang, compact }: ArticleProps) => {
     datePublished,
     dateUpdated,
     tags,
-    showTitle,
-    showDescription,
-    showMeta,
     headings,
     showToc,
     html,
@@ -151,9 +134,6 @@ const Article = ({ page, children, lang, compact }: ArticleProps) => {
           tags={tags}
           lang={lang}
           compact={compact}
-          showTitle={showTitle}
-          showMeta={showMeta}
-          showDescription={showDescription}
         />
       )}
 
