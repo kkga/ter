@@ -1,3 +1,4 @@
+import { isRelative } from "npm:ufo@1.3.0";
 import { hljs } from "./deps/hljs.ts";
 import { marked, admonition } from "./deps/marked.ts";
 import { slug as slugify } from "./deps/slug.ts";
@@ -35,6 +36,7 @@ export const parseMarkdown = ({
   const headings: Heading[] = [];
   const renderer = new marked.Renderer();
   const tokens = marked.lexer(text);
+  const { extname } = path;
 
   // collect headings
   for (const [, token] of tokens.entries()) {
@@ -106,7 +108,7 @@ export const parseMarkdown = ({
       }
     }
 
-    if (url !== undefined) {
+    if (url !== undefined && extname(url.pathname) === "") {
       internalLinks.add(url);
     }
 
