@@ -433,8 +433,8 @@ Deno.test(
     const sortedPages = sortPages(pages);
 
     assertEquals(sortedPages, [
-      pages[4],
       pages[5],
+      pages[4],
       pages[2],
       pages[0],
       pages[1],

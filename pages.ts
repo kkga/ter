@@ -147,8 +147,8 @@ function sortPages(pages: Page[]): Page[] {
         return 0;
       }
     })
-    .toSorted((page) => (page.pinned ? -1 : 0))
-    .toSorted((page) => (page.index === "dir" ? -1 : 0));
+    .toSorted((page) => (page.index === "dir" ? -1 : 0))
+    .toSorted((page) => (page.pinned ? -1 : 0));
 }
 
 function sortTaggedPages(
