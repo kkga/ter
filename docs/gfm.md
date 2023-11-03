@@ -136,43 +136,6 @@ Definition lists can be used with HTML syntax.
 
 ---
 
-Admonition blocks are great for side notes and warnings!
-
-To use an admonition block, add three exclamation marks before and after the
-block, followed by a space, and then the type of admonition.
-
-```markdown
-!!! note This is admonition title
-
-This is a description. Bacon ipsum dolor sit amet t-bone doner shank
-
-!!!
-```
-
-!!! note This is a `note` admonition
-
-This is a description. Bacon ipsum dolor sit amet t-bone doner shank
-
-!!!
-
-<br/>
-
-!!! warning This is a `warning` admonition
-
-This is a description. Bacon ipsum dolor sit amet t-bone doner shank
-
-!!!
-
-<br/>
-
-!!! danger This is a `danger` admonition
-
-This is a description. Bacon ipsum dolor sit amet t-bone doner shank
-
-!!!
-
----
-
 Tables should have bold headings and alternating shaded rows.
 
 | Artist          | Album          | Year |

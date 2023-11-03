@@ -5,12 +5,8 @@ description: How to deploy Ter sites.
 
 Ter generates a static site which can be deployed anywhere.
 
-!!! note Custom input/output paths
-
-When using non-default input and output paths, update the _build command_ and
-_output directory_ accordingly.
-
-!!!
+Note: when using non-default input and output paths, update the _build command_
+and _output directory_ accordingly.
 
 ### Vercel
 

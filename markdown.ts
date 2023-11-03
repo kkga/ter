@@ -1,6 +1,5 @@
-import { isRelative } from "npm:ufo@1.3.0";
 import { hljs } from "./deps/hljs.ts";
-import { marked, admonition } from "./deps/marked.ts";
+import { marked } from "./deps/marked.ts";
 import { slug as slugify } from "./deps/slug.ts";
 import { path } from "./deps/std.ts";
 
@@ -144,14 +143,7 @@ export const parseMarkdown = ({
     };
   }
 
-  admonition.setConfig({
-    className: "prose-sm admonition",
-    nodeName: "div",
-    title: { nodeName: "h4" },
-  });
-
   marked.use({ renderer });
-  marked.use(admonition.default);
 
   const html = marked.parser(tokens);
 
