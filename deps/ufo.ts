@@ -4,4 +4,4 @@ export {
   withLeadingSlash,
   withoutLeadingSlash,
   withoutTrailingSlash,
-} from "npm:ufo@1.3.1";
+} from "npm:ufo@1.3.2";
