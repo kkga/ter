@@ -118,24 +118,6 @@ export const twindConfig = defineConfig({
         ".cols-4": { "@apply": "grid grid(cols-2 md:cols-4) gap-x-4" },
         ".span-2": { "@apply": "sm:col-span-2" },
         ".span-3": { "@apply": "sm:col-span-3" },
-
-        ".admonition": {
-          "@apply": "leading-normal text-sm pl-4 py-2 border-l",
-          "&.admonition-abstract ": {
-            "@apply": "border-neutral-8 text-neutral-11",
-          },
-          "&.admonition-note, &.admonition-info, &.admonition-example, &.admonition-hint, &.admonition-tip":
-            {
-              "@apply": "border-blue-8 text-blue-11",
-            },
-          "&.admonition-warning, &.admonition-attention, &.admonition-danger": {
-            "@apply": "border-yellow-8 text-yellow-11",
-          },
-          "&.admonition-danger, &.admonition-error, &.admonition-bug": {
-            "@apply": "border-red-8 text-red-11",
-          },
-          "& > .admonition-title": { "@apply": "mt-0 text-current" },
-        },
       },
     }),
   ],
