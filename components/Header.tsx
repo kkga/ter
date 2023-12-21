@@ -8,16 +8,19 @@ interface PageHeaderProps {
 
 const PageHeader = ({ crumbs }: PageHeaderProps) => {
   return (
-    <header class="text(neutral-10) text-[13px] h-5 font(medium mono)">
+    <header class="text(neutral-10) text-[13px] min-h-[20px] font(medium mono)">
       {crumbs && crumbs.length > 1 && (
-        <ul class="divide-slash flex">
+        <nav class="divide-slash">
           {crumbs.map((crumb) => (
-            <li>
-              {crumb.current && crumb.slug}
-              {!crumb.current && <a href={crumb.url}>{crumb.slug}</a>}
-            </li>
+            <>
+              {crumb.current ? (
+                <span>{crumb.slug}</span>
+              ) : (
+                <a href={crumb.url}>{crumb.slug}</a>
+              )}
+            </>
           ))}
-        </ul>
+        </nav>
       )}
     </header>
   );
