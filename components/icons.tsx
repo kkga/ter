@@ -1,4 +1,4 @@
-/** @jsxImportSource npm:preact */
+/** @jsxImportSource https://esm.sh/preact */
 
 export const ChevronRight = () => (
   <svg
