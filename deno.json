@@ -10,6 +10,8 @@
     "coverage": "deno test --allow-read --coverage=cov_profile"
   },
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "dom.asynciterable", "deno.ns"]
+    "lib": ["dom", "dom.iterable", "dom.asynciterable", "deno.ns"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "https://esm.sh/preact"
   }
 }

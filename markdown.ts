@@ -60,7 +60,7 @@ export const parseMarkdown = ({
   renderer.link = (
     href: string,
     title: string | null | undefined,
-    text: string
+    text: string,
   ) => {
     const { protocol, pathname, hash } = parseURL(href);
     const titleAttr = title ? ` title="${title}"` : "";
@@ -81,7 +81,7 @@ export const parseMarkdown = ({
       path
         .basename(pathname)
         .replace(/^\d{4}-\d{2}-\d{2}[-_]/, "")
-        .replace(/\.md$/, "")
+        .replace(/\.md$/, ""),
     );
 
     if (path.isAbsolute(cleanPath)) {
@@ -99,8 +99,9 @@ export const parseMarkdown = ({
         resolved = withoutTrailingSlash(joined.replace(/\/index$/i, ""));
       }
 
-      href =
-        resolved === "" ? resolved + hash : withLeadingSlash(resolved) + hash;
+      href = resolved === ""
+        ? resolved + hash
+        : withLeadingSlash(resolved) + hash;
 
       if (resolved !== "") {
         url = new URL(withoutLeadingSlash(href), baseUrl);
@@ -117,7 +118,7 @@ export const parseMarkdown = ({
   renderer.heading = (text: string, level: number): string => {
     const slug = slugify(text);
     const idAttr = ` id="${slug}"`;
-    return `<h${level}${idAttr}><a class="h-anchor" href="#${slug}">#</a>${text}</h${level}>`;
+    return `<h${level}${idAttr}><a class="h-anchor" href="#${slug}">${text}</a></h${level}>`;
   };
 
   renderer.image = (href: string, title: string | null, text: string) => {

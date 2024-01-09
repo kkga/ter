@@ -1,15 +1,11 @@
-/** @jsxImportSource npm:preact */
+/** @jsxImportSource https://esm.sh/preact */
 
 import { HIGHLIGHT_STYLE, HMR_CLIENT } from "./constants.ts";
 import { render } from "./deps/preact.ts";
-import { inline, twindSetup } from "./deps/twind.ts";
-import { twindConfig } from "./twind.config.ts";
 import { Crumb, Page, UserConfig } from "./types.d.ts";
 
 import Body from "./components/Body.tsx";
 import { sortPages, sortTaggedPages } from "./pages.ts";
-
-const tw = twindSetup(twindConfig);
 
 interface RenderOpts {
   page: Page;
@@ -55,8 +51,7 @@ export function renderPage({
       : `${page.title} &middot; ${userConfig.title}`;
   const pageDescription = `${page.description || userConfig.description}`;
 
-  return inline(
-    `<!doctype html>
+  return `<!doctype html>
 <html lang="${userConfig.lang || "en"}">
 <head>
   <meta charset="UTF-8">
@@ -75,11 +70,12 @@ export function renderPage({
     userConfig.title
   }" />
   ${userConfig.head || ""}
-  ${userConfig.codeHighlight ? `<style>${HIGHLIGHT_STYLE}</style>` : ""}
 </head>
 ${dev ? `<script>${HMR_CLIENT}</script>` : ""}
 ${body}
-</html>`,
-    tw
-  );
+</html>`;
 }
+
+// ${userConfig.codeHighlight ? `<style>${HIGHLIGHT_STYLE}</style>` : ""}
+
+// <style>${css}</style>
