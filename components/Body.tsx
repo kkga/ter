@@ -1,13 +1,9 @@
-/** @jsxImportSource npm:preact */
+/** @jsxImportSource https://esm.sh/preact */
 
-import Article from "./Article.tsx";
-import Footer from "./Footer.tsx";
-import Header from "./Header.tsx";
-import IndexList from "./IndexList.tsx";
-import IndexLog from "./IndexLog.tsx";
-import IndexGrid from "./IndexGrid.tsx";
-
+import { IndexGrid, IndexList, IndexLog } from "./lists.tsx";
 import { Crumb, Page } from "../types.d.ts";
+import { Footer, Header } from "./chrome.tsx";
+import Article from "./article.tsx";
 
 interface BodyProps {
   page: Page;
@@ -51,25 +47,14 @@ const Body = ({
   author,
   lang,
 }: BodyProps) => (
-  <body
-    class="
-        antialiased
-        min-h-screen
-        mx-auto max-w-3xl
-        p-4
-        flex flex-col gap-16
-        text(neutral-12)
-        tracking-[-0.015em]
-        bg(neutral-1) 
-      "
-  >
+  <body class="bg-white dark:bg-stone-950 text-stone-900 dark:text-stone-200 container my-0 p-4 md:p-8 min-h-screen flex flex-col gap-16 max-w-3xl font-sans font-book leading-normal antialiased">
     <Header crumbs={crumbs} />
 
     <main class="[&:has(article:empty)]:hidden">
       <Article lang={lang} page={page} />
     </main>
 
-    <aside class="empty:hidden flex flex-col gap-12">
+    <aside class="empty:hidden space-y-16">
       {childPages && childPages.length > 0 && (
         <PageIndex lang={lang} layout={page.layout} pages={childPages} />
       )}
@@ -98,13 +83,13 @@ const Body = ({
       {page.index === "dir" &&
         pagesByTag &&
         Object.keys(pagesByTag).length > 0 && (
-          <IndexList
-            title="Tags"
-            items={pagesByTag}
-            type={"tags"}
-            lang={lang}
-          />
-        )}
+        <IndexList
+          title="Tags"
+          items={pagesByTag}
+          type={"tags"}
+          lang={lang}
+        />
+      )}
 
       {backlinkPages && backlinkPages.length > 0 && (
         <IndexList

@@ -1,4 +1,4 @@
-import { fm, path, fs } from "./deps/std.ts";
+import { fmExtract, fmTest, path, fs } from "./deps/std.ts";
 
 import { slug as slugify } from "./deps/slug.ts";
 
@@ -175,7 +175,7 @@ function getDeadlinks(pages: Page[]): [from: URL, to: URL][] {
 }
 
 function extractPageData(raw: string, ignoreKeys: string[]): PageData {
-  const frontmatter = fm.extract(raw);
+  const frontmatter = fmExtract(raw);
   const attrs = frontmatter.attrs as JSONValue;
   const {
     getTitle,
@@ -242,7 +242,7 @@ function generateContentPage({
     url: pageUrl,
   };
 
-  if (fm.test(raw)) {
+  if (fmTest(raw)) {
     page = { ...page, ...extractPageData(raw, ignoreKeys) };
   }
 
@@ -281,7 +281,7 @@ function generateIndexPageFromFile({
     index: "dir",
   };
 
-  if (fm.test(raw)) {
+  if (fmTest(raw)) {
     page = { ...page, ...extractPageData(raw, ignoreKeys) };
   }
 

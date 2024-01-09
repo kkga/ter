@@ -1,6 +1,6 @@
-import { fs, path, flags } from "./deps/std.ts";
+import { flags, fs, path } from "./deps/std.ts";
 
-import { getHelp, INDEX_FILENAME } from "./constants.ts";
+import { getHelp, HIGHLIGHT_STYLE, INDEX_FILENAME } from "./constants.ts";
 import { getContentEntries, getStaticEntries } from "./entries.ts";
 import {
   generateContentPage,
@@ -21,6 +21,8 @@ import { serve } from "./serve.ts";
 import { generateFeed } from "./feed.ts";
 import { renderPage } from "./render.tsx";
 import { BuildConfig, Page } from "./types.d.ts";
+import { createGenerator, normalize } from "./deps/unocss.ts";
+import unoConfig from "./uno.config.ts";
 
 export interface GenerateSiteOpts {
   config: BuildConfig;
@@ -61,10 +63,10 @@ const generateSite = async (opts: GenerateSiteOpts) => {
   const [indexDirEntries, indexFileEntries, nonIndexEntries] = [
     contentEntries.filter((entry) => entry.isDirectory),
     contentEntries.filter(
-      (entry) => entry.isFile && entry.name.endsWith(INDEX_FILENAME)
+      (entry) => entry.isFile && entry.name.endsWith(INDEX_FILENAME),
     ),
     contentEntries.filter(
-      (entry) => entry.isFile && !entry.name.endsWith(INDEX_FILENAME)
+      (entry) => entry.isFile && !entry.name.endsWith(INDEX_FILENAME),
     ),
   ];
 
@@ -129,8 +131,8 @@ const generateSite = async (opts: GenerateSiteOpts) => {
 
   performance.mark("render:start");
 
-  const files: { writePath: string; content: string }[] = [
-    ...pages.map((page) => {
+  const files: { writePath: string; content: string }[] = await Promise.all(
+    pages.map((page) => {
       const writePath = join(outputPath, page.url.pathname, "index.html");
       const listedPages = pages.filter((p) => !p.unlisted);
       const { childPages, allChildPages } = getChildPages(listedPages, page);
@@ -157,11 +159,23 @@ const generateSite = async (opts: GenerateSiteOpts) => {
         }),
       };
     }),
-    {
-      writePath: join(outputPath, "feed.xml"),
-      content: generateFeed({ userConfig, pages }).atom1(),
-    },
-  ];
+  );
+
+  const uno = createGenerator(unoConfig);
+  for await (const file of files) {
+    const { css } = await uno.generate(file.content);
+    file.content = file.content.replace(
+      "</head>",
+      `<style>${normalize}${css}${HIGHLIGHT_STYLE}</style></head>`,
+    );
+  }
+
+  const feedFile = {
+    writePath: join(outputPath, "feed.xml"),
+    content: generateFeed({ userConfig, pages }).atom1(),
+  };
+
+  const filesWithFeed = [...files, feedFile];
 
   performance.mark("render:end");
 
@@ -175,14 +189,14 @@ const generateSite = async (opts: GenerateSiteOpts) => {
   emptyDirSync(outputPath);
   const writeTasks: Promise<void>[] = [];
 
-  files.forEach(({ writePath, content }) => {
+  filesWithFeed.forEach(({ writePath, content }) => {
     writeTasks.push(
       (async () => {
         logLevel > 1 &&
           console.log(`write\t${relative(Deno.cwd(), writePath)}`);
         await ensureDir(dirname(writePath));
         await Deno.writeTextFile(writePath, content);
-      })()
+      })(),
     );
   });
 
@@ -194,7 +208,7 @@ const generateSite = async (opts: GenerateSiteOpts) => {
         logLevel > 1 && console.log(`copy\t${relative(Deno.cwd(), writePath)}`);
         await ensureDir(dirname(writePath));
         await Deno.copyFile(path, writePath);
-      })()
+      })(),
     );
   });
 
@@ -234,7 +248,7 @@ const generateSite = async (opts: GenerateSiteOpts) => {
       pageFiles: files.length,
       staticFiles: staticEntries.length,
       buildMillisecs: Math.floor(
-        performance.getEntriesByName("total")[0].duration
+        performance.getEntriesByName("total")[0].duration,
       ),
     };
 
